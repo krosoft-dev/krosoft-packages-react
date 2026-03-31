@@ -1,5 +1,5 @@
+import { cn } from "../../src/helpers";
 import { describe, it, expect } from "vitest";
-import { cn } from "@/helpers/tailwind.helper";
 
 describe("cn", () => {
   it("fusionne des classes simples", () => {
