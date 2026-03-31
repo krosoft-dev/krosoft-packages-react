@@ -3,6 +3,23 @@
   "version": "0.0.1",
   "description": "Krosoft shared React package",
   "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "lint": "eslint .",
+    "format": "prettier --write './**/*.{js,jsx,ts,tsx,css,md,json}'",
+    "type-check": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/krosoft-dev/krosoft-packages-react.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist"
+  ],
   "exports": {
     "./helpers": {
       "import": "./dist/helpers/index.js",
@@ -13,21 +30,12 @@
       "types": "./dist/hooks/index.d.ts"
     }
   },
-  "files": [
-    "dist"
-  ],
-  "scripts": {
-    "build": "tsc -p tsconfig.build.json",
-    "lint": "eslint .",
-    "type-check": "tsc --noEmit",
-    "test": "vitest run"
+  "peerDependencies": {
+    "react": ">=18.0.0"
   },
   "dependencies": {
     "clsx": "^2.1.1",
     "tailwind-merge": "^2.6.1"
-  },
-  "peerDependencies": {
-    "react": ">=18.0.0"
   },
   "devDependencies": {
     "@krosoft/tooling-eslint-react": ">=0.0.2",
@@ -39,12 +47,5 @@
     "typescript": "^5.9.3",
     "jsdom": "^26.1.0",
     "vitest": "^4.1.2"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/krosoft-dev/krosoft-packages-react.git"
-  },
-  "publishConfig": {
-    "access": "public"
   }
 }
