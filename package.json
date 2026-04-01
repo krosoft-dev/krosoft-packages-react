@@ -4,11 +4,13 @@
   "description": "Krosoft shared React package",
   "type": "module",
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
+    "build": "vite build && tsc -p tsconfig.build.json --emitDeclarationOnly",
     "lint": "eslint .",
     "format": "prettier --write './**/*.{js,jsx,ts,tsx,css,md,json}'",
     "type-check": "tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "storybook:dev": "storybook dev -p 6006",
+    "storybook:build": "storybook build"
   },
   "repository": {
     "type": "git",
@@ -28,12 +30,17 @@
     "./hooks": {
       "import": "./dist/hooks/index.js",
       "types": "./dist/hooks/index.d.ts"
+    },
+    "./components/ui": {
+      "import": "./dist/components/ui/index.js",
+      "types": "./dist/components/ui/index.d.ts"
     }
   },
   "peerDependencies": {
     "react": ">=18.3.1"
   },
   "dependencies": {
+    "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "tailwind-merge": "^2.6.1"
   },
@@ -41,11 +48,21 @@
     "@krosoft/tooling-eslint-react": ">=0.0.2",
     "@krosoft/tooling-prettier": ">=0.0.6",
     "@krosoft/tooling-tsconfig-react": ">=0.0.5",
+    "@storybook/addon-essentials": "^8.6.14",
+    "@storybook/addon-themes": "^8.6.18",
+    "@storybook/react": "^8.6.18",
+    "@storybook/react-vite": "^8.6.18",
+    "@tailwindcss/vite": "^4.2.2",
+    "@types/node": "^25.5.0",
+    "@types/react": "^18.3.28",
+    "jsdom": "^26.1.0",
     "prettier": "^3.8.1",
     "react": "^18.3.1",
-    "@types/react": "^18.3.28",
+    "react-dom": "^18.3.1",
+    "storybook": "^8.6.18",
+    "tailwindcss": "^4.2.2",
     "typescript": "^5.9.3",
-    "jsdom": "^26.1.0",
+    "vite": "^6.4.1",
     "vitest": "^4.1.2"
   }
 }

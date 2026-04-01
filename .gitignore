@@ -400,6 +400,9 @@ yarn-error.log*
 **/postgres-data/*
 
 # Specific to this project
-*.bak 
+*.bak
 temp/
+
+# Storybook
+storybook-static/
  
