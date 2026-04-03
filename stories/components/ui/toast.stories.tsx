@@ -7,7 +7,7 @@ import {
   ToastProvider,
   ToastTitle,
   ToastViewport,
-} from "./toast";
+} from "@/components/ui/toast";
 
 const meta: Meta<typeof Toast> = {
   title: "UI/Toast",

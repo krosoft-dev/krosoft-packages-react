@@ -6,9 +6,9 @@ import {
   ToastProvider,
   ToastTitle,
   ToastViewport,
-} from "../../components/ui/toast";
-import { useNotifications } from "./useNotifications";
-import { useToast } from "./useToast";
+} from "@/components/ui/toast";
+import { useNotifications } from "@/hooks/ui/useNotifications";
+import { useToast } from "@/hooks/ui/useToast";
 
 const Toaster = () => {
   const { toasts } = useToast();
