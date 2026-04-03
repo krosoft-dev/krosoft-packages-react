@@ -39,7 +39,7 @@
     "tailwind-merge": "^2.6.1"
   },
   "devDependencies": {
-    "@krosoft/tooling-eslint-react": "^0.0.7",
+    "@krosoft/tooling-eslint-react": "^0.0.10",
     "@krosoft/tooling-prettier": "^0.0.11",
     "@krosoft/tooling-tsconfig-react": "^0.0.6",
     "@storybook/addon-essentials": "^8.6.18",
