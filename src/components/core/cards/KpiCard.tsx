@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "../../ui";
 import React from "react";
 import { formatNumber } from "@krosoft/core/helpers";
 import { useTranslation } from "react-i18next";
-import { cn } from "@krosoft/react/helpers";
+import { cn } from "../../../helpers/tailwind.helper";
 
 export interface KpiCardProps {
   titleKey: string;

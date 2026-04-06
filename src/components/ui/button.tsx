@@ -1,4 +1,4 @@
-import { cn } from "@krosoft/react/helpers";
+import { cn } from "@/helpers/tailwind.helper";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
