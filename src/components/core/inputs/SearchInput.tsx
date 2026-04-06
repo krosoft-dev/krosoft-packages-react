@@ -1,6 +1,6 @@
  
 import { Input } from "@/components/ui";
-import { cn } from "@krosoft/react/helpers";
+import { cn } from "@/helpers/tailwind.helper";
 import { SearchIcon, XIcon } from "lucide-react";
 
 interface SearchInputProps {
