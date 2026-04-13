@@ -29,7 +29,7 @@ import type { Config } from "tailwindcss";
  */
 const krosoftPreset = {
   darkMode: "class",
-  content: ["./node_modules/@krosoft/react/dist/**/*.js"],
+  content: ["../**/*.{js,ts,jsx,tsx}"],
   theme: {
     container: {
       center: true,
