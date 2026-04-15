@@ -44,7 +44,7 @@
   "devDependencies": {
     "@krosoft/core": "^0.0.29", 
     "@krosoft/tooling-eslint-react": "^0.0.15",
-    "@krosoft/tooling-prettier": "^0.0.13",
+    "@krosoft/tooling-prettier": "^0.0.14",
     "@krosoft/tooling-tsconfig-react": "^0.0.10",
     "@storybook/addon-essentials": "^8.6.18",
     "@storybook/react": "^8.6.18",
@@ -52,7 +52,7 @@
     "@types/node": "^25.6.0",
     "@types/react": "^18.3.28",
     "jsdom": "^26.1.0",
-    "prettier": "^3.8.2",
+    "prettier": "^3.8.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-i18next": "^17.0.2",
