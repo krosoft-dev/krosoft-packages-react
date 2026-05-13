@@ -80,25 +80,19 @@ const columns: ColumnDef<UserData>[] = [
     key: "role",
     label: "Role",
     minWidth: 100,
-    renderCell: (row) => (
-      <span className="capitalize">{row.role}</span>
-    ),
+    renderCell: row => <span className="capitalize">{row.role}</span>,
   },
   {
     key: "status",
     label: "Status",
     minWidth: 100,
-    renderCell: (row) => (
-      <Badge variant={row.status === "active" ? "default" : "secondary"}>
-        {row.status === "active" ? "Active" : "Inactive"}
-      </Badge>
-    ),
+    renderCell: row => <Badge variant={row.status === "active" ? "default" : "secondary"}>{row.status === "active" ? "Active" : "Inactive"}</Badge>,
   },
   {
     key: "lastLogin",
     label: "Last Login",
     minWidth: 150,
-    renderCell: (row) => new Date(row.lastLogin).toLocaleDateString(),
+    renderCell: row => new Date(row.lastLogin).toLocaleDateString(),
   },
 ];
 
@@ -107,48 +101,54 @@ type Story = StoryObj<typeof DataTable>;
 export const Default: Story = {
   args: {
     data: mockData,
-    columns: columns,
-    getRowId: (row) => row.id,
+    columns,
+    getRowId: (row: UserData) => row.id,
   },
 };
 
 export const WithRowClick: Story = {
   args: {
     data: mockData,
-    columns: columns,
-    getRowId: (row) => row.id,
-    onRowClick: (row) => alert(`Clicked on row: ${row.name}`),
+    columns,
+    getRowId: (row: UserData) => row.id,
+    onRowClick: (row: UserData) => {
+      console.warn(`Clicked on row: ${row.name}`);
+    },
   },
 };
 
 export const WithActions: Story = {
   args: {
     data: mockData,
-    columns: columns,
-    getRowId: (row) => row.id,
-    onEditRow: (row) => alert(`Edit row: ${row.name}`),
-    onDeleteRow: (row) => alert(`Delete row: ${row.name}`),
+    columns,
+    getRowId: (row: UserData) => row.id,
+    onEditRow: (row: UserData) => {
+      console.warn(`Edit row: ${row.name}`);
+    },
+    onDeleteRow: (row: UserData) => {
+      console.warn(`Delete row: ${row.name}`);
+    },
   },
 };
 
 export const WithBulkActions: Story = {
   args: {
     data: mockData,
-    columns: columns,
-    getRowId: (row) => row.id,
+    columns,
+    getRowId: (row: UserData) => row.id,
     bulkActions: [
       {
         label: "Activate Selected",
-        onClick: (selectedIds, clearSelection) => {
-          alert(`Activating users with IDs: ${selectedIds.join(", ")}`);
+        onClick: (selectedIds: string[], clearSelection: () => void): void => {
+          console.warn(`Activating users with IDs: ${selectedIds.join(", ")}`);
           clearSelection();
         },
       },
       {
         label: "Delete Selected",
         variant: "destructive",
-        onClick: (selectedIds, clearSelection) => {
-          alert(`Deleting users with IDs: ${selectedIds.join(", ")}`);
+        onClick: (selectedIds: string[], clearSelection: () => void): void => {
+          console.warn(`Deleting users with IDs: ${selectedIds.join(", ")}`);
           clearSelection();
         },
       },
@@ -159,24 +159,30 @@ export const WithBulkActions: Story = {
 export const FullFeatured: Story = {
   args: {
     data: mockData,
-    columns: columns,
-    getRowId: (row) => row.id,
-    onRowClick: (row) => console.log(`Clicked on row: ${row.name}`),
-    onEditRow: (row) => alert(`Edit row: ${row.name}`),
-    onDeleteRow: (row) => alert(`Delete row: ${row.name}`),
+    columns,
+    getRowId: (row: UserData) => row.id,
+    onRowClick: (row: UserData) => {
+      console.warn(`Clicked on row: ${row.name}`);
+    },
+    onEditRow: (row: UserData) => {
+      console.warn(`Edit row: ${row.name}`);
+    },
+    onDeleteRow: (row: UserData) => {
+      console.warn(`Delete row: ${row.name}`);
+    },
     bulkActions: [
       {
         label: "Export Selected",
-        onClick: (selectedIds, clearSelection) => {
-          alert(`Exporting users with IDs: ${selectedIds.join(", ")}`);
+        onClick: (selectedIds: string[], clearSelection: () => void): void => {
+          console.warn(`Exporting users with IDs: ${selectedIds.join(", ")}`);
           clearSelection();
         },
       },
       {
         label: "Delete Selected",
         variant: "destructive",
-        onClick: (selectedIds, clearSelection) => {
-          alert(`Deleting users with IDs: ${selectedIds.join(", ")}`);
+        onClick: (selectedIds: string[], clearSelection: () => void): void => {
+          console.warn(`Deleting users with IDs: ${selectedIds.join(", ")}`);
           clearSelection();
         },
       },
