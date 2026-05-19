@@ -1,12 +1,13 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import * as React from "react";
-import { KrosoftTopbar, KrosoftTopbarProps } from "../../../../../src/components/core/navbar/topbar";
+import { Topbar, TopbarProps } from "../../../../../src/components/core/navbar/topbar";
 import { Sidebar } from "../../../../../src/components/core/navbar/sidebar";
-import { Home, Settings, Users } from "lucide-react";
+import { Home, Settings, Users, SearchIcon, SunIcon, MoonIcon, BellIcon } from "lucide-react";
+import { Button } from "../../../../../src/components/ui/button";
 
-const meta: Meta<typeof KrosoftTopbar> = {
+const meta: Meta<typeof Topbar> = {
   title: "Core/Navbar/Topbar",
-  component: KrosoftTopbar,
+  component: Topbar,
   tags: ["autodocs"],
   parameters: {
     layout: "fullscreen",
@@ -14,7 +15,7 @@ const meta: Meta<typeof KrosoftTopbar> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof KrosoftTopbar>;
+type Story = StoryObj<typeof Topbar>;
 
 // Un avatar factice pour simuler le menu utilisateur injecté depuis l'application
 const FakeUserMenu = (): React.ReactElement => (
@@ -23,37 +24,44 @@ const FakeUserMenu = (): React.ReactElement => (
   </div>
 );
 
+const FakeActions = ({ theme, setTheme }: { theme: string; setTheme: (t: string) => void }): React.ReactElement => (
+  <>
+    <Button variant="ghost" size="icon" className="text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground">
+      <SearchIcon className="size-4" />
+    </Button>
+    <Button
+      variant="ghost"
+      size="icon"
+      onClick={() => {
+        setTheme(theme === "light" ? "dark" : "light");
+      }}
+      className="text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+    >
+      {theme === "dark" ? <MoonIcon className="h-4 w-4" /> : <SunIcon className="h-4 w-4" />}
+    </Button>
+    <Button size="icon" variant="ghost" className="relative text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground">
+      <BellIcon className="h-4 w-4" />
+      <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full" />
+    </Button>
+  </>
+);
+
 // --- STORY 1 : STANDALONE ---
-const InteractiveStandalone = (args: KrosoftTopbarProps): React.ReactElement => {
+const InteractiveStandalone = (args: TopbarProps): React.ReactElement => {
   const [theme, setTheme] = React.useState("light");
   const [collapsed, setCollapsed] = React.useState(args.collapsed);
 
   return (
     <div className={`flex h-screen w-full bg-background font-sans ${theme}`}>
-      <KrosoftTopbar
+      <Topbar
         {...args}
-        theme={theme}
         collapsed={collapsed}
-        onToggleTheme={() => {
-          setTheme(t => (t === "light" ? "dark" : "light"));
-        }}
         onToggleSidebar={() => {
           setCollapsed(!collapsed);
         }}
+        actionsNode={<FakeActions theme={theme} setTheme={setTheme} />}
         userMenuNode={<FakeUserMenu />}
       />
-
-      {/* On simule la marge laissée vide par la sidebar inexistante */}
-      <main className={`pt-24 px-8 w-full transition-all duration-300 ${collapsed ? "ml-[5.5rem]" : "ml-[16rem]"}`}>
-        <div className="p-8 border border-border rounded-xl bg-card shadow-sm">
-          <h1 className="text-3xl font-bold text-foreground mb-4">Topbar Isolée</h1>
-          <p className="text-muted-foreground">Ceci est la topbar affichée toute seule, avec l&apos;état `collapsed` géré localement.</p>
-          <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
-            <li>Essayez de cliquer sur le menu Burger pour voir l&apos;animation de largeur.</li>
-            <li>Essayez de basculer le thème (Soleil / Lune).</li>
-          </ul>
-        </div>
-      </main>
     </div>
   );
 };
@@ -63,15 +71,6 @@ export const Standalone: Story = {
   args: {
     collapsed: false,
     isMobile: false,
-    hasNotifications: true,
-
-    onSearchClick: () => {
-      // noop
-    },
-
-    onNotificationsClick: () => {
-      // noop
-    },
   },
 };
 
@@ -87,7 +86,7 @@ const sampleGroups = [
   },
 ];
 
-const InteractiveWithSidebar = (args: KrosoftTopbarProps): React.ReactElement => {
+const InteractiveWithSidebar = (args: TopbarProps): React.ReactElement => {
   const [theme, setTheme] = React.useState("light");
   const [collapsed, setCollapsed] = React.useState(args.collapsed);
   const [currentPath, setCurrentPath] = React.useState("/dashboard");
@@ -110,16 +109,13 @@ const InteractiveWithSidebar = (args: KrosoftTopbarProps): React.ReactElement =>
       />
 
       {/* La Topbar */}
-      <KrosoftTopbar
+      <Topbar
         {...args}
-        theme={theme}
         collapsed={collapsed}
-        onToggleTheme={() => {
-          setTheme(t => (t === "light" ? "dark" : "light"));
-        }}
         onToggleSidebar={() => {
           setCollapsed(!collapsed);
         }}
+        actionsNode={<FakeActions theme={theme} setTheme={setTheme} />}
         userMenuNode={<FakeUserMenu />}
       />
 

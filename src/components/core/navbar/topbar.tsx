@@ -1,40 +1,22 @@
 import * as React from "react";
-import { BellIcon, MenuIcon, MoonIcon, SearchIcon, SunIcon } from "lucide-react";
+import { MenuIcon } from "lucide-react";
 import { Button } from "../../ui/button";
 import { cn } from "../../../helpers/tailwind.helper";
 
-export interface KrosoftTopbarProps {
+export interface TopbarProps {
   // Gestion de la sidebar
   collapsed: boolean;
   isMobile: boolean;
   onToggleSidebar: () => void;
 
   // Actions
-  onSearchClick?: () => void;
-
-  // Thème
-  theme?: string;
-  onToggleTheme?: () => void;
-
-  // Notifications
-  hasNotifications?: boolean;
-  onNotificationsClick?: () => void;
+  actionsNode?: React.ReactNode;
 
   // Custom nodes (pour injecter ton UserMenu)
   userMenuNode?: React.ReactNode;
 }
 
-export const KrosoftTopbar = ({
-  collapsed,
-  isMobile,
-  onToggleSidebar,
-  onSearchClick,
-  theme,
-  onToggleTheme,
-  hasNotifications = false,
-  onNotificationsClick,
-  userMenuNode,
-}: KrosoftTopbarProps): React.ReactElement => {
+export const Topbar = ({ collapsed, isMobile, onToggleSidebar, actionsNode, userMenuNode }: TopbarProps): React.ReactElement => {
   return (
     <header
       className={cn(
@@ -59,43 +41,8 @@ export const KrosoftTopbar = ({
 
       {/* Actions à droite */}
       <div className="flex items-center gap-2 md:gap-4 flex-shrink-0">
-        {/* Recherche */}
-        {onSearchClick !== undefined && (
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onSearchClick}
-            className="text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-          >
-            <SearchIcon className="size-4" />
-          </Button>
-        )}
-
-        {/* Theme Toggle */}
-        {onToggleTheme !== undefined && (
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onToggleTheme}
-            className="text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-          >
-            {theme === "dark" ? <MoonIcon className="h-4 w-4" /> : <SunIcon className="h-4 w-4" />}
-            <span className="sr-only">Toggle theme</span>
-          </Button>
-        )}
-
-        {/* Notifications */}
-        {onNotificationsClick !== undefined && (
-          <Button
-            size="icon"
-            variant="ghost"
-            className="relative text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-            onClick={onNotificationsClick}
-          >
-            <BellIcon className="h-4 w-4" />
-            {hasNotifications ? <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full" /> : null}
-          </Button>
-        )}
+        {/* Actions injectées (Recherche, Notifications, Thème...) */}
+        {actionsNode}
 
         {/* Menu Utilisateur Injecté (spécifique au projet) */}
         {userMenuNode}
