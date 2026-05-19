@@ -93,7 +93,7 @@ export const KrosoftTopbar = ({
             onClick={onNotificationsClick}
           >
             <BellIcon className="h-4 w-4" />
-            {hasNotifications === true && <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full" />}
+            {hasNotifications ? <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full" /> : null}
           </Button>
         )}
 
