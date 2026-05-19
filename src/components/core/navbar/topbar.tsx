@@ -61,7 +61,12 @@ export const KrosoftTopbar = ({
       <div className="flex items-center gap-2 md:gap-4 flex-shrink-0">
         {/* Recherche */}
         {onSearchClick !== undefined && (
-          <Button variant="ghost" size="icon" onClick={onSearchClick}>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onSearchClick}
+            className="text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+          >
             <SearchIcon className="size-4" />
           </Button>
         )}
@@ -81,9 +86,14 @@ export const KrosoftTopbar = ({
 
         {/* Notifications */}
         {onNotificationsClick !== undefined && (
-          <Button size="icon" variant="ghost" className="relative" onClick={onNotificationsClick}>
+          <Button
+            size="icon"
+            variant="ghost"
+            className="relative text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+            onClick={onNotificationsClick}
+          >
             <BellIcon className="h-4 w-4" />
-            {hasNotifications ? <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full" /> : null}
+            {hasNotifications === true && <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full" />}
           </Button>
         )}
 
