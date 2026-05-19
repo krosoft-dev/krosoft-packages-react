@@ -27,36 +27,50 @@ type Story = StoryObj<typeof SearchInput>;
 
 export const Default: Story = {
   args: {
-    onSearch: (value: string) => console.log("search:", value),
+    onSearch: (value: string) => {
+      console.log("search:", value);
+    },
   },
 };
 
 export const WithValue: Story = {
   args: {
     searchQuery: "krosoft",
-    onSearch: (value: string) => console.log("search:", value),
+    onSearch: (value: string) => {
+      console.log("search:", value);
+    },
   },
 };
 
 export const WithSubmit: Story = {
   args: {
-    onSearch: (value: string) => console.log("search:", value),
-    onSubmit: () => console.log("submit"),
+    onSearch: (value: string) => {
+      console.log("search:", value);
+    },
+    onSubmit: () => {
+      console.log("submit");
+    },
   },
 };
 
 export const WithClear: Story = {
   args: {
     searchQuery: "valeur à effacer",
-    onSearch: (value: string) => console.log("search:", value),
-    onClear: () => console.log("cleared"),
+    onSearch: (value: string) => {
+      console.log("search:", value);
+    },
+    onClear: () => {
+      console.log("cleared");
+    },
   },
 };
 
 export const CustomPlaceholder: Story = {
   args: {
     placeholder: "Chercher un utilisateur...",
-    onSearch: (value: string) => console.log("search:", value),
+    onSearch: (value: string) => {
+      console.log("search:", value);
+    },
   },
 };
 
@@ -66,7 +80,16 @@ export const Interactive: Story = {
     return (
       <div className="flex flex-col gap-4">
         <div className="flex justify-between">
-          <SearchInput searchQuery={query} onSearch={setQuery} onClear={() => setQuery("")} onSubmit={() => console.log("submitted:", query)} />
+          <SearchInput
+            searchQuery={query}
+            onSearch={setQuery}
+            onClear={() => {
+              setQuery("");
+            }}
+            onSubmit={() => {
+              console.log("submitted:", query);
+            }}
+          />
           <Button
             variant="outline"
             size="sm"

@@ -20,7 +20,7 @@ export default meta;
 type Story = StoryObj<typeof Alert>;
 
 export const Default: Story = {
-  render: (args) => (
+  render: args => (
     <Alert {...args}>
       <AlertTitle>Heads up!</AlertTitle>
       <AlertDescription>You can add components to your app using the cli.</AlertDescription>
@@ -32,7 +32,7 @@ export const Destructive: Story = {
   args: {
     variant: "destructive",
   },
-  render: (args) => (
+  render: args => (
     <Alert {...args}>
       <AlertTitle>Error</AlertTitle>
       <AlertDescription>Your session has expired. Please log in again.</AlertDescription>
@@ -41,7 +41,7 @@ export const Destructive: Story = {
 };
 
 export const TitleOnly: Story = {
-  render: (args) => (
+  render: args => (
     <Alert {...args}>
       <AlertTitle>Information</AlertTitle>
     </Alert>
@@ -49,7 +49,7 @@ export const TitleOnly: Story = {
 };
 
 export const DescriptionOnly: Story = {
-  render: (args) => (
+  render: args => (
     <Alert {...args}>
       <AlertDescription>A simple alert message without a title.</AlertDescription>
     </Alert>

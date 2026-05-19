@@ -7,12 +7,8 @@ const MobileDemo = () => {
   return (
     <div className="p-4 rounded-md border">
       <p className="text-sm text-muted-foreground mb-1">Breakpoint mobile : &lt; 768px</p>
-      <p className="font-semibold">
-        {isMobile ? "Mobile détecté" : "Desktop détecté"}
-      </p>
-      <p className="text-xs text-muted-foreground mt-2">
-        Redimensionnez la fenêtre pour voir le changement.
-      </p>
+      <p className="font-semibold">{isMobile ? "Mobile détecté" : "Desktop détecté"}</p>
+      <p className="text-xs text-muted-foreground mt-2">Redimensionnez la fenêtre pour voir le changement.</p>
     </div>
   );
 };
