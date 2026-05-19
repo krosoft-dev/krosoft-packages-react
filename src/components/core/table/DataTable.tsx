@@ -32,6 +32,7 @@ interface DataTableProps<T> {
   onDeleteRow?: (row: T) => void;
   actions?: (row: T) => React.ReactNode; // Actions personnalisées optionnelles pour le menu
   bulkActions?: BulkAction[]; // Actions rapides pour la sélection multiple
+  draggableColumns?: boolean; // Permet d'activer/désactiver le drag and drop des colonnes
 }
 
 export default function DataTable<T>({
@@ -43,6 +44,7 @@ export default function DataTable<T>({
   onDeleteRow,
   actions,
   bulkActions,
+  draggableColumns = true,
 }: DataTableProps<T>): React.JSX.Element {
   const [sortColumn, setSortColumn] = useState<string | null>(columns[0]?.key ?? null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
@@ -164,18 +166,23 @@ export default function DataTable<T>({
     return sortDirection === "asc" ? <ArrowUpIcon className="w-4 h-4" /> : <ArrowDownIcon className="w-4 h-4" />;
   };
 
-  const renderSortHeader = (columnKey: string, label: string, isLast?: boolean): React.ReactNode => {
+  const renderSortHeader = (columnKey: string, label: string, isLast?: boolean, isDraggable?: boolean): React.ReactNode => {
+    const draggable = isDraggable !== false;
     return (
       <th
         key={columnKey}
         className={`px-2 py-2 text-left text-sm font-medium text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 relative group border-r border-gray-200 dark:border-gray-800 ${isLast === true ? "pr-8" : ""}`}
         style={{ width: columnWidths[columnKey] }}
-        draggable
+        draggable={draggable}
         onClick={() => {
           handleSort(columnKey);
         }}
         onDragStart={e => {
-          handleDragStart(e, columnKey);
+          if (draggable) {
+            handleDragStart(e, columnKey);
+          } else {
+            e.preventDefault();
+          }
         }}
         onDragOver={e => {
           handleDragOver(e, columnKey);
@@ -186,7 +193,7 @@ export default function DataTable<T>({
       >
         <div className="flex items-center justify-between pr-2">
           <div className="flex items-center">
-            <GripVerticalIcon className="h-3 w-3 text-gray-400 mr-1 cursor-grab dark:text-gray-300" />
+            {draggable ? <GripVerticalIcon className="h-3 w-3 text-gray-400 mr-1 cursor-grab dark:text-gray-300" /> : null}
             <span className="truncate">{label}</span>
           </div>
           <div className="flex flex-col gap-0.5 ml-2">
@@ -330,7 +337,9 @@ export default function DataTable<T>({
                     />
                   </th>
                 ) : null}
-                {visibleColumnsArray.map((column, index) => renderSortHeader(column.key, column.label, index === visibleColumnsArray.length - 1))}
+                {visibleColumnsArray.map((column, index) =>
+                  renderSortHeader(column.key, column.label, index === visibleColumnsArray.length - 1, draggableColumns),
+                )}
                 {hasActions ? <th className="w-12 px-2 py-2" /> : null}
               </tr>
             </thead>

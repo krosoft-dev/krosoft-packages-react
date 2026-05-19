@@ -6,8 +6,15 @@ import { Badge } from "@/components/ui/badge";
 const meta: Meta<typeof DataTable> = {
   title: "Core/Table/DataTable",
   component: DataTable,
+  tags: ["autodocs"],
   parameters: {
     layout: "padded",
+    docs: {
+      description: {
+        component:
+          "Le composant `DataTable` permet d'afficher des données sous forme de tableau avec des fonctionnalités avancées (tri, sélection, menu d'actions).\n\n### Fonctionnalités\n\n- **Tri** : Cliquez sur l'en-tête d'une colonne pour trier.\n- **Réorganisation des colonnes** : Glissez et déposez l'icône de poignée dans l'en-tête.\n- **Désactivation du glisser-déposer** : Vous pouvez figer toutes les colonnes en passant `draggableColumns={false}` au composant.",
+      },
+    },
   },
 };
 
@@ -114,6 +121,22 @@ export const WithRowClick: Story = {
     onRowClick: (row: UserData) => {
       console.warn(`Clicked on row: ${row.name}`);
     },
+  },
+};
+
+export const NonDraggable: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story: "Désactive le glisser-déposer et masque les icônes de poignée pour l'ensemble du tableau en définissant `draggableColumns: false`.",
+      },
+    },
+  },
+  args: {
+    data: mockData,
+    columns,
+    getRowId: (row: UserData) => row.id,
+    draggableColumns: false,
   },
 };
 
