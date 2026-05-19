@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import * as React from "react";
-import { Sidebar, SidebarProps } from "../../../../src/components/core/navbar/sidebar";
+import { Sidebar, SidebarProps } from "../../../../../src/components/core/navbar/sidebar";
 import { Calendar, Home, Inbox, FileText, Settings, Users } from "lucide-react";
 
 const meta: Meta<typeof Sidebar> = {
-  title: "Core/Sidebar",
+  title: "Core/Navbar/Sidebar",
   component: Sidebar,
   tags: ["autodocs"],
   parameters: {

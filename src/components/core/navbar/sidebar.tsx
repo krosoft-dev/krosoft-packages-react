@@ -102,8 +102,8 @@ export const Sidebar = ({
   onMobileClose,
   onItemClick,
   currentPath,
-  appName = "Admin Panel",
-  appSubName = "CRM",
+  appName = "appname",
+  appSubName = "appsubname",
 }: SidebarProps): React.ReactElement => {
   const handleItemClick = (path: string): void => {
     onItemClick(path);
@@ -115,7 +115,7 @@ export const Sidebar = ({
   return (
     <aside
       className={cn(
-        "flex flex-col bg-sidebar border-r border-sidebar-border h-screen transition-all duration-300",
+        "flex flex-col bg-sidebar h-screen transition-all duration-300",
         collapsed ? "w-[--sidebar-width-icon]" : "w-[--sidebar-width]",
         isMobile && !mobileOpen ? "hidden" : "flex",
       )}
