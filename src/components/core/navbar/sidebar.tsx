@@ -116,12 +116,12 @@ export const Sidebar = ({
     <aside
       className={cn(
         "flex flex-col bg-sidebar h-screen transition-all duration-300",
-        collapsed ? "w-[--sidebar-width-icon]" : "w-[--sidebar-width]",
+        collapsed ? "w-[--navbar-width-icon]" : "w-[--navbar-width]",
         isMobile && !mobileOpen ? "hidden" : "flex",
       )}
       style={{
-        ["--sidebar-width" as string]: "16rem",
-        ["--sidebar-width-icon" as string]: "5rem",
+        ["--navbar-width" as string]: "16rem",
+        ["--navbar-width-icon" as string]: "5rem",
       }}
     >
       {/* Header */}

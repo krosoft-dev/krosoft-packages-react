@@ -45,15 +45,15 @@
 
     --radius: 0.75rem;
 
-    --sidebar-background: 222 47% 11%;
-    --sidebar-foreground: 220 14% 80%;
-    --sidebar-primary: 38 92% 50%;
-    --sidebar-primary-foreground: 222 47% 11%;
-    --sidebar-accent: 222 40% 16%;
-    --sidebar-accent-foreground: 220 14% 92%;
-    --sidebar-border: 222 40% 18%;
-    --sidebar-ring: 38 92% 50%;
-    --sidebar-muted: 220 9% 46%;
+    --navbar-background: 222 47% 11%;
+    --navbar-foreground: 220 14% 80%;
+    --navbar-primary: 38 92% 50%;
+    --navbar-primary-foreground: 222 47% 11%;
+    --navbar-accent: 222 40% 16%;
+    --navbar-accent-foreground: 220 14% 92%;
+    --navbar-border: 222 40% 18%;
+    --navbar-ring: 38 92% 50%;
+    --navbar-muted: 220 9% 46%;
 
     --font-heading: 'Space Grotesk', sans-serif;
     --font-body: 'DM Sans', sans-serif;
@@ -97,15 +97,15 @@
     --input: 222 30% 20%;
     --ring: 38 92% 50%;
 
-    --sidebar-background: 222 50% 6%;
-    --sidebar-foreground: 220 14% 80%;
-    --sidebar-primary: 38 92% 50%;
-    --sidebar-primary-foreground: 222 47% 11%;
-    --sidebar-accent: 222 40% 14%;
-    --sidebar-accent-foreground: 220 14% 92%;
-    --sidebar-border: 222 30% 18%;
-    --sidebar-ring: 38 92% 50%;
-    --sidebar-muted: 220 9% 46%;
+    --navbar-background: 222 50% 6%;
+    --navbar-foreground: 220 14% 80%;
+    --navbar-primary: 38 92% 50%;
+    --navbar-primary-foreground: 222 47% 11%;
+    --navbar-accent: 222 40% 14%;
+    --navbar-accent-foreground: 220 14% 92%;
+    --navbar-border: 222 30% 18%;
+    --navbar-ring: 38 92% 50%;
+    --navbar-muted: 220 9% 46%;
   }
 }
 
