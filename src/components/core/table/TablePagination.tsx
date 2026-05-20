@@ -1,0 +1,81 @@
+import React from "react";
+import { Button } from "../../ui/button";
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+
+export interface TablePaginationProps {
+  totalItems: number;
+  startIndex: number;
+  endIndex: number;
+  pageSize: number;
+  setPageSize: React.Dispatch<React.SetStateAction<number>>;
+  currentPage: number;
+  setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
+  pageSizeOptions: number[];
+  totalPages: number;
+}
+
+export function TablePagination({
+  totalItems,
+  startIndex,
+  endIndex,
+  pageSize,
+  setPageSize,
+  currentPage,
+  setCurrentPage,
+  pageSizeOptions,
+  totalPages,
+}: TablePaginationProps): React.JSX.Element {
+  return (
+    <div className="px-4 py-2 border-t border-gray-200 dark:border-gray-800 flex items-center justify-between bg-card dark:bg-gray-950 flex-wrap gap-2">
+      <div className="text-sm text-gray-500 dark:text-gray-400">
+        {totalItems === 0 ? "0" : `${String(startIndex + 1)} - ${String(endIndex)}`} sur {totalItems}
+      </div>
+      <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-gray-500 dark:text-gray-400">Lignes par page :</span>
+          <select
+            value={pageSize}
+            onChange={e => {
+              setPageSize(Number(e.target.value));
+              setCurrentPage(1);
+            }}
+            className="border border-gray-300 dark:border-gray-700 dark:bg-gray-900 rounded px-2 py-1 text-sm text-foreground"
+          >
+            {pageSizeOptions.map(option => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-8 w-8 p-0"
+            onClick={() => {
+              setCurrentPage(prev => Math.max(1, prev - 1));
+            }}
+            disabled={currentPage === 1}
+          >
+            <ChevronLeftIcon className="h-4 w-4" />
+          </Button>
+          <span className="text-sm text-gray-500 dark:text-gray-400">
+            Page {currentPage} sur {totalPages}
+          </span>
+          <Button
+            variant="outline"
+            size="sm"
+            className="h-8 w-8 p-0"
+            onClick={() => {
+              setCurrentPage(prev => Math.min(totalPages, prev + 1));
+            }}
+            disabled={currentPage === totalPages}
+          >
+            <ChevronRightIcon className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}

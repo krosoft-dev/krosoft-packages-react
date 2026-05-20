@@ -12,7 +12,7 @@ const meta: Meta<typeof DataTable> = {
     docs: {
       description: {
         component:
-          "Le composant `DataTable` permet d'afficher des données sous forme de tableau avec des fonctionnalités avancées (tri, sélection, menu d'actions).\n\n### Fonctionnalités\n\n- **Tri** : Cliquez sur l'en-tête d'une colonne pour trier.\n- **Réorganisation des colonnes** : Glissez et déposez l'icône de poignée dans l'en-tête.\n- **Désactivation du glisser-déposer** : Vous pouvez figer toutes les colonnes en passant `draggableColumns={false}` au composant.",
+          "Le composant `DataTable` permet d'afficher des données sous forme de tableau avec des fonctionnalités avancées (tri, sélection, menu d'actions).\n\n### Fonctionnalités\n\n- **Tri** : Cliquez sur l'en-tête d'une colonne pour trier.\n- **Réorganisation des colonnes** : Glissez et déposez l'icône de poignée dans l'en-tête.\n- **Désactivation du glisser-déposer** : Vous pouvez figer toutes les colonnes en passant `draggableColumns={false}` au composant.\n- **Redimensionnement des colonnes** : Survoler le bord droit de l'en-tête d'une colonne pour la redimensionner. Vous pouvez désactiver cette option en passant `resizableColumns={false}` au composant.",
       },
     },
   },
@@ -71,6 +71,20 @@ const mockData: UserData[] = [
     lastLogin: "2023-10-10T11:10:00Z",
   },
 ];
+
+const mockData50: UserData[] = Array.from({ length: 500 }, (_, index) => {
+  const id = (index + 1).toString();
+  const roles: ("admin" | "user" | "guest")[] = ["admin", "user", "guest"];
+  const statuses: ("active" | "inactive")[] = ["active", "inactive"];
+  return {
+    id,
+    name: `User ${id}`,
+    email: `user.${id}@example.com`,
+    role: roles[index % roles.length],
+    status: statuses[index % statuses.length],
+    lastLogin: new Date(2023, 9, 26 - (index % 15)).toISOString(),
+  };
+});
 
 const columns: ColumnDef<UserData>[] = [
   {
@@ -140,6 +154,22 @@ export const NonDraggable: Story = {
   },
 };
 
+export const NonResizable: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story: "Désactive le redimensionnement des colonnes pour l'ensemble du tableau en définissant `resizableColumns: false`.",
+      },
+    },
+  },
+  args: {
+    data: mockData,
+    columns,
+    getRowId: (row: UserData) => row.id,
+    resizableColumns: false,
+  },
+};
+
 export const WithActions: Story = {
   args: {
     data: mockData,
@@ -179,6 +209,42 @@ export const WithBulkActions: Story = {
   },
 };
 
+export const WithNoData: Story = {
+  args: {
+    data: [],
+    columns,
+    getRowId: (row: UserData) => row.id,
+  },
+};
+
+export const WithNoDataCustomMessage: Story = {
+  args: {
+    data: [],
+    columns,
+    getRowId: (row: UserData) => row.id,
+    noDataMessage: "Aucun utilisateur trouvé dans la base de données.",
+  },
+};
+
+export const Loading: Story = {
+  args: {
+    data: [],
+    columns,
+    getRowId: (row: UserData) => row.id,
+    isLoading: true,
+  },
+};
+
+export const CustomPageSize: Story = {
+  args: {
+    data: mockData50,
+    columns,
+    getRowId: (row: UserData) => row.id,
+    defaultPageSize: 5,
+    pageSizeOptions: [5, 10, 25, 50],
+  },
+};
+
 export const FullFeatured: Story = {
   args: {
     data: mockData,
@@ -210,5 +276,20 @@ export const FullFeatured: Story = {
         },
       },
     ],
+  },
+};
+
+export const FiftyRows: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story: "Affiche le tableau avec un jeu de données contenant 50 lignes.",
+      },
+    },
+  },
+  args: {
+    data: mockData50,
+    columns,
+    getRowId: (row: UserData) => row.id,
   },
 };
