@@ -45,15 +45,15 @@
 
     --radius: 0.75rem;
 
-    --navbar-background: 222 47% 11%;
-    --navbar-foreground: 220 14% 90%;
+    --navbar-background: 220 9% 96%;
+    --navbar-foreground: 228 5% 38%;
     --navbar-primary: 38 92% 50%;
     --navbar-primary-foreground: 222 47% 11%;
-    --navbar-accent: 222 40% 16%;
-    --navbar-accent-foreground: 220 14% 98%;
-    --navbar-border: 222 40% 18%;
-    --navbar-ring: 38 92% 50%;
-    --navbar-muted: 220 14% 65%;
+    --navbar-accent: 220 5% 93%;
+    --navbar-accent-foreground: 240 8% 2%;
+    --navbar-border: 220 9% 90%;
+    --navbar-ring: 220 9% 80%;
+    --navbar-muted: 228 5% 45%;
 
     --font-heading: 'Space Grotesk', sans-serif;
     --font-body: 'DM Sans', sans-serif;
@@ -97,15 +97,15 @@
     --input: 222 30% 20%;
     --ring: 38 92% 50%;
 
-    --navbar-background: 222 50% 6%;
-    --navbar-foreground: 220 14% 90%;
+    --navbar-background: 220 6% 18%;
+    --navbar-foreground: 215 8% 62%;
     --navbar-primary: 38 92% 50%;
     --navbar-primary-foreground: 222 47% 11%;
-    --navbar-accent: 222 40% 14%;
-    --navbar-accent-foreground: 220 14% 98%;
-    --navbar-border: 222 30% 18%;
-    --navbar-ring: 38 92% 50%;
-    --navbar-muted: 220 14% 65%;
+    --navbar-accent: 223 6% 22%;
+    --navbar-accent-foreground: 220 9% 96%;
+    --navbar-border: 220 6% 15%;
+    --navbar-ring: 228 6% 27%;
+    --navbar-muted: 215 8% 50%;
   }
 }
 
@@ -119,5 +119,46 @@
   }
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
+  }
+}
+
+@layer utilities {
+  .scrollbar-modern {
+    transition: scrollbar-color 0.3s ease;
+  }
+
+  /* Only apply standard scrollbar properties to Firefox */
+  @supports (-moz-appearance: none) {
+    .scrollbar-modern {
+      scrollbar-width: thin;
+      scrollbar-color: hsl(var(--navbar-border)) transparent;
+    }
+    .scrollbar-modern:hover {
+      scrollbar-color: hsl(var(--navbar-muted)) transparent;
+    }
+  }
+  
+  .scrollbar-modern::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+  
+  .scrollbar-modern::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .scrollbar-modern::-webkit-scrollbar-button {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+  
+  .scrollbar-modern::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--navbar-border));
+    border-radius: 10px;
+  }
+  
+  .scrollbar-modern:hover::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--navbar-muted));
   }
 }

@@ -26,6 +26,7 @@ export interface SidebarProps {
   currentPath: string;
   appName?: string;
   appSubName?: string;
+  footerNode?: React.ReactNode;
 }
 
 interface NavItemProps extends SidebarItem {
@@ -165,6 +166,7 @@ export const Sidebar = ({
   currentPath,
   appName = "appname",
   appSubName = "appsubname",
+  footerNode,
 }: SidebarProps): React.ReactElement => {
   const handleItemClick = (path: string): void => {
     onItemClick(path);
@@ -200,7 +202,7 @@ export const Sidebar = ({
         </div>
 
         {/* Navigation Groups */}
-        <div className="flex-1 overflow-y-auto py-4 px-2 scrollbar-thin scrollbar-thumb-sidebar-border">
+        <div className="flex-1 overflow-y-auto py-4 px-2 scrollbar-modern">
           {groups.map((group, groupIdx) => (
             <div key={groupIdx} className="mb-6">
               {!collapsed && group.title !== undefined && group.title !== "" && (
@@ -214,6 +216,13 @@ export const Sidebar = ({
             </div>
           ))}
         </div>
+
+        {/* Footer */}
+        {footerNode && (
+          <div className={cn("p-4 border-t border-sidebar-border", collapsed ? "flex justify-center" : "")}>
+            {footerNode}
+          </div>
+        )}
       </aside>
     </TooltipProvider>
   );

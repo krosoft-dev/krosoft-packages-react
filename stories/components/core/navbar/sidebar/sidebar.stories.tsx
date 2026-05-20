@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import * as React from "react";
 import { Sidebar, SidebarProps } from "../../../../../src/components/core/navbar/sidebar";
-import { Calendar, Home, Inbox, FileText, Settings, Users, LayoutDashboard } from "lucide-react";
+import { Calendar, Home, Inbox, FileText, Settings, Users, LayoutDashboard, LogOut } from "lucide-react";
 
 const meta: Meta<typeof Sidebar> = {
   title: "Core/Navbar/Sidebar",
@@ -185,5 +185,18 @@ export const WithSubItems: Story = {
   args: {
     ...Default.args,
     groups: sampleGroupsWithSubItems,
+  },
+};
+
+export const WithFooter: Story = {
+  render: args => <InteractiveSidebar {...args} />,
+  args: {
+    ...Default.args,
+    footerNode: (
+      <div className="flex items-center gap-3 text-sidebar-muted hover:text-sidebar-foreground cursor-pointer transition-colors duration-200" title="Déconnexion">
+        <LogOut className="size-5 flex-shrink-0" />
+        <span className="font-medium whitespace-nowrap overflow-hidden">Déconnexion</span>
+      </div>
+    ),
   },
 };
