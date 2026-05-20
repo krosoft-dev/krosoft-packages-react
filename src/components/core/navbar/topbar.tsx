@@ -22,7 +22,7 @@ export const Topbar = ({ collapsed, isMobile, onToggleSidebar, actionsNode, user
       className={cn(
         "fixed top-0 right-0 z-[60] h-16 md:h-20 bg-sidebar text-sidebar-foreground flex items-center justify-between px-4 transition-all duration-300",
         isMobile && "left-0",
-        !isMobile && collapsed && "left-[5.5rem]",
+        !isMobile && collapsed && "left-[5rem]",
         !isMobile && !collapsed && "left-[16rem]",
       )}
       tabIndex={-1}
