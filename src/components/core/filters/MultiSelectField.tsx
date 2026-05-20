@@ -134,14 +134,12 @@ export const MultiSelectField = ({
           )}
           <div className="flex flex-col gap-0.5 max-h-56 overflow-y-auto p-1.5">
             {filteredOptions.length > 0 && (
-              <label className="flex items-center gap-2.5 rounded-md px-2 py-2 text-sm hover:bg-muted cursor-pointer transition-colors border-b border-border pb-2 mb-1.5">
+              <label className="flex items-center gap-2.5 rounded-md px-2 py-2 text-sm hover:bg-muted cursor-pointer transition-colors">
                 <Checkbox
                   checked={isAllSelected}
                   onCheckedChange={handleToggleAll}
                 />
-                <span className="font-semibold text-xs text-slate-700 dark:text-slate-300">
-                  Tout sélectionner
-                </span>
+                Tout sélectionner
               </label>
             )}
             {filteredOptions.length === 0 && (
