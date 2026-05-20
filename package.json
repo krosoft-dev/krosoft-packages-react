@@ -50,7 +50,7 @@
     "@storybook/addon-essentials": "^8.6.18",
     "@storybook/react": "^8.6.18",
     "@storybook/react-vite": "^8.6.18",
-    "@types/node": "^25.8.0",
+    "@types/node": "^25.9.1",
     "@types/react": "^18.3.28",
     "jsdom": "^26.1.0",
     "prettier": "^3.8.3",
