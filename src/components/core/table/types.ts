@@ -13,9 +13,16 @@ export interface ColumnDef<T> {
 
 export interface BulkAction {
   label: string;
-  icon?: React.ReactNode;
+  icon?: React.ElementType;
   onClick: (selectedIds: string[], clearSelection: () => void) => void;
   variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
+}
+
+export interface RowAction<T> {
+  label: string;
+  icon?: React.ElementType;
+  onClick: (row: T) => void;
+  className?: string;
 }
 
 export interface DataTableProps<T> {
@@ -23,9 +30,7 @@ export interface DataTableProps<T> {
   columns: ColumnDef<T>[];
   getRowId: (row: T) => string; // Fonction obligatoire pour identifier chaque ligne de façon unique
   onRowClick?: (row: T) => void;
-  onEditRow?: (row: T) => void;
-  onDeleteRow?: (row: T) => void;
-  actions?: (row: T) => React.ReactNode; // Actions personnalisées optionnelles pour le menu
+  actions?: RowAction<T>[]; // Actions personnalisées pour le menu
   bulkActions?: BulkAction[]; // Actions rapides pour la sélection multiple
   draggableColumns?: boolean; // Permet d'activer/désactiver le drag and drop des colonnes
   resizableColumns?: boolean; // Permet d'activer/désactiver le redimensionnement des colonnes
@@ -40,9 +45,7 @@ export interface UseDataTableProps<T> {
   columns: ColumnDef<T>[];
   getRowId: (row: T) => string;
   defaultPageSize: number;
-  actions?: (row: T) => React.ReactNode;
-  onEditRow?: (row: T) => void;
-  onDeleteRow?: (row: T) => void;
+  actions?: RowAction<T>[];
   bulkActions?: BulkAction[];
 }
 

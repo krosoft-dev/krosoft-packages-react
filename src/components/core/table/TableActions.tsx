@@ -1,0 +1,48 @@
+import React from "react";
+import { Button } from "../../ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../../ui/dropdown-menu";
+import { MoreVerticalIcon } from "lucide-react";
+import { RowAction } from "./types";
+
+export interface TableActionsProps<T> {
+  actions: RowAction<T>[];
+  row: T;
+}
+
+export function TableActions<T>({ actions, row }: TableActionsProps<T>): React.JSX.Element {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground">
+          <MoreVerticalIcon className="h-4 w-4" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        align="end"
+        onClick={(e: React.MouseEvent) => {
+          e.stopPropagation();
+        }}
+      >
+        {actions.map((action, i) => {
+          const Icon = action.icon;
+          return (
+            <DropdownMenuItem
+              key={i}
+              onClick={() => {
+                action.onClick(row);
+              }}
+              className={action.className}
+            >
+              {Icon !== undefined && (
+                <span className="mr-2 h-4 w-4 flex items-center justify-center">
+                  <Icon className="h-4 w-4" />
+                </span>
+              )}
+              {action.label}
+            </DropdownMenuItem>
+          );
+        })}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}

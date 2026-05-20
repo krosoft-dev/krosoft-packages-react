@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import DataTable, { ColumnDef } from "@/components/core/table/DataTable";
 import React from "react";
 import { Badge } from "@/components/ui/badge";
+import { PencilIcon, TrashIcon } from "lucide-react";
 
 const meta: Meta<typeof DataTable> = {
   title: "Core/Table/DataTable",
@@ -175,12 +176,23 @@ export const WithActions: Story = {
     data: mockData,
     columns,
     getRowId: (row: UserData) => row.id,
-    onEditRow: (row: UserData) => {
-      console.warn(`Edit row: ${row.name}`);
-    },
-    onDeleteRow: (row: UserData) => {
-      console.warn(`Delete row: ${row.name}`);
-    },
+    actions: [
+      {
+        label: "Modifier",
+        icon: PencilIcon,
+        onClick: (row: UserData): void => {
+          console.warn(`Edit row: ${row.name}`);
+        },
+      },
+      {
+        label: "Supprimer",
+        icon: TrashIcon,
+        className: "text-destructive focus:bg-destructive/10 focus:text-destructive",
+        onClick: (row: UserData): void => {
+          console.warn(`Delete row: ${row.name}`);
+        },
+      },
+    ],
   },
 };
 
@@ -253,12 +265,23 @@ export const FullFeatured: Story = {
     onRowClick: (row: UserData) => {
       console.warn(`Clicked on row: ${row.name}`);
     },
-    onEditRow: (row: UserData) => {
-      console.warn(`Edit row: ${row.name}`);
-    },
-    onDeleteRow: (row: UserData) => {
-      console.warn(`Delete row: ${row.name}`);
-    },
+    actions: [
+      {
+        label: "Modifier",
+        icon: PencilIcon,
+        onClick: (row: UserData): void => {
+          console.warn(`Edit row: ${row.name}`);
+        },
+      },
+      {
+        label: "Supprimer",
+        icon: TrashIcon,
+        className: "text-destructive focus:bg-destructive/10 focus:text-destructive",
+        onClick: (row: UserData): void => {
+          console.warn(`Delete row: ${row.name}`);
+        },
+      },
+    ],
     bulkActions: [
       {
         label: "Export Selected",

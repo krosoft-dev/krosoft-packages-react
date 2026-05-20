@@ -7,15 +7,13 @@ import { TableSettings } from "./TableSettings";
 import { TableHeader } from "./TableHeader";
 import { TableBody } from "./TableBody";
 
-export type { ColumnDef, BulkAction, DataTableProps } from "./types";
+export type { ColumnDef, BulkAction, DataTableProps, RowAction } from "./types";
 
 export default function DataTable<T>({
   data,
   columns,
   getRowId,
   onRowClick,
-  onEditRow,
-  onDeleteRow,
   actions,
   bulkActions,
   draggableColumns = true,
@@ -59,8 +57,6 @@ export default function DataTable<T>({
     getRowId,
     defaultPageSize,
     actions,
-    onEditRow,
-    onDeleteRow,
     bulkActions,
   });
 
@@ -107,8 +103,6 @@ export default function DataTable<T>({
               columnWidths={columnWidths}
               hasActions={hasActions}
               actions={actions}
-              onEditRow={onEditRow}
-              onDeleteRow={onDeleteRow}
               columns={columns}
             />
           </table>

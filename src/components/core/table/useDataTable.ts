@@ -1,16 +1,7 @@
 import React, { useState, useMemo, useRef, useCallback, DragEvent, ChangeEvent } from "react";
 import { ColumnDef, UseDataTableProps, UseDataTableResult } from "./types";
 
-export function useDataTable<T>({
-  data,
-  columns,
-  getRowId,
-  defaultPageSize,
-  actions,
-  onEditRow,
-  onDeleteRow,
-  bulkActions,
-}: UseDataTableProps<T>): UseDataTableResult<T> {
+export function useDataTable<T>({ data, columns, getRowId, defaultPageSize, actions, bulkActions }: UseDataTableProps<T>): UseDataTableResult<T> {
   const [sortColumn, setSortColumn] = useState<string | null>(columns[0]?.key ?? null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
@@ -29,7 +20,7 @@ export function useDataTable<T>({
   const draggedColumn = useRef<string | null>(null);
   const dragOverColumn = useRef<string | null>(null);
 
-  const hasActions = actions !== undefined || onEditRow !== undefined || onDeleteRow !== undefined;
+  const hasActions = actions !== undefined && actions.length > 0;
   const hasBulkActions = bulkActions !== undefined && bulkActions.length > 0;
 
   const orderedColumns = useMemo(() => {

@@ -1,8 +1,7 @@
 import React from "react";
-import { Loader2Icon, MoreVerticalIcon, PencilIcon, TrashIcon } from "lucide-react";
-import { Button } from "../../ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../../ui/dropdown-menu";
-import { ColumnDef } from "./types";
+import { Loader2Icon } from "lucide-react";
+import { ColumnDef, RowAction } from "./types";
+import { TableActions } from "./TableActions";
 
 export interface TableBodyProps<T> {
   isLoading: boolean;
@@ -17,9 +16,7 @@ export interface TableBodyProps<T> {
   visibleColumnsArray: ColumnDef<T>[];
   columnWidths: Record<string, number>;
   hasActions: boolean;
-  actions?: (row: T) => React.ReactNode;
-  onEditRow?: (row: T) => void;
-  onDeleteRow?: (row: T) => void;
+  actions?: RowAction<T>[];
   columns: ColumnDef<T>[];
 }
 
@@ -37,8 +34,6 @@ export function TableBody<T>({
   columnWidths,
   hasActions,
   actions,
-  onEditRow,
-  onDeleteRow,
   columns,
 }: TableBodyProps<T>): React.JSX.Element {
   const renderCellValue = (row: T, columnKey: string): React.ReactNode => {
@@ -116,52 +111,14 @@ export function TableBody<T>({
                 </td>
               );
             })}
-            {hasActions ? (
+            {hasActions && actions !== undefined && actions.length > 0 ? (
               <td
                 className="px-2 py-2 w-12 text-center"
                 onClick={e => {
                   e.stopPropagation();
                 }}
               >
-                {actions !== undefined ? (
-                  actions(row)
-                ) : (
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground">
-                        <MoreVerticalIcon className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent
-                      align="end"
-                      onClick={(e: React.MouseEvent) => {
-                        e.stopPropagation();
-                      }}
-                    >
-                      {onEditRow !== undefined && (
-                        <DropdownMenuItem
-                          onClick={() => {
-                            onEditRow(row);
-                          }}
-                        >
-                          <PencilIcon className="mr-2 h-4 w-4" />
-                          Modifier
-                        </DropdownMenuItem>
-                      )}
-                      {onDeleteRow !== undefined && (
-                        <DropdownMenuItem
-                          onClick={() => {
-                            onDeleteRow(row);
-                          }}
-                          className="text-destructive focus:bg-destructive/10 focus:text-destructive"
-                        >
-                          <TrashIcon className="mr-2 h-4 w-4" />
-                          Supprimer
-                        </DropdownMenuItem>
-                      )}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                )}
+                <TableActions actions={actions} row={row} />
               </td>
             ) : null}
           </tr>
