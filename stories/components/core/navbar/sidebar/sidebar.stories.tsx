@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import * as React from "react";
 import { Sidebar, SidebarProps } from "../../../../../src/components/core/navbar/sidebar";
-import { Calendar, Home, Inbox, FileText, Settings, Users } from "lucide-react";
+import { Calendar, Home, Inbox, FileText, Settings, Users, LayoutDashboard } from "lucide-react";
 
 const meta: Meta<typeof Sidebar> = {
   title: "Core/Navbar/Sidebar",
@@ -131,5 +131,59 @@ export const Collapsed: Story = {
   args: {
     ...Default.args,
     collapsed: true,
+  },
+};
+
+const sampleGroupsWithSubItems = [
+  {
+    title: "Application",
+    items: [
+      {
+        label: "Home",
+        path: "/home",
+        icon: Home,
+      },
+      {
+        label: "Dashboard",
+        icon: LayoutDashboard,
+        subItems: [
+          { label: "Vue Générale", path: "/dashboard/overview" },
+          { label: "Statistiques", path: "/dashboard/stats", badge: 3 },
+          { label: "Rapports", path: "/dashboard/reports" },
+        ]
+      },
+      {
+        label: "Inbox",
+        path: "/inbox",
+        icon: Inbox,
+        badge: 3,
+      },
+    ],
+  },
+  {
+    title: "Administration",
+    items: [
+      {
+        label: "Paramètres",
+        icon: Settings,
+        subItems: [
+          { label: "Général", path: "/settings/general" },
+          { label: "Sécurité", path: "/settings/security" },
+        ]
+      },
+      {
+        label: "Utilisateurs",
+        path: "/users",
+        icon: Users,
+      },
+    ],
+  },
+];
+
+export const WithSubItems: Story = {
+  render: args => <InteractiveSidebar {...args} />,
+  args: {
+    ...Default.args,
+    groups: sampleGroupsWithSubItems,
   },
 };
