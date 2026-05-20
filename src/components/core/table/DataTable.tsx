@@ -108,7 +108,6 @@ export default function DataTable<T>({
           </table>
         </div>
 
-        {/* Pagination */}
         <TablePagination
           totalItems={data.length}
           startIndex={startIndex}
