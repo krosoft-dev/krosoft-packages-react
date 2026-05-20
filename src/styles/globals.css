@@ -45,15 +45,25 @@
 
     --radius: 0.75rem;
 
-    --navbar-background: 220 9% 96%;
-    --navbar-foreground: 228 5% 38%;
-    --navbar-primary: 38 92% 50%;
-    --navbar-primary-foreground: 222 47% 11%;
-    --navbar-accent: 220 5% 93%;
-    --navbar-accent-foreground: 240 8% 2%;
-    --navbar-border: 220 9% 90%;
-    --navbar-ring: 220 9% 80%;
-    --navbar-muted: 228 5% 45%;
+    --sidebar-background: 220 9% 96%;
+    --sidebar-foreground: 228 5% 38%;
+    --sidebar-primary: 38 92% 50%;
+    --sidebar-primary-foreground: 222 47% 11%;
+    --sidebar-accent: 220 5% 93%;
+    --sidebar-accent-foreground: 240 8% 2%;
+    --sidebar-border: 220 9% 90%;
+    --sidebar-ring: 220 9% 80%;
+    --sidebar-muted: 228 5% 45%;
+
+    --topbar-background: 222 47% 11%;
+    --topbar-foreground: 220 14% 90%;
+    --topbar-primary: 38 92% 50%;
+    --topbar-primary-foreground: 222 47% 11%;
+    --topbar-accent: 222 40% 16%;
+    --topbar-accent-foreground: 220 14% 98%;
+    --topbar-border: 222 40% 18%;
+    --topbar-ring: 38 92% 50%;
+    --topbar-muted: 220 14% 65%;
 
     --font-heading: 'Space Grotesk', sans-serif;
     --font-body: 'DM Sans', sans-serif;
@@ -97,15 +107,25 @@
     --input: 222 30% 20%;
     --ring: 38 92% 50%;
 
-    --navbar-background: 220 6% 18%;
-    --navbar-foreground: 215 8% 62%;
-    --navbar-primary: 38 92% 50%;
-    --navbar-primary-foreground: 222 47% 11%;
-    --navbar-accent: 223 6% 22%;
-    --navbar-accent-foreground: 220 9% 96%;
-    --navbar-border: 220 6% 15%;
-    --navbar-ring: 228 6% 27%;
-    --navbar-muted: 215 8% 50%;
+    --sidebar-background: 220 6% 18%;
+    --sidebar-foreground: 215 8% 62%;
+    --sidebar-primary: 38 92% 50%;
+    --sidebar-primary-foreground: 222 47% 11%;
+    --sidebar-accent: 223 6% 22%;
+    --sidebar-accent-foreground: 220 9% 96%;
+    --sidebar-border: 220 6% 15%;
+    --sidebar-ring: 228 6% 27%;
+    --sidebar-muted: 215 8% 50%;
+
+    --topbar-background: 222 50% 6%;
+    --topbar-foreground: 220 14% 90%;
+    --topbar-primary: 38 92% 50%;
+    --topbar-primary-foreground: 222 47% 11%;
+    --topbar-accent: 222 40% 14%;
+    --topbar-accent-foreground: 220 14% 98%;
+    --topbar-border: 222 30% 18%;
+    --topbar-ring: 38 92% 50%;
+    --topbar-muted: 220 14% 65%;
   }
 }
 
@@ -131,10 +151,10 @@
   @supports (-moz-appearance: none) {
     .scrollbar-modern {
       scrollbar-width: thin;
-      scrollbar-color: hsl(var(--navbar-border)) transparent;
+      scrollbar-color: hsl(var(--sidebar-border)) transparent;
     }
     .scrollbar-modern:hover {
-      scrollbar-color: hsl(var(--navbar-muted)) transparent;
+      scrollbar-color: hsl(var(--sidebar-muted)) transparent;
     }
   }
   
@@ -154,11 +174,11 @@
   }
   
   .scrollbar-modern::-webkit-scrollbar-thumb {
-    background-color: hsl(var(--navbar-border));
+    background-color: hsl(var(--sidebar-border));
     border-radius: 10px;
   }
   
   .scrollbar-modern:hover::-webkit-scrollbar-thumb {
-    background-color: hsl(var(--navbar-muted));
+    background-color: hsl(var(--sidebar-muted));
   }
 }
