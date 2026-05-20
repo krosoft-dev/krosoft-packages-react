@@ -1,187 +1,97 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Button,
-  Input,
   Label,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
   Sheet,
   SheetContent,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
   SheetFooter,
-  Calendar,
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
 } from "@/components/ui";
-import { CalendarIcon, Filter, X } from "lucide-react";
-import { format } from "date-fns";
-import { fr } from "date-fns/locale";
-import { cn } from "@/helpers/tailwind.helper";
-
-export interface FilterConfig {
-  key: string;
-  label: string;
-  type: "text" | "select" | "date" | "number";
-  placeholder?: string;
-  options?: { value: string; label: string }[];
-  min?: number;
-  max?: number;
-}
-
-export interface FilterSection {
-  title: string;
-  filters: FilterConfig[];
-}
+import { Filter } from "lucide-react";
+import { FilterSection } from "./types";
+import { FilterField } from "./FilterField";
 
 export interface AdvancedFiltersProps {
   sections: FilterSection[];
-  appliedFilters: Record<string, any>;
+  filters: Record<string, any>;
   onFiltersChange: (filters: Record<string, any>) => void;
-  isOpen: boolean;
-  onOpenChange: (open: boolean) => void;
   buttonText?: string;
+  sheetTitle?: string;
 }
-
-const DatePicker = ({
-  date,
-  onDateChange,
-  placeholder,
-}: {
-  date: Date | undefined;
-  onDateChange: (date: Date | undefined) => void;
-  placeholder: string;
-}) => (
-  <Popover>
-    <PopoverTrigger asChild>
-      <Button variant="outline" className={cn("w-full justify-start text-left font-normal", !date && "text-muted-foreground")}>
-        <CalendarIcon className="mr-2 h-4 w-4" />
-        {date ? format(date, "dd/MM/yyyy", { locale: fr }) : <span>{placeholder}</span>}
-      </Button>
-    </PopoverTrigger>
-    <PopoverContent className="w-auto p-0" align="start">
-      <Calendar mode="single" selected={date} onSelect={onDateChange} initialFocus className="pointer-events-auto" />
-    </PopoverContent>
-  </Popover>
-);
 
 export function AdvancedFilters({
   sections,
-  appliedFilters,
+  filters,
   onFiltersChange,
-  isOpen,
-  onOpenChange,
   buttonText = "Plus de filtres",
+  sheetTitle = "Filtres avancés",
 }: AdvancedFiltersProps) {
-  const [filters, setFilters] = useState<Record<string, any>>(appliedFilters);
+  const [isOpen, setIsOpen] = useState(false);
+  const [localFilters, setLocalFilters] = useState<Record<string, any>>(filters);
 
+  // Synchroniser l'état local du sheet avec les filtres appliqués
   useEffect(() => {
-    setFilters(appliedFilters);
-  }, [appliedFilters]);
+    setLocalFilters(filters);
+  }, [filters, isOpen]);
 
-  const updateFilter = (key: string, value: any) => {
-    const newFilters = { ...filters, [key]: value };
-    setFilters(newFilters);
+  const updateLocalFilter = (key: string, value: any) => {
+    setLocalFilters((prev) => ({ ...prev, [key]: value }));
   };
 
-  const handleSearch = () => {
-    onFiltersChange(filters);
-    onOpenChange(false);
+  const handleToggleLocalMultiSelect = (key: string, optionValue: string) => {
+    const current = localFilters[key] || [];
+    const next = current.includes(optionValue)
+      ? current.filter((v: string) => v !== optionValue)
+      : [...current, optionValue];
+    updateLocalFilter(key, next);
   };
 
-  const clearFilters = () => {
-    const emptyFilters = Object.keys(filters).reduce(
-      (acc, key) => {
-        acc[key] = key.includes("date") ? undefined : "";
-        return acc;
-      },
-      {} as Record<string, any>,
-    );
-    setFilters(emptyFilters);
-    onFiltersChange(emptyFilters);
+  const handleApplyFilters = () => {
+    onFiltersChange(localFilters);
+    setIsOpen(false);
   };
 
-  const renderFilter = (filter: FilterConfig) => {
-    switch (filter.type) {
-      case "text":
-        return <Input placeholder={filter.placeholder} value={filters[filter.key] || ""} onChange={e => updateFilter(filter.key, e.target.value)} />;
-
-      case "number":
-        return (
-          <Input
-            type="number"
-            placeholder={filter.placeholder}
-            value={filters[filter.key] || ""}
-            onChange={e => updateFilter(filter.key, e.target.value)}
-            min={filter.min}
-            max={filter.max}
-          />
-        );
-
-      case "select":
-        return (
-          <Select value={filters[filter.key] || ""} onValueChange={value => updateFilter(filter.key, value)}>
-            <SelectTrigger>
-              <SelectValue placeholder={filter.placeholder} />
-            </SelectTrigger>
-            <SelectContent>
-              {filter.options?.map(option => (
-                <SelectItem key={option.value} value={option.value}>
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        );
-
-      case "date":
-        return (
-          <DatePicker
-            date={filters[filter.key]}
-            onDateChange={date => updateFilter(filter.key, date)}
-            placeholder={filter.placeholder || "Sélectionner une date"}
-          />
-        );
-
-      default:
-        return null;
-    }
+  const handleClearAllFilters = () => {
+    setLocalFilters({});
+    onFiltersChange({});
+    setIsOpen(false);
   };
 
   return (
-    <Sheet open={isOpen} onOpenChange={onOpenChange}>
+    <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
         <Button variant="outline" className="gap-2">
-          <Filter className="size-4" />
+          <Filter className="size-4 shrink-0" />
           {buttonText}
         </Button>
       </SheetTrigger>
-      <SheetContent side="right" className="w-[400px] sm:w-[500px] flex flex-col p-0">
+      <SheetContent
+        side="right"
+        className="w-[400px] sm:w-[500px] flex flex-col p-0"
+      >
         <SheetHeader className="p-6 pb-0">
-          <SheetTitle className="flex items-center justify-between">
-            Filtres avancés
-            <Button variant="ghost" size="sm" onClick={clearFilters} className="gap-2">
-              <X className="size-4" />
-              Effacer
-            </Button>
-          </SheetTitle>
+          <SheetTitle>{sheetTitle}</SheetTitle>
         </SheetHeader>
 
         <div className="flex-1 overflow-y-auto p-6 pt-6">
           <div className="space-y-6">
             {sections.map((section, sectionIndex) => (
               <div key={sectionIndex} className="space-y-4">
-                <h3 className="font-medium text-sm text-gray-900">{section.title}</h3>
+                <h3 className="font-semibold text-sm text-gray-900 dark:text-gray-100 border-b pb-2">
+                  {section.title}
+                </h3>
 
-                {section.filters.map(filter => (
-                  <div key={filter.key} className="space-y-2">
-                    <Label htmlFor={filter.key}>{filter.label}</Label>
-                    {renderFilter(filter)}
+                {section.filters.map((field) => (
+                  <div key={field.key} className="space-y-2">
+                    <Label htmlFor={field.key}>{field.label}</Label>
+                    <FilterField
+                      field={field}
+                      value={localFilters[field.key]}
+                      onChange={(val) => updateLocalFilter(field.key, val)}
+                      onToggleMultiSelect={(val) => handleToggleLocalMultiSelect(field.key, val)}
+                    />
                   </div>
                 ))}
               </div>
@@ -189,11 +99,11 @@ export function AdvancedFilters({
           </div>
         </div>
 
-        <SheetFooter className="gap-2 p-6 border-t bg-white">
-          <Button variant="outline" onClick={clearFilters}>
+        <SheetFooter className="gap-2 p-6 border-t bg-white dark:bg-gray-950">
+          <Button variant="outline" className="flex-1" onClick={handleClearAllFilters}>
             Effacer les filtres
           </Button>
-          <Button onClick={handleSearch} className="bg-orange-500 hover:bg-orange-600">
+          <Button className="flex-1 bg-orange-500 hover:bg-orange-600 text-white" onClick={handleApplyFilters}>
             Rechercher
           </Button>
         </SheetFooter>

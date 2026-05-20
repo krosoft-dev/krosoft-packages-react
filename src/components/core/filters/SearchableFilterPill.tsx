@@ -13,6 +13,7 @@ export function SearchableFilterPill<T extends string>({
   selected,
   onToggle,
   onClear,
+  onSelectAll,
   searchable = false,
   searchPlaceholder = "Rechercher...",
 }: {
@@ -21,6 +22,7 @@ export function SearchableFilterPill<T extends string>({
   selected: T[];
   onToggle: (value: T) => void;
   onClear?: () => void;
+  onSelectAll?: (values: T[]) => void;
   searchable?: boolean;
   searchPlaceholder?: string;
 }) {
@@ -31,6 +33,43 @@ export function SearchableFilterPill<T extends string>({
     if (!query) return options;
     return options.filter((o) => o.label.toLowerCase().includes(query.toLowerCase()));
   }, [options, query]);
+
+  const isAllSelected = useMemo(() => {
+    if (filteredOptions.length === 0) return false;
+    return filteredOptions.every((opt) => selected.includes(opt.value as T));
+  }, [filteredOptions, selected]);
+
+  const handleToggleAll = () => {
+    if (isAllSelected) {
+      // Désélectionner les options visibles
+      if (onSelectAll) {
+        const filteredValues = filteredOptions.map((o) => o.value as T);
+        const remaining = selected.filter((s) => !filteredValues.includes(s));
+        onSelectAll(remaining);
+      } else if (onClear) {
+        onClear();
+      } else {
+        selected.forEach((s) => onToggle(s));
+      }
+    } else {
+      // Sélectionner les options visibles manquantes
+      if (onSelectAll) {
+        const newSelected = [...selected];
+        filteredOptions.forEach((opt) => {
+          if (!newSelected.includes(opt.value as T)) {
+            newSelected.push(opt.value as T);
+          }
+        });
+        onSelectAll(newSelected);
+      } else {
+        filteredOptions.forEach((opt) => {
+          if (!selected.includes(opt.value as T)) {
+            onToggle(opt.value as T);
+          }
+        });
+      }
+    }
+  };
 
   return (
     <Popover onOpenChange={() => setQuery("")}>
@@ -67,6 +106,17 @@ export function SearchableFilterPill<T extends string>({
           </div>
         )}
         <div className="flex flex-col gap-0.5 max-h-56 overflow-y-auto p-1.5">
+          {filteredOptions.length > 0 && (
+            <label className="flex items-center gap-2.5 rounded-md px-2 py-2 text-sm hover:bg-muted cursor-pointer transition-colors border-b border-border pb-2 mb-1.5">
+              <Checkbox
+                checked={isAllSelected}
+                onCheckedChange={handleToggleAll}
+              />
+              <span className="font-semibold text-xs text-slate-700 dark:text-slate-300">
+                Tout sélectionner
+              </span>
+            </label>
+          )}
           {filteredOptions.length === 0 && (
             <p className="px-2 py-3 text-center text-xs text-muted-foreground">Aucun résultat</p>
           )}
@@ -103,3 +153,4 @@ export function SearchableFilterPill<T extends string>({
     </Popover>
   );
 }
+

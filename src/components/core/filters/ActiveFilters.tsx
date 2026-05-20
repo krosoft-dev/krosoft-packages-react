@@ -3,19 +3,19 @@ import { X } from "lucide-react";
 
 interface ActiveFiltersProps {
   filters: Record<string, any>;
-  onRemoveFilter: (key: string) => void;
+  onRemoveFilter: (key: string, value?: any) => void;
   onClearAll: () => void;
   filterLabels?: Record<string, string>;
+  optionLabels?: Record<string, string>;
 }
 
-const getFilterDisplayValue = (key: string, value: any) => {
+const getFilterDisplayValue = (key: string, value: any, optionLabels: Record<string, string> = {}) => {
   if (value instanceof Date) {
     return value.toLocaleDateString("fr-FR");
   }
 
-  if (Array.isArray(value)) {
-    return value.join(", ");
-  }
+  const resolvedLabel = optionLabels[`${key}_${value}`];
+  if (resolvedLabel) return resolvedLabel;
 
   // Formatage spécifique selon le type de filtre
   if (key.includes("budget") || key.includes("Budget")) {
@@ -31,7 +31,13 @@ const getFilterDisplayValue = (key: string, value: any) => {
   return value;
 };
 
-export function ActiveFilters({ filters, onRemoveFilter, onClearAll, filterLabels = {} }: ActiveFiltersProps) {
+export function ActiveFilters({
+  filters,
+  onRemoveFilter,
+  onClearAll,
+  filterLabels = {},
+  optionLabels = {},
+}: ActiveFiltersProps) {
   const activeFilters = Object.entries(filters).filter(([_key, value]) => {
     if (value === undefined || value === null || value === "") return false;
     if (Array.isArray(value) && value.length === 0) return false;
@@ -43,10 +49,31 @@ export function ActiveFilters({ filters, onRemoveFilter, onClearAll, filterLabel
   return (
     <div className="flex flex-wrap items-center gap-2 mb-4">
       <span className="text-sm text-gray-600 font-medium">Filtres actifs :</span>
-      {activeFilters.map(([key, value]) => {
+      {activeFilters.flatMap(([key, value]) => {
         const label = filterLabels[key] || key;
-        const displayValue = getFilterDisplayValue(key, value);
 
+        if (Array.isArray(value)) {
+          return value.map((val) => {
+            const displayValue = getFilterDisplayValue(key, val, optionLabels);
+            return (
+              <Badge
+                key={`${key}_${val}`}
+                variant="secondary"
+                className="flex items-center gap-1 px-3 py-1 bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100"
+              >
+                {label}: {displayValue as React.ReactNode}
+                <button
+                  onClick={() => onRemoveFilter(key, val)}
+                  className="ml-1 hover:bg-blue-200 rounded-full p-0.5"
+                >
+                  <X className="size-3" />
+                </button>
+              </Badge>
+            );
+          });
+        }
+
+        const displayValue = getFilterDisplayValue(key, value, optionLabels);
         return (
           <Badge
             key={key}
@@ -54,17 +81,24 @@ export function ActiveFilters({ filters, onRemoveFilter, onClearAll, filterLabel
             className="flex items-center gap-1 px-3 py-1 bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100"
           >
             {label}: {displayValue as React.ReactNode}
-            <button onClick={() => onRemoveFilter(key)} className="ml-1 hover:bg-blue-200 rounded-full p-0.5">
+            <button
+              onClick={() => onRemoveFilter(key)}
+              className="ml-1 hover:bg-blue-200 rounded-full p-0.5"
+            >
               <X className="size-3" />
             </button>
           </Badge>
         );
       })}
-      {activeFilters.length > 1 && (
-        <button onClick={onClearAll} className="text-sm text-red-600 hover:text-red-800 underline ml-2">
-          Effacer tous les filtres
+      {activeFilters.length > 0 && (
+        <button
+          onClick={onClearAll}
+          className="text-xs text-red-500 hover:text-red-600 transition-colors font-medium ml-2"
+        >
+          Effacer tout
         </button>
       )}
     </div>
   );
 }
+
