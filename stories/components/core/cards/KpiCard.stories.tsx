@@ -34,7 +34,9 @@ export const Clickable: Story = {
     value: 573,
     icon: ShoppingCart,
     description: "+12 depuis hier",
-    onClick: () => alert("KpiCard cliqué"),
+    onClick: () => {
+      alert("KpiCard cliqué");
+    },
   },
 };
 
