@@ -26,6 +26,8 @@ export interface SidebarProps {
   currentPath: string;
   appName?: string;
   appSubName?: string;
+  appIcon?: React.ElementType;
+  headerNode?: React.ReactNode;
   footerNode?: React.ReactNode;
 }
 
@@ -166,6 +168,8 @@ export const Sidebar = ({
   currentPath,
   appName = "appname",
   appSubName = "appsubname",
+  appIcon: AppIcon = Shield,
+  headerNode,
   footerNode,
 }: SidebarProps): React.ReactElement => {
   const handleItemClick = (path: string): void => {
@@ -189,17 +193,21 @@ export const Sidebar = ({
         }}
       >
         {/* Header */}
-        <div className={cn("flex items-center h-16 md:h-20 flex-shrink-0 gap-3 px-4", collapsed ? "justify-center" : "")}>
-          <div className="flex-shrink-0 text-sidebar-foreground">
-            <Shield className="size-6" />
-          </div>
-          {!collapsed && (
-            <div className="flex flex-col">
-              <h1 className="font-bold text-lg text-sidebar-foreground leading-tight">{appName}</h1>
-              <span className="text-xs text-sidebar-muted font-medium">{appSubName}</span>
+        {headerNode ? (
+          headerNode
+        ) : (
+          <div className={cn("flex items-center h-16 md:h-20 flex-shrink-0 gap-3 px-4", collapsed ? "justify-center" : "")}>
+            <div className="flex-shrink-0 text-sidebar-foreground">
+              <AppIcon className="size-6" />
             </div>
-          )}
-        </div>
+            {!collapsed && (
+              <div className="flex flex-col">
+                <h1 className="font-bold text-lg text-sidebar-foreground leading-tight">{appName}</h1>
+                <span className="text-xs text-sidebar-muted font-medium">{appSubName}</span>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Navigation Groups */}
         <div className="flex-1 overflow-y-auto py-4 px-2 scrollbar-modern">
