@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import * as React from "react";
-import { Topbar, TopbarProps } from "../../../../../src/components/core/navbar/topbar";
-import { Sidebar } from "../../../../../src/components/core/navbar/sidebar";
-import { Home, Settings, Users, SearchIcon, SunIcon, MoonIcon, BellIcon } from "lucide-react";
-import { Button } from "../../../../../src/components/ui/button";
+import { Topbar, TopbarProps } from "../../../../src/components/core/navbar/Topbar";
+import { Sidebar } from "../../../../src/components/core/navbar/Sidebar";
+import { Home, Settings, Users, SearchIcon, SunIcon, MoonIcon, BellIcon, Shield } from "lucide-react";
+import { Button } from "../../../../src/components/ui/button";
 
 const meta: Meta<typeof Topbar> = {
   title: "Core/Navbar/Topbar",
@@ -81,7 +81,16 @@ const sampleGroups = [
     items: [
       { label: "Dashboard", path: "/dashboard", icon: Home },
       { label: "Utilisateurs", path: "/users", icon: Users },
-      { label: "Paramètres", path: "/settings", icon: Settings },
+      {
+        label: "Paramètres",
+        path: "/settings",
+        icon: Settings,
+        subItems: [
+          { label: "Vue Générale", path: "/dashboard/overview" },
+          { label: "Statistiques", path: "/dashboard/stats", badge: 3 },
+          { label: "Rapports", path: "/dashboard/reports" },
+        ],
+      },
     ],
   },
 ];
@@ -104,6 +113,7 @@ const InteractiveWithSidebar = (args: TopbarProps): React.ReactElement => {
           setCurrentPath(path);
         }}
         currentPath={currentPath}
+        appIcon={Shield}
         appName="Krosoft"
         appSubName="CRM"
       />

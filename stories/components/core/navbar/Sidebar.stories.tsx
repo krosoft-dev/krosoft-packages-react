@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import * as React from "react";
-import { Sidebar, SidebarProps } from "../../../../../src/components/core/navbar/sidebar";
-import { Calendar, Home, Inbox, FileText, Settings, Users, LayoutDashboard, LogOut, Zap, ChevronsUpDown, Building2, Check } from "lucide-react";
-import { cn } from "../../../../../src/helpers/tailwind.helper";
+import { Sidebar, SidebarProps } from "../../../../src/components/core/navbar/Sidebar";
+import { Calendar, Home, Inbox, FileText, Settings, Users, LayoutDashboard, LogOut, Zap, ChevronsUpDown, Building2, Check, Shield } from "lucide-react";
+import { cn } from "../../../../src/helpers/tailwind.helper";
 
 const meta: Meta<typeof Sidebar> = {
   title: "Core/Navbar/Sidebar",
@@ -115,6 +115,7 @@ export const Default: Story = {
   render: args => <InteractiveSidebar {...args} />,
   args: {
     groups: sampleGroups,
+    appIcon: Shield,
     appName: "Appname",
     appSubName: "Subname",
     collapsed: false,
@@ -151,7 +152,7 @@ const sampleGroupsWithSubItems = [
           { label: "Vue Générale", path: "/dashboard/overview" },
           { label: "Statistiques", path: "/dashboard/stats", badge: 3 },
           { label: "Rapports", path: "/dashboard/reports" },
-        ]
+        ],
       },
       {
         label: "Inbox",
@@ -170,7 +171,7 @@ const sampleGroupsWithSubItems = [
         subItems: [
           { label: "Général", path: "/settings/general" },
           { label: "Sécurité", path: "/settings/security" },
-        ]
+        ],
       },
       {
         label: "Utilisateurs",
@@ -194,7 +195,10 @@ export const WithFooter: Story = {
   args: {
     ...Default.args,
     footerNode: (
-      <div className="flex items-center gap-3 text-sidebar-muted hover:text-sidebar-foreground cursor-pointer transition-colors duration-200" title="Déconnexion">
+      <div
+        className="flex items-center gap-3 text-sidebar-muted hover:text-sidebar-foreground cursor-pointer transition-colors duration-200"
+        title="Déconnexion"
+      >
         <LogOut className="size-5 flex-shrink-0" />
         <span className="font-medium whitespace-nowrap overflow-hidden">Déconnexion</span>
       </div>
@@ -242,13 +246,14 @@ const InteractiveSidebarWithSelector = (args: SidebarProps): React.ReactElement 
 
   const InstanceSelector = (
     <div className={cn("relative flex items-center h-16 md:h-20", collapsed ? "justify-center px-0" : "px-4")}>
-      <button 
+      <button
         onClick={() => setIsSelectorOpen(!isSelectorOpen)}
         className={cn(
           "flex items-center w-full gap-3 rounded-xl hover:bg-sidebar-accent transition-colors duration-200 group text-left",
           collapsed ? "p-2 justify-center" : "p-2 px-3",
-          isSelectorOpen && "bg-sidebar-accent"
-        )}>
+          isSelectorOpen && "bg-sidebar-accent",
+        )}
+      >
         <div className="flex-shrink-0 bg-primary/20 text-sidebar-primary w-8 h-8 rounded-lg flex items-center justify-center group-hover:bg-primary/30 transition-colors">
           <Building2 className="size-4" />
         </div>
@@ -267,10 +272,12 @@ const InteractiveSidebarWithSelector = (args: SidebarProps): React.ReactElement 
       {isSelectorOpen && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setIsSelectorOpen(false)} />
-          <div className={cn(
-            "absolute z-50 top-16 md:top-20 bg-card border border-border rounded-xl shadow-lg py-2 min-w-[240px] flex flex-col gap-1",
-            collapsed ? "left-full ml-2" : "left-4 right-4"
-          )}>
+          <div
+            className={cn(
+              "absolute z-50 top-16 md:top-20 bg-card border border-border rounded-xl shadow-lg py-2 min-w-[240px] flex flex-col gap-1",
+              collapsed ? "left-full ml-2" : "left-4 right-4",
+            )}
+          >
             {instances.map(instance => (
               <button
                 key={instance.id}
@@ -287,9 +294,7 @@ const InteractiveSidebarWithSelector = (args: SidebarProps): React.ReactElement 
                   <span className="text-sm font-medium text-foreground truncate">{instance.name}</span>
                   <span className="text-[11px] text-muted-foreground truncate">{instance.subName}</span>
                 </div>
-                {selectedInstance.id === instance.id && (
-                  <Check className="size-4 text-primary flex-shrink-0" />
-                )}
+                {selectedInstance.id === instance.id && <Check className="size-4 text-primary flex-shrink-0" />}
               </button>
             ))}
           </div>
@@ -336,4 +341,3 @@ export const WithInstanceSelector: Story = {
     ...Default.args,
   },
 };
-
