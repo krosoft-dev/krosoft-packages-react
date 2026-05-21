@@ -15,11 +15,20 @@ export interface KpiCardProps {
   onClick?: () => void;
 }
 
-export const KpiCard = ({ titleKey, value, valueClassName, icon: theIcon, iconClassName, description, descriptionClassName, onClick }: KpiCardProps) => {
+export const KpiCard = ({
+  titleKey,
+  value,
+  valueClassName,
+  icon: theIcon,
+  iconClassName,
+  description,
+  descriptionClassName,
+  onClick,
+}: KpiCardProps): React.ReactElement => {
   const { t } = useTranslation();
 
   return (
-    <Card className={cn(onClick ? "hover:border-primary cursor-pointer" : "")} onClick={onClick}>
+    <Card className={cn(onClick !== undefined ? "hover:border-primary cursor-pointer" : "")} onClick={onClick}>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium">{t(titleKey)}</CardTitle>
         {React.createElement(theIcon, {

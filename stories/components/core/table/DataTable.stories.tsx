@@ -318,82 +318,80 @@ export const FiftyRows: Story = {
   },
 };
 
-export const WithSearchAndFilters: Story = {
-  render: () => {
-    const [searchQuery, setSearchQuery] = useState("");
-    const [appliedFilters, setAppliedFilters] = useState<Record<string, any>>({
-      role: [],
-    });
+const SearchAndFiltersWrapper = (): React.ReactElement => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [appliedFilters, setAppliedFilters] = useState<Record<string, unknown>>({
+    role: [],
+  });
 
-    const sections = [
-      {
-        title: "Détails",
-        filters: [
-          {
-            key: "role",
-            label: "Rôle",
-            type: "multi-select" as const,
-            isQuickFilter: true,
-            searchable: true,
-            searchPlaceholder: "Rechercher un rôle...",
-            placeholder: "Sélectionner des rôles",
-            options: [
-              { value: "admin", label: "Administrateur" },
-              { value: "user", label: "Utilisateur" },
-              { value: "guest", label: "Invité" },
-            ],
-          },
-          {
-            key: "status",
-            label: "Statut",
-            type: "select" as const,
-            placeholder: "Sélectionner un statut",
-            options: [
-              { value: "active", label: "Actif" },
-              { value: "inactive", label: "Inactif" },
-            ],
-          },
-        ],
-      },
-    ];
+  const sections = [
+    {
+      title: "Détails",
+      filters: [
+        {
+          key: "role",
+          label: "Rôle",
+          type: "multi-select" as const,
+          isQuickFilter: true,
+          searchable: true,
+          searchPlaceholder: "Rechercher un rôle...",
+          placeholder: "Sélectionner des rôles",
+          options: [
+            { value: "admin", label: "Administrateur" },
+            { value: "user", label: "Utilisateur" },
+            { value: "guest", label: "Invité" },
+          ],
+        },
+        {
+          key: "status",
+          label: "Statut",
+          type: "select" as const,
+          placeholder: "Sélectionner un statut",
+          options: [
+            { value: "active", label: "Actif" },
+            { value: "inactive", label: "Inactif" },
+          ],
+        },
+      ],
+    },
+  ];
 
-    // Filtrer les données en fonction de la recherche, filtre rapide et filtres avancés
-    const filteredData = mockData.filter(item => {
-      // 1. Recherche textuelle
-      if (searchQuery && !item.name.toLowerCase().includes(searchQuery.toLowerCase()) && !item.email.toLowerCase().includes(searchQuery.toLowerCase())) {
-        return false;
-      }
-      // 2. Filtre rapide par rôle (Multi-sélection)
-      if (appliedFilters.role && appliedFilters.role.length > 0 && !appliedFilters.role.includes(item.role)) {
-        return false;
-      }
-      // 3. Filtre avancé par statut
-      if (appliedFilters.status && item.status !== appliedFilters.status) {
-        return false;
-      }
-      return true;
-    });
+  // Filtrer les données en fonction de la recherche, filtre rapide et filtres avancés
+  const filteredData = mockData.filter(item => {
+    // 1. Recherche textuelle
+    if (searchQuery !== "" && !item.name.toLowerCase().includes(searchQuery.toLowerCase()) && !item.email.toLowerCase().includes(searchQuery.toLowerCase())) {
+      return false;
+    }
+    // 2. Filtre rapide par rôle (Multi-sélection)
+    const roleFilter = appliedFilters.role;
+    if (Array.isArray(roleFilter) && roleFilter.length > 0 && !roleFilter.includes(item.role)) {
+      return false;
+    }
+    // 3. Filtre avancé par statut
+    const statusFilter = appliedFilters.status;
+    if (typeof statusFilter === "string" && statusFilter !== "" && item.status !== statusFilter) {
+      return false;
+    }
+    return true;
+  });
 
-    return (
-      <div className="space-y-4 p-4">
-        <TableFilter
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
-          searchPlaceholder="Rechercher un utilisateur..."
-          filters={appliedFilters}
-          onFiltersChange={setAppliedFilters}
-          sections={sections}
-          advancedButtonText="Plus de filtres"
-        />
+  return (
+    <div className="space-y-4 p-4">
+      <TableFilter
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        searchPlaceholder="Rechercher un utilisateur..."
+        filters={appliedFilters}
+        onFiltersChange={setAppliedFilters}
+        sections={sections}
+        advancedButtonText="Plus de filtres"
+      />
 
-        <DataTable
-          data={filteredData}
-          columns={columns}
-          getRowId={(row: UserData) => row.id}
-        />
-      </div>
-    );
-  },
+      <DataTable data={filteredData} columns={columns} getRowId={(row: UserData) => row.id} />
+    </div>
+  );
 };
 
-
+export const WithSearchAndFilters: Story = {
+  render: () => <SearchAndFiltersWrapper />,
+};

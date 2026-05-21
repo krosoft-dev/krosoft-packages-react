@@ -12,25 +12,25 @@ interface SearchableSelectProps {
 }
 
 export const SearchableSelect = ({
-  options = [],
+  options,
   value,
   onChange,
   placeholder = "Sélectionner...",
   searchPlaceholder = "Rechercher...",
-}: SearchableSelectProps) => {
+}: SearchableSelectProps): React.ReactElement => {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const filteredOptions = useMemo(() => {
-    if (!query) return options;
-    return options.filter((o) => o.label.toLowerCase().includes(query.toLowerCase()));
+    if (query === "") return options;
+    return options.filter(o => o.label.toLowerCase().includes(query.toLowerCase()));
   }, [options, query]);
 
   const selectedLabel = useMemo(() => {
-    if (!value) return undefined;
-    return options.find((o) => o.value === value)?.label || value;
+    if (value === undefined || value === "") return undefined;
+    return options.find(o => o.value === value)?.label ?? value;
   }, [options, value]);
 
   // Focus l'input quand le dropdown s'ouvre
@@ -46,24 +46,26 @@ export const SearchableSelect = ({
   // Fermer quand on clique en dehors
   useEffect(() => {
     if (!open) return;
-    const handleClickOutside = (e: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+    const handleClickOutside = (e: MouseEvent): void => {
+      if (containerRef.current !== null && !containerRef.current.contains(e.target as Node)) {
         setOpen(false);
         setQuery("");
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, [open]);
 
-  const handleSelect = (optionValue: string) => {
+  const handleSelect = (optionValue: string): void => {
     onChange(optionValue);
     setOpen(false);
     setQuery("");
   };
 
-  const handleToggle = () => {
-    setOpen((prev) => {
+  const handleToggle = (): void => {
+    setOpen(prev => {
       if (prev) setQuery("");
       return !prev;
     });
@@ -78,16 +80,14 @@ export const SearchableSelect = ({
         className={cn(
           "w-full justify-between text-left font-normal focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
           open && "ring-2 ring-ring ring-offset-2",
-          !value && "text-muted-foreground"
+          (value === undefined || value === "") && "text-muted-foreground",
         )}
       >
-        <span className="truncate">
-          {selectedLabel || placeholder}
-        </span>
+        <span className="truncate">{selectedLabel ?? placeholder}</span>
         <ChevronDown className={cn("h-4 w-4 opacity-50 shrink-0 transition-transform", open && "rotate-180")} />
       </Button>
 
-      {open && (
+      {open ? (
         <div className="absolute left-0 right-0 top-[calc(100%+4px)] z-[100] rounded-md border bg-popover text-popover-foreground shadow-md animate-in fade-in-0 zoom-in-95 slide-in-from-top-2">
           <div className="border-b border-border p-2">
             <div className="relative">
@@ -97,36 +97,33 @@ export const SearchableSelect = ({
                 className="w-full rounded-md bg-muted/50 py-1.5 pl-7 pr-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-1 focus:ring-ring"
                 placeholder={searchPlaceholder}
                 value={query}
-                onChange={(e) => setQuery(e.target.value)}
+                onChange={e => {
+                  setQuery(e.target.value);
+                }}
               />
             </div>
           </div>
           <div className="flex flex-col gap-0.5 max-h-56 overflow-y-auto p-1.5">
-            {filteredOptions.length === 0 && (
-              <p className="px-2 py-3 text-center text-xs text-muted-foreground">Aucun résultat</p>
-            )}
-            {filteredOptions.map((opt) => (
+            {filteredOptions.length === 0 && <p className="px-2 py-3 text-center text-xs text-muted-foreground">Aucun résultat</p>}
+            {filteredOptions.map(opt => (
               <button
                 key={opt.value}
                 type="button"
-                onClick={() => handleSelect(opt.value)}
+                onClick={() => {
+                  handleSelect(opt.value);
+                }}
                 className={cn(
                   "flex items-center gap-2.5 rounded-md px-2 py-2 text-sm hover:bg-muted cursor-pointer transition-colors text-left w-full",
-                  value === opt.value && "bg-muted font-medium"
+                  value === opt.value && "bg-muted font-medium",
                 )}
               >
-                <Check
-                  className={cn(
-                    "size-3.5 shrink-0",
-                    value === opt.value ? "opacity-100" : "opacity-0"
-                  )}
-                />
+                <Check className={cn("size-3.5 shrink-0", value === opt.value ? "opacity-100" : "opacity-0")} />
                 {opt.label}
               </button>
             ))}
           </div>
         </div>
-      )}
+      ) : null}
     </div>
   );
 };

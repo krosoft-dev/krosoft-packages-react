@@ -1,24 +1,19 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import {
-  Toast,
-  ToastAction,
-  ToastClose,
-  ToastDescription,
-  ToastProvider,
-  ToastTitle,
-  ToastViewport,
-} from "@/components/ui/toast";
+import { Toast, ToastAction, ToastClose, ToastDescription, ToastProvider, ToastTitle, ToastViewport } from "@/components/ui/toast";
 
 const meta: Meta<typeof Toast> = {
   title: "UI/Toast",
   component: Toast,
   decorators: [
-    (Story) => (
-      <ToastProvider>
-        <Story />
-        <ToastViewport />
-      </ToastProvider>
-    ),
+    (storyFn: () => React.ReactElement): React.ReactElement => {
+      const StoryComponent = storyFn;
+      return (
+        <ToastProvider>
+          <StoryComponent />
+          <ToastViewport />
+        </ToastProvider>
+      );
+    },
   ],
   args: {
     open: true,
@@ -36,7 +31,7 @@ export default meta;
 type Story = StoryObj<typeof Toast>;
 
 export const Default: Story = {
-  render: (args) => (
+  render: args => (
     <Toast {...args}>
       <ToastTitle>Sauvegarde réussie</ToastTitle>
       <ToastDescription>Vos modifications ont été enregistrées.</ToastDescription>
@@ -49,7 +44,7 @@ export const Destructive: Story = {
   args: {
     variant: "destructive",
   },
-  render: (args) => (
+  render: args => (
     <Toast {...args}>
       <ToastTitle>Erreur</ToastTitle>
       <ToastDescription>Une erreur est survenue. Veuillez réessayer.</ToastDescription>
@@ -59,7 +54,7 @@ export const Destructive: Story = {
 };
 
 export const WithAction: Story = {
-  render: (args) => (
+  render: args => (
     <Toast {...args}>
       <div className="grid gap-1">
         <ToastTitle>Mise à jour disponible</ToastTitle>
@@ -72,7 +67,7 @@ export const WithAction: Story = {
 };
 
 export const TitleOnly: Story = {
-  render: (args) => (
+  render: args => (
     <Toast {...args}>
       <ToastTitle>Opération effectuée</ToastTitle>
       <ToastClose />

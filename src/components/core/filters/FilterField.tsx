@@ -1,12 +1,5 @@
 import React from "react";
-import {
-  Input,
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui";
+import { Input, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui";
 import { DatePicker } from "./DatePicker";
 import { MultiSelectField } from "./MultiSelectField";
 import { SearchableSelect } from "./SearchableSelect";
@@ -15,24 +8,21 @@ import { cn } from "@/helpers/tailwind.helper";
 
 interface FilterFieldProps {
   field: FilterFieldConfig;
-  value: any;
-  onChange: (value: any) => void;
+  value: unknown;
+  onChange: (value: unknown) => void;
   onToggleMultiSelect: (value: string) => void;
 }
 
-export const FilterField = ({
-  field,
-  value,
-  onChange,
-  onToggleMultiSelect,
-}: FilterFieldProps) => {
+export const FilterField = ({ field, value, onChange, onToggleMultiSelect }: FilterFieldProps): React.ReactElement | null => {
   switch (field.type) {
     case "text":
       return (
         <Input
           placeholder={field.placeholder}
-          value={value || ""}
-          onChange={(e) => onChange(e.target.value)}
+          value={(value as string | undefined) ?? ""}
+          onChange={e => {
+            onChange(e.target.value);
+          }}
         />
       );
 
@@ -41,19 +31,21 @@ export const FilterField = ({
         <Input
           type="number"
           placeholder={field.placeholder}
-          value={value || ""}
-          onChange={(e) => onChange(e.target.value)}
+          value={(value as string | undefined) ?? ""}
+          onChange={e => {
+            onChange(e.target.value);
+          }}
           min={field.min}
           max={field.max}
         />
       );
 
     case "select":
-      if (field.searchable) {
+      if (field.searchable === true) {
         return (
           <SearchableSelect
-            options={field.options || []}
-            value={value}
+            options={field.options ?? []}
+            value={value as string | undefined}
             onChange={onChange}
             placeholder={field.placeholder}
             searchPlaceholder={field.searchPlaceholder}
@@ -61,15 +53,12 @@ export const FilterField = ({
         );
       }
       return (
-        <Select
-          value={value || ""}
-          onValueChange={onChange}
-        >
-          <SelectTrigger className={cn(!value && "text-muted-foreground")}>
+        <Select value={(value as string | undefined) ?? ""} onValueChange={onChange}>
+          <SelectTrigger className={cn((value === undefined || value === "") && "text-muted-foreground")}>
             <SelectValue placeholder={field.placeholder} />
           </SelectTrigger>
           <SelectContent>
-            {field.options?.map((option: any) => (
+            {field.options?.map(option => (
               <SelectItem key={option.value} value={option.value}>
                 {option.label}
               </SelectItem>
@@ -79,21 +68,17 @@ export const FilterField = ({
       );
 
     case "date":
-      return (
-        <DatePicker
-          date={value}
-          onDateChange={onChange}
-          placeholder={field.placeholder || "Sélectionner une date"}
-        />
-      );
+      return <DatePicker date={value as Date | undefined} onDateChange={onChange} placeholder={field.placeholder ?? "Sélectionner une date"} />;
 
     case "multi-select":
       return (
         <MultiSelectField
-          options={field.options || []}
-          selected={value || []}
+          options={field.options ?? []}
+          selected={(value as string[] | undefined) ?? []}
           onToggle={onToggleMultiSelect}
-          onClear={() => onChange([])}
+          onClear={() => {
+            onChange([]);
+          }}
           onSelectAll={onChange}
           placeholder={field.placeholder}
           searchable={field.searchable}

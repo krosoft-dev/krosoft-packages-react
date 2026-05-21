@@ -2,42 +2,37 @@ import { Badge } from "@/components/ui";
 import { X } from "lucide-react";
 
 interface ActiveFiltersProps {
-  filters: Record<string, any>;
-  onRemoveFilter: (key: string, value?: any) => void;
+  filters: Record<string, unknown>;
+  onRemoveFilter: (key: string, value?: unknown) => void;
   onClearAll: () => void;
   filterLabels?: Record<string, string>;
   optionLabels?: Record<string, string>;
 }
 
-const getFilterDisplayValue = (key: string, value: any, optionLabels: Record<string, string> = {}) => {
+const getFilterDisplayValue = (key: string, value: unknown, optionLabels: Record<string, string> = {}): React.ReactNode => {
   if (value instanceof Date) {
     return value.toLocaleDateString("fr-FR");
   }
 
-  const resolvedLabel = optionLabels[`${key}_${value}`];
-  if (resolvedLabel) return resolvedLabel;
+  const strValue = String(value);
+  const resolvedLabel = optionLabels[`${key}_${strValue}`] as string | undefined;
+  if (resolvedLabel !== undefined) return resolvedLabel;
 
   // Formatage spécifique selon le type de filtre
   if (key.includes("budget") || key.includes("Budget")) {
-    return `${value}€`;
+    return `${strValue}€`;
   }
   if (key.includes("surface") || key.includes("Surface")) {
-    return `${value}m²`;
+    return `${strValue}m²`;
   }
   if (key.includes("ok") || value === "true" || value === "false") {
     return value === "true" ? "Oui" : "Non";
   }
 
-  return value;
+  return strValue;
 };
 
-export function ActiveFilters({
-  filters,
-  onRemoveFilter,
-  onClearAll,
-  filterLabels = {},
-  optionLabels = {},
-}: ActiveFiltersProps) {
+export function ActiveFilters({ filters, onRemoveFilter, onClearAll, filterLabels = {}, optionLabels = {} }: ActiveFiltersProps): React.ReactElement | null {
   const activeFilters = Object.entries(filters).filter(([_key, value]) => {
     if (value === undefined || value === null || value === "") return false;
     if (Array.isArray(value) && value.length === 0) return false;
@@ -50,20 +45,22 @@ export function ActiveFilters({
     <div className="flex flex-wrap items-center gap-2 mb-4">
       <span className="text-sm text-gray-600 font-medium">Filtres actifs :</span>
       {activeFilters.flatMap(([key, value]) => {
-        const label = filterLabels[key] || key;
+        const label = filterLabels[key] ?? key;
 
         if (Array.isArray(value)) {
-          return value.map((val) => {
+          return value.map(val => {
             const displayValue = getFilterDisplayValue(key, val, optionLabels);
             return (
               <Badge
-                key={`${key}_${val}`}
+                key={`${key}_${String(val)}`}
                 variant="secondary"
                 className="flex items-center gap-1 px-3 py-1 bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100"
               >
-                {label}: {displayValue as React.ReactNode}
+                {label}: {displayValue}
                 <button
-                  onClick={() => onRemoveFilter(key, val)}
+                  onClick={() => {
+                    onRemoveFilter(key, val);
+                  }}
                   className="ml-1 hover:bg-blue-200 rounded-full p-0.5"
                 >
                   <X className="size-3" />
@@ -75,14 +72,12 @@ export function ActiveFilters({
 
         const displayValue = getFilterDisplayValue(key, value, optionLabels);
         return (
-          <Badge
-            key={key}
-            variant="secondary"
-            className="flex items-center gap-1 px-3 py-1 bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100"
-          >
-            {label}: {displayValue as React.ReactNode}
+          <Badge key={key} variant="secondary" className="flex items-center gap-1 px-3 py-1 bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100">
+            {label}: {displayValue}
             <button
-              onClick={() => onRemoveFilter(key)}
+              onClick={() => {
+                onRemoveFilter(key);
+              }}
               className="ml-1 hover:bg-blue-200 rounded-full p-0.5"
             >
               <X className="size-3" />
@@ -91,14 +86,10 @@ export function ActiveFilters({
         );
       })}
       {activeFilters.length > 0 && (
-        <button
-          onClick={onClearAll}
-          className="text-xs text-red-500 hover:text-red-600 transition-colors font-medium ml-2"
-        >
+        <button onClick={onClearAll} className="text-xs text-red-500 hover:text-red-600 transition-colors font-medium ml-2">
           Effacer tout
         </button>
       )}
     </div>
   );
 }
-

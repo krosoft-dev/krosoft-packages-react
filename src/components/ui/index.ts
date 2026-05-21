@@ -20,20 +20,8 @@ export {
   SelectScrollUpButton,
   SelectScrollDownButton,
 } from "./select";
-export {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetOverlay,
-  SheetPortal,
-  SheetTitle,
-  SheetTrigger,
-} from "./sheet";
+export { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetOverlay, SheetPortal, SheetTitle, SheetTrigger } from "./sheet";
 export { Calendar } from "./calendar";
 export type { CalendarProps } from "./calendar";
 export { Popover, PopoverTrigger, PopoverContent } from "./popover";
 export { Checkbox } from "./checkbox";
-
