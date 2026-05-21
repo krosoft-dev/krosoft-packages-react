@@ -4,7 +4,7 @@ import { AlertCircleIcon } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Alert, AlertDescription } from "@/components/ui";
-import { Progress } from "./Progress";
+import { Progress } from "../../ui/progress";
 
 export type ButtonVariantType = "default" | "destructive" | "outline" | "secondary" | "ghost" | "link" | "styled";
 

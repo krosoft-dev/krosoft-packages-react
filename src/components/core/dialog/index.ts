@@ -12,6 +12,6 @@ export {
   DialogTitle,
   DialogDescription,
 } from "./Dialog";
-export { Progress } from "./Progress";
+export { Progress } from "../../ui/progress";
 export { default as FormDialog } from "./FormDialog";
 export type { FieldDef, SectionDef } from "./FormDialog";
