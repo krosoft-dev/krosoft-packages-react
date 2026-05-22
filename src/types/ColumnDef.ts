@@ -5,6 +5,7 @@ export interface ColumnDef<T> {
   label: string;
   defaultVisible?: boolean;
   minWidth?: number;
+  sortable?: boolean;
   // Permet de définir un rendu personnalisé pour la cellule
   renderCell?: (row: T) => React.ReactNode;
   // Permet d'extraire une valeur spécifique pour le tri (ex: le premier email d'un tableau)

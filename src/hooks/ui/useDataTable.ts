@@ -4,7 +4,7 @@ import { UseDataTableResult } from "@/types/UseDataTableResult";
 import { ColumnDef } from "@/types/ColumnDef";
 
 export function useDataTable<T>({ data, columns, getRowId, defaultPageSize, actions, bulkActions }: UseDataTableProps<T>): UseDataTableResult<T> {
-  const [sortColumn, setSortColumn] = useState<string | null>(columns[0]?.key ?? null);
+  const [sortColumn, setSortColumn] = useState<string | null>(columns.find(col => col.sortable === true)?.key ?? null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
 
@@ -43,6 +43,8 @@ export function useDataTable<T>({ data, columns, getRowId, defaultPageSize, acti
 
   // Gestion du tri
   const handleSort = (columnKey: string): void => {
+    const columnDef = columns.find(col => col.key === columnKey);
+    if (columnDef?.sortable !== true) return;
     if (sortColumn === columnKey) {
       setSortDirection(sortDirection === "asc" ? "desc" : "asc");
     } else {

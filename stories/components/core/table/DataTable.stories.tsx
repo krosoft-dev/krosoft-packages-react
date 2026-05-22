@@ -13,7 +13,7 @@ const meta: Meta<typeof DataTable> = {
     docs: {
       description: {
         component:
-          "Le composant `DataTable` permet d'afficher des données sous forme de tableau avec des fonctionnalités avancées (tri, sélection, menu d'actions).\n\n### Fonctionnalités\n\n- **Tri** : Cliquez sur l'en-tête d'une colonne pour trier.\n- **Réorganisation des colonnes** : Glissez et déposez l'icône de poignée dans l'en-tête.\n- **Désactivation du glisser-déposer** : Vous pouvez figer toutes les colonnes en passant `draggableColumns={false}` au composant.\n- **Redimensionnement des colonnes** : Survoler le bord droit de l'en-tête d'une colonne pour la redimensionner. Vous pouvez désactiver cette option en passant `resizableColumns={false}` au composant.",
+          "Le composant `DataTable` permet d'afficher des données sous forme de tableau avec des fonctionnalités avancées (tri, sélection, menu d'actions).\n\n### Fonctionnalités\n\n- **Tri** : Activez le tri colonne par colonne avec `sortable: true` dans `ColumnDef`. Un icône `↕` apparaît sur les colonnes triables ; `↑`/`↓` indique la colonne et le sens actifs.\n- **Réorganisation des colonnes** : Glissez et déposez l'icône de poignée dans l'en-tête.\n- **Désactivation du glisser-déposer** : Vous pouvez figer toutes les colonnes en passant `draggableColumns={false}` au composant.\n- **Redimensionnement des colonnes** : Survoler le bord droit de l'en-tête d'une colonne pour la redimensionner. Vous pouvez désactiver cette option en passant `resizableColumns={false}` au composant.",
       },
     },
   },
@@ -92,11 +92,13 @@ const columns: ColumnDef<UserData>[] = [
     key: "name",
     label: "Name",
     minWidth: 150,
+    sortable: true,
   },
   {
     key: "email",
     label: "Email",
     minWidth: 200,
+    sortable: true,
   },
   {
     key: "role",
@@ -114,6 +116,7 @@ const columns: ColumnDef<UserData>[] = [
     key: "lastLogin",
     label: "Last Login",
     minWidth: 150,
+    sortable: true,
     renderCell: row => new Date(row.lastLogin).toLocaleDateString(),
   },
 ];
@@ -299,6 +302,52 @@ export const FullFeatured: Story = {
         },
       },
     ],
+  },
+};
+
+export const WithSortableColumns: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Illustre la différence visuelle entre colonnes triables (`sortable: true`) et non triables. Les colonnes **Name**, **Email** et **Last Login** affichent l'icône `↕` et réagissent au clic. **Role** et **Status** n'ont pas d'icône et ignorent le clic.",
+      },
+    },
+  },
+  args: {
+    data: mockData,
+    columns,
+    getRowId: (row: UserData) => row.id,
+  },
+};
+
+export const AllSortable: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story: "Toutes les colonnes sont triables.",
+      },
+    },
+  },
+  args: {
+    data: mockData,
+    columns: columns.map(col => ({ ...col, sortable: true })),
+    getRowId: (row: UserData) => row.id,
+  },
+};
+
+export const NoSortable: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story: "Aucune colonne n'est triable — aucune icône ni curseur pointer sur les en-têtes.",
+      },
+    },
+  },
+  args: {
+    data: mockData,
+    columns: columns.map(({ sortable: _sortable, ...col }) => col),
+    getRowId: (row: UserData) => row.id,
   },
 };
 

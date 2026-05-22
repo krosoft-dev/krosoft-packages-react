@@ -1,7 +1,6 @@
 import React from "react";
-import { Button } from "../../ui/button";
 import { Checkbox } from "../../ui/checkbox";
-import { ArrowUpIcon, ArrowDownIcon, GripVerticalIcon } from "lucide-react";
+import { ArrowUpIcon, ArrowDownIcon, ArrowUpDownIcon, GripVerticalIcon } from "lucide-react";
 import { ColumnDef } from "@/types/ColumnDef";
 
 export interface TableHeaderProps<T> {
@@ -43,52 +42,64 @@ export function TableHeader<T>({
   hasActions,
   settingsNode,
 }: TableHeaderProps<T>): React.JSX.Element {
-  const getSortIcon = (columnKey: string): React.ReactNode => {
-    if (sortColumn !== columnKey) return null;
-    return sortDirection === "asc" ? <ArrowUpIcon className="w-4 h-4" /> : <ArrowDownIcon className="w-4 h-4" />;
+  const getSortIcon = (column: ColumnDef<T>): React.ReactNode => {
+    if (column.sortable !== true) return null;
+    if (sortColumn === column.key) {
+      return sortDirection === "asc" ? (
+        <ArrowUpIcon className="size-3.5 text-foreground" />
+      ) : (
+        <ArrowDownIcon className="size-3.5 text-foreground" />
+      );
+    }
+    return <ArrowUpDownIcon className="size-3.5 text-muted-foreground/50 group-hover:text-muted-foreground transition-colors" />;
   };
 
-  const renderSortHeader = (columnKey: string, label: string, isDraggable?: boolean): React.ReactNode => {
+  const renderColumnHeader = (column: ColumnDef<T>, isDraggable?: boolean): React.ReactNode => {
     const draggable = isDraggable !== false;
+    const isSortable = column.sortable === true;
+    const isActiveSort = sortColumn === column.key;
+
     return (
       <th
-        key={columnKey}
-        className="px-2 py-2 text-left text-sm font-medium text-gray-900 dark:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-800 relative group border-r border-gray-200 dark:border-gray-800"
-        style={{ width: columnWidths[columnKey] }}
+        key={column.key}
+        className={[
+          "px-2 py-2 text-left text-sm font-medium text-gray-900 dark:text-gray-100 relative group border-r border-gray-200 dark:border-gray-800",
+          isSortable ? "cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 select-none" : "",
+          isActiveSort ? "bg-gray-100/80 dark:bg-gray-800/80" : "",
+        ]
+          .filter(Boolean)
+          .join(" ")}
+        style={{ width: columnWidths[column.key] }}
         draggable={draggable}
         onClick={() => {
-          handleSort(columnKey);
+          handleSort(column.key);
         }}
         onDragStart={e => {
           if (draggable) {
-            handleDragStart(e, columnKey);
+            handleDragStart(e, column.key);
           } else {
             e.preventDefault();
           }
         }}
         onDragOver={e => {
-          handleDragOver(e, columnKey);
+          handleDragOver(e, column.key);
         }}
         onDrop={e => {
-          handleDrop(e, columnKey);
+          handleDrop(e, column.key);
         }}
       >
         <div className="flex items-center justify-between pr-2">
-          <div className="flex items-center">
-            {draggable ? <GripVerticalIcon className="size-4 text-gray-400 mr-1 cursor-grab dark:text-gray-300" /> : null}
-            <span className="truncate">{label}</span>
+          <div className="flex items-center gap-1">
+            {draggable ? <GripVerticalIcon className="size-4 text-gray-400 cursor-grab dark:text-gray-300 shrink-0" /> : null}
+            <span className="truncate">{column.label}</span>
           </div>
-          <div className="flex flex-col gap-0.5 ml-2">
-            <Button variant="ghost" className="h-auto p-0 font-medium hover:bg-transparent">
-              {getSortIcon(columnKey)}
-            </Button>
-          </div>
+          <div className="ml-1 shrink-0">{getSortIcon(column)}</div>
         </div>
         {resizableColumns ? (
           <div
             className="absolute right-0 top-0 bottom-0 w-2 cursor-col-resize hover:bg-blue-500 opacity-0 group-hover:opacity-50 transition-opacity"
             onMouseDown={e => {
-              handleMouseDown(e, columnKey);
+              handleMouseDown(e, column.key);
             }}
           />
         ) : null}
@@ -107,7 +118,7 @@ export function TableHeader<T>({
             />
           </th>
         ) : null}
-        {visibleColumnsArray.map(column => renderSortHeader(column.key, column.label, draggableColumns))}
+        {visibleColumnsArray.map(column => renderColumnHeader(column, draggableColumns))}
         {hasActions ? <th className="w-12 px-2 py-2" /> : null}
         {settingsNode !== undefined ? (
           <th className="w-12 px-2 py-2 text-center align-middle">
