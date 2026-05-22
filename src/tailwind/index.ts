@@ -28,7 +28,9 @@ import type { Config } from "tailwindcss";
  * ```
  */
 const krosoftPreset = {
-  darkMode: "class",
+  // [class*='dark'] is the CSS equivalent of ".dark*" — matches any class containing "dark"
+  // (e.g. "dark", "dark-temporal", "dark-forest"…). CSS has no .dark* wildcard syntax.
+  darkMode: ["class", "[class*='dark']"],
   content: ["./node_modules/@krosoft/react/dist/**/*.js"],
   theme: {
     container: {
