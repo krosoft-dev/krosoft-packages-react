@@ -3,6 +3,7 @@ import { Loader2Icon } from "lucide-react";
 import { RowAction } from "@/types/RowAction";
 import { ColumnDef } from "@/types/ColumnDef";
 import { TableActions } from "./TableActions";
+import { Checkbox } from "../../ui/checkbox";
 
 export interface TableBodyProps<T> {
   isLoading: boolean;
@@ -13,7 +14,7 @@ export interface TableBodyProps<T> {
   onRowClick?: (row: T) => void;
   hasBulkActions: boolean;
   selectedRows: string[];
-  toggleRowSelection: (id: string, e: React.ChangeEvent<HTMLInputElement>) => void;
+  toggleRowSelection: (id: string) => void;
   visibleColumnsArray: ColumnDef<T>[];
   columnWidths: Record<string, number>;
   hasActions: boolean;
@@ -90,13 +91,11 @@ export function TableBody<T>({
                   e.stopPropagation();
                 }}
               >
-                <input
-                  type="checkbox"
+                <Checkbox
                   checked={selectedRows.includes(rowId)}
-                  onChange={e => {
-                    toggleRowSelection(rowId, e);
+                  onCheckedChange={() => {
+                    toggleRowSelection(rowId);
                   }}
-                  className="rounded border-gray-300 dark:border-gray-700"
                 />
               </td>
             ) : null}

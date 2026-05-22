@@ -66,9 +66,7 @@ export default function DataTable<T>({
         <TableBulkActions selectedRows={selectedRows} setSelectedRows={setSelectedRows} bulkActions={bulkActions} />
       )}
 
-      <div className="w-full bg-card dark:bg-gray-950 rounded-md border border-gray-200 dark:border-gray-800 overflow-hidden relative">
-        <TableSettings columns={columns} visibleColumns={visibleColumns} toggleColumnVisibility={toggleColumnVisibility} />
-
+      <div className="w-full bg-card dark:bg-gray-950 rounded-md border border-gray-200 dark:border-gray-800 overflow-hidden">
         <div className="overflow-x-auto">
           <table ref={tableRef} className="w-full">
             <TableHeader
@@ -88,6 +86,7 @@ export default function DataTable<T>({
               handleDrop={handleDrop}
               handleMouseDown={handleMouseDown}
               hasActions={hasActions}
+              settingsNode={<TableSettings columns={columns} visibleColumns={visibleColumns} toggleColumnVisibility={toggleColumnVisibility} />}
             />
             <TableBody
               isLoading={isLoading}

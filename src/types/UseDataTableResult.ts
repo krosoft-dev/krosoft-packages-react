@@ -29,6 +29,6 @@ export interface UseDataTableResult<T> {
   handleDragOver: (e: React.DragEvent, columnKey: string) => void;
   handleDrop: (e: React.DragEvent, targetColumnKey: string) => void;
   toggleColumnVisibility: (columnKey: string) => void;
-  toggleRowSelection: (id: string, e: React.ChangeEvent<HTMLInputElement>) => void;
+  toggleRowSelection: (id: string) => void;
   toggleSelectAll: () => void;
 }

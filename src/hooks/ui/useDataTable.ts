@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef, useCallback, DragEvent, ChangeEvent } from "react";
+import React, { useState, useMemo, useRef, useCallback, DragEvent } from "react";
 import { UseDataTableProps } from "@/types/UseDataTableProps";
 import { UseDataTableResult } from "@/types/UseDataTableResult";
 import { ColumnDef } from "@/types/ColumnDef";
@@ -153,8 +153,7 @@ export function useDataTable<T>({ data, columns, getRowId, defaultPageSize, acti
     setVisibleColumns(newVisibleColumns);
   };
 
-  const toggleRowSelection = (id: string, e: ChangeEvent<HTMLInputElement>): void => {
-    e.stopPropagation();
+  const toggleRowSelection = (id: string): void => {
     if (selectedRows.includes(id)) {
       setSelectedRows(selectedRows.filter(rowId => rowId !== id));
     } else {
