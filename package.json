@@ -31,13 +31,20 @@
   },
   "peerDependencies": {
     "@krosoft/core": ">=0.0.1",
+    "next-themes": ">=0.4.0",
     "react": ">=18.3.1",
     "react-i18next": ">=17.0.8"
   },
+  "peerDependenciesMeta": {
+    "next-themes": {
+      "optional": true
+    }
+  },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",
-    "@radix-ui/react-separator": "^1.1.8",
     "@radix-ui/react-popover": "^1.1.15",
+    "@radix-ui/react-select": "^2.2.6",
+    "@radix-ui/react-separator": "^1.1.8",
     "@radix-ui/react-toast": "^1.2.15",
     "@radix-ui/react-tooltip": "^1.2.8",
     "class-variance-authority": "^0.7.1",
@@ -57,6 +64,7 @@
     "@types/react": "^18.3.29",
     "autoprefixer": "^10.5.0",
     "jsdom": "^26.1.0",
+    "next-themes": "^0.4.6",
     "prettier": "^3.8.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
