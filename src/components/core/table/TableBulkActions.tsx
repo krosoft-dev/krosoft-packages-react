@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "../../ui/button";
-import { BulkAction } from "./types";
+import { BulkAction } from "@/types/BulkAction";
 
 export interface TableBulkActionsProps {
   selectedRows: string[];

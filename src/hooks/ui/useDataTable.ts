@@ -1,5 +1,7 @@
 import React, { useState, useMemo, useRef, useCallback, DragEvent, ChangeEvent } from "react";
-import { ColumnDef, UseDataTableProps, UseDataTableResult } from "./types";
+import { UseDataTableProps } from "@/types/UseDataTableProps";
+import { UseDataTableResult } from "@/types/UseDataTableResult";
+import { ColumnDef } from "@/types/ColumnDef";
 
 export function useDataTable<T>({ data, columns, getRowId, defaultPageSize, actions, bulkActions }: UseDataTableProps<T>): UseDataTableResult<T> {
   const [sortColumn, setSortColumn] = useState<string | null>(columns[0]?.key ?? null);

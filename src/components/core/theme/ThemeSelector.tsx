@@ -24,7 +24,7 @@ export function ThemeSelector({ themeOptions, variant = "select" }: ThemeSelecto
               onClick={cycleTheme}
               className="text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
             >
-              {CurrentIcon && <CurrentIcon className="h-4 w-4" />}
+              {CurrentIcon && <CurrentIcon className="size-4" />}
               <span className="sr-only">Thème actuel : {currentThemeOption?.label}</span>
             </Button>
           </TooltipTrigger>
@@ -48,7 +48,7 @@ export function ThemeSelector({ themeOptions, variant = "select" }: ThemeSelecto
             return (
               <SelectItem key={option.value} value={option.value}>
                 <div className="flex items-center gap-2">
-                  <Icon className="h-4 w-4" />
+                  <Icon className="size-4" />
                   {option.label}
                 </div>
               </SelectItem>

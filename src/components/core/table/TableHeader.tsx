@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "../../ui/button";
 import { ArrowUpIcon, ArrowDownIcon, GripVerticalIcon } from "lucide-react";
-import { ColumnDef } from "./types";
+import { ColumnDef } from "@/types/ColumnDef";
 
 export interface TableHeaderProps<T> {
   hasBulkActions: boolean;
@@ -72,7 +72,7 @@ export function TableHeader<T>({
       >
         <div className="flex items-center justify-between pr-2">
           <div className="flex items-center">
-            {draggable ? <GripVerticalIcon className="h-3 w-3 text-gray-400 mr-1 cursor-grab dark:text-gray-300" /> : null}
+            {draggable ? <GripVerticalIcon className="size-4 text-gray-400 mr-1 cursor-grab dark:text-gray-300" /> : null}
             <span className="truncate">{label}</span>
           </div>
           <div className="flex flex-col gap-0.5 ml-2">

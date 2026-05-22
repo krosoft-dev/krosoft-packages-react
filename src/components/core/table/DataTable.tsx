@@ -1,13 +1,13 @@
 import React from "react";
-import { DataTableProps } from "./types";
-import { useDataTable } from "./useDataTable";
+import { DataTableProps } from "@/types/DataTableProps";
+import { useDataTable } from "../../../hooks/ui/useDataTable";
 import { TablePagination } from "./TablePagination";
 import { TableBulkActions } from "./TableBulkActions";
 import { TableSettings } from "./TableSettings";
 import { TableHeader } from "./TableHeader";
 import { TableBody } from "./TableBody";
 
-export type { ColumnDef, BulkAction, DataTableProps, RowAction } from "./types";
+export type { ColumnDef, BulkAction, DataTableProps, RowAction } from "../../../types";
 
 export default function DataTable<T>({
   data,

@@ -60,7 +60,7 @@ export const DateRangePicker = ({ value, onChange, placeholder = "Selectionner u
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button id="date" variant="outline" className={cn("w-[300px] justify-start text-left font-normal", !value?.from && "text-muted-foreground")}>
-            <CalendarIcon className="mr-2 h-4 w-4" />
+            <CalendarIcon className="mr-2 size-4" />
             {formatRange(value)}
             {value?.from && (
               <Button
@@ -71,7 +71,7 @@ export const DateRangePicker = ({ value, onChange, placeholder = "Selectionner u
                 className="ml-auto h-5 w-5 opacity-50 hover:opacity-100"
                 onClick={handleClear}
               >
-                <XIcon className="h-4 w-4" />
+                <XIcon className="size-4" />
               </Button>
             )}
           </Button>

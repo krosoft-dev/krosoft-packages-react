@@ -2,7 +2,7 @@ import React from "react";
 import { Button } from "../../ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../../ui/dropdown-menu";
 import { MoreVerticalIcon } from "lucide-react";
-import { RowAction } from "./types";
+import { RowAction } from "@/types/RowAction";
 
 export interface TableActionsProps<T> {
   actions: RowAction<T>[];
@@ -14,7 +14,7 @@ export function TableActions<T>({ actions, row }: TableActionsProps<T>): React.J
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground">
-          <MoreVerticalIcon className="h-4 w-4" />
+          <MoreVerticalIcon className="size-4" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent
@@ -34,8 +34,8 @@ export function TableActions<T>({ actions, row }: TableActionsProps<T>): React.J
               className={action.className}
             >
               {Icon !== undefined && (
-                <span className="mr-2 h-4 w-4 flex items-center justify-center">
-                  <Icon className="h-4 w-4" />
+                <span className="mr-2 size-4 flex items-center justify-center">
+                  <Icon className="size-4" />
                 </span>
               )}
               {action.label}

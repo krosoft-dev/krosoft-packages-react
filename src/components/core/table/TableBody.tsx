@@ -1,6 +1,7 @@
 import React from "react";
 import { Loader2Icon } from "lucide-react";
-import { ColumnDef, RowAction } from "./types";
+import { RowAction } from "@/types/RowAction";
+import { ColumnDef } from "@/types/ColumnDef";
 import { TableActions } from "./TableActions";
 
 export interface TableBodyProps<T> {
@@ -113,7 +114,7 @@ export function TableBody<T>({
             })}
             {hasActions && actions !== undefined && actions.length > 0 ? (
               <td
-                className="px-2 py-2 w-12 text-center"
+                className="px-2 py-2 w-12 text-end"
                 onClick={e => {
                   e.stopPropagation();
                 }}

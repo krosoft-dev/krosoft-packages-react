@@ -51,14 +51,14 @@ const UseThemeDemo = () => {
         <div className="flex justify-between items-center">
           <span className="text-muted-foreground">currentThemeOption</span>
           <span className="flex items-center gap-1">
-            {CurrentIcon && <CurrentIcon className="h-4 w-4" />}
+            {CurrentIcon && <CurrentIcon className="size-4" />}
             {currentThemeOption?.label ?? "—"}
           </span>
         </div>
         <div className="flex justify-between items-center">
           <span className="text-muted-foreground">nextThemeOption</span>
           <span className="flex items-center gap-1">
-            {NextIcon && <NextIcon className="h-4 w-4" />}
+            {NextIcon && <NextIcon className="size-4" />}
             {nextThemeOption?.label ?? "—"}
           </span>
         </div>
@@ -69,7 +69,7 @@ const UseThemeDemo = () => {
           className="inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary/90"
           onClick={cycleTheme}
         >
-          {NextIcon && <NextIcon className="h-4 w-4" />}
+          {NextIcon && <NextIcon className="size-4" />}
           Passer en {nextThemeOption?.label}
         </button>
       </div>
@@ -83,7 +83,7 @@ const UseThemeDemo = () => {
               onClick={() => handleThemeChange(option.value)}
               className={`inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-sm transition-colors hover:bg-accent ${theme === option.value ? "border-primary bg-primary/10 font-medium" : ""}`}
             >
-              <Icon className="h-4 w-4" />
+              <Icon className="size-4" />
               {option.label}
             </button>
           );
