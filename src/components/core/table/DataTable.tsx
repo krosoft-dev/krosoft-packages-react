@@ -1,13 +1,14 @@
 import React from "react";
+import { defaultPageSize as DEFAULT_PAGE_SIZE, pagesSizes as DEFAULT_PAGE_SIZE_OPTIONS } from "../../../constants/datatable";
+import { TableBody } from "./TableBody";
+import { TableBulkActions } from "./TableBulkActions";
+import { TableHeader } from "./TableHeader";
+import { TablePagination } from "./TablePagination";
+import { TableSettings } from "./TableSettings";
 import { DataTableProps } from "./types";
 import { useDataTable } from "./useDataTable";
-import { TablePagination } from "./TablePagination";
-import { TableBulkActions } from "./TableBulkActions";
-import { TableSettings } from "./TableSettings";
-import { TableHeader } from "./TableHeader";
-import { TableBody } from "./TableBody";
 
-export type { ColumnDef, BulkAction, DataTableProps, RowAction } from "./types";
+export type { BulkAction, ColumnDef, DataTableProps, RowAction } from "../../../types";
 
 export default function DataTable<T>({
   data,
@@ -18,10 +19,11 @@ export default function DataTable<T>({
   bulkActions,
   draggableColumns = true,
   resizableColumns = true,
+  columnVisibility = true,
   isLoading = false,
   noDataMessage = "Aucun résultat",
-  defaultPageSize = 20,
-  pageSizeOptions = [20, 50, 100],
+  defaultPageSize = DEFAULT_PAGE_SIZE,
+  pageSizeOptions = DEFAULT_PAGE_SIZE_OPTIONS,
 }: DataTableProps<T>): React.JSX.Element {
   const {
     sortColumn,
@@ -58,6 +60,7 @@ export default function DataTable<T>({
     defaultPageSize,
     actions,
     bulkActions,
+    columnVisibility,
   });
 
   return (
@@ -66,9 +69,7 @@ export default function DataTable<T>({
         <TableBulkActions selectedRows={selectedRows} setSelectedRows={setSelectedRows} bulkActions={bulkActions} />
       )}
 
-      <div className="w-full bg-card dark:bg-gray-950 rounded-md border border-gray-200 dark:border-gray-800 overflow-hidden relative">
-        <TableSettings columns={columns} visibleColumns={visibleColumns} toggleColumnVisibility={toggleColumnVisibility} />
-
+      <div className="w-full bg-card dark:bg-gray-950 rounded-md border border-gray-200 dark:border-gray-800 overflow-hidden">
         <div className="overflow-x-auto">
           <table ref={tableRef} className="w-full">
             <TableHeader
@@ -88,6 +89,7 @@ export default function DataTable<T>({
               handleDrop={handleDrop}
               handleMouseDown={handleMouseDown}
               hasActions={hasActions}
+              settingsNode={columnVisibility ? <TableSettings columns={columns} visibleColumns={visibleColumns} toggleColumnVisibility={toggleColumnVisibility} /> : undefined}
             />
             <TableBody
               isLoading={isLoading}

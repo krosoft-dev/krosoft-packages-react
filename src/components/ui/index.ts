@@ -1,4 +1,5 @@
 export { Alert, AlertTitle, AlertDescription } from "./alert";
+export { Checkbox } from "./checkbox";
 export { Button, buttonVariants } from "./button";
 export type { ButtonProps } from "./button";
 export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent } from "./card";
@@ -24,4 +25,3 @@ export { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHe
 export { Calendar } from "./calendar";
 export type { CalendarProps } from "./calendar";
 export { Popover, PopoverTrigger, PopoverContent } from "./popover";
-export { Checkbox } from "./checkbox";

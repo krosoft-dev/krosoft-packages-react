@@ -1,9 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import DataTable, { ColumnDef } from "@/components/core/table/DataTable";
-import React, { useState } from "react";
+import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { PencilIcon, TrashIcon } from "lucide-react";
-import { TableFilter } from "@/components/core/filters";
 
 const meta: Meta<typeof DataTable> = {
   title: "Core/Table/DataTable",
@@ -14,7 +13,7 @@ const meta: Meta<typeof DataTable> = {
     docs: {
       description: {
         component:
-          "Le composant `DataTable` permet d'afficher des données sous forme de tableau avec des fonctionnalités avancées (tri, sélection, menu d'actions).\n\n### Fonctionnalités\n\n- **Tri** : Cliquez sur l'en-tête d'une colonne pour trier.\n- **Réorganisation des colonnes** : Glissez et déposez l'icône de poignée dans l'en-tête.\n- **Désactivation du glisser-déposer** : Vous pouvez figer toutes les colonnes en passant `draggableColumns={false}` au composant.\n- **Redimensionnement des colonnes** : Survoler le bord droit de l'en-tête d'une colonne pour la redimensionner. Vous pouvez désactiver cette option en passant `resizableColumns={false}` au composant.",
+          "Le composant `DataTable` permet d'afficher des données sous forme de tableau avec des fonctionnalités avancées (tri, sélection, menu d'actions).\n\n### Fonctionnalités\n\n- **Tri** : Activez le tri colonne par colonne avec `sortable: true` dans `ColumnDef`. Un icône `↕` apparaît sur les colonnes triables ; `↑`/`↓` indique la colonne et le sens actifs.\n- **Réorganisation des colonnes** : Glissez et déposez l'icône de poignée dans l'en-tête.\n- **Désactivation du glisser-déposer** : Vous pouvez figer toutes les colonnes en passant `draggableColumns={false}` au composant.\n- **Redimensionnement des colonnes** : Survoler le bord droit de l'en-tête d'une colonne pour la redimensionner. Vous pouvez désactiver cette option en passant `resizableColumns={false}` au composant.",
       },
     },
   },
@@ -93,11 +92,13 @@ const columns: ColumnDef<UserData>[] = [
     key: "name",
     label: "Name",
     minWidth: 150,
+    sortable: true,
   },
   {
     key: "email",
     label: "Email",
     minWidth: 200,
+    sortable: true,
   },
   {
     key: "role",
@@ -115,6 +116,7 @@ const columns: ColumnDef<UserData>[] = [
     key: "lastLogin",
     label: "Last Login",
     minWidth: 150,
+    sortable: true,
     renderCell: row => new Date(row.lastLogin).toLocaleDateString(),
   },
 ];
@@ -303,6 +305,68 @@ export const FullFeatured: Story = {
   },
 };
 
+export const WithoutColumnVisibility: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story: "Le bouton de visibilité des colonnes est masqué via `columnVisibility={false}`.",
+      },
+    },
+  },
+  args: {
+    data: mockData,
+    columns,
+    getRowId: (row: UserData) => row.id,
+    columnVisibility: false,
+  },
+};
+
+export const WithSortableColumns: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Illustre la différence visuelle entre colonnes triables (`sortable: true`) et non triables. Les colonnes **Name**, **Email** et **Last Login** affichent l'icône `↕` et réagissent au clic. **Role** et **Status** n'ont pas d'icône et ignorent le clic.",
+      },
+    },
+  },
+  args: {
+    data: mockData,
+    columns,
+    getRowId: (row: UserData) => row.id,
+  },
+};
+
+export const AllSortable: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story: "Toutes les colonnes sont triables.",
+      },
+    },
+  },
+  args: {
+    data: mockData,
+    columns: columns.map(col => ({ ...col, sortable: true })),
+    getRowId: (row: UserData) => row.id,
+  },
+};
+
+export const NoSortable: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story: "Aucune colonne n'est triable — aucune icône ni curseur pointer sur les en-têtes.",
+      },
+    },
+  },
+  args: {
+    data: mockData,
+    columns: columns.map(({ sortable: _sortable, ...col }) => col),
+    getRowId: (row: UserData) => row.id,
+  },
+};
+
 export const FiftyRows: Story = {
   parameters: {
     docs: {
@@ -316,82 +380,4 @@ export const FiftyRows: Story = {
     columns,
     getRowId: (row: UserData) => row.id,
   },
-};
-
-const SearchAndFiltersWrapper = (): React.ReactElement => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [appliedFilters, setAppliedFilters] = useState<Record<string, unknown>>({
-    role: [],
-  });
-
-  const sections = [
-    {
-      title: "Détails",
-      filters: [
-        {
-          key: "role",
-          label: "Rôle",
-          type: "multi-select" as const,
-          isQuickFilter: true,
-          searchable: true,
-          searchPlaceholder: "Rechercher un rôle...",
-          placeholder: "Sélectionner des rôles",
-          options: [
-            { value: "admin", label: "Administrateur" },
-            { value: "user", label: "Utilisateur" },
-            { value: "guest", label: "Invité" },
-          ],
-        },
-        {
-          key: "status",
-          label: "Statut",
-          type: "select" as const,
-          placeholder: "Sélectionner un statut",
-          options: [
-            { value: "active", label: "Actif" },
-            { value: "inactive", label: "Inactif" },
-          ],
-        },
-      ],
-    },
-  ];
-
-  // Filtrer les données en fonction de la recherche, filtre rapide et filtres avancés
-  const filteredData = mockData.filter(item => {
-    // 1. Recherche textuelle
-    if (searchQuery !== "" && !item.name.toLowerCase().includes(searchQuery.toLowerCase()) && !item.email.toLowerCase().includes(searchQuery.toLowerCase())) {
-      return false;
-    }
-    // 2. Filtre rapide par rôle (Multi-sélection)
-    const roleFilter = appliedFilters.role;
-    if (Array.isArray(roleFilter) && roleFilter.length > 0 && !roleFilter.includes(item.role)) {
-      return false;
-    }
-    // 3. Filtre avancé par statut
-    const statusFilter = appliedFilters.status;
-    if (typeof statusFilter === "string" && statusFilter !== "" && item.status !== statusFilter) {
-      return false;
-    }
-    return true;
-  });
-
-  return (
-    <div className="space-y-4 p-4">
-      <TableFilter
-        searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
-        searchPlaceholder="Rechercher un utilisateur..."
-        filters={appliedFilters}
-        onFiltersChange={setAppliedFilters}
-        sections={sections}
-        advancedButtonText="Plus de filtres"
-      />
-
-      <DataTable data={filteredData} columns={columns} getRowId={(row: UserData) => row.id} />
-    </div>
-  );
-};
-
-export const WithSearchAndFilters: Story = {
-  render: () => <SearchAndFiltersWrapper />,
 };

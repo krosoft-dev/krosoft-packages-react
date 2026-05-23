@@ -2,6 +2,10 @@ import React from "react";
 import { Loader2Icon } from "lucide-react";
 import { ColumnDef, RowAction } from "./types";
 import { TableActions } from "./TableActions";
+import { RowAction } from "@/types/RowAction";
+import { ColumnDef } from "@/types/ColumnDef";
+import { TableActions } from "./TableActions";
+import { Checkbox } from "../../ui/checkbox";
 
 export interface TableBodyProps<T> {
   isLoading: boolean;
@@ -89,13 +93,11 @@ export function TableBody<T>({
                   e.stopPropagation();
                 }}
               >
-                <input
-                  type="checkbox"
+                <Checkbox
                   checked={selectedRows.includes(rowId)}
-                  onChange={e => {
-                    toggleRowSelection(rowId, e);
+                  onCheckedChange={() => {
+                    toggleRowSelection(rowId);
                   }}
-                  className="rounded border-gray-300 dark:border-gray-700"
                 />
               </td>
             ) : null}
@@ -113,7 +115,7 @@ export function TableBody<T>({
             })}
             {hasActions && actions !== undefined && actions.length > 0 ? (
               <td
-                className="px-2 py-2 w-12 text-center"
+                className="px-2 py-2 w-12 text-end"
                 onClick={e => {
                   e.stopPropagation();
                 }}

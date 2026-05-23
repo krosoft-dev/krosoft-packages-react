@@ -5,15 +5,12 @@ const meta: Meta<typeof Toast> = {
   title: "UI/Toast",
   component: Toast,
   decorators: [
-    (storyFn: () => React.ReactElement): React.ReactElement => {
-      const StoryComponent = storyFn;
-      return (
-        <ToastProvider>
-          <StoryComponent />
-          <ToastViewport />
-        </ToastProvider>
-      );
-    },
+    Story => (
+      <ToastProvider>
+        <Story />
+        <ToastViewport />
+      </ToastProvider>
+    ),
   ],
   args: {
     open: true,

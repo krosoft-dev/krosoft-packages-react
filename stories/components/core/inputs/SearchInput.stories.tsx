@@ -28,7 +28,7 @@ type Story = StoryObj<typeof SearchInput>;
 export const Default: Story = {
   args: {
     onSearch: (value: string) => {
-      console.warn("search:", value);
+      console.log("search:", value);
     },
   },
 };
@@ -37,7 +37,7 @@ export const WithValue: Story = {
   args: {
     searchQuery: "krosoft",
     onSearch: (value: string) => {
-      console.warn("search:", value);
+      console.log("search:", value);
     },
   },
 };
@@ -45,10 +45,10 @@ export const WithValue: Story = {
 export const WithSubmit: Story = {
   args: {
     onSearch: (value: string) => {
-      console.warn("search:", value);
+      console.log("search:", value);
     },
     onSubmit: () => {
-      console.warn("submit");
+      console.log("submit");
     },
   },
 };
@@ -57,10 +57,10 @@ export const WithClear: Story = {
   args: {
     searchQuery: "valeur à effacer",
     onSearch: (value: string) => {
-      console.warn("search:", value);
+      console.log("search:", value);
     },
     onClear: () => {
-      console.warn("cleared");
+      console.log("cleared");
     },
   },
 };
@@ -69,36 +69,40 @@ export const CustomPlaceholder: Story = {
   args: {
     placeholder: "Chercher un utilisateur...",
     onSearch: (value: string) => {
-      console.warn("search:", value);
+      console.log("search:", value);
     },
   },
 };
 
-const SearchInputStoryWrapper = (): React.ReactElement => {
-  const [query, setQuery] = useState("");
-  return (
-    <div className="flex flex-col gap-4">
-      <div className="flex justify-between">
-        <SearchInput
-          searchQuery={query}
-          onSearch={setQuery}
-          onClear={() => {
-            setQuery("");
-          }}
-          onSubmit={() => {
-            console.warn("submitted:", query);
-          }}
-        />
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => {
-            setQuery("");
-          }}
-          disabled={query === ""}
-        >
-          <FilterXIcon /> Réinitialiser les filtres
-        </Button>
+export const Interactive: Story = {
+  render: () => {
+    const [query, setQuery] = useState("");
+    return (
+      <div className="flex flex-col gap-4">
+        <div className="flex justify-between">
+          <SearchInput
+            searchQuery={query}
+            onSearch={setQuery}
+            onClear={() => {
+              setQuery("");
+            }}
+            onSubmit={() => {
+              console.log("submitted:", query);
+            }}
+          />
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              setQuery("");
+            }}
+            disabled={query === ""}
+          >
+            <FilterXIcon /> Réinitialiser les filtres
+          </Button>
+        </div>
+
+        <p className="text-sm text-muted-foreground">Valeur : {query || "(vide)"}</p>
       </div>
 
       <p className="text-sm text-muted-foreground">Valeur : {query !== "" ? query : "(vide)"}</p>

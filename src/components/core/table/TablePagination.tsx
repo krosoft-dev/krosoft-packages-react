@@ -58,7 +58,7 @@ export function TablePagination({
             }}
             disabled={currentPage === 1}
           >
-            <ChevronLeftIcon className="h-4 w-4" />
+            <ChevronLeftIcon className="size-4" />
           </Button>
           <span className="text-sm text-gray-500 dark:text-gray-400">
             Page {currentPage} sur {totalPages}
@@ -72,7 +72,7 @@ export function TablePagination({
             }}
             disabled={currentPage === totalPages}
           >
-            <ChevronRightIcon className="h-4 w-4" />
+            <ChevronRightIcon className="size-4" />
           </Button>
         </div>
       </div>
