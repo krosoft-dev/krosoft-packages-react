@@ -305,6 +305,22 @@ export const FullFeatured: Story = {
   },
 };
 
+export const WithoutColumnVisibility: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story: "Le bouton de visibilité des colonnes est masqué via `columnVisibility={false}`.",
+      },
+    },
+  },
+  args: {
+    data: mockData,
+    columns,
+    getRowId: (row: UserData) => row.id,
+    columnVisibility: false,
+  },
+};
+
 export const WithSortableColumns: Story = {
   parameters: {
     docs: {

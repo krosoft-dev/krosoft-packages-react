@@ -3,7 +3,7 @@ import { UseDataTableProps } from "@/types/UseDataTableProps";
 import { UseDataTableResult } from "@/types/UseDataTableResult";
 import { ColumnDef } from "@/types/ColumnDef";
 
-export function useDataTable<T>({ data, columns, getRowId, defaultPageSize, actions, bulkActions }: UseDataTableProps<T>): UseDataTableResult<T> {
+export function useDataTable<T>({ data, columns, getRowId, defaultPageSize, actions, bulkActions, columnVisibility = true }: UseDataTableProps<T>): UseDataTableResult<T> {
   const [sortColumn, setSortColumn] = useState<string | null>(columns.find(col => col.sortable === true)?.key ?? null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
@@ -33,7 +33,7 @@ export function useDataTable<T>({ data, columns, getRowId, defaultPageSize, acti
     return orderedColumns.filter(col => visibleColumns.has(col.key));
   }, [orderedColumns, visibleColumns]);
 
-  const colSpanCount = visibleColumnsArray.length + (hasBulkActions ? 1 : 0) + (hasActions ? 1 : 0);
+  const colSpanCount = visibleColumnsArray.length + (hasBulkActions ? 1 : 0) + (hasActions || columnVisibility ? 1 : 0);
 
   const totalPages = Math.max(1, Math.ceil(data.length / pageSize));
   const safeCurrentPage = currentPage > totalPages ? totalPages : currentPage;

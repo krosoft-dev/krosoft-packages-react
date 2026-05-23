@@ -9,4 +9,5 @@ export interface UseDataTableProps<T> {
   defaultPageSize: number;
   actions?: RowAction<T>[];
   bulkActions?: BulkAction[];
+  columnVisibility?: boolean;
 }

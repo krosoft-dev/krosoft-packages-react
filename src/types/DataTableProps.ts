@@ -11,6 +11,7 @@ export interface DataTableProps<T> {
   bulkActions?: BulkAction[]; // Actions rapides pour la sélection multiple
   draggableColumns?: boolean; // Permet d'activer/désactiver le drag and drop des colonnes
   resizableColumns?: boolean; // Permet d'activer/désactiver le redimensionnement des colonnes
+  columnVisibility?: boolean; // Permet d'activer/désactiver le bouton de visibilité des colonnes
   isLoading?: boolean; // Indique si les données sont en cours de chargement
   noDataMessage?: string; // Message affiché lorsque le tableau est vide
   defaultPageSize?: number; // Nombre par défaut de lignes par page

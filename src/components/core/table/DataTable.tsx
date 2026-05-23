@@ -1,6 +1,7 @@
 import React from "react";
 import { DataTableProps } from "@/types/DataTableProps";
 import { useDataTable } from "../../../hooks/ui/useDataTable";
+import { defaultPageSize as DEFAULT_PAGE_SIZE, pagesSizes as DEFAULT_PAGE_SIZE_OPTIONS } from "../../../constants/datatable";
 import { TablePagination } from "./TablePagination";
 import { TableBulkActions } from "./TableBulkActions";
 import { TableSettings } from "./TableSettings";
@@ -18,10 +19,11 @@ export default function DataTable<T>({
   bulkActions,
   draggableColumns = true,
   resizableColumns = true,
+  columnVisibility = true,
   isLoading = false,
   noDataMessage = "Aucun résultat",
-  defaultPageSize = 20,
-  pageSizeOptions = [20, 50, 100],
+  defaultPageSize = DEFAULT_PAGE_SIZE,
+  pageSizeOptions = DEFAULT_PAGE_SIZE_OPTIONS,
 }: DataTableProps<T>): React.JSX.Element {
   const {
     sortColumn,
@@ -58,6 +60,7 @@ export default function DataTable<T>({
     defaultPageSize,
     actions,
     bulkActions,
+    columnVisibility,
   });
 
   return (
@@ -86,7 +89,7 @@ export default function DataTable<T>({
               handleDrop={handleDrop}
               handleMouseDown={handleMouseDown}
               hasActions={hasActions}
-              settingsNode={<TableSettings columns={columns} visibleColumns={visibleColumns} toggleColumnVisibility={toggleColumnVisibility} />}
+              settingsNode={columnVisibility ? <TableSettings columns={columns} visibleColumns={visibleColumns} toggleColumnVisibility={toggleColumnVisibility} /> : undefined}
             />
             <TableBody
               isLoading={isLoading}

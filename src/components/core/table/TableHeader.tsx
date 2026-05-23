@@ -119,8 +119,7 @@ export function TableHeader<T>({
           </th>
         ) : null}
         {visibleColumnsArray.map(column => renderColumnHeader(column, draggableColumns))}
-        {hasActions ? <th className="w-12 px-2 py-2" /> : null}
-        {settingsNode !== undefined ? (
+        {(hasActions || settingsNode !== undefined) ? (
           <th className="w-12 px-2 py-2 text-center align-middle">
             {settingsNode}
           </th>
