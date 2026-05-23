@@ -37,10 +37,10 @@ const FakeActions = ({ theme, setTheme }: { theme: string; setTheme: (t: string)
       }}
       className="text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
     >
-      {theme === "dark" ? <MoonIcon className="h-4 w-4" /> : <SunIcon className="h-4 w-4" />}
+      {theme === "dark" ? <MoonIcon className="size-4" /> : <SunIcon className="size-4" />}
     </Button>
     <Button size="icon" variant="ghost" className="relative text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground">
-      <BellIcon className="h-4 w-4" />
+      <BellIcon className="size-4" />
       <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full" />
     </Button>
   </>
