@@ -1,8 +1,8 @@
 import React from "react";
 import { Input, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui";
-import { DatePicker } from "./DatePicker";
-import { MultiSelectField } from "./MultiSelectField";
-import { SearchableSelect } from "./SearchableSelect";
+import { DatePicker } from "@/components/core/inputs/DatePicker";
+import { MultiSelect } from "@/components/core/inputs/MultiSelect";
+import { SearchableSelect } from "@/components/core/inputs/SearchableSelect";
 import type { FilterFieldConfig } from "./TableFilter";
 import { cn } from "@/helpers/tailwind.helper";
 
@@ -72,7 +72,7 @@ export const FilterField = ({ field, value, onChange, onToggleMultiSelect }: Fil
 
     case "multi-select":
       return (
-        <MultiSelectField
+        <MultiSelect
           options={field.options ?? []}
           selected={(value as string[] | undefined) ?? []}
           onToggle={onToggleMultiSelect}

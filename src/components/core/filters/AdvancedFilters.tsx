@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Button, Label, Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetFooter } from "@/components/ui";
 import { Filter } from "lucide-react";
-import { FilterSection } from "./types";
+import { FilterSection } from "@/types/FilterSection";
 import { FilterField } from "./FilterField";
 
 export interface AdvancedFiltersProps {

@@ -3,7 +3,8 @@ import { SearchInput } from "../inputs/SearchInput";
 import { SearchableFilterPill, FilterOption } from "./SearchableFilterPill";
 import { ActiveFilters } from "./ActiveFilters";
 import { AdvancedFilters } from "./AdvancedFilters";
-import { FilterFieldConfig, FilterSection } from "./types";
+import { FilterSection } from "@/types/FilterSection";
+import { FilterFieldConfig } from "@/types/FilterFieldConfig";
 
 interface TableFilterProps {
   // Recherche

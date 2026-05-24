@@ -3,7 +3,7 @@ import { Button, Checkbox } from "@/components/ui";
 import { ChevronDown, Search } from "lucide-react";
 import { cn } from "@/helpers/tailwind.helper";
 
-interface MultiSelectFieldProps {
+interface MultiSelectProps {
   options: { value: string; label: string }[];
   selected: string[];
   onToggle: (val: string) => void;
@@ -14,7 +14,7 @@ interface MultiSelectFieldProps {
   searchPlaceholder?: string;
 }
 
-export const MultiSelectField = ({
+export const MultiSelect = ({
   options,
   selected,
   onToggle,
@@ -23,7 +23,7 @@ export const MultiSelectField = ({
   placeholder = "Sélectionner...",
   searchable = false,
   searchPlaceholder = "Rechercher...",
-}: MultiSelectFieldProps): React.ReactElement => {
+}: MultiSelectProps): React.ReactElement => {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);

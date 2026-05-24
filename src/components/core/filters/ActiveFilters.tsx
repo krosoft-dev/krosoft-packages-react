@@ -1,5 +1,5 @@
 import { Badge } from "@/components/ui";
-import { X } from "lucide-react";
+import { XIcon } from "lucide-react";
 
 interface ActiveFiltersProps {
   filters: Record<string, unknown>;
@@ -18,13 +18,6 @@ const getFilterDisplayValue = (key: string, value: unknown, optionLabels: Record
   const resolvedLabel = optionLabels[`${key}_${strValue}`] as string | undefined;
   if (resolvedLabel !== undefined) return resolvedLabel;
 
-  // Formatage spécifique selon le type de filtre
-  if (key.includes("budget") || key.includes("Budget")) {
-    return `${strValue}€`;
-  }
-  if (key.includes("surface") || key.includes("Surface")) {
-    return `${strValue}m²`;
-  }
   if (key.includes("ok") || value === "true" || value === "false") {
     return value === "true" ? "Oui" : "Non";
   }
@@ -63,7 +56,7 @@ export function ActiveFilters({ filters, onRemoveFilter, onClearAll, filterLabel
                   }}
                   className="ml-1 hover:bg-blue-200 rounded-full p-0.5"
                 >
-                  <X className="size-3" />
+                  <XIcon className="size-4" />
                 </button>
               </Badge>
             );
@@ -80,7 +73,7 @@ export function ActiveFilters({ filters, onRemoveFilter, onClearAll, filterLabel
               }}
               className="ml-1 hover:bg-blue-200 rounded-full p-0.5"
             >
-              <X className="size-3" />
+              <XIcon className="size-4" />
             </button>
           </Badge>
         );
