@@ -1,8 +1,8 @@
-import { Card, CardContent, CardHeader, CardTitle } from "../../ui";
-import React from "react";
 import { formatNumber } from "@krosoft/core/helpers";
+import React from "react";
 import { useTranslation } from "react-i18next";
 import { cn } from "../../../helpers/tailwind.helper";
+import { Card, CardContent, CardHeader, CardTitle } from "../../ui";
 
 export interface KpiCardProps {
   titleKey: string;
@@ -15,16 +15,23 @@ export interface KpiCardProps {
   onClick?: () => void;
 }
 
-export const KpiCard = ({ titleKey, value, valueClassName, icon: theIcon, iconClassName, description, descriptionClassName, onClick }: KpiCardProps) => {
+export const KpiCard = ({
+  titleKey,
+  value,
+  valueClassName,
+  icon: Icon,
+  iconClassName,
+  description,
+  descriptionClassName,
+  onClick,
+}: KpiCardProps): React.ReactElement => {
   const { t } = useTranslation();
 
   return (
-    <Card className={cn(onClick ? "hover:border-primary cursor-pointer" : "")} onClick={onClick}>
+    <Card className={cn(onClick !== undefined ? "hover:border-primary cursor-pointer" : "")} onClick={onClick}>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium">{t(titleKey)}</CardTitle>
-        {React.createElement(theIcon, {
-          className: cn("size-6 text-muted-foreground", iconClassName),
-        })}
+        <Icon className={cn("size-6 text-muted-foreground", iconClassName)} />
       </CardHeader>
       <CardContent>
         <div className={cn("text-2xl font-bold", valueClassName)}>{formatNumber(value)}</div>

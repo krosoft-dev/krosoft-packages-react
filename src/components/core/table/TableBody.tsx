@@ -1,9 +1,9 @@
-import React from "react";
+import { Checkbox } from "@/components/ui";
 import { Loader2Icon } from "lucide-react";
-import { RowAction } from "@/types/RowAction";
-import { ColumnDef } from "@/types/ColumnDef";
+import React from "react";
 import { TableActions } from "./TableActions";
-import { Checkbox } from "../../ui/checkbox";
+import { ColumnDef, RowAction } from "@/types";
+export type { BulkAction, ColumnDef, RowAction } from "../../../types";
 
 export interface TableBodyProps<T> {
   isLoading: boolean;

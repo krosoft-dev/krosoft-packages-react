@@ -1,7 +1,7 @@
+import { ColumnDef } from "@/types";
+import { ArrowDownIcon, ArrowUpDownIcon, ArrowUpIcon, GripVerticalIcon } from "lucide-react";
 import React from "react";
 import { Checkbox } from "../../ui/checkbox";
-import { ArrowUpIcon, ArrowDownIcon, ArrowUpDownIcon, GripVerticalIcon } from "lucide-react";
-import { ColumnDef } from "@/types/ColumnDef";
 
 export interface TableHeaderProps<T> {
   hasBulkActions: boolean;
@@ -45,11 +45,7 @@ export function TableHeader<T>({
   const getSortIcon = (column: ColumnDef<T>): React.ReactNode => {
     if (column.sortable !== true) return null;
     if (sortColumn === column.key) {
-      return sortDirection === "asc" ? (
-        <ArrowUpIcon className="size-3.5 text-foreground" />
-      ) : (
-        <ArrowDownIcon className="size-3.5 text-foreground" />
-      );
+      return sortDirection === "asc" ? <ArrowUpIcon className="size-3.5 text-foreground" /> : <ArrowDownIcon className="size-3.5 text-foreground" />;
     }
     return <ArrowUpDownIcon className="size-3.5 text-muted-foreground/50 group-hover:text-muted-foreground transition-colors" />;
   };
@@ -119,11 +115,7 @@ export function TableHeader<T>({
           </th>
         ) : null}
         {visibleColumnsArray.map(column => renderColumnHeader(column, draggableColumns))}
-        {(hasActions || settingsNode !== undefined) ? (
-          <th className="w-12 px-2 py-2 text-center align-middle">
-            {settingsNode}
-          </th>
-        ) : null}
+        {hasActions || settingsNode !== undefined ? <th className="w-12 px-2 py-2 text-center align-middle">{settingsNode}</th> : null}
       </tr>
     </thead>
   );

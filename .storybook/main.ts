@@ -1,9 +1,8 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import type { StorybookConfig } from "@storybook/react-vite";
 import { fileURLToPath } from "url";
-import path from "path";
 
 const srcDir = fileURLToPath(new URL("../src", import.meta.url));
-const mocksDir = fileURLToPath(new URL("./mocks", import.meta.url));
 
 const config: StorybookConfig = {
   stories: ["../stories/**/*.stories.@(ts|tsx)"],
@@ -12,16 +11,20 @@ const config: StorybookConfig = {
     name: "@storybook/react-vite",
     options: {},
   },
-  viteFinal: async (config) => {
-    config.resolve = {
-      ...config.resolve,
-      alias: {
-        ...config.resolve?.alias,
-        "@": srcDir,
-        "react-i18next": path.resolve(mocksDir, "react-i18next.tsx"),
-        "@krosoft/core/helpers": path.resolve(mocksDir, "krosoft-core-helpers.ts"),
-      },
-    };
+  viteFinal: config => {
+    const alias = config.resolve?.alias;
+
+    if (Array.isArray(alias)) {
+      alias.push({ find: "@", replacement: srcDir });
+    } else {
+      config.resolve = {
+        ...config.resolve,
+        alias: {
+          ...(alias as Record<string, string>),
+          "@": srcDir,
+        },
+      };
+    }
     return config;
   },
 };

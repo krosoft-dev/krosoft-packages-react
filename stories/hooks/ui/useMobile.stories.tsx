@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { useMobile } from "@/hooks/ui/useMobile";
 
-const MobileDemo = () => {
+const MobileDemo = (): React.ReactElement => {
   const isMobile = useMobile();
 
   return (

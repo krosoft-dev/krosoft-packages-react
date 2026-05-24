@@ -3,15 +3,15 @@ import { Toast, ToastClose, ToastDescription, ToastProvider, ToastTitle, ToastVi
 import { useNotifications } from "@/hooks/ui/useNotifications";
 import { useToast } from "@/hooks/ui/useToast";
 
-const Toaster = () => {
+const Toaster = (): React.ReactElement => {
   const { toasts } = useToast();
   return (
     <>
       {toasts.map(({ id, title, description, action, ...props }) => (
         <Toast key={id} {...props}>
           <div className="grid gap-1">
-            {title ? <ToastTitle>{title}</ToastTitle> : null}
-            {description ? <ToastDescription>{description}</ToastDescription> : null}
+            {title !== undefined && title !== "" ? <ToastTitle>{title}</ToastTitle> : null}
+            {description !== undefined && description !== "" ? <ToastDescription>{description}</ToastDescription> : null}
           </div>
           {action}
           <ToastClose />
@@ -22,7 +22,7 @@ const Toaster = () => {
   );
 };
 
-const NotificationsDemo = () => {
+const NotificationsDemo = (): React.ReactElement => {
   const { showSuccess, showError } = useNotifications();
 
   return (
@@ -60,11 +60,14 @@ const meta: Meta<typeof NotificationsDemo> = {
   title: "Hooks/useNotifications",
   component: NotificationsDemo,
   decorators: [
-    Story => (
-      <ToastProvider>
-        <Story />
-      </ToastProvider>
-    ),
+    (storyFn: () => React.ReactElement): React.ReactElement => {
+      const StoryComponent = storyFn;
+      return (
+        <ToastProvider>
+          <StoryComponent />
+        </ToastProvider>
+      );
+    },
   ],
 };
 

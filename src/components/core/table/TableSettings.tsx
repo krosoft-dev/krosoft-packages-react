@@ -18,19 +18,19 @@ export function TableSettings<T>({ columns, visibleColumns, toggleColumnVisibili
           <SettingsIcon className="size-4 text-gray-600 dark:text-gray-300" />
         </Button>
       </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-56">
-          {columns.map(column => (
-            <DropdownMenuCheckboxItem
-              key={column.key}
-              checked={visibleColumns.has(column.key)}
-              onCheckedChange={() => {
-                toggleColumnVisibility(column.key);
-              }}
-            >
-              {column.label}
-            </DropdownMenuCheckboxItem>
-          ))}
-        </DropdownMenuContent>
+      <DropdownMenuContent align="end" className="w-56">
+        {columns.map(column => (
+          <DropdownMenuCheckboxItem
+            key={column.key}
+            checked={visibleColumns.has(column.key)}
+            onCheckedChange={() => {
+              toggleColumnVisibility(column.key);
+            }}
+          >
+            {column.label}
+          </DropdownMenuCheckboxItem>
+        ))}
+      </DropdownMenuContent>
     </DropdownMenu>
   );
 }

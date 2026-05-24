@@ -1,6 +1,4 @@
-export { default as DataTable } from "./DataTable";
-export * from "../../../types";
-export * from "../../../hooks/ui/useDataTable";
+export * from "./DataTable";
 export * from "./TablePagination";
 export * from "./TableBulkActions";
 export * from "./TableSettings";

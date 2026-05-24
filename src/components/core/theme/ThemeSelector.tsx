@@ -1,3 +1,4 @@
+import React from "react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -8,7 +9,7 @@ interface ThemeSelectorProps {
   variant?: "select" | "mini";
 }
 
-export function ThemeSelector({ themeOptions, variant = "select" }: ThemeSelectorProps) {
+export function ThemeSelector({ themeOptions, variant = "select" }: ThemeSelectorProps): React.JSX.Element {
   const { theme, handleThemeChange, currentThemeOption, nextThemeOption, cycleTheme } = useTheme(themeOptions);
 
   if (variant === "mini") {

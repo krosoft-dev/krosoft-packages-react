@@ -3,7 +3,15 @@ import { UseDataTableProps } from "@/types/UseDataTableProps";
 import { UseDataTableResult } from "@/types/UseDataTableResult";
 import { ColumnDef } from "@/types/ColumnDef";
 
-export function useDataTable<T>({ data, columns, getRowId, defaultPageSize, actions, bulkActions, columnVisibility = true }: UseDataTableProps<T>): UseDataTableResult<T> {
+export function useDataTable<T>({
+  data,
+  columns,
+  getRowId,
+  defaultPageSize,
+  actions,
+  bulkActions,
+  columnVisibility = true,
+}: UseDataTableProps<T>): UseDataTableResult<T> {
   const [sortColumn, setSortColumn] = useState<string | null>(columns.find(col => col.sortable === true)?.key ?? null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
