@@ -1,0 +1,56 @@
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { cn } from "@krosoft/react/helpers";
+import { useTranslation } from "react-i18next";
+import { useSearchParams } from "react-router-dom";
+
+export interface AppTab<T = unknown> {
+  value: string;
+  labelKey: string;
+  icon?: React.ElementType;
+  component: (x: string) => React.JSX.Element;
+  disabled?: boolean;
+  count?: (x: T | null) => number;
+}
+
+export interface AppTabsProps<T = unknown> {
+  tabs: AppTab<T>[];
+  itemId?: string | null;
+  item?: T | null;
+  fit?: boolean;
+}
+
+export function AppTabs({ tabs, itemId, item, fit }: AppTabsProps): React.JSX.Element {
+  const { t } = useTranslation();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeTab = searchParams.get("tab") || tabs[0]?.value;
+
+  const handleTabChange = (value: string) => {
+    const newSearchParams = new URLSearchParams();
+    newSearchParams.set("tab", value);
+    setSearchParams(newSearchParams);
+  };
+
+  return (
+    <Tabs value={activeTab} onValueChange={handleTabChange}>
+      <TabsList className={cn("w-full justify-start", fit && "sm:w-fit")}>
+        {tabs.map(tab => (
+          <TabsTrigger key={tab.value} value={tab.value} className="gap-2" disabled={tab.disabled}>
+            {tab.icon ? (
+              <span className="hidden sm:inline">
+                <tab.icon className="size-4" />
+              </span>
+            ) : null}
+            <span className="text-xs sm:text-sm">{t(tab.labelKey) ?? ""}</span>
+            {tab.count ? <span className="text-gray-500 text-xs">({tab.count(item)})</span> : null}
+          </TabsTrigger>
+        ))}
+      </TabsList>
+
+      {tabs.map(tab => (
+        <TabsContent key={tab.value} value={tab.value} className="mt-4">
+          {tab.component(itemId)}
+        </TabsContent>
+      ))}
+    </Tabs>
+  );
+}
