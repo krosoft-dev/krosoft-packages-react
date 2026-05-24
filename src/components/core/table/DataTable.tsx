@@ -5,9 +5,8 @@ import { TableBulkActions } from "./TableBulkActions";
 import { TableHeader } from "./TableHeader";
 import { TablePagination } from "./TablePagination";
 import { TableSettings } from "./TableSettings";
-import { DataTableProps } from "./types";
-import { useDataTable } from "./useDataTable";
-
+import { DataTableProps } from "../../../types";
+import { useDataTable } from "@/hooks/ui/useDataTable";
 export type { BulkAction, ColumnDef, DataTableProps, RowAction } from "../../../types";
 
 export default function DataTable<T>({
@@ -89,7 +88,11 @@ export default function DataTable<T>({
               handleDrop={handleDrop}
               handleMouseDown={handleMouseDown}
               hasActions={hasActions}
-              settingsNode={columnVisibility ? <TableSettings columns={columns} visibleColumns={visibleColumns} toggleColumnVisibility={toggleColumnVisibility} /> : undefined}
+              settingsNode={
+                columnVisibility ? (
+                  <TableSettings columns={columns} visibleColumns={visibleColumns} toggleColumnVisibility={toggleColumnVisibility} />
+                ) : undefined
+              }
             />
             <TableBody
               isLoading={isLoading}

@@ -104,12 +104,6 @@ export const Interactive: Story = {
 
         <p className="text-sm text-muted-foreground">Valeur : {query || "(vide)"}</p>
       </div>
-
-      <p className="text-sm text-muted-foreground">Valeur : {query !== "" ? query : "(vide)"}</p>
-    </div>
-  );
-};
-
-export const Interactive: Story = {
-  render: () => <SearchInputStoryWrapper />,
+    );
+  },
 };
