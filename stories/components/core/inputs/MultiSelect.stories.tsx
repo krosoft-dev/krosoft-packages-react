@@ -76,6 +76,30 @@ export const ManyOptions: Story = {
   },
 };
 
+export const WithClearIcon: Story = {
+  render: () => {
+    const [selected, setSelected] = useState<string[]>(["paris", "lyon", "nice"]);
+    return (
+      <div className="w-72 pb-72 space-y-2">
+        <MultiSelect
+          options={VILLES}
+          selected={selected}
+          onToggle={val => {
+            setSelected(prev => (prev.includes(val) ? prev.filter(v => v !== val) : [...prev, val]));
+          }}
+          onClear={() => {
+            setSelected([]);
+          }}
+          placeholder="Sélectionner des villes"
+        />
+        <p className="text-xs text-muted-foreground">
+          {selected.length === 0 ? "Sélection vidée via le ×" : `Sélectionnés : ${selected.join(", ")}`}
+        </p>
+      </div>
+    );
+  },
+};
+
 export const Interactive: Story = {
   render: () => {
     const [selected, setSelected] = useState<string[]>([]);

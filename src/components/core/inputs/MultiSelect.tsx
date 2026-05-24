@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import { Button, Checkbox } from "@/components/ui";
-import { ChevronDown, Search } from "lucide-react";
+import { ChevronDown, Search, X } from "lucide-react";
 import { cn } from "@/helpers/tailwind.helper";
 
 interface MultiSelectProps {
@@ -111,7 +111,21 @@ export const MultiSelect = ({
         )}
       >
         <span className="truncate">{selected.length === 0 ? placeholder : selected.map(s => options.find(o => o.value === s)?.label ?? s).join(", ")}</span>
-        <ChevronDown className={cn("h-4 w-4 opacity-50 shrink-0 transition-transform", open && "rotate-180")} />
+        <div className="flex shrink-0 items-center gap-1">
+          {selected.length > 0 && (
+            <span
+              role="button"
+              onClick={e => {
+                e.stopPropagation();
+                onClear();
+              }}
+              className="rounded-full p-0.5 opacity-50 transition-opacity hover:opacity-100"
+            >
+              <X className="h-3.5 w-3.5" />
+            </span>
+          )}
+          <ChevronDown className={cn("h-4 w-4 opacity-50 transition-transform", open && "rotate-180")} />
+        </div>
       </Button>
 
       {open ? (

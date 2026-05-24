@@ -106,6 +106,12 @@ const SECTIONS_COMPLETES: FilterSection[] = [
         type: "date",
         placeholder: "Sélectionner une date",
       },
+      {
+        key: "periodeMission",
+        label: "Période de mission",
+        type: "date-range",
+        placeholder: "Sélectionner une période",
+      },
     ],
   },
 ];
@@ -124,6 +130,32 @@ export default meta;
 type Story = StoryObj<typeof AdvancedFilters>;
 
 export const Default: Story = {};
+
+export const WithDateRange: Story = {
+  args: {
+    sections: [
+      {
+        title: "Dates",
+        filters: [
+          {
+            key: "dateCreation",
+            label: "Date de création",
+            type: "date",
+            placeholder: "Sélectionner une date",
+          },
+          {
+            key: "periodeMission",
+            label: "Période de mission",
+            type: "date-range",
+            placeholder: "Sélectionner une période",
+          },
+        ],
+      },
+    ],
+    buttonText: "Filtres de dates",
+    sheetTitle: "Filtrer par dates",
+  },
+};
 
 export const MultipleSections: Story = {
   args: {

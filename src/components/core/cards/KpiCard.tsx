@@ -1,8 +1,8 @@
-import { Card, CardContent, CardHeader, CardTitle } from "../../ui";
-import React from "react";
 import { formatNumber } from "@krosoft/core/helpers";
+import React from "react";
 import { useTranslation } from "react-i18next";
 import { cn } from "../../../helpers/tailwind.helper";
+import { Card, CardContent, CardHeader, CardTitle } from "../../ui";
 
 export interface KpiCardProps {
   titleKey: string;
@@ -19,7 +19,7 @@ export const KpiCard = ({
   titleKey,
   value,
   valueClassName,
-  icon: theIcon,
+  icon: Icon,
   iconClassName,
   description,
   descriptionClassName,
@@ -31,9 +31,7 @@ export const KpiCard = ({
     <Card className={cn(onClick !== undefined ? "hover:border-primary cursor-pointer" : "")} onClick={onClick}>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="text-sm font-medium">{t(titleKey)}</CardTitle>
-        {React.createElement(theIcon, {
-          className: cn("size-6 text-muted-foreground", iconClassName),
-        })}
+        <Icon className={cn("size-6 text-muted-foreground", iconClassName)} />
       </CardHeader>
       <CardContent>
         <div className={cn("text-2xl font-bold", valueClassName)}>{formatNumber(value)}</div>

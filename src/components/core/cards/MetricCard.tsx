@@ -1,5 +1,4 @@
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
-import type { LucideIcon } from "lucide-react";
 import * as React from "react";
 
 const colorClasses = {
@@ -30,7 +29,7 @@ export interface MetricCardProps {
   value: string | number;
   unit?: string;
   subtitle?: string;
-  icon: LucideIcon;
+  icon: React.ElementType;
   iconSize?: MetricCardIconSize;
   trend?: "up" | "down" | "stable";
   trendValue?: string;
@@ -50,7 +49,7 @@ const getTrendColor = (trend?: MetricCardProps["trend"]): string => {
   return "text-muted-foreground";
 };
 
-export const MetricCard = ({ title, value, unit, subtitle, icon, iconSize = "sm", trend, trendValue, color = "blue", children }: MetricCardProps) => {
+export const MetricCard = ({ title, value, unit, subtitle, icon, iconSize = "md", trend, trendValue, color = "blue", children }: MetricCardProps) => {
   const Icon = icon;
 
   return (

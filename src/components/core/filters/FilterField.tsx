@@ -1,8 +1,10 @@
 import React from "react";
 import { Input, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui";
 import { DatePicker } from "@/components/core/inputs/DatePicker";
+import { DateRangePicker } from "@/components/core/inputs/DateRangePicker";
 import { MultiSelect } from "@/components/core/inputs/MultiSelect";
 import { SearchableSelect } from "@/components/core/inputs/SearchableSelect";
+import type { DateRange } from "react-day-picker";
 import type { FilterFieldConfig } from "./TableFilter";
 import { cn } from "@/helpers/tailwind.helper";
 
@@ -69,6 +71,9 @@ export const FilterField = ({ field, value, onChange, onToggleMultiSelect }: Fil
 
     case "date":
       return <DatePicker date={value as Date | undefined} onDateChange={onChange} placeholder={field.placeholder ?? "Sélectionner une date"} />;
+
+    case "date-range":
+      return <DateRangePicker value={value as DateRange | undefined} onChange={onChange} placeholder={field.placeholder} />;
 
     case "multi-select":
       return (
