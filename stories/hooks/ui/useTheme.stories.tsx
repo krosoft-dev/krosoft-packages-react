@@ -1,17 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { ThemeProvider } from "next-themes";
-import { MonitorIcon, MoonIcon, SparklesIcon, SunIcon, WavesIcon } from "lucide-react";
-import { useTheme, type ThemeOption } from "@/hooks/ui/useTheme";
+import { useTheme } from "@/hooks/ui/useTheme";
 import { Toast, ToastClose, ToastDescription, ToastProvider, ToastTitle, ToastViewport } from "@/components/ui/toast";
 import { useToast } from "@/hooks/ui/useToast";
-
-const DEMO_THEME_OPTIONS: ThemeOption[] = [
-  { value: "system", label: "Automatique", icon: MonitorIcon },
-  { value: "light", label: "Clair", icon: SunIcon },
-  { value: "dark", label: "Sombre", icon: MoonIcon },
-  { value: "dark-temporal", label: "Temporal", icon: SparklesIcon },
-  { value: "dark-ocean", label: "Ocean", icon: WavesIcon },
-];
+import { DEMO_THEME_OPTIONS } from "../../constants/themes";
 
 const Toaster = () => {
   const { toasts } = useToast();

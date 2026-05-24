@@ -26,20 +26,20 @@ export function TablePagination({
   totalPages,
 }: TablePaginationProps): React.JSX.Element {
   return (
-    <div className="px-4 py-2 border-t border-gray-200 dark:border-gray-800 flex items-center justify-between bg-card dark:bg-gray-950 flex-wrap gap-2">
-      <div className="text-sm text-gray-500 dark:text-gray-400">
+    <div className="px-4 py-2 border-t border-border flex items-center justify-between bg-card flex-wrap gap-2">
+      <div className="text-sm text-muted-foreground">
         {totalItems === 0 ? "0" : `${String(startIndex + 1)} - ${String(endIndex)}`} sur {totalItems}
       </div>
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2">
-          <span className="text-sm text-gray-500 dark:text-gray-400">Lignes par page :</span>
+          <span className="text-sm text-muted-foreground">Lignes par page :</span>
           <select
             value={pageSize}
             onChange={e => {
               setPageSize(Number(e.target.value));
               setCurrentPage(1);
             }}
-            className="border border-gray-300 dark:border-gray-700 dark:bg-gray-900 rounded px-2 py-1 text-sm text-foreground"
+            className="border border-input bg-background rounded px-2 py-1 text-sm text-foreground"
           >
             {pageSizeOptions.map(option => (
               <option key={option} value={option}>
@@ -60,7 +60,7 @@ export function TablePagination({
           >
             <ChevronLeftIcon className="size-4" />
           </Button>
-          <span className="text-sm text-gray-500 dark:text-gray-400">
+          <span className="text-sm text-muted-foreground">
             Page {currentPage} sur {totalPages}
           </span>
           <Button

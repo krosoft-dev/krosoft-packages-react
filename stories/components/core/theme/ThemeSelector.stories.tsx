@@ -1,17 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { ThemeProvider } from "next-themes";
-import { MonitorIcon, MoonIcon, SparklesIcon, SunIcon, WavesIcon } from "lucide-react";
 import { ThemeSelector } from "@/components/core/theme/ThemeSelector";
 import { ToastProvider } from "@/components/ui/toast";
-import type { ThemeOption } from "@/hooks/ui/useTheme";
-
-const DEMO_THEME_OPTIONS: ThemeOption[] = [
-  { value: "system", label: "Automatique", icon: MonitorIcon, message: "Suit les preferences systeme" },
-  { value: "light", label: "Clair", icon: SunIcon },
-  { value: "dark", label: "Sombre", icon: MoonIcon },
-  { value: "dark-temporal", label: "Temporal", icon: SparklesIcon },
-  { value: "dark-ocean", label: "Ocean", icon: WavesIcon },
-];
+import { DEMO_THEME_OPTIONS } from "../../../constants/themes";
+import { ThemeOption } from "@/components";
+import { SunIcon, MoonIcon } from "lucide-react";
 
 const TWO_THEME_OPTIONS: ThemeOption[] = [
   { value: "light", label: "Clair", icon: SunIcon },
