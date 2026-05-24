@@ -21,6 +21,10 @@ const meta: Meta<typeof MetricCard> = {
       control: "select",
       options: [undefined, "up", "down", "stable"],
     },
+    iconSize: {
+      control: "select",
+      options: ["sm", "md", "lg"],
+    },
   },
 };
 
@@ -64,6 +68,40 @@ export const WithUnit: Story = {
   },
 };
 
+export const IconSizes: Story = {
+  render: () => (
+    <div className="grid grid-cols-3 gap-4">
+      <MetricCard title="Small (défaut)" value={42} unit="%" icon={Cpu} color="blue" iconSize="sm" />
+      <MetricCard title="Medium" value={42} unit="%" icon={Cpu} color="green" iconSize="md" />
+      <MetricCard title="Large" value={42} unit="%" icon={Cpu} color="purple" iconSize="lg" />
+    </div>
+  ),
+};
+
+export const WithSubtitle: Story = {
+  args: {
+    title: "Température",
+    value: 72.3,
+    unit: "°C",
+    icon: Thermometer,
+    color: "orange",
+    subtitle: "Moyenne sur les 24 dernières heures",
+  },
+};
+
+export const WithSubtitleAndTrend: Story = {
+  args: {
+    title: "Charge CPU",
+    value: 58.1,
+    unit: "%",
+    icon: Cpu,
+    color: "blue",
+    subtitle: "Pic à 94% à 14h32",
+    trend: "up",
+    trendValue: "+6% vs hier",
+  },
+};
+
 export const StringValue: Story = {
   args: {
     title: "Uptime",
@@ -76,7 +114,7 @@ export const StringValue: Story = {
 export const AllColors: Story = {
   render: () => (
     <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
-      {(["blue", "green", "orange", "red", "purple"] as const).map(color => (
+      {(["blue", "green", "orange", "red", "purple", "accent", "success", "info", "warning", "destructive"] as const).map((color) => (
         <MetricCard key={color} title={color} value={42} unit="%" icon={Thermometer} color={color} />
       ))}
     </div>
