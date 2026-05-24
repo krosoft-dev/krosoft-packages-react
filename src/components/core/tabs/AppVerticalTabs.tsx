@@ -1,7 +1,7 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { t } from "i18next";
 import { Construction, ConstructionIcon } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
@@ -16,6 +16,7 @@ export interface AppVerticalTabsProps {
 }
 
 export const AppVerticalTabs = ({ tabs }: AppVerticalTabsProps): React.JSX.Element => {
+  const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [activeTab, setActiveTab] = useState(() => {
