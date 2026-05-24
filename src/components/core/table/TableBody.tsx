@@ -1,8 +1,9 @@
+import { Checkbox } from "@/components/ui";
 import { Loader2Icon } from "lucide-react";
 import React from "react";
-import { ColumnDef, RowAction } from "../../../types/types";
-import { Checkbox } from "@/components/ui";
 import { TableActions } from "./TableActions";
+import { ColumnDef, RowAction } from "@/types";
+export type { BulkAction, ColumnDef, RowAction } from "../../../types";
 
 export interface TableBodyProps<T> {
   isLoading: boolean;
@@ -13,7 +14,7 @@ export interface TableBodyProps<T> {
   onRowClick?: (row: T) => void;
   hasBulkActions: boolean;
   selectedRows: string[];
-  toggleRowSelection: (id: string, e: React.ChangeEvent<HTMLInputElement>) => void;
+  toggleRowSelection: (id: string) => void;
   visibleColumnsArray: ColumnDef<T>[];
   columnWidths: Record<string, number>;
   hasActions: boolean;

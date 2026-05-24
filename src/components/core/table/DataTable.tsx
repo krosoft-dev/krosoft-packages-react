@@ -1,13 +1,29 @@
+import { useDataTable } from "@/hooks/ui/useDataTable";
 import React from "react";
 import { defaultPageSize as DEFAULT_PAGE_SIZE, pagesSizes as DEFAULT_PAGE_SIZE_OPTIONS } from "../../../constants/datatable";
+import type { BulkAction, ColumnDef, RowAction } from "../../../types";
 import { TableBody } from "./TableBody";
 import { TableBulkActions } from "./TableBulkActions";
 import { TableHeader } from "./TableHeader";
 import { TablePagination } from "./TablePagination";
 import { TableSettings } from "./TableSettings";
-import { DataTableProps } from "../../../types";
-import { useDataTable } from "@/hooks/ui/useDataTable";
-export type { BulkAction, ColumnDef, DataTableProps, RowAction } from "../../../types";
+export type { BulkAction, ColumnDef, RowAction } from "../../../types";
+
+export interface DataTableProps<T> {
+  data: T[];
+  columns: ColumnDef<T>[];
+  getRowId: (row: T) => string; // Fonction obligatoire pour identifier chaque ligne de façon unique
+  onRowClick?: (row: T) => void;
+  actions?: RowAction<T>[]; // Actions personnalisées pour le menu
+  bulkActions?: BulkAction[]; // Actions rapides pour la sélection multiple
+  draggableColumns?: boolean; // Permet d'activer/désactiver le drag and drop des colonnes
+  resizableColumns?: boolean; // Permet d'activer/désactiver le redimensionnement des colonnes
+  columnVisibility?: boolean; // Permet d'activer/désactiver le bouton de visibilité des colonnes
+  isLoading?: boolean; // Indique si les données sont en cours de chargement
+  noDataMessage?: string; // Message affiché lorsque le tableau est vide
+  defaultPageSize?: number; // Nombre par défaut de lignes par page
+  pageSizeOptions?: number[]; // Options pour le nombre de lignes par page
+}
 
 export default function DataTable<T>({
   data,
