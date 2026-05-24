@@ -56,7 +56,7 @@ export const DatePicker = ({ date, onDateChange, placeholder }: DatePickerProps)
 
       {open ? (
         <div className="absolute left-0 top-[calc(100%+4px)] z-[100] rounded-md border bg-popover text-popover-foreground shadow-md animate-in fade-in-0 zoom-in-95 slide-in-from-top-2">
-          <Calendar mode="single" selected={date} onSelect={handleDateSelect} initialFocus />
+          <Calendar mode="single" selected={date} onSelect={handleDateSelect} />
         </div>
       ) : null}
     </div>
