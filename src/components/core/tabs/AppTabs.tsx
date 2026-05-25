@@ -1,5 +1,5 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { cn } from "@krosoft/react/helpers";
+import { cn } from "../../../helpers/tailwind.helper";
 import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 
@@ -7,7 +7,7 @@ export interface AppTab<T = unknown> {
   value: string;
   labelKey: string;
   icon?: React.ElementType;
-  component: (x: string) => React.JSX.Element;
+  component: (x: string | null | undefined) => React.JSX.Element;
   disabled?: boolean;
   count?: (x: T | null) => number;
 }

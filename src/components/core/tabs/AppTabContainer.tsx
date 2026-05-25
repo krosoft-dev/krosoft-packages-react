@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { AppAction } from "@/types/core/AppAction";
+import { AppAction } from "@/types/AppAction";
 import { ReactNode } from "react";
 import { AppTabHeader } from "./AppTabHeader";
 
