@@ -1,4 +1,4 @@
-import { AppDialog, AppDialogConfig, DialogAction } from "@/components/core/dialog/AppDialog";
+import { AppDialog, AppDialogConfig, DialogAction } from "@/components/core/dialogs/AppDialog";
 import { Button, Input } from "@/components/ui";
 import { Label } from "@/components/ui/label";
 import { Pen, Save, X } from "lucide-react";

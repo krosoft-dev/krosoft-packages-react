@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { FormDialog, type SectionDef } from "@/components/core/dialog";
+import { FormDialog, type SectionDef } from "@/components/core/dialogs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { User, Shield, AlertCircle, Clock } from "lucide-react";
 
 const meta: Meta<typeof FormDialog> = {
-  title: "Core/Dialog/FormDialog",
+  title: "Core/Dialogs/FormDialog",
   component: FormDialog,
   parameters: {
     layout: "centered",

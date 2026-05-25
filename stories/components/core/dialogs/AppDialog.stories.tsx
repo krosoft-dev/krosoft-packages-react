@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { AppDialog } from "@/components/core/dialog/AppDialog";
+import { AppDialog } from "@/components/core/dialogs/AppDialog";
 import { Button } from "@/components/ui/button";
 import { AlertCircle, CheckCircle, Info } from "lucide-react";
 
 const meta: Meta<typeof AppDialog> = {
-  title: "Core/Dialog/AppDialog",
+  title: "Core/Dialogs/AppDialog",
   component: AppDialog,
   parameters: {
     layout: "centered",
