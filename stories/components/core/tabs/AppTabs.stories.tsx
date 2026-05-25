@@ -1,9 +1,8 @@
+import type { TabConfig } from "@/types/TabConfig";
 import type { Meta, StoryObj } from "@storybook/react";
+import { FileText, Settings, Users } from "lucide-react";
 import * as React from "react";
 import { MemoryRouter } from "react-router-dom";
-import { FileText, Settings, Users } from "lucide-react";
-import { TabConfigs } from "@/components/core/tabs/TabConfigs";
-import type { TabConfig } from "@/types/TabConfig";
 
 const withRouter = (Story: React.ComponentType) => (
   <MemoryRouter>
@@ -43,14 +42,14 @@ const tabsWithCount: TabConfig<SampleItem>[] = [
     titleKey: "Contacts",
     icon: Users,
     component: makeContent("Contacts"),
-    count: (item) => item?.contacts ?? 0,
+    count: item => item?.contacts ?? 0,
   },
   {
     value: "documents",
     titleKey: "Documents",
     icon: FileText,
     component: makeContent("Documents"),
-    count: (item) => item?.documents ?? 0,
+    count: item => item?.documents ?? 0,
   },
   {
     value: "parametres",
@@ -109,10 +108,7 @@ export const WithItemId: Story = {
 
 export const WithDisabledTab: Story = {
   args: {
-    tabs: [
-      ...basicTabs.slice(0, 2),
-      { ...basicTabs[2], disabled: true },
-    ],
+    tabs: [...basicTabs.slice(0, 2), { ...basicTabs[2], disabled: true }],
   },
 };
 

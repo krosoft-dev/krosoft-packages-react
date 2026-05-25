@@ -1,9 +1,8 @@
+import type { TabConfig } from "@/types/TabConfig";
 import type { Meta, StoryObj } from "@storybook/react";
+import { FileText, Settings, Users } from "lucide-react";
 import * as React from "react";
 import { MemoryRouter } from "react-router-dom";
-import { FileText, Settings, Users } from "lucide-react";
-import { TabConfigs } from "@/components/core/tabs/TabConfigs";
-import type { TabConfig } from "@/types/TabConfig";
 
 const withRouter = (Story: React.ComponentType) => (
   <MemoryRouter>
@@ -60,8 +59,8 @@ export const WithIcons: Story = {
 type SampleItem = { profil: number; securite: number };
 
 const tabsWithCount: TabConfig<SampleItem>[] = [
-  { value: "profil", titleKey: "Profil", icon: Users, component: makeContent("Profil"), count: (x) => x?.profil ?? 0 },
-  { value: "securite", titleKey: "Sécurité", icon: Settings, component: makeContent("Sécurité"), count: (x) => x?.securite ?? 0 },
+  { value: "profil", titleKey: "Profil", icon: Users, component: makeContent("Profil"), count: x => x?.profil ?? 0 },
+  { value: "securite", titleKey: "Sécurité", icon: Settings, component: makeContent("Sécurité"), count: x => x?.securite ?? 0 },
   { value: "notifications", titleKey: "Notifications", icon: FileText, component: makeContent("Notifications") },
 ];
 
@@ -79,8 +78,8 @@ export const WithCountNoItem: Story = {
 };
 
 const tabsWithCountAndMissing: TabConfig<SampleItem>[] = [
-  { value: "profil", titleKey: "Profil", icon: Users, component: makeContent("Profil"), count: (x) => x?.profil ?? 0 },
-  { value: "securite", titleKey: "Sécurité", icon: Settings, count: (x) => x?.securite ?? 0 },
+  { value: "profil", titleKey: "Profil", icon: Users, component: makeContent("Profil"), count: x => x?.profil ?? 0 },
+  { value: "securite", titleKey: "Sécurité", icon: Settings, count: x => x?.securite ?? 0 },
   { value: "notifications", titleKey: "Notifications", icon: FileText },
 ];
 
@@ -93,10 +92,7 @@ export const WithCountAndMissingComponent: Story = {
 
 export const WithDisabledTab: Story = {
   args: {
-    tabs: [
-      ...basicTabs.slice(0, 2),
-      { ...basicTabs[2], disabled: true },
-    ],
+    tabs: [...basicTabs.slice(0, 2), { ...basicTabs[2], disabled: true }],
   },
 };
 
