@@ -1,18 +1,21 @@
-import * as React from "react";
+import { cn } from "@krosoft/react/helpers";
 import * as ProgressPrimitive from "@radix-ui/react-progress";
+import * as React from "react";
 
-import { cn } from "@/helpers/tailwind.helper";
+interface ProgressProps extends React.ComponentPropsWithoutRef<typeof ProgressPrimitive.Root> {
+  indeterminate?: boolean;
+}
 
-const Progress = React.forwardRef<React.ElementRef<typeof ProgressPrimitive.Root>, React.ComponentPropsWithoutRef<typeof ProgressPrimitive.Root>>(
-  ({ className, value, ...props }, ref): React.ReactElement => (
+const Progress = React.forwardRef<React.ElementRef<typeof ProgressPrimitive.Root>, ProgressProps>(
+  ({ className, value, indeterminate = false, ...props }, ref) => (
     <ProgressPrimitive.Root ref={ref} className={cn("relative h-4 w-full overflow-hidden rounded-full bg-secondary", className)} {...props}>
       <ProgressPrimitive.Indicator
-        className="h-full w-full flex-1 bg-primary transition-all"
+        className={cn("h-full w-full flex-1 bg-primary transition-all", indeterminate && "animate-progress origin-left")}
         style={{ transform: `translateX(-${(100 - (value ?? 0)).toString()}%)` }}
       />
     </ProgressPrimitive.Root>
   ),
 );
-Progress.displayName = "Progress";
+Progress.displayName = ProgressPrimitive.Root.displayName;
 
 export { Progress };

@@ -1,10 +1,9 @@
-import { Button } from "@/components/ui";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "./Dialog";
+import { Alert, AlertDescription, Button } from "@/components/ui";
 import { AlertCircleIcon } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { Alert, AlertDescription } from "@/components/ui";
 import { Progress } from "../../ui/progress";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "./Dialog";
 
 export type ButtonVariantType = "default" | "destructive" | "outline" | "secondary" | "ghost" | "link" | "styled";
 
@@ -57,7 +56,7 @@ export function AppDialog({ open, onOpenChange, config, isLoading, error, childr
         </DialogHeader>
         {isLoading === true ? (
           <div className="absolute top-0 left-0 right-0">
-            <Progress className="h-1 rounded-none transition-all duration-300" />
+            <Progress indeterminate className="h-1 rounded-none transition-all duration-300" />
           </div>
         ) : null}
         {error !== null && error !== undefined ? (
