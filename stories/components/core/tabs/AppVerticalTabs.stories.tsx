@@ -3,6 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { FileText, Settings, Users } from "lucide-react";
 import * as React from "react";
 import { MemoryRouter } from "react-router-dom";
+import { AppVerticalTabs } from "@/components/core/tabs/AppVerticalTabs";
 
 const withRouter = (Story: React.ComponentType) => (
   <MemoryRouter>
@@ -29,9 +30,9 @@ const tabsWithMissing: TabConfig[] = [
   { value: "avance", titleKey: "Paramètres avancés", component: makeContent("Paramètres avancés") },
 ];
 
-const meta: Meta<typeof TabConfigs> = {
-  title: "Core/Tabs/TabConfigs",
-  component: TabConfigs,
+const meta: Meta<typeof AppVerticalTabs> = {
+  title: "Core/Tabs/AppVerticalTabs",
+  component: AppVerticalTabs,
   decorators: [withRouter],
   args: {
     tabs: basicTabs,
@@ -42,7 +43,7 @@ const meta: Meta<typeof TabConfigs> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof TabConfigs>;
+type Story = StoryObj<typeof AppVerticalTabs>;
 
 const tabsWithIcons: TabConfig[] = [
   { value: "profil", titleKey: "Profil", icon: Users, component: makeContent("Profil") },

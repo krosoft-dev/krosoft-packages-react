@@ -3,6 +3,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { FileText, Settings, Users } from "lucide-react";
 import * as React from "react";
 import { MemoryRouter } from "react-router-dom";
+import { AppTabs } from "@/components/core/tabs/AppTabs";
 
 const withRouter = (Story: React.ComponentType) => (
   <MemoryRouter>
@@ -59,9 +60,9 @@ const tabsWithCount: TabConfig<SampleItem>[] = [
   },
 ];
 
-const meta: Meta<typeof TabConfigs> = {
-  title: "Core/Tabs/TabConfigs",
-  component: TabConfigs,
+const meta: Meta<typeof AppTabs> = {
+  title: "Core/Tabs/AppTabs",
+  component: AppTabs,
   decorators: [withRouter],
   args: {
     tabs: basicTabs,
@@ -72,7 +73,7 @@ const meta: Meta<typeof TabConfigs> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof TabConfigs>;
+type Story = StoryObj<typeof AppTabs>;
 
 export const Default: Story = {};
 
