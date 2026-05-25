@@ -1,19 +1,11 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import type { TabConfig } from "@/types/TabConfig";
 import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 import { cn } from "../../../helpers/tailwind.helper";
 
-export interface AppTab<T = unknown> {
-  value: string;
-  titleKey: string;
-  icon?: React.ElementType;
-  component: (x: string | null | undefined) => React.JSX.Element;
-  disabled?: boolean;
-  count?: (x: T | null) => number;
-}
-
 export interface AppTabsProps<T = unknown> {
-  tabs: AppTab<T>[];
+  tabs: TabConfig<T>[];
   itemId?: string | null;
   item?: T | null;
   fit?: boolean;
@@ -48,7 +40,7 @@ export function AppTabs({ tabs, itemId, item, fit }: AppTabsProps): React.JSX.El
 
       {tabs.map(tab => (
         <TabsContent key={tab.value} value={tab.value} className="mt-4">
-          {tab.component(itemId)}
+          {tab.component ? tab.component(itemId) : null}
         </TabsContent>
       ))}
     </Tabs>

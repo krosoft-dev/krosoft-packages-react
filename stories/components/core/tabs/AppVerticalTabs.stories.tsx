@@ -2,8 +2,8 @@ import type { Meta, StoryObj } from "@storybook/react";
 import * as React from "react";
 import { MemoryRouter } from "react-router-dom";
 import { FileText, Settings, Users } from "lucide-react";
-import { AppVerticalTabs } from "@/components/core/tabs/AppVerticalTabs";
-import type { AppVerticalTab } from "@/components/core/tabs/AppVerticalTabs";
+import { TabConfigs } from "@/components/core/tabs/TabConfigs";
+import type { TabConfig } from "@/types/TabConfig";
 
 const withRouter = (Story: React.ComponentType) => (
   <MemoryRouter>
@@ -17,22 +17,22 @@ const makeContent = (label: string) => () => (
   </div>
 );
 
-const basicTabs: AppVerticalTab[] = [
+const basicTabs: TabConfig[] = [
   { value: "profil", titleKey: "Profil", component: makeContent("Profil") },
   { value: "securite", titleKey: "Sécurité", component: makeContent("Sécurité") },
   { value: "notifications", titleKey: "Notifications", component: makeContent("Notifications") },
 ];
 
-const tabsWithMissing: AppVerticalTab[] = [
+const tabsWithMissing: TabConfig[] = [
   { value: "general", titleKey: "Général", component: makeContent("Général") },
   { value: "facturation", titleKey: "Facturation" },
   { value: "integrations", titleKey: "Intégrations" },
   { value: "avance", titleKey: "Paramètres avancés", component: makeContent("Paramètres avancés") },
 ];
 
-const meta: Meta<typeof AppVerticalTabs> = {
-  title: "Core/Tabs/AppVerticalTabs",
-  component: AppVerticalTabs,
+const meta: Meta<typeof TabConfigs> = {
+  title: "Core/Tabs/TabConfigs",
+  component: TabConfigs,
   decorators: [withRouter],
   args: {
     tabs: basicTabs,
@@ -43,9 +43,9 @@ const meta: Meta<typeof AppVerticalTabs> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof AppVerticalTabs>;
+type Story = StoryObj<typeof TabConfigs>;
 
-const tabsWithIcons: AppVerticalTab[] = [
+const tabsWithIcons: TabConfig[] = [
   { value: "profil", titleKey: "Profil", icon: Users, component: makeContent("Profil") },
   { value: "securite", titleKey: "Sécurité", icon: Settings, component: makeContent("Sécurité") },
   { value: "documents", titleKey: "Documents", icon: FileText, component: makeContent("Documents") },
@@ -55,6 +55,40 @@ export const Default: Story = {};
 
 export const WithIcons: Story = {
   args: { tabs: tabsWithIcons },
+};
+
+type SampleItem = { profil: number; securite: number };
+
+const tabsWithCount: TabConfig<SampleItem>[] = [
+  { value: "profil", titleKey: "Profil", icon: Users, component: makeContent("Profil"), count: (x) => x?.profil ?? 0 },
+  { value: "securite", titleKey: "Sécurité", icon: Settings, component: makeContent("Sécurité"), count: (x) => x?.securite ?? 0 },
+  { value: "notifications", titleKey: "Notifications", icon: FileText, component: makeContent("Notifications") },
+];
+
+export const WithCount: Story = {
+  args: {
+    tabs: tabsWithCount,
+    item: { profil: 3, securite: 7 },
+  },
+};
+
+export const WithCountNoItem: Story = {
+  args: {
+    tabs: tabsWithCount,
+  },
+};
+
+const tabsWithCountAndMissing: TabConfig<SampleItem>[] = [
+  { value: "profil", titleKey: "Profil", icon: Users, component: makeContent("Profil"), count: (x) => x?.profil ?? 0 },
+  { value: "securite", titleKey: "Sécurité", icon: Settings, count: (x) => x?.securite ?? 0 },
+  { value: "notifications", titleKey: "Notifications", icon: FileText },
+];
+
+export const WithCountAndMissingComponent: Story = {
+  args: {
+    tabs: tabsWithCountAndMissing,
+    item: { profil: 3, securite: 7 },
+  },
 };
 
 export const WithDisabledTab: Story = {

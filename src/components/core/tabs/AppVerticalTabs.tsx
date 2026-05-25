@@ -1,22 +1,16 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import type { TabConfig } from "@/types/TabConfig";
 import { ConstructionIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 
-export interface AppVerticalTab {
-  value: string;
-  titleKey: string;
-  icon?: React.ElementType;
-  component?: () => React.JSX.Element;
-  disabled?: boolean;
+export interface AppVerticalTabsProps<T = unknown> {
+  tabs: TabConfig<T>[];
+  item?: T | null;
 }
 
-export interface AppVerticalTabsProps {
-  tabs: AppVerticalTab[];
-}
-
-export const AppVerticalTabs = ({ tabs }: AppVerticalTabsProps): React.JSX.Element => {
+export const AppVerticalTabs = ({ tabs, item }: AppVerticalTabsProps): React.JSX.Element => {
   const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
   const activeTab = searchParams.get("tab") || tabs[0]?.value;
@@ -52,21 +46,22 @@ export const AppVerticalTabs = ({ tabs }: AppVerticalTabsProps): React.JSX.Eleme
       <div className="w-64 lg:w-80 flex-shrink-0 hidden md:block border-r border-gray-200 dark:border-gray-700 pr-4">
         <ScrollArea className="h-full">
           <div className="space-y-1">
-            {tabs.map((item, index) => (
+            {tabs.map((tab, index) => (
               <div
                 key={index}
                 className={`px-2 py-2 rounded-2xl text-sm transition-colors flex items-center gap-2 ${
-                  item.disabled
+                  tab.disabled
                     ? "text-gray-400 cursor-not-allowed opacity-50"
-                    : activeTab === item.value
+                    : activeTab === tab.value
                       ? "crm-color-styled font-medium cursor-pointer"
                       : "text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 cursor-pointer"
                 }`}
-                onClick={() => !item.disabled && handleTabChange(item.value)}
+                onClick={() => !tab.disabled && handleTabChange(tab.value)}
               >
-                {item.icon && <item.icon className="size-4" />} 
-                <span className="flex-1">{t(item.titleKey)}</span>
-                {!item.component && <ConstructionIcon className="size-4 text-amber-500" />}
+                {tab.icon && <tab.icon className="size-4" />}
+                <span className="flex-1">{t(tab.titleKey)}</span>
+                {tab.count && <span className="text-xs text-gray-500">({tab.count(item)})</span>}
+                {!tab.component && <ConstructionIcon className="size-4 text-amber-500" />}
               </div>
             ))}
           </div>
@@ -79,12 +74,13 @@ export const AppVerticalTabs = ({ tabs }: AppVerticalTabsProps): React.JSX.Eleme
             <SelectValue placeholder="Sélectionner une section" />
           </SelectTrigger>
           <SelectContent>
-            {tabs.map((item, index) => (
-              <SelectItem key={index} value={item.value} disabled={item.disabled}>
+            {tabs.map((tab, index) => (
+              <SelectItem key={index} value={tab.value} disabled={tab.disabled}>
                 <div className="flex items-center gap-2">
-                  {item.icon && <item.icon className="size-4" />}
-                  <span>{t(item.titleKey)}</span>
-                  {!item.component && <ConstructionIcon className="size-4 text-amber-500" />}
+                  {tab.icon && <tab.icon className="size-4" />}
+                  <span>{t(tab.titleKey)}</span>
+                  {tab.count && <span className="text-xs text-gray-500">({tab.count(item)})</span>}
+                  {!tab.component && <ConstructionIcon className="size-4 text-amber-500" />}
                 </div>
               </SelectItem>
             ))}

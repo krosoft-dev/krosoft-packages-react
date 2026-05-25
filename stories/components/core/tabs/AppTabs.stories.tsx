@@ -2,8 +2,8 @@ import type { Meta, StoryObj } from "@storybook/react";
 import * as React from "react";
 import { MemoryRouter } from "react-router-dom";
 import { FileText, Settings, Users } from "lucide-react";
-import { AppTabs } from "@/components/core/tabs/AppTabs";
-import type { AppTab } from "@/components/core/tabs/AppTabs";
+import { TabConfigs } from "@/components/core/tabs/TabConfigs";
+import type { TabConfig } from "@/types/TabConfig";
 
 const withRouter = (Story: React.ComponentType) => (
   <MemoryRouter>
@@ -11,19 +11,25 @@ const withRouter = (Story: React.ComponentType) => (
   </MemoryRouter>
 );
 
-const makeContent = (label: string) => (_id: string) => (
+const makeContent = (label: string) => (_id: string | null | undefined) => (
   <div className="p-4 rounded-lg border bg-muted/30 text-sm text-muted-foreground">
     Contenu de l'onglet <strong>{label}</strong>
   </div>
 );
 
-const basicTabs: AppTab[] = [
+const makeContentWithId = (label: string) => (id: string | null | undefined) => (
+  <div className="p-4 rounded-lg border bg-muted/30 text-sm text-muted-foreground">
+    Contenu de l'onglet <strong>{label}</strong> — ID : <code>{id ?? "—"}</code>
+  </div>
+);
+
+const basicTabs: TabConfig[] = [
   { value: "informations", titleKey: "Informations", component: makeContent("Informations") },
   { value: "contacts", titleKey: "Contacts", component: makeContent("Contacts") },
   { value: "documents", titleKey: "Documents", component: makeContent("Documents") },
 ];
 
-const tabsWithIcons: AppTab[] = [
+const tabsWithIcons: TabConfig[] = [
   { value: "informations", titleKey: "Informations", icon: FileText, component: makeContent("Informations") },
   { value: "equipe", titleKey: "Équipe", icon: Users, component: makeContent("Équipe") },
   { value: "parametres", titleKey: "Paramètres", icon: Settings, component: makeContent("Paramètres") },
@@ -31,7 +37,7 @@ const tabsWithIcons: AppTab[] = [
 
 type SampleItem = { contacts: number; documents: number };
 
-const tabsWithCount: AppTab<SampleItem>[] = [
+const tabsWithCount: TabConfig<SampleItem>[] = [
   {
     value: "contacts",
     titleKey: "Contacts",
@@ -54,9 +60,9 @@ const tabsWithCount: AppTab<SampleItem>[] = [
   },
 ];
 
-const meta: Meta<typeof AppTabs> = {
-  title: "Core/Tabs/AppTabs",
-  component: AppTabs,
+const meta: Meta<typeof TabConfigs> = {
+  title: "Core/Tabs/TabConfigs",
+  component: TabConfigs,
   decorators: [withRouter],
   args: {
     tabs: basicTabs,
@@ -67,7 +73,7 @@ const meta: Meta<typeof AppTabs> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof AppTabs>;
+type Story = StoryObj<typeof TabConfigs>;
 
 export const Default: Story = {};
 
@@ -81,6 +87,23 @@ export const WithCount: Story = {
   args: {
     tabs: tabsWithCount,
     item: { contacts: 12, documents: 4 },
+  },
+};
+
+export const WithCountNoItem: Story = {
+  args: {
+    tabs: tabsWithCount,
+  },
+};
+
+export const WithItemId: Story = {
+  args: {
+    tabs: [
+      { value: "informations", titleKey: "Informations", component: makeContentWithId("Informations") },
+      { value: "contacts", titleKey: "Contacts", component: makeContentWithId("Contacts") },
+      { value: "documents", titleKey: "Documents", component: makeContentWithId("Documents") },
+    ],
+    itemId: "abc-123",
   },
 };
 
