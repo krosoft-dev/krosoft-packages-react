@@ -1,4 +1,4 @@
-import { cn } from "@krosoft/react/helpers";
+import { cn } from "@/helpers";
 import * as ProgressPrimitive from "@radix-ui/react-progress";
 import * as React from "react";
 
