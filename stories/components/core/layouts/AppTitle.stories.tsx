@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { AppTitle } from "@/components/core/layouts/AppTitle";
 
 const meta: Meta<typeof AppTitle> = {
-  title: "Core/AppTitle",
+  title: "Core/Layouts/AppTitle",
   component: AppTitle,
   args: {
     titleKey: "Tableau de bord",
