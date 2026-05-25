@@ -3,7 +3,7 @@ import { AlertCircleIcon } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Progress } from "../../ui/progress";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "./Dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../../ui/dialog";
 
 export type ButtonVariantType = "default" | "destructive" | "outline" | "secondary" | "ghost" | "link" | "styled";
 
@@ -39,7 +39,12 @@ export function AppDialog({ open, onOpenChange, config, isLoading, error, childr
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className={`${maxWidth} max-h-[90vh] border-0 shadow-2xl p-0 flex flex-col`}>
+      <DialogContent className={`${maxWidth} max-h-[90vh] border-0 shadow-2xl p-0 flex flex-col overflow-hidden`}>
+        {isLoading === true ? (
+          <div className="absolute top-0 left-0 right-0 z-10">
+            <Progress indeterminate className="h-1 rounded-none" />
+          </div>
+        ) : null}
         <DialogHeader className="bg-gradient-to-r from-slate-900 to-purple-700 p-6 rounded-t-lg shrink-0">
           <DialogTitle className="text-2xl font-bold flex items-center gap-2 text-white">
             {Icon !== undefined ? (
@@ -54,11 +59,6 @@ export function AppDialog({ open, onOpenChange, config, isLoading, error, childr
             <DialogDescription className="text-indigo-100 text-base">{t(description)}</DialogDescription>
           ) : null}
         </DialogHeader>
-        {isLoading === true ? (
-          <div className="absolute top-0 left-0 right-0">
-            <Progress indeterminate className="h-1 rounded-none transition-all duration-300" />
-          </div>
-        ) : null}
         {error !== null && error !== undefined ? (
           <div className="px-6  ">
             <Alert variant="destructive" className="max-w-full">
