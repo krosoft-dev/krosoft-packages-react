@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { AppTitle } from "@/components/core/AppTitle";
+import { AppTitle } from "@/components/core/layouts/AppTitle";
 
 const meta: Meta<typeof AppTitle> = {
   title: "Core/AppTitle",

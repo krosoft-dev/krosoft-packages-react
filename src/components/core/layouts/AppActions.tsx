@@ -1,7 +1,7 @@
 import { Button } from "@krosoft/react/components/ui";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { cn } from "@krosoft/react/helpers";
-import { useMobile } from "@krosoft/react/hooks"; 
+import { useMobile } from "@krosoft/react/hooks";
 import { MoreVerticalIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { AppAction } from "@/types/AppAction";
@@ -11,7 +11,7 @@ export interface AppPageHeaderProps {
   className?: string;
 }
 
-export function AppActions({ actions, className }: AppPageHeaderProps): JSX.Element {
+export function AppActions({ actions, className }: AppPageHeaderProps): React.JSX.Element | null {
   const { t } = useTranslation();
   const isMobile = useMobile();
 
@@ -38,9 +38,14 @@ export function AppActions({ actions, className }: AppPageHeaderProps): JSX.Elem
                   {action.children.map((child, childIndex) => {
                     if (!child) return null;
                     return (
-                      <DropdownMenuItem key={childIndex} onClick={child.onClick} disabled={child.disabled} className={cn("gap-2", child.className)}>
+                      <DropdownMenuItem
+                        key={childIndex}
+                        onClick={() => void child.onClick()}
+                        disabled={child.disabled}
+                        className={cn("gap-2", child.className)}
+                      >
                         {child.icon && <child.icon className="size-4" />}
-                        {t(child.labelKey)}
+                        {child.labelKey && t(child.labelKey)}
                       </DropdownMenuItem>
                     );
                   })}
@@ -49,7 +54,7 @@ export function AppActions({ actions, className }: AppPageHeaderProps): JSX.Elem
             }
 
             return (
-              <DropdownMenuItem key={index} onClick={action.onClick} disabled={action.disabled} className={cn("gap-2", action.className)}>
+              <DropdownMenuItem key={index} onClick={() => void action.onClick()} disabled={action.disabled} className={cn("gap-2", action.className)}>
                 {action.icon && <action.icon className="size-4" />}
                 {action.labelKey && t(action.labelKey)}
               </DropdownMenuItem>
@@ -61,7 +66,7 @@ export function AppActions({ actions, className }: AppPageHeaderProps): JSX.Elem
   }
 
   // Desktop: comportement actuel
-  const renderActions = (actions: AppAction[]): JSX.Element => {
+  const renderActions = (actions: AppAction[]): React.JSX.Element => {
     return (
       <div className={cn("flex gap-2", className)}>
         {actions.map((action, index) => {
@@ -81,9 +86,14 @@ export function AppActions({ actions, className }: AppPageHeaderProps): JSX.Elem
                     if (!child) return null;
 
                     return (
-                      <DropdownMenuItem key={childIndex} onClick={child.onClick} disabled={child.disabled} className={cn("gap-2", child.className)}>
+                      <DropdownMenuItem
+                        key={childIndex}
+                        onClick={() => void child.onClick()}
+                        disabled={child.disabled}
+                        className={cn("gap-2", child.className)}
+                      >
                         {child.icon && <child.icon className="size-4" />}
-                        {t(child.labelKey)}
+                        {child.labelKey && t(child.labelKey)}
                       </DropdownMenuItem>
                     );
                   })}
@@ -93,9 +103,15 @@ export function AppActions({ actions, className }: AppPageHeaderProps): JSX.Elem
           }
 
           return (
-            <Button key={index} variant={action.variant} onClick={action.onClick} disabled={action.disabled} className={cn("gap-2", action.className)}>
+            <Button
+              key={index}
+              variant={action.variant}
+              onClick={() => void action.onClick()}
+              disabled={action.disabled}
+              className={cn("gap-2", action.className)}
+            >
               {action.icon && <action.icon className="size-4" />}
-              {t(action.labelKey)}
+              {action.labelKey && t(action.labelKey)}
             </Button>
           );
         })}

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { Download, Edit, Plus, Share2, Trash2 } from "lucide-react";
-import { AppActions } from "@/components/core/AppActions";
+import { AppActions } from "@/components/core/layouts/AppActions";
 
 const meta: Meta<typeof AppActions> = {
   title: "Core/AppActions",

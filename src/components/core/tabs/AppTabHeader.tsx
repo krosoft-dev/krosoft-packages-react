@@ -1,6 +1,6 @@
 import { AppAction } from "@/types/AppAction";
-import { AppActions } from "../AppActions";
-import { AppTitle } from "../AppTitle";
+import { AppActions } from "../layouts/AppActions";
+import { AppTitle } from "../layouts/AppTitle";
 
 export interface AppTabHeaderProps {
   titleKey: string;

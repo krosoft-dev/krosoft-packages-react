@@ -1,5 +1,6 @@
 export * from "./cards";
 export * from "./inputs";
+export * from "./layouts";
 export * from "./states";
 export * from "./table";
 export * from "./filters";
