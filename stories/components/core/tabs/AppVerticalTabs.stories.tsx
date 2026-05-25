@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import * as React from "react";
 import { MemoryRouter } from "react-router-dom";
+import { FileText, Settings, Users } from "lucide-react";
 import { AppVerticalTabs } from "@/components/core/tabs/AppVerticalTabs";
 import type { AppVerticalTab } from "@/components/core/tabs/AppVerticalTabs";
 
@@ -44,7 +45,26 @@ const meta: Meta<typeof AppVerticalTabs> = {
 export default meta;
 type Story = StoryObj<typeof AppVerticalTabs>;
 
+const tabsWithIcons: AppVerticalTab[] = [
+  { value: "profil", titleKey: "Profil", icon: Users, component: makeContent("Profil") },
+  { value: "securite", titleKey: "Sécurité", icon: Settings, component: makeContent("Sécurité") },
+  { value: "documents", titleKey: "Documents", icon: FileText, component: makeContent("Documents") },
+];
+
 export const Default: Story = {};
+
+export const WithIcons: Story = {
+  args: { tabs: tabsWithIcons },
+};
+
+export const WithDisabledTab: Story = {
+  args: {
+    tabs: [
+      ...basicTabs.slice(0, 2),
+      { ...basicTabs[2], disabled: true },
+    ],
+  },
+};
 
 export const WithInProgressSections: Story = {
   args: {

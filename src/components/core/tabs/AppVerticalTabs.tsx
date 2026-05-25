@@ -1,14 +1,15 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Construction, ConstructionIcon } from "lucide-react";
+import { ConstructionIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
 export interface AppVerticalTab {
   value: string;
   titleKey: string;
+  icon?: React.ElementType;
   component?: () => React.JSX.Element;
+  disabled?: boolean;
 }
 
 export interface AppVerticalTabsProps {
@@ -18,13 +19,9 @@ export interface AppVerticalTabsProps {
 export const AppVerticalTabs = ({ tabs }: AppVerticalTabsProps): React.JSX.Element => {
   const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
+  const activeTab = searchParams.get("tab") || tabs[0]?.value;
 
-  const [activeTab, setActiveTab] = useState(() => {
-    return searchParams.get("tab") || tabs[0]?.value;
-  });
-
-  const handleSectionChange = (value: string) => {
-    setActiveTab(value);
+  const handleTabChange = (value: string) => {
     const newSearchParams = new URLSearchParams();
     newSearchParams.set("tab", value);
     setSearchParams(newSearchParams);
@@ -58,13 +55,18 @@ export const AppVerticalTabs = ({ tabs }: AppVerticalTabsProps): React.JSX.Eleme
             {tabs.map((item, index) => (
               <div
                 key={index}
-                className={`px-2 py-2 rounded-2xl text-sm cursor-pointer transition-colors flex items-center gap-2 ${
-                  activeTab === item.value ? "crm-color-styled font-medium" : "text-gray-600 hover:bg-gray-100  dark:text-gray-300 dark:hover:bg-gray-700"
+                className={`px-2 py-2 rounded-2xl text-sm transition-colors flex items-center gap-2 ${
+                  item.disabled
+                    ? "text-gray-400 cursor-not-allowed opacity-50"
+                    : activeTab === item.value
+                      ? "crm-color-styled font-medium cursor-pointer"
+                      : "text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 cursor-pointer"
                 }`}
-                onClick={() => handleSectionChange(item.value)}
+                onClick={() => !item.disabled && handleTabChange(item.value)}
               >
+                {item.icon && <item.icon className="size-4" />} 
                 <span className="flex-1">{t(item.titleKey)}</span>
-                {!item.component && <Construction className="size-4 text-amber-500" />}
+                {!item.component && <ConstructionIcon className="size-4 text-amber-500" />}
               </div>
             ))}
           </div>
@@ -72,14 +74,15 @@ export const AppVerticalTabs = ({ tabs }: AppVerticalTabsProps): React.JSX.Eleme
       </div>
 
       <div className="md:hidden w-full border-b pb-4 mb-4">
-        <Select value={activeTab} onValueChange={handleSectionChange}>
+        <Select value={activeTab} onValueChange={handleTabChange}>
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Sélectionner une section" />
           </SelectTrigger>
           <SelectContent>
             {tabs.map((item, index) => (
-              <SelectItem key={index} value={item.value}>
+              <SelectItem key={index} value={item.value} disabled={item.disabled}>
                 <div className="flex items-center gap-2">
+                  {item.icon && <item.icon className="size-4" />}
                   <span>{t(item.titleKey)}</span>
                   {!item.component && <ConstructionIcon className="size-4 text-amber-500" />}
                 </div>

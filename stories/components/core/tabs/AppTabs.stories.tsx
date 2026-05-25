@@ -18,15 +18,15 @@ const makeContent = (label: string) => (_id: string) => (
 );
 
 const basicTabs: AppTab[] = [
-  { value: "informations", labelKey: "Informations", component: makeContent("Informations") },
-  { value: "contacts", labelKey: "Contacts", component: makeContent("Contacts") },
-  { value: "documents", labelKey: "Documents", component: makeContent("Documents") },
+  { value: "informations", titleKey: "Informations", component: makeContent("Informations") },
+  { value: "contacts", titleKey: "Contacts", component: makeContent("Contacts") },
+  { value: "documents", titleKey: "Documents", component: makeContent("Documents") },
 ];
 
 const tabsWithIcons: AppTab[] = [
-  { value: "informations", labelKey: "Informations", icon: FileText, component: makeContent("Informations") },
-  { value: "equipe", labelKey: "Équipe", icon: Users, component: makeContent("Équipe") },
-  { value: "parametres", labelKey: "Paramètres", icon: Settings, component: makeContent("Paramètres") },
+  { value: "informations", titleKey: "Informations", icon: FileText, component: makeContent("Informations") },
+  { value: "equipe", titleKey: "Équipe", icon: Users, component: makeContent("Équipe") },
+  { value: "parametres", titleKey: "Paramètres", icon: Settings, component: makeContent("Paramètres") },
 ];
 
 type SampleItem = { contacts: number; documents: number };
@@ -34,21 +34,21 @@ type SampleItem = { contacts: number; documents: number };
 const tabsWithCount: AppTab<SampleItem>[] = [
   {
     value: "contacts",
-    labelKey: "Contacts",
+    titleKey: "Contacts",
     icon: Users,
     component: makeContent("Contacts"),
     count: (item) => item?.contacts ?? 0,
   },
   {
     value: "documents",
-    labelKey: "Documents",
+    titleKey: "Documents",
     icon: FileText,
     component: makeContent("Documents"),
     count: (item) => item?.documents ?? 0,
   },
   {
     value: "parametres",
-    labelKey: "Paramètres",
+    titleKey: "Paramètres",
     icon: Settings,
     component: makeContent("Paramètres"),
   },
