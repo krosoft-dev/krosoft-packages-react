@@ -6,4 +6,5 @@ export * from "./table";
 export * from "./filters";
 export * from "./table";
 export * from "./navbar";
+export * from "./dialogs";
 export * from "./theme";
