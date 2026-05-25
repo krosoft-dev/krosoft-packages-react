@@ -1,7 +1,7 @@
-import { Button } from "@krosoft/react/components/ui";
+import { Button } from "@/components/ui";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { cn } from "@krosoft/react/helpers";
-import { useMobile } from "@krosoft/react/hooks";
+import { cn } from "../../../helpers/tailwind.helper";
+import { useMobile } from "../../../hooks/ui/useMobile";
 import { MoreVerticalIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { AppAction } from "@/types/AppAction";
