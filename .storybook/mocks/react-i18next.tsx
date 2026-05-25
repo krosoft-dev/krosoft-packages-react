@@ -1,1 +1,1 @@
-export const useTranslation = () => ({ t: (key: string) => key });
+export const useTranslation = (): { t: (key: string) => string } => ({ t: (key: string) => key });

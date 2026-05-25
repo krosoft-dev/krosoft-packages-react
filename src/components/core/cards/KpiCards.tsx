@@ -16,6 +16,7 @@ export const KpiCards = ({ stats }: KpiCardsProps): React.JSX.Element => (
         iconClassName={stat.iconClassName}
         description={stat.description}
         descriptionClassName={stat.descriptionClassName}
+        onClick={stat.onClick}
       />
     ))}
   </div>
