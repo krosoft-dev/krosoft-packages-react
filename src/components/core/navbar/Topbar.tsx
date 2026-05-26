@@ -1,7 +1,7 @@
 import * as React from "react";
 import { MenuIcon } from "lucide-react";
 import { Button } from "../../ui/button";
-import { cn } from "../../../helpers/tailwind.helper";
+import { cn } from "@/helpers/tailwind.helper";
 
 export interface TopbarProps {
   // Gestion de la sidebar

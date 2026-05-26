@@ -1,7 +1,7 @@
 import { formatNumber } from "@krosoft/core/helpers";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { cn } from "../../../helpers/tailwind.helper";
+import { cn } from "@/helpers/tailwind.helper";
 import { Card, CardContent, CardHeader, CardTitle } from "../../ui";
 
 export interface KpiCardProps {

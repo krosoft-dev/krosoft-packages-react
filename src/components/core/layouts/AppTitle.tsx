@@ -1,4 +1,4 @@
-import { cn } from "../../../helpers/tailwind.helper";
+import { cn } from "@/helpers/tailwind.helper";
 import { useTranslation } from "react-i18next";
 
 export interface AppTitleProps {

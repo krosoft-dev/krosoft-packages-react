@@ -15,3 +15,6 @@ export {
 export { Progress } from "../../ui/progress";
 export { default as FormDialog } from "./FormDialog";
 export type { FieldDef, SectionDef } from "./FormDialog";
+export { ConfirmDeleteDialog } from "./ConfirmDeleteDialog";
+export type { ConfirmDialogConfig } from "@/types/ConfirmDialogConfig";
+export { ConfirmationDialog } from "./ConfirmationDialog";

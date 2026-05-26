@@ -1,0 +1,28 @@
+import type { Meta, StoryObj } from "@storybook/react";
+import { Toaster, toast } from "@/components/ui/sonner";
+import { Button } from "@/components/ui/button";
+
+const meta: Meta = {
+  title: "UI/Sonner",
+};
+
+export default meta;
+
+type Story = StoryObj;
+
+export const Default: Story = {
+  render: () => (
+    <>
+      <Toaster />
+      <div className="space-y-2">
+        <Button onClick={() => toast.success("Success toast")}>Success</Button>
+        <Button onClick={() => toast.error("Error toast")} variant="destructive">
+          Error
+        </Button>
+        <Button onClick={() => toast.loading("Loading...")} variant="outline">
+          Loading
+        </Button>
+      </div>
+    </>
+  ),
+};

@@ -1,6 +1,6 @@
 import * as React from "react";
 import { TooltipProvider } from "../../ui/tooltip";
-import { cn } from "../../../helpers/tailwind.helper";
+import { cn } from "@/helpers/tailwind.helper";
 import { SidebarNavItem } from "./SidebarNavItem";
 
 export interface SidebarItem {
