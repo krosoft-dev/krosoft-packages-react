@@ -167,7 +167,16 @@ export { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHe
 export { Skeleton } from "./skeleton";
 export { Slider } from "./slider";
 export { Switch } from "./switch";
-// export { Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "./table";
+export {
+  SimpleTable,
+  SimpleTableBody,
+  SimpleTableCaption,
+  SimpleTableCell,
+  SimpleTableFooter,
+  SimpleTableHead,
+  SimpleTableHeader,
+  SimpleTableRow,
+} from "./simple-table";
 export { Tabs, TabsContent, TabsList, TabsTrigger } from "./tabs";
 export { Textarea } from "./textarea";
 export { Toast, ToastAction, ToastClose, ToastDescription, ToastProvider, ToastTitle, ToastViewport } from "./toast";
