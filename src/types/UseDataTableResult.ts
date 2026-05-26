@@ -16,7 +16,7 @@ export interface UseDataTableResult<T> {
   safeCurrentPage: number;
   startIndex: number;
   endIndex: number;
-  tableRef: React.RefObject<HTMLTableElement> | null;
+  tableRef: React.RefObject<HTMLTableElement | null>;
   hasActions: boolean;
   hasBulkActions: boolean;
   orderedColumns: ColumnDef<T>[];
