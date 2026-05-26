@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as TabsPrimitive from "@radix-ui/react-tabs";
-import { cn } from "@krosoft/react/helpers";
+import { cn } from "../../helpers/tailwind.helper";
 
 const Tabs = TabsPrimitive.Root;
 
