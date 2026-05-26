@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as HoverCardPrimitive from "@radix-ui/react-hover-card";
 
-import { cn } from "@krosoft/react/helpers";
+import { cn } from "@/helpers/tailwind.helper";
 
 const HoverCard = HoverCardPrimitive.Root;
 

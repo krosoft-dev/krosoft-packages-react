@@ -1,5 +1,5 @@
 import { ButtonProps, buttonVariants } from "@krosoft/react/components/ui";
-import { cn } from "@krosoft/react/helpers";
+import { cn } from "@/helpers/tailwind.helper";
 import { ChevronLeftIcon, ChevronRightIcon, MoreHorizontalIcon } from "lucide-react";
 import * as React from "react";
 

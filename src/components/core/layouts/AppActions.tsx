@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { cn } from "../../../helpers/tailwind.helper";
+import { cn } from "@/helpers/tailwind.helper";
 import { useMobile } from "../../../hooks/ui/useMobile";
 import { MoreVerticalIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";

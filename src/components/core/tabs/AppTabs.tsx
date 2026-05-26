@@ -2,7 +2,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { TabConfig } from "@/types/TabConfig";
 import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
-import { cn } from "../../../helpers/tailwind.helper";
+import { cn } from "@/helpers/tailwind.helper";
 
 export interface AppTabsProps<T = unknown> {
   tabs: TabConfig<T>[];

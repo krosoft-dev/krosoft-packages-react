@@ -1,5 +1,5 @@
 import { Dialog, DialogContent } from "@krosoft/react/components/core/dialogs";
-import { cn } from "@krosoft/react/helpers";
+import { cn } from "@/helpers/tailwind.helper";
 import { type DialogProps } from "@radix-ui/react-dialog";
 import { Command as CommandPrimitive } from "cmdk";
 import { SearchIcon } from "lucide-react";
