@@ -8,9 +8,9 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
 import { ConfirmDialogConfig } from "@/types/ConfirmDialogConfig";
 import { ErrorHttp } from "@krosoft/core/types";
-import { Button } from "@krosoft/react/components/ui";
 import { TrashIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
