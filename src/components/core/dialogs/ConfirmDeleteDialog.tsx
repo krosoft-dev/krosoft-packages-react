@@ -1,3 +1,4 @@
+import { ErrorAlert } from "@/components/core/states/ErrorAlert";
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -7,10 +8,9 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Button } from "@krosoft/react/components/ui";
-import { ErrorAlert } from "@/components/core/states/ErrorAlert";
 import { ConfirmDialogConfig } from "@/types/ConfirmDialogConfig";
 import { ErrorHttp } from "@krosoft/core/types";
+import { Button } from "@krosoft/react/components/ui";
 import { TrashIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -38,7 +38,7 @@ export const ConfirmDeleteDialog = ({ isLoading, error, config }: ConfirmDeleteD
             <TrashIcon className="size-4" />
             {t(config.title)}
           </AlertDialogTitle>
-          <AlertDialogHeader className="bg-gradient-to-r from-slate-900 to-purple-700 rounded-t-lg shrink-0"></AlertDialogHeader>
+          <AlertDialogHeader className="bg-gradient-to-r from-slate-900 to-purple-700 rounded-t-lg shrink-0" />
           <AlertDialogDescription>{t(config.description)}</AlertDialogDescription>
           <AlertDialogDescription>{config.itemName && <span className="font-semibold block my-2">{config.itemName}</span>}</AlertDialogDescription>
         </AlertDialogHeader>
