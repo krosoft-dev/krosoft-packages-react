@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { ConfirmDeleteDialog } from "@/components/core/dialogs/ConfirmDeleteDialog";
 import { Button } from "@/components/ui/button";
 import type { ConfirmDialogConfig } from "@/types/ConfirmDialogConfig";

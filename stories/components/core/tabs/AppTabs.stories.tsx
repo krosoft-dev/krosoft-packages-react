@@ -1,5 +1,5 @@
 import type { TabConfig } from "@/types/TabConfig";
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { FileText, Settings, Users } from "lucide-react";
 import * as React from "react";
 import { MemoryRouter } from "react-router-dom";
