@@ -1,9 +1,10 @@
-import { Dialog, DialogContent } from "@krosoft/react/components/core/dialogs";
+
 import { cn } from "@/helpers/tailwind.helper";
 import { type DialogProps } from "@radix-ui/react-dialog";
 import { Command as CommandPrimitive } from "cmdk";
 import { SearchIcon } from "lucide-react";
 import * as React from "react";
+import { Dialog, DialogContent } from "./dialog";
 
 const Command = React.forwardRef<React.ElementRef<typeof CommandPrimitive>, React.ComponentPropsWithoutRef<typeof CommandPrimitive>>(
   ({ className, ...props }, ref) => (

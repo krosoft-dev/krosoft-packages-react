@@ -1,5 +1,5 @@
-import { useToast } from "@krosoft/react/hooks";
-import { Toast, ToastClose, ToastDescription, ToastProvider, ToastTitle, ToastViewport } from "@krosoft/react/components";
+import { useToast } from  "@/hooks/ui/useToast";
+import { Toast, ToastClose, ToastDescription, ToastProvider, ToastTitle, ToastViewport } from "@/components/ui/toast";
 
 export function Toaster() {
   const { toasts } = useToast();

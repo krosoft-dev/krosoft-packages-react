@@ -2,10 +2,10 @@ import { Separator } from "@/components/ui/separator";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Input } from "@krosoft/react/components";
-import { Button } from "@krosoft/react/components/ui";
+import { Input } from "@/components/ui/input";
+import { Button } from "./button";
 import { cn } from "@/helpers/tailwind.helper";
-import { useMobile } from "@krosoft/react/hooks";
+import { useMobile } from "@/hooks/ui/useMobile";
 import { Slot } from "@radix-ui/react-slot";
 import { VariantProps, cva } from "class-variance-authority";
 import { MenuIcon, PanelLeftCloseIcon, PanelRightCloseIcon } from "lucide-react";
@@ -588,6 +588,5 @@ export {
   SidebarRail,
   SidebarSeparator,
   SidebarTrigger,
-  useSidebar
+  useSidebar,
 };
-
