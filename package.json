@@ -32,9 +32,9 @@
   "peerDependencies": {
     "@krosoft/core": ">=0.0.1",
     "next-themes": ">=0.4.6",
-    "react": ">=19.0.0",
+    "react": ">=19.2.6",
     "react-i18next": ">=17.0.8",
-    "react-router-dom": ">=6.30.3"
+    "react-router-dom": ">=7.15.1"
   },
   "peerDependenciesMeta": {
     "next-themes": {
@@ -81,8 +81,8 @@
     "jsdom": "^26.1.0",
     "next-themes": "^0.4.6",
     "prettier": "^3.8.3",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
     "react-i18next": "^17.0.8",
     "react-router-dom": "^7.15.1",
     "storybook": "^8.6.18",
