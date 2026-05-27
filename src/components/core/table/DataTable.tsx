@@ -25,7 +25,7 @@ export interface DataTableProps<T> {
   pageSizeOptions?: number[]; // Options pour le nombre de lignes par page
 }
 
-export default function DataTable<T>({
+export function DataTable<T>({
   data,
   columns,
   getRowId,
