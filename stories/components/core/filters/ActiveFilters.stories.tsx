@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { ActiveFilters } from "@/components/core/filters/ActiveFilters";
 
 const meta: Meta<typeof ActiveFilters> = {

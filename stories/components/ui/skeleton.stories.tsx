@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Skeleton } from "../../../src/components/ui/skeleton";
 import * as React from "react";
 

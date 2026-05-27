@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectSeparator, SelectTrigger, SelectValue } from "@/components/ui/select";
 
@@ -112,6 +112,27 @@ export const Interactive: Story = {
       <div className="flex flex-col gap-4 w-56">
         <Select value={value} onValueChange={setValue}>
           <SelectTrigger>
+            <SelectValue placeholder="Choisir une option" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="light">Clair</SelectItem>
+            <SelectItem value="dark">Sombre</SelectItem>
+            <SelectItem value="system">Système</SelectItem>
+          </SelectContent>
+        </Select>
+        <p className="text-sm text-muted-foreground">Valeur : {value || "(aucune)"}</p>
+      </div>
+    );
+  },
+};
+
+export const Clearable: Story = {
+  render: () => {
+    const [value, setValue] = useState("");
+    return (
+      <div className="flex flex-col gap-4 w-56">
+        <Select value={value} onValueChange={setValue}>
+          <SelectTrigger onClear={value ? () => setValue("") : undefined}>
             <SelectValue placeholder="Choisir une option" />
           </SelectTrigger>
           <SelectContent>

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 
 const meta: Meta<typeof Avatar> = {

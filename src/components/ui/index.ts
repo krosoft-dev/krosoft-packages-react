@@ -166,6 +166,7 @@ export { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHe
 // } from "./sidebar";
 export { Skeleton } from "./skeleton";
 export { Slider } from "./slider";
+export { Toaster as Sonner, toast } from "./sonner";
 export { Switch } from "./switch";
 export {
   SimpleTable,

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { AppDialog } from "@/components/core/dialogs/AppDialog";
 import { Button } from "@/components/ui/button";
 import { AlertCircle, CheckCircle, Info } from "lucide-react";
