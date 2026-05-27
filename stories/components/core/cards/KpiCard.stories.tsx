@@ -1,6 +1,6 @@
 import { KpiCard } from "@/components/core/cards/KpiCard";
 import { KpiCards } from "@/components/core/cards/KpiCards";
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { AlertCircle, ShoppingCart, TrendingUp, Users } from "lucide-react";
 
 const meta: Meta<typeof KpiCard> = {

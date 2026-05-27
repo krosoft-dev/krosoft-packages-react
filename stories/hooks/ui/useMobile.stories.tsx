@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useMobile } from "@/hooks/ui/useMobile";
 
 const MobileDemo = (): React.ReactElement => {

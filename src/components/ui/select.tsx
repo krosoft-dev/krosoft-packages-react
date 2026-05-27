@@ -1,6 +1,6 @@
 import { cn } from "@/helpers/tailwind.helper";
 import * as SelectPrimitive from "@radix-ui/react-select";
-import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from "lucide-react";
+import { CheckIcon, ChevronDownIcon, ChevronUpIcon, XIcon } from "lucide-react";
 import * as React from "react";
 
 const Select = SelectPrimitive.Root;
@@ -9,8 +9,12 @@ const SelectGroup = SelectPrimitive.Group;
 
 const SelectValue = SelectPrimitive.Value;
 
-const SelectTrigger = React.forwardRef<React.ElementRef<typeof SelectPrimitive.Trigger>, React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger>>(
-  ({ className, children, ...props }, ref) => (
+type SelectTriggerProps = React.ComponentPropsWithoutRef<typeof SelectPrimitive.Trigger> & {
+  onClear?: (e: React.MouseEvent) => void;
+};
+
+const SelectTrigger = React.forwardRef<React.ElementRef<typeof SelectPrimitive.Trigger>, SelectTriggerProps>(
+  ({ className, children, onClear, ...props }, ref) => (
     <SelectPrimitive.Trigger
       ref={ref}
       className={cn(
@@ -20,9 +24,25 @@ const SelectTrigger = React.forwardRef<React.ElementRef<typeof SelectPrimitive.T
       {...props}
     >
       {children}
-      <SelectPrimitive.Icon asChild>
-        <ChevronDownIcon className="size-4 opacity-50" />
-      </SelectPrimitive.Icon>
+      <div className="flex items-center gap-1">
+        {onClear && (
+          <span
+            role="button"
+            tabIndex={-1}
+            onPointerDown={e => {
+              e.preventDefault();
+              e.stopPropagation();
+              onClear(e);
+            }}
+            className="text-muted-foreground hover:text-foreground"
+          >
+            <XIcon className="size-4" />
+          </span>
+        )}
+        <SelectPrimitive.Icon asChild>
+          <ChevronDownIcon className="size-4 opacity-50" />
+        </SelectPrimitive.Icon>
+      </div>
     </SelectPrimitive.Trigger>
   ),
 );

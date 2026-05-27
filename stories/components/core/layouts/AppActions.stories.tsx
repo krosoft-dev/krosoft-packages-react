@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Download, Edit, Plus, Share2, Trash2 } from "lucide-react";
 import { AppActions } from "@/components/core/layouts/AppActions";
 

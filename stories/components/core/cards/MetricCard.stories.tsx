@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Activity, Cpu, HardDrive, Server, Thermometer, Zap } from "lucide-react";
 import { MetricCard } from "@/components/core/cards/MetricCard";
 

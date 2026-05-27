@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Users, ShoppingCart, TrendingUp, AlertCircle } from "lucide-react";
 import { KpiCards } from "@/components/core/cards/KpiCards";
 

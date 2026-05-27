@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { AdvancedFilters } from "@/components/core/filters/AdvancedFilters";
 import type { FilterSection } from "@/types/FilterSection";

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { Plus, Trash2 } from "lucide-react";
 import { AppTabHeader } from "@/components/core/tabs/AppTabHeader";
 
