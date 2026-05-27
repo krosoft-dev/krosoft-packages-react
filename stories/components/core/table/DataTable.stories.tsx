@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import DataTable, { ColumnDef } from "@/components/core/table/DataTable";
+import { DataTable, ColumnDef } from "@/components/core/table/DataTable";
 import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { PencilIcon, TrashIcon } from "lucide-react";
