@@ -1,10 +1,10 @@
 export interface PostgrestQueryLike {
-  or: (filters: string, options?: { foreignTable?: string }) => any;
-  ilike: (column: string, pattern: string) => any;
-  eq: (column: string, value: any) => any;
-  in: (column: string, values: any[]) => any;
-  order: (column: string, options: { ascending: boolean; nullsFirst?: boolean; foreignTable?: string }) => any;
-  range: (from: number, to: number, options?: { foreignTable?: string }) => any;
+  or: (filters: string, options?: { foreignTable?: string }) => PostgrestQueryLike;
+  ilike: (column: string, pattern: string) => PostgrestQueryLike;
+  eq: (column: string, value: unknown) => PostgrestQueryLike;
+  in: (column: string, values: unknown[]) => PostgrestQueryLike;
+  order: (column: string, options: { ascending: boolean; nullsFirst?: boolean; foreignTable?: string }) => PostgrestQueryLike;
+  range: (from: number, to: number, options?: { foreignTable?: string }) => PostgrestQueryLike;
 }
 
 export interface TableStateLike<TFilters> {
@@ -23,7 +23,7 @@ export interface SupabaseFilterConfig<TFilters> {
    * If search text is provided, it applies: .or("col1.ilike.%text%,col2.ilike.%text%")
    */
   searchColumns?: string[];
-  
+
   /**
    * Mapping definitions for each key in appliedFilters.
    */
@@ -33,7 +33,7 @@ export interface SupabaseFilterConfig<TFilters> {
        * Column name in the DB. If omitted, the filter key is used as the column name.
        */
       column?: string;
-      
+
       /**
        * The filter type to apply.
        * - "ilike": case-insensitive search (uses `%value%`)
@@ -52,22 +52,18 @@ export interface SupabaseFilterConfig<TFilters> {
   sortColumns?: Record<string, string>;
 }
 
-export function applyTableStateToQuery<
-  TFilters extends Record<string, any>
->(
-  query: any,
+export function applyTableStateToQuery<TFilters extends Record<string, unknown>>(
+  query: PostgrestQueryLike,
   tableState: TableStateLike<TFilters>,
-  config: SupabaseFilterConfig<TFilters> = {}
-): any {
+  config: SupabaseFilterConfig<TFilters> = {},
+): PostgrestQueryLike {
   let q = query;
 
   // 1. Text Search (Global Search across specified columns)
-  const searchValToUse = tableState.debouncedSearchText !== undefined ? tableState.debouncedSearchText : tableState.searchText;
-  if (searchValToUse && searchValToUse.trim() && config.searchColumns && config.searchColumns.length > 0) {
+  const searchValToUse = tableState.debouncedSearchText ?? tableState.searchText;
+  if (searchValToUse?.trim() && config.searchColumns?.length) {
     const searchVal = `%${searchValToUse.trim()}%`;
-    const orCondition = config.searchColumns
-      .map(col => `${col}.ilike.${searchVal}`)
-      .join(",");
+    const orCondition = config.searchColumns.map(col => `${col}.ilike.${searchVal}`).join(",");
     q = q.or(orCondition);
   }
 
@@ -76,21 +72,21 @@ export function applyTableStateToQuery<
     for (const key in tableState.appliedFilters) {
       if (Object.prototype.hasOwnProperty.call(tableState.appliedFilters, key)) {
         const val = tableState.appliedFilters[key];
-        
+
         // Skip empty filters
         if (val === undefined || val === null || val === "") continue;
         if (Array.isArray(val) && val.length === 0) continue;
 
         const filterConf = config.filters?.[key];
-        const dbColumn = filterConf?.column || key;
-        const filterType = filterConf?.type || "eq";
+        const dbColumn = filterConf?.column ?? key;
+        const filterType = filterConf?.type ?? "eq";
 
         if (filterType === "custom") {
           continue;
         }
 
         if (filterType === "ilike") {
-          q = q.ilike(dbColumn, `%${val}%`);
+          q = q.ilike(dbColumn, `%${String(val)}%`);
         } else if (filterType === "eq") {
           q = q.eq(dbColumn, val);
         } else if (filterType === "in" && Array.isArray(val)) {
@@ -102,7 +98,7 @@ export function applyTableStateToQuery<
 
   // 3. Sorting
   if (tableState.sortColumn) {
-    const dbSortCol = config.sortColumns?.[tableState.sortColumn] || tableState.sortColumn;
+    const dbSortCol = config.sortColumns?.[tableState.sortColumn] ?? tableState.sortColumn;
     q = q.order(dbSortCol, { ascending: tableState.sortDirection === "asc" });
   }
 
@@ -122,17 +118,14 @@ export function applyTableStateToQuery<
  * // profile.tenants_users = [{ tenant_id: 1, tenants: { id: 1, name: "Tenant A" } }]
  * mapNestedRelationMany(profile.tenants_users, "tenants") // [{ id: 1, name: "Tenant A" }]
  */
-export function mapNestedRelationMany<T = any>(
-  relationArray: any[] | null | undefined,
-  nestedKey: string
-): T[] {
+export function mapNestedRelationMany<T = unknown>(relationArray: Record<string, unknown>[] | null | undefined, nestedKey: string): T[] {
   if (!relationArray) return [];
   return relationArray
     .map(item => {
-      const nested = item[nestedKey];
-      return Array.isArray(nested) ? nested[0] : nested;
+      const nested = item[nestedKey] as Record<string, unknown> | Record<string, unknown>[] | undefined;
+      return (Array.isArray(nested) ? nested[0] : nested) as T;
     })
-    .filter(Boolean);
+    .filter((value): value is T => Boolean(value));
 }
 
 /**
@@ -142,20 +135,18 @@ export function mapNestedRelationMany<T = any>(
  * // profile.users_roles = [{ role_id: 2, roles: { id: 2, name: "Admin" } }]
  * mapNestedRelationOne(profile.users_roles, "roles") // { id: 2, name: "Admin" }
  */
-export function mapNestedRelationOne<T = any>(
-  relationArrayOrObject: any[] | any | null | undefined,
-  nestedKey?: string
+/* eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters */
+export function mapNestedRelationOne<T = unknown>(
+  relationArrayOrObject: Record<string, unknown> | Record<string, unknown>[] | null | undefined,
+  nestedKey?: string,
 ): T | null {
   if (!relationArrayOrObject) return null;
-  const record = Array.isArray(relationArrayOrObject)
-    ? relationArrayOrObject[0]
-    : relationArrayOrObject;
+  const record = (Array.isArray(relationArrayOrObject) ? relationArrayOrObject[0] : relationArrayOrObject) as Record<string, unknown> | undefined;
   if (!record) return null;
 
   if (nestedKey) {
-    const nested = record[nestedKey];
-    return Array.isArray(nested) ? nested[0] : nested;
+    const nested = record[nestedKey] as Record<string, unknown> | Record<string, unknown>[] | undefined;
+    return (Array.isArray(nested) ? nested[0] : nested) as T | null;
   }
-  return record;
+  return record as T;
 }
-

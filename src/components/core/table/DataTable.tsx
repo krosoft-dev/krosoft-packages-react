@@ -158,7 +158,7 @@ export function DataTable<T>({
         </div>
 
         <TablePagination
-          totalItems={totalRows !== undefined ? totalRows : data.length}
+          totalItems={totalRows ?? data.length}
           startIndex={startIndex}
           endIndex={endIndex}
           pageSize={pageSize}

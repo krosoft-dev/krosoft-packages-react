@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import { DataTable, ColumnDef } from "@/components/core/table/DataTable";
 import React from "react";
 import { Badge } from "@/components/ui/badge";
@@ -382,7 +382,7 @@ export const FiftyRows: Story = {
   },
 };
 
-const ServerSideDataTableWrapper = () => {
+const ServerSideDataTableWrapper = (): React.JSX.Element => {
   const [currentPage, setCurrentPage] = React.useState(1);
   const [pageSize, setPageSize] = React.useState(10);
   const [sortColumn, setSortColumn] = React.useState<string | null>("name");
@@ -418,13 +418,16 @@ const ServerSideDataTableWrapper = () => {
       setIsLoading(false);
     }, 500);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+    };
   }, [currentPage, pageSize, sortColumn, sortDirection]);
 
   return (
     <div className="space-y-4">
       <div className="text-sm font-medium text-blue-800 dark:text-blue-200 bg-blue-50 dark:bg-blue-950/30 p-3 rounded-lg border border-blue-200 dark:border-blue-900/50">
-        📡 <strong>Simulation Supabase / API :</strong> Les opérations de tri, de pagination et de chargement (délai de 500ms) sont entièrement gérées à l'extérieur de la table.
+        📡 <strong>Simulation Supabase / API :</strong> Les opérations de tri, de pagination et de chargement (délai de 500ms) sont entièrement gérées à
+        l&apos;extérieur de la table.
       </div>
       <DataTable
         data={data}
@@ -455,10 +458,10 @@ export const ServerSideSupabaseMock: Story = {
   parameters: {
     docs: {
       description: {
-        story: "Simule le fonctionnement avec une base de données distante (Supabase/API). La table ne reçoit que les lignes de la page active et délègue le tri et la pagination au parent via des callbacks.",
+        story:
+          "Simule le fonctionnement avec une base de données distante (Supabase/API). La table ne reçoit que les lignes de la page active et délègue le tri et la pagination au parent via des callbacks.",
       },
     },
   },
   render: () => <ServerSideDataTableWrapper />,
 };
-

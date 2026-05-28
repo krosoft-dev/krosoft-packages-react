@@ -23,4 +23,3 @@ export interface UseDataTableProps<T> {
   sortDirection?: "asc" | "desc";
   onSortChange?: (column: string | null, direction: "asc" | "desc") => void;
 }
-

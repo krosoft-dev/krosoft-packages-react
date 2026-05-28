@@ -1,5 +1,20 @@
 import { useState, useCallback, useEffect } from "react";
 
+export interface UseServerTableResult<TFilters> {
+  currentPage: number;
+  onPageChange: React.Dispatch<React.SetStateAction<number>>;
+  pageSize: number;
+  onPageSizeChange: (size: number) => void;
+  sortColumn: string | null;
+  sortDirection: "asc" | "desc";
+  onSortChange: (col: string | null, dir: "asc" | "desc") => void;
+  searchText: string;
+  debouncedSearchText: string;
+  onSearchChange: (text: string) => void;
+  appliedFilters: TFilters;
+  onFiltersChange: (filters: TFilters) => void;
+}
+
 export function useServerTable<TFilters>(
   initialFilters: TFilters,
   initialSortColumn: string | null = "nom",
@@ -9,8 +24,8 @@ export function useServerTable<TFilters>(
     initialPage?: number;
     initialPageSize?: number;
     debounceMs?: number;
-  } = {}
-) {
+  } = {},
+): UseServerTableResult<TFilters> {
   const [currentPage, setCurrentPage] = useState(options.initialPage ?? 1);
   const [pageSize, setPageSize] = useState(options.initialPageSize ?? 10);
   const [sortColumn, setSortColumn] = useState<string | null>(initialSortColumn);

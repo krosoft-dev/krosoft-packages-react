@@ -24,7 +24,7 @@ export function useDataTable<T>({
   const sortColumn = controlledSortColumn !== undefined ? controlledSortColumn : localSortColumn;
 
   const [localSortDirection, setLocalSortDirection] = useState<"asc" | "desc">("asc");
-  const sortDirection = controlledSortDirection !== undefined ? controlledSortDirection : localSortDirection;
+  const sortDirection = controlledSortDirection ?? localSortDirection;
 
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
 
@@ -33,10 +33,10 @@ export function useDataTable<T>({
   const [columnWidths, setColumnWidths] = useState<Record<string, number>>(columns.reduce((acc, col) => ({ ...acc, [col.key]: col.minWidth ?? 100 }), {}));
 
   const [localCurrentPage, setLocalCurrentPage] = useState<number>(1);
-  const currentPage = controlledCurrentPage !== undefined ? controlledCurrentPage : localCurrentPage;
+  const currentPage = controlledCurrentPage ?? localCurrentPage;
 
   const [localPageSize, setLocalPageSize] = useState<number>(defaultPageSize);
-  const pageSize = controlledPageSize !== undefined ? controlledPageSize : localPageSize;
+  const pageSize = controlledPageSize ?? localPageSize;
 
   const tableRef = useRef<HTMLTableElement>(null);
   const resizingColumn = useRef<string | null>(null);
@@ -58,7 +58,7 @@ export function useDataTable<T>({
 
   const colSpanCount = visibleColumnsArray.length + (hasBulkActions ? 1 : 0) + (hasActions || columnVisibility ? 1 : 0);
 
-  const totalItems = totalRows !== undefined ? totalRows : data.length;
+  const totalItems = totalRows ?? data.length;
   const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
   const safeCurrentPage = currentPage > totalPages ? totalPages : currentPage;
 
