@@ -11,7 +11,7 @@ export const ErrorAlert = ({ error }: ErrorAlertProps) => {
 
   return (
     <Alert variant="destructive">
-      <AlertTriangle className="h-4 w-4" />
+      <AlertTriangle className="size-4" />
       <AlertDescription>
         <div className="flex items-center space-x-2">
           <span className="font-semibold">Erreur :</span>

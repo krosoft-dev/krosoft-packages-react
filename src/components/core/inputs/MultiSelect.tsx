@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
-import { Button, Checkbox } from "@/components/ui";
-import { ChevronDown, Search, X } from "lucide-react";
+import { Checkbox } from "@/components/ui";
+import { ChevronDownIcon, SearchIcon, XIcon } from "lucide-react";
 import { cn } from "@/helpers/tailwind.helper";
 
 interface MultiSelectProps {
@@ -100,12 +100,11 @@ export const MultiSelect = ({
 
   return (
     <div ref={containerRef} className="relative w-full">
-      <Button
-        variant="outline"
+      <button
         type="button"
         onClick={handleToggle}
         className={cn(
-          "w-full justify-between text-left font-normal focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+          "flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
           open && "ring-2 ring-ring ring-offset-2",
           selected.length === 0 && "text-muted-foreground",
         )}
@@ -115,25 +114,27 @@ export const MultiSelect = ({
           {selected.length > 0 && (
             <span
               role="button"
-              onClick={e => {
+              tabIndex={-1}
+              onPointerDown={e => {
+                e.preventDefault();
                 e.stopPropagation();
                 onClear();
               }}
-              className="rounded-full p-0.5 opacity-50 transition-opacity hover:opacity-100"
+              className="text-muted-foreground hover:text-foreground"
             >
-              <X className="h-3.5 w-3.5" />
+              <XIcon className="size-4" />
             </span>
           )}
-          <ChevronDown className={cn("h-4 w-4 opacity-50 transition-transform", open && "rotate-180")} />
+          <ChevronDownIcon className={cn("size-4 opacity-50 shrink-0 transition-transform", open && "rotate-180")} />
         </div>
-      </Button>
+      </button>
 
       {open ? (
         <div className="absolute left-0 right-0 top-[calc(100%+4px)] z-[100] rounded-md border bg-popover text-popover-foreground shadow-md animate-in fade-in-0 zoom-in-95 slide-in-from-top-2">
           {searchable ? (
             <div className="border-b border-border p-2">
               <div className="relative">
-                <Search className="absolute left-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+                <SearchIcon className="absolute left-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
                 <input
                   ref={inputRef}
                   className="w-full rounded-md bg-muted/50 py-1.5 pl-7 pr-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-1 focus:ring-ring"
@@ -146,7 +147,7 @@ export const MultiSelect = ({
               </div>
             </div>
           ) : null}
-          <div className="flex flex-col gap-0.5 max-h-56 overflow-y-auto p-1.5">
+          <div className="flex flex-col gap-0.5 max-h-56 overflow-y-auto p-1.5 scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-muted-foreground/20 scrollbar-track-transparent [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-muted-foreground/20 [&::-webkit-scrollbar-track]:bg-transparent">
             {filteredOptions.length > 0 && (
               <label className="flex items-center gap-2.5 rounded-md px-2 py-2 text-sm hover:bg-muted cursor-pointer transition-colors">
                 <Checkbox checked={isAllSelected} onCheckedChange={handleToggleAll} />

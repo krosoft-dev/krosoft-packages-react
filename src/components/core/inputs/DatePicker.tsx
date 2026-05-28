@@ -50,7 +50,7 @@ export const DatePicker = ({ date, onDateChange, placeholder }: DatePickerProps)
           date === undefined && "text-muted-foreground",
         )}
       >
-        <CalendarIcon className="mr-2 h-4 w-4 shrink-0" />
+        <CalendarIcon className="mr-2 size-4 shrink-0" />
         {date !== undefined ? format(date, "dd/MM/yyyy", { locale: fr }) : <span>{placeholder}</span>}
       </Button>
 

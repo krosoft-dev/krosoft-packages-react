@@ -246,7 +246,7 @@ export default function FormDialog<T>({
               <>
                 {cancelLabel !== "" ? (
                   <Button onClick={handleCancel} variant="outline" size="sm" disabled={isSaving}>
-                    <X className="h-4 w-4 mr-2" />
+                    <X className="size-4 mr-2" />
                     {cancelLabel}
                   </Button>
                 ) : null}
@@ -258,7 +258,7 @@ export default function FormDialog<T>({
                   disabled={isSaving}
                   className="text-white"
                 >
-                  {!hideSaveIcon ? <Save className="h-4 w-4 mr-2" /> : null}
+                  {!hideSaveIcon ? <Save className="size-4 mr-2" /> : null}
                   {isSaving ? "Enregistrement..." : saveLabel}
                 </Button>
               </>
@@ -270,7 +270,7 @@ export default function FormDialog<T>({
                 variant="outline"
                 size="sm"
               >
-                <Pen className="h-4 w-4 mr-2" />
+                <Pen className="size-4 mr-2" />
                 Modifier
               </Button>
             )}

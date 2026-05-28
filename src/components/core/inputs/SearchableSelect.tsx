@@ -3,7 +3,7 @@ import { ChevronDownIcon, SearchIcon, CheckIcon, XIcon } from "lucide-react";
 import { cn } from "@/helpers/tailwind.helper";
 
 interface SearchableSelectProps {
-  options: { value: string; label: string }[];
+  options?: { value: string; label: string }[];
   value: string | undefined;
   onChange: (value: string) => void;
   onClear?: () => void;
@@ -13,7 +13,7 @@ interface SearchableSelectProps {
 }
 
 export const SearchableSelect = ({
-  options,
+  options = [],
   value,
   onChange,
   onClear,
@@ -103,7 +103,7 @@ export const SearchableSelect = ({
               <XIcon className="size-4" />
             </span>
           )}
-          <ChevronDownIcon className={cn("h-4 w-4 opacity-50 shrink-0 transition-transform", open && "rotate-180")} />
+          <ChevronDownIcon className={cn("size-4 opacity-50 shrink-0 transition-transform", open && "rotate-180")} />
         </div>
       </button>
 

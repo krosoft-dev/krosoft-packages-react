@@ -38,6 +38,13 @@ type Story = StoryObj<typeof SearchableSelect>;
 
 export const Default: Story = {};
 
+export const WithoutOptions: Story = {
+  args: {
+    options: undefined,
+    placeholder: "Aucune option disponible",
+  },
+};
+
 export const WithValue: Story = {
   args: {
     value: "fr",
