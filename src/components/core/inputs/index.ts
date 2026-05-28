@@ -1,3 +1,4 @@
+export { ImageInput } from "./ImageInput";
 export { SearchInput } from "./SearchInput";
 export { DatePicker } from "./DatePicker";
 export { DateRangePicker } from "./DateRangePicker";

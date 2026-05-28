@@ -1,4 +1,4 @@
-import { ButtonVariantType } from "./ButtonVariantType";
+import type { ButtonVariantType } from "./ButtonVariantType";
 
 export type AppAction =
   | {
