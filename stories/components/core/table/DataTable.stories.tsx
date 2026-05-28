@@ -376,8 +376,89 @@ export const FiftyRows: Story = {
     },
   },
   args: {
-    data: mockData50,
+    data: mockData50.slice(0, 50),
     columns,
     getRowId: (row: UserData) => row.id,
   },
 };
+
+const ServerSideDataTableWrapper = () => {
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const [pageSize, setPageSize] = React.useState(10);
+  const [sortColumn, setSortColumn] = React.useState<string | null>("name");
+  const [sortDirection, setSortDirection] = React.useState<"asc" | "desc">("asc");
+  const [data, setData] = React.useState<UserData[]>([]);
+  const [isLoading, setIsLoading] = React.useState(false);
+
+  React.useEffect(() => {
+    setIsLoading(true);
+    const timer = setTimeout(() => {
+      // Tri côté "serveur"
+      const sorted = [...mockData50];
+      if (sortColumn) {
+        sorted.sort((a, b) => {
+          const aVal = a[sortColumn as keyof UserData];
+          const bVal = b[sortColumn as keyof UserData];
+          if (typeof aVal === "string" && typeof bVal === "string") {
+            return sortDirection === "asc" ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
+          }
+          const numA = Number(aVal);
+          const numB = Number(bVal);
+          if (numA < numB) return sortDirection === "asc" ? -1 : 1;
+          if (numA > numB) return sortDirection === "asc" ? 1 : -1;
+          return 0;
+        });
+      }
+
+      // Pagination côté "serveur"
+      const startIndex = (currentPage - 1) * pageSize;
+      const paginated = sorted.slice(startIndex, startIndex + pageSize);
+
+      setData(paginated);
+      setIsLoading(false);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [currentPage, pageSize, sortColumn, sortDirection]);
+
+  return (
+    <div className="space-y-4">
+      <div className="text-sm font-medium text-blue-800 dark:text-blue-200 bg-blue-50 dark:bg-blue-950/30 p-3 rounded-lg border border-blue-200 dark:border-blue-900/50">
+        📡 <strong>Simulation Supabase / API :</strong> Les opérations de tri, de pagination et de chargement (délai de 500ms) sont entièrement gérées à l'extérieur de la table.
+      </div>
+      <DataTable
+        data={data}
+        columns={columns}
+        getRowId={(row: UserData) => row.id}
+        isLoading={isLoading}
+        totalRows={mockData50.length}
+        currentPage={currentPage}
+        onPageChange={setCurrentPage}
+        defaultPageSize={pageSize}
+        pageSizeOptions={[5, 10, 20, 50]}
+        onPageSizeChange={size => {
+          setPageSize(size);
+          setCurrentPage(1);
+        }}
+        sortColumn={sortColumn}
+        sortDirection={sortDirection}
+        onSortChange={(col, dir) => {
+          setSortColumn(col);
+          setSortDirection(dir);
+        }}
+      />
+    </div>
+  );
+};
+
+export const ServerSideSupabaseMock: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story: "Simule le fonctionnement avec une base de données distante (Supabase/API). La table ne reçoit que les lignes de la page active et délègue le tri et la pagination au parent via des callbacks.",
+      },
+    },
+  },
+  render: () => <ServerSideDataTableWrapper />,
+};
+

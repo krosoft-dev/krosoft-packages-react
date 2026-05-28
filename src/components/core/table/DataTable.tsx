@@ -23,6 +23,18 @@ export interface DataTableProps<T> {
   noDataMessage?: string; // Message affiché lorsque le tableau est vide
   defaultPageSize?: number; // Nombre par défaut de lignes par page
   pageSizeOptions?: number[]; // Options pour le nombre de lignes par page
+
+  // Server-side pagination
+  totalRows?: number;
+  currentPage?: number;
+  pageSize?: number;
+  onPageChange?: (page: number) => void;
+  onPageSizeChange?: (pageSize: number) => void;
+
+  // Server-side sorting
+  sortColumn?: string | null;
+  sortDirection?: "asc" | "desc";
+  onSortChange?: (column: string | null, direction: "asc" | "desc") => void;
 }
 
 export function DataTable<T>({
@@ -39,6 +51,14 @@ export function DataTable<T>({
   noDataMessage = "Aucun résultat",
   defaultPageSize = DEFAULT_PAGE_SIZE,
   pageSizeOptions = DEFAULT_PAGE_SIZE_OPTIONS,
+  totalRows,
+  currentPage,
+  pageSize: controlledPageSize,
+  onPageChange,
+  onPageSizeChange,
+  sortColumn: controlledSortColumn,
+  sortDirection: controlledSortDirection,
+  onSortChange,
 }: DataTableProps<T>): React.JSX.Element {
   const {
     sortColumn,
@@ -76,6 +96,14 @@ export function DataTable<T>({
     actions,
     bulkActions,
     columnVisibility,
+    totalRows,
+    currentPage,
+    pageSize: controlledPageSize,
+    onPageChange,
+    onPageSizeChange,
+    sortColumn: controlledSortColumn,
+    sortDirection: controlledSortDirection,
+    onSortChange,
   });
 
   return (
@@ -130,7 +158,7 @@ export function DataTable<T>({
         </div>
 
         <TablePagination
-          totalItems={data.length}
+          totalItems={totalRows !== undefined ? totalRows : data.length}
           startIndex={startIndex}
           endIndex={endIndex}
           pageSize={pageSize}
