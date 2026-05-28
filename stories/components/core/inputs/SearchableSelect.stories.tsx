@@ -44,6 +44,26 @@ export const WithValue: Story = {
   },
 };
 
+export const WithClear: Story = {
+  render: () => {
+    const [value, setValue] = useState<string | undefined>("fr");
+    return (
+      <div className="w-64 pb-72 space-y-2">
+        <SearchableSelect
+          options={PAYS}
+          value={value}
+          onChange={setValue}
+          onClear={() => setValue(undefined)}
+          placeholder="Sélectionner un pays"
+        />
+        <p className="text-xs text-muted-foreground">
+          {value !== undefined ? `Sélectionné : ${PAYS.find(p => p.value === value)?.label}` : "Aucune sélection"}
+        </p>
+      </div>
+    );
+  },
+};
+
 export const CustomPlaceholders: Story = {
   args: {
     placeholder: "Choisir un pays...",
@@ -66,12 +86,25 @@ export const ManyOptions: Story = {
   },
 };
 
+export const Disabled: Story = {
+  args: {
+    disabled: true,
+  },
+};
+
+export const DisabledWithValue: Story = {
+  args: {
+    value: "fr",
+    disabled: true,
+  },
+};
+
 export const Interactive: Story = {
   render: () => {
     const [value, setValue] = useState<string | undefined>(undefined);
     return (
       <div className="w-64 pb-72 space-y-2">
-        <SearchableSelect options={PAYS} value={value} onChange={setValue} placeholder="Sélectionner un pays" />
+        <SearchableSelect options={PAYS} value={value} onChange={setValue} onClear={() => setValue(undefined)} placeholder="Sélectionner un pays" />
         <p className="text-xs text-muted-foreground">
           {value !== undefined ? `Sélectionné : ${PAYS.find(p => p.value === value)?.label}` : "Aucune sélection"}
         </p>
