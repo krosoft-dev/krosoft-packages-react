@@ -94,6 +94,9 @@ export const SearchableSelect = ({
             <span
               role="button"
               tabIndex={-1}
+              onClick={e => {
+                e.stopPropagation();
+              }}
               onPointerDown={e => {
                 e.preventDefault();
                 e.stopPropagation();
