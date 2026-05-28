@@ -2,9 +2,10 @@ import React, { useState, useMemo, useRef, useEffect } from "react";
 import { Checkbox } from "@/components/ui";
 import { ChevronDownIcon, SearchIcon, XIcon } from "lucide-react";
 import { cn } from "@/helpers/tailwind.helper";
+import type { SelectOption } from "@krosoft/core/types";
 
 interface MultiSelectProps {
-  options: { value: string; label: string }[];
+  options: SelectOption[];
   selected: string[];
   onToggle: (val: string) => void;
   onClear: () => void;

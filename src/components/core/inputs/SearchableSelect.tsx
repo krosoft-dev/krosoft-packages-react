@@ -1,9 +1,10 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import { ChevronDownIcon, SearchIcon, CheckIcon, XIcon } from "lucide-react";
 import { cn } from "@/helpers/tailwind.helper";
+import type { SelectOption } from "@krosoft/core/types";
 
 interface SearchableSelectProps {
-  options?: { value: string; label: string }[];
+  options?: SelectOption[];
   value: string | undefined;
   onChange: (value: string) => void;
   onClear?: () => void;
