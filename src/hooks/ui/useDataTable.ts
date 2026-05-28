@@ -11,17 +11,32 @@ export function useDataTable<T>({
   actions,
   bulkActions,
   columnVisibility = true,
+  totalRows,
+  currentPage: controlledCurrentPage,
+  pageSize: controlledPageSize,
+  onPageChange,
+  onPageSizeChange,
+  sortColumn: controlledSortColumn,
+  sortDirection: controlledSortDirection,
+  onSortChange,
 }: UseDataTableProps<T>): UseDataTableResult<T> {
-  const [sortColumn, setSortColumn] = useState<string | null>(columns.find(col => col.sortable === true)?.key ?? null);
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+  const [localSortColumn, setLocalSortColumn] = useState<string | null>(columns.find(col => col.sortable === true)?.key ?? null);
+  const sortColumn = controlledSortColumn !== undefined ? controlledSortColumn : localSortColumn;
+
+  const [localSortDirection, setLocalSortDirection] = useState<"asc" | "desc">("asc");
+  const sortDirection = controlledSortDirection ?? localSortDirection;
+
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
 
   const [visibleColumns, setVisibleColumns] = useState<Set<string>>(new Set(columns.filter(col => col.defaultVisible !== false).map(col => col.key)));
   const [columnOrder, setColumnOrder] = useState<string[]>(columns.map(col => col.key));
   const [columnWidths, setColumnWidths] = useState<Record<string, number>>(columns.reduce((acc, col) => ({ ...acc, [col.key]: col.minWidth ?? 100 }), {}));
 
-  const [currentPage, setCurrentPage] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(defaultPageSize);
+  const [localCurrentPage, setLocalCurrentPage] = useState<number>(1);
+  const currentPage = controlledCurrentPage ?? localCurrentPage;
+
+  const [localPageSize, setLocalPageSize] = useState<number>(defaultPageSize);
+  const pageSize = controlledPageSize ?? localPageSize;
 
   const tableRef = useRef<HTMLTableElement>(null);
   const resizingColumn = useRef<string | null>(null);
@@ -43,24 +58,73 @@ export function useDataTable<T>({
 
   const colSpanCount = visibleColumnsArray.length + (hasBulkActions ? 1 : 0) + (hasActions || columnVisibility ? 1 : 0);
 
-  const totalPages = Math.max(1, Math.ceil(data.length / pageSize));
+  const totalItems = totalRows ?? data.length;
+  const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
   const safeCurrentPage = currentPage > totalPages ? totalPages : currentPage;
 
-  const startIndex = data.length === 0 ? 0 : (safeCurrentPage - 1) * pageSize;
-  const endIndex = Math.min(startIndex + pageSize, data.length);
+  const startIndex = totalItems === 0 ? 0 : (safeCurrentPage - 1) * pageSize;
+  const endIndex = totalRows !== undefined ? Math.min(startIndex + data.length, totalRows) : Math.min(startIndex + pageSize, data.length);
+
+  const handlePageChange = useCallback(
+    (page: number) => {
+      if (onPageChange) {
+        onPageChange(page);
+      } else {
+        setLocalCurrentPage(page);
+      }
+    },
+    [onPageChange],
+  );
+
+  const handlePageSizeChange = useCallback(
+    (size: number) => {
+      if (onPageSizeChange) {
+        onPageSizeChange(size);
+      } else {
+        setLocalPageSize(size);
+        setLocalCurrentPage(1);
+      }
+    },
+    [onPageSizeChange],
+  );
+
+  const setCurrentPageWrapper = useCallback(
+    (value: React.SetStateAction<number>) => {
+      const nextPage = typeof value === "function" ? value(currentPage) : value;
+      handlePageChange(nextPage);
+    },
+    [currentPage, handlePageChange],
+  );
+
+  const setPageSizeWrapper = useCallback(
+    (value: React.SetStateAction<number>) => {
+      const nextSize = typeof value === "function" ? value(pageSize) : value;
+      handlePageSizeChange(nextSize);
+    },
+    [pageSize, handlePageSizeChange],
+  );
 
   // Gestion du tri
-  const handleSort = (columnKey: string): void => {
-    const columnDef = columns.find(col => col.key === columnKey);
-    if (columnDef?.sortable !== true) return;
-    if (sortColumn === columnKey) {
-      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
-    } else {
-      setSortColumn(columnKey);
-      setSortDirection("asc");
-    }
-    setCurrentPage(1);
-  };
+  const handleSort = useCallback(
+    (columnKey: string): void => {
+      const columnDef = columns.find(col => col.key === columnKey);
+      if (columnDef?.sortable !== true) return;
+
+      let nextDirection: "asc" | "desc" = "asc";
+      if (sortColumn === columnKey) {
+        nextDirection = sortDirection === "asc" ? "desc" : "asc";
+      }
+
+      if (onSortChange) {
+        onSortChange(columnKey, nextDirection);
+      } else {
+        setLocalSortColumn(columnKey);
+        setLocalSortDirection(nextDirection);
+        handlePageChange(1);
+      }
+    },
+    [columns, sortColumn, sortDirection, onSortChange, handlePageChange],
+  );
 
   const handleMouseMove = useCallback((e: MouseEvent) => {
     const currentResizingColumn = resizingColumn.current;
@@ -126,6 +190,9 @@ export function useDataTable<T>({
 
   // Tri générique des données
   const sortedData = useMemo(() => {
+    if (onSortChange !== undefined) {
+      return data;
+    }
     return [...data].sort((a, b) => {
       if (sortColumn === null) return 0;
 
@@ -147,11 +214,14 @@ export function useDataTable<T>({
       if (aValue > bValue) return sortDirection === "asc" ? 1 : -1;
       return 0;
     });
-  }, [data, sortColumn, sortDirection, columns]);
+  }, [data, sortColumn, sortDirection, columns, onSortChange]);
 
   const paginatedData = useMemo(() => {
+    if (totalRows !== undefined) {
+      return sortedData;
+    }
     return sortedData.slice(startIndex, endIndex);
-  }, [sortedData, startIndex, endIndex]);
+  }, [sortedData, startIndex, endIndex, totalRows]);
 
   const toggleColumnVisibility = (columnKey: string): void => {
     const newVisibleColumns = new Set(visibleColumns);
@@ -187,9 +257,9 @@ export function useDataTable<T>({
     visibleColumns,
     columnWidths,
     currentPage,
-    setCurrentPage,
+    setCurrentPage: setCurrentPageWrapper,
     pageSize,
-    setPageSize,
+    setPageSize: setPageSizeWrapper,
     totalPages,
     safeCurrentPage,
     startIndex,
