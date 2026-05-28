@@ -7,10 +7,7 @@ interface CardsSkeletonProps {
 
 export const CardsSkeleton = ({ count = 1 }: CardsSkeletonProps): React.JSX.Element => {
   return (
-    <div
-      className="grid gap-6"
-      style={{ gridTemplateColumns: `repeat(${count}, minmax(0, 1fr))` }}
-    >
+    <div className="grid gap-6" style={{ gridTemplateColumns: `repeat(${count}, minmax(0, 1fr))` }}>
       {Array.from({ length: count }).map((_, index) => (
         <CardSkeleton key={index} />
       ))}
