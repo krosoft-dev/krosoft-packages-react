@@ -328,6 +328,7 @@ export const GenericForm = <T,>({
               formField.onChange(vals);
             }}
             placeholder={field.placeholderKey ? t(field.placeholderKey) : ""}
+            disabled={isFieldDisabled}
           />
         );
       }
