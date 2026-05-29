@@ -35,8 +35,9 @@ const defaultInitialData: DemoData = {
 const demoSchema: FormSchema<DemoData> = {
   sections: [
     {
-      title: "Profil Personnel",
-      icon: <User className="size-5 text-indigo-500" />,
+      titleKey: "Profil Personnel",
+      icon: User,
+      iconClassName: "text-indigo-500",
       fields: [
         {
           key: "avatarUrl",
@@ -98,8 +99,9 @@ const demoSchema: FormSchema<DemoData> = {
       ],
     },
     {
-      title: "Préférences & Droits",
-      icon: <Shield className="size-5 text-emerald-500" />,
+      titleKey: "Préférences & Droits",
+      icon: Shield,
+      iconClassName: "text-emerald-500",
       fields: [
         {
           key: "role",
@@ -144,8 +146,9 @@ const demoSchema: FormSchema<DemoData> = {
       ],
     },
     {
-      title: "Informations Complémentaires",
-      icon: <Info className="size-5 text-blue-500" />,
+      titleKey: "Informations Complémentaires",
+      icon: Info,
+      iconClassName: "text-blue-500",
       fields: [
         {
           key: "empty",
@@ -256,5 +259,12 @@ export const DisabledForm: Story = {
     schema: demoSchema as unknown as FormSchema<unknown>,
     initialData: defaultInitialData,
     disabled: true,
+  },
+};
+
+export const NullSchema: Story = {
+  render: FormWrapper,
+  args: {
+    schema: null,
   },
 };

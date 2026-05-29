@@ -35,8 +35,9 @@ import { z } from "zod";
 interface GenericFormProps<T> {
   /**
    * The structural schema definition containing sections and form fields.
+   * If null or undefined, the form renders nothing.
    */
-  schema: FormSchema<T>;
+  schema: FormSchema<T> | null | undefined;
   /**
    * Indicates if the form submission or data fetching is loading.
    */
@@ -92,9 +93,11 @@ export const GenericForm = <T,>({
   renderActions = true,
   onRegisterSubmit,
   defaultCols = 4,
-}: GenericFormProps<T>): React.ReactElement => {
+}: GenericFormProps<T>): React.ReactElement | null => {
   const { t } = useTranslation();
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  if (!schema) return null;
 
   const getColSpanClass = (cols: number): string => {
     switch (cols) {
@@ -334,7 +337,7 @@ export const GenericForm = <T,>({
       }
       case "html": {
         const htmlField = field as HtmlFormField<T>;
-        return <>{htmlField.render(form.getValues() as T, field)}</>;
+        return htmlField.render(form.getValues() as T, field);
       }
       default:
         return null;
@@ -374,7 +377,7 @@ export const GenericForm = <T,>({
       </div>
     );
 
-    const sectionTitle = section.title ?? (section.titleKey ? t(section.titleKey) : null);
+    const sectionTitle = section.titleKey ? t(section.titleKey) : null;
     const hasHeader = sectionTitle ?? section.icon;
 
     if (schema.useCards === false) {
@@ -382,7 +385,7 @@ export const GenericForm = <T,>({
         <div key={index} className="space-y-4 mb-6">
           {hasHeader && (
             <div className="flex items-center gap-2 mb-4">
-              {section.icon}
+              {section.icon && <section.icon className={cn("size-6", section.iconClassName)} />}
               <h3 className="text-lg font-semibold">{sectionTitle}</h3>
             </div>
           )}
@@ -396,7 +399,7 @@ export const GenericForm = <T,>({
         {hasHeader && (
           <CardHeader>
             <div className="flex items-center gap-2">
-              {section.icon}
+              {section.icon && <section.icon className={cn("size-6", section.iconClassName)} />}
               {sectionTitle && <h3 className="text-lg font-semibold">{sectionTitle}</h3>}
             </div>
           </CardHeader>

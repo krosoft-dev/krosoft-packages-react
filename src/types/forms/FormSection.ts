@@ -3,8 +3,8 @@ import React from "react";
 
 export interface FormSection<T> {
   titleKey?: string;
-  title?: string;
-  icon?: React.ReactNode;
+  icon?: React.ElementType;
+  iconClassName?: string;
   fields: FormField<T>[];
   layout?: {
     cols?: number;
