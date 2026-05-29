@@ -14,6 +14,7 @@ interface DemoData {
   skills: string[];
   color: string;
   birthdate: string;
+  preferredTime: string;
   acceptTerms: boolean;
 }
 
@@ -27,6 +28,7 @@ const defaultInitialData: DemoData = {
   skills: ["react", "typescript"],
   color: "#6366f1",
   birthdate: "1998-05-29",
+  preferredTime: "09:00",
   acceptTerms: true,
 };
 
@@ -78,6 +80,12 @@ const demoSchema: FormSchema<DemoData> = {
           labelKey: "Date de naissance",
           type: "date",
           rules: z => z.string().min(1, "La date est requise"),
+          layout: { cols: 2 },
+        },
+        {
+          key: "preferredTime",
+          labelKey: "Heure de disponibilité",
+          type: "time",
           layout: { cols: 2 },
         },
         {
