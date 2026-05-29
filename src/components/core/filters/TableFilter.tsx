@@ -6,7 +6,7 @@ import { AdvancedFilters } from "./AdvancedFilters";
 import { FilterSection } from "@/types/FilterSection";
 import { FilterFieldConfig } from "@/types/FilterFieldConfig";
 
-interface TableFilterProps {
+interface TableFilterProps<T extends Record<string, unknown> = Record<string, unknown>> {
   // Recherche
   searchQuery?: string;
   onSearchChange?: (query: string) => void;
@@ -15,27 +15,25 @@ interface TableFilterProps {
   // Filtres
   filters: Record<string, unknown>;
   onFiltersChange: (filters: Record<string, unknown>) => void;
-  filterLabels?: Record<string, string>;
 
   // Configuration des filtres (regroupés par sections)
-  sections: FilterSection[];
+  sections: FilterSection<T>[];
 
   // Textes & Boutons
   advancedButtonText?: string;
   sheetTitle?: string;
 }
 
-export function TableFilter({
+export function TableFilter<T extends Record<string, unknown> = Record<string, unknown>>({
   searchQuery,
   onSearchChange,
   searchPlaceholder = "Rechercher...",
   filters,
   onFiltersChange,
-  filterLabels = {},
   sections,
   advancedButtonText = "Filtres",
   sheetTitle = "Filtres avancés",
-}: TableFilterProps): React.ReactElement {
+}: TableFilterProps<T>): React.ReactElement {
   const handleToggleQuickFilter = (key: string, optionValue: string): void => {
     const current = filters[key];
     const currentArray = Array.isArray(current) ? (current as string[]) : [];
@@ -85,7 +83,7 @@ export function TableFilter({
 
   // Extraire dynamiquement les filtres rapides de l'ensemble des sections
   const quickFilters = useMemo(() => {
-    const list: { key: string; label: string; options: FilterOption[]; searchable?: boolean; searchPlaceholder?: string }[] = [];
+    const list: { key: keyof T; label: string; options: FilterOption[]; searchable?: boolean; searchPlaceholder?: string }[] = [];
     sections.forEach(sec => {
       sec.filters.forEach(f => {
         if (f.isQuickFilter === true) {
@@ -103,15 +101,15 @@ export function TableFilter({
   }, [sections]);
 
   // Libellés résolus pour l'affichage des filtres actifs
-  const resolvedFilterLabels = useMemo(() => {
-    const labels = { ...filterLabels };
+  const FilterLabels = useMemo(() => {
+    const labels: Record<string, string> = {};
     sections.forEach(sec => {
       sec.filters.forEach(f => {
-        labels[f.key] = f.label;
+        labels[f.key as string] = f.badgeLabel ?? f.label;
       });
     });
     return labels;
-  }, [sections, filterLabels]);
+  }, [sections]);
 
   const optionLabels = useMemo(() => {
     const map: Record<string, string> = {};
@@ -119,7 +117,7 @@ export function TableFilter({
       sec.filters.forEach(f => {
         if (f.options !== undefined) {
           f.options.forEach(opt => {
-            map[`${f.key}_${opt.value}`] = opt.label;
+            map[`${f.key as string}_${opt.value}`] = opt.label;
           });
         }
       });
@@ -146,15 +144,15 @@ export function TableFilter({
           {/* Filtres rapides (pastilles) */}
           {quickFilters.map(q => (
             <SearchableFilterPill
-              key={q.key}
+              key={q.key as string}
               label={q.label}
               options={q.options}
-              selected={Array.isArray(filters[q.key]) ? (filters[q.key] as string[]) : []}
+              selected={Array.isArray(filters[q.key as string]) ? (filters[q.key as string] as string[]) : []}
               onToggle={value => {
-                handleToggleQuickFilter(q.key, value);
+                handleToggleQuickFilter(q.key as string, value);
               }}
               onClear={() => {
-                handleClearQuickFilter(q.key);
+                handleClearQuickFilter(q.key as string);
               }}
               onSelectAll={values => {
                 onFiltersChange({ ...filters, [q.key]: values });
@@ -176,7 +174,7 @@ export function TableFilter({
         filters={filters}
         onRemoveFilter={handleRemoveActiveFilter}
         onClearAll={handleClearAllFilters}
-        filterLabels={resolvedFilterLabels}
+        filterLabels={FilterLabels}
         optionLabels={optionLabels}
       />
     </div>

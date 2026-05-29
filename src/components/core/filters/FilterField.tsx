@@ -8,14 +8,19 @@ import type { DateRange } from "react-day-picker";
 import type { FilterFieldConfig } from "./TableFilter";
 import { cn } from "@/helpers/tailwind.helper";
 
-interface FilterFieldProps {
-  field: FilterFieldConfig;
+interface FilterFieldProps<T extends Record<string, unknown>> {
+  field: FilterFieldConfig<T>;
   value: unknown;
   onChange: (value: unknown) => void;
   onToggleMultiSelect: (value: string) => void;
 }
 
-export const FilterField = ({ field, value, onChange, onToggleMultiSelect }: FilterFieldProps): React.ReactElement | null => {
+export const FilterField = <T extends Record<string, unknown>>({
+  field,
+  value,
+  onChange,
+  onToggleMultiSelect,
+}: FilterFieldProps<T>): React.ReactElement | null => {
   switch (field.type) {
     case "text":
       return (
