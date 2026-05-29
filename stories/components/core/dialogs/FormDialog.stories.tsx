@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { FormDialog, type SectionDef } from "@/components/core/dialogs";
+import FormDialog, { FormDialogProps } from "@/components/core/dialogs/FormDialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { User, Shield, AlertCircle, Clock } from "lucide-react";
+import { User, Shield, Clock } from "lucide-react";
+import type { FormSchema } from "@/types";
 
 const meta: Meta<typeof FormDialog> = {
   title: "Core/Dialogs/FormDialog",
@@ -21,7 +22,6 @@ const meta: Meta<typeof FormDialog> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof FormDialog>;
 
 interface UserProfile {
   id: string;
@@ -33,6 +33,8 @@ interface UserProfile {
   lastLogin: string;
 }
 
+type Story = StoryObj<FormDialogProps<UserProfile>>;
+
 const mockUser: UserProfile = {
   id: "USR-001",
   firstName: "Guillaume",
@@ -43,27 +45,30 @@ const mockUser: UserProfile = {
   lastLogin: "Il y a 2 heures",
 };
 
-const defaultSections: SectionDef<UserProfile>[] = [
-  {
-    title: "Informations personnelles",
-    icon: <User className="size-5 text-indigo-500" />,
-    fields: [
-      { key: "firstName", label: "Prénom" },
-      { key: "lastName", label: "Nom" },
-      { key: "email", label: "Adresse e-mail", fullWidth: true },
-    ],
-  },
-  {
-    title: "Accès & Rôle",
-    icon: <Shield className="size-5 text-rose-500" />,
-    fields: [
-      { key: "role", label: "Rôle" },
-      { key: "status", label: "Statut" },
-    ],
-  },
-];
+const defaultSchema: FormSchema<UserProfile> = {
+  useCards: false,
+  sections: [
+    {
+      title: "Informations personnelles",
+      icon: <User className="size-5 text-indigo-500" />,
+      fields: [
+        { key: "firstName", labelKey: "Prénom", type: "text", layout: { cols: 2 } },
+        { key: "lastName", labelKey: "Nom", type: "text", layout: { cols: 2 } },
+        { key: "email", labelKey: "Adresse e-mail", type: "text", layout: { cols: 4 } },
+      ],
+    },
+    {
+      title: "Accès & Rôle",
+      icon: <Shield className="size-5 text-rose-500" />,
+      fields: [
+        { key: "role", labelKey: "Rôle", type: "text", layout: { cols: 2 } },
+        { key: "status", labelKey: "Statut", type: "text", layout: { cols: 2 } },
+      ],
+    },
+  ],
+};
 
-const ModalWrapper = (args: React.ComponentProps<typeof FormDialog>): React.ReactElement => {
+const ModalWrapper = (args: FormDialogProps<UserProfile>): React.ReactElement => {
   const [open, setOpen] = useState(false);
   const [data, setData] = useState<UserProfile>(mockUser);
 
@@ -83,12 +88,12 @@ const ModalWrapper = (args: React.ComponentProps<typeof FormDialog>): React.Reac
         open={open}
         onOpenChange={setOpen}
         data={data}
-        onSave={async (editedData: Partial<UserProfile>): Promise<void> => {
+        onSave={async (editedData: UserProfile): Promise<void> => {
           // Simulation d'un appel API avec délai
           await new Promise(resolve => {
             setTimeout(resolve, 1000);
           });
-          setData((prev: UserProfile) => ({ ...prev, ...editedData }));
+          setData(editedData);
         }}
       />
     </div>
@@ -99,7 +104,7 @@ export const Default: Story = {
   render: ModalWrapper,
   args: {
     title: (data: UserProfile): string => `Profil de ${data.firstName} ${data.lastName}`,
-    sections: defaultSections,
+    schema: defaultSchema,
   },
 };
 
@@ -110,7 +115,7 @@ export const WithHeaderBadge: Story = {
     headerBadge: (data: UserProfile): React.ReactNode => (
       <Badge variant={data.status === "Actif" ? "default" : "destructive"}>{data.status === "Actif" ? "Compte Actif" : "Compte Suspendu"}</Badge>
     ),
-    sections: defaultSections,
+    schema: defaultSchema,
   },
 };
 
@@ -118,10 +123,10 @@ export const CustomFooter: Story = {
   render: ModalWrapper,
   args: {
     title: (data: UserProfile): string => `Aperçu détaillé: ${data.firstName}`,
-    sections: defaultSections,
+    schema: defaultSchema,
     customFooter: (data: UserProfile): React.ReactNode => (
       <div className="mt-8 p-4 bg-orange-50 border border-orange-100 rounded-lg flex items-start gap-3">
-        <AlertCircle className="size-5 text-orange-500 shrink-0 mt-0.5" />
+        <Clock className="size-5 text-orange-500 shrink-0 mt-0.5" />
         <div className="text-sm text-orange-800">
           <p className="font-semibold">Dernière connexion enregistrée : {data.lastLogin}</p>
           <p>Toute modification apportée à ce profil sera notifiée à l&apos;utilisateur par e-mail.</p>
@@ -135,43 +140,47 @@ export const DefaultEditingMode: Story = {
   render: ModalWrapper,
   args: {
     title: (): string => `Création d'un nouvel utilisateur`,
-    sections: defaultSections,
+    schema: defaultSchema,
     defaultEditing: true,
     saveLabel: "Créer l'utilisateur",
     cancelLabel: "Annuler",
   },
 };
 
-const customRenderSections: SectionDef<UserProfile>[] = [
-  ...defaultSections,
-  {
-    title: "Activité",
-    icon: <Clock className="size-5 text-emerald-500" />,
-    fields: [
-      {
-        key: "lastLogin",
-        label: "Dernière connexion",
-        fullWidth: true,
-        renderView: (data: UserProfile): React.ReactNode => (
-          <div className="p-3 bg-emerald-50 text-emerald-700 rounded-md border border-emerald-100 flex items-center gap-2 font-medium">
-            <Clock className="size-4" />
-            {data.lastLogin}
-          </div>
-        ),
-        renderEdit: (): React.ReactNode => (
-          <div className="p-4 bg-gray-100 rounded-md text-sm text-gray-500 text-center italic">
-            Ce champ est généré automatiquement par le système et ne peut pas être modifié manuellement.
-          </div>
-        ),
-      },
-    ],
-  },
-];
+const customRenderSchema: FormSchema<UserProfile> = {
+  useCards: false,
+  sections: [
+    ...defaultSchema.sections,
+    {
+      title: "Activité",
+      icon: <Clock className="size-5 text-emerald-500" />,
+      fields: [
+        {
+          key: "empty",
+          type: "html",
+          labelKey: "Dernière connexion",
+          layout: { cols: 4 },
+          render: formValues => (
+            <div className="w-full">
+              <div className="p-3 bg-emerald-50 text-emerald-700 rounded-md border border-emerald-100 flex items-center gap-2 font-medium mb-2">
+                <Clock className="size-4" />
+                {formValues.lastLogin}
+              </div>
+              <div className="p-4 bg-gray-100 rounded-md text-sm text-gray-500 text-center italic">
+                Ce champ est généré automatiquement par le système et ne peut pas être modifié manuellement.
+              </div>
+            </div>
+          ),
+        },
+      ],
+    },
+  ],
+};
 
 export const AdvancedCustomRendering: Story = {
   render: ModalWrapper,
   args: {
     title: (data: UserProfile): string => `Profil avancé de ${data.firstName}`,
-    sections: customRenderSections,
+    schema: customRenderSchema,
   },
 };
