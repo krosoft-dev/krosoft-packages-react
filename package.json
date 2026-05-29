@@ -83,7 +83,7 @@
     "react-day-picker": "^10.0.1",
     "react-hook-form": "^7.53.0",
     "recharts": "^2.12.7",
-    "sonner": "^1.7.4",
+    "sonner": "^2.0.7",
     "tailwind-merge": "^2.6.1",
     "vaul": "^1.1.1",
     "zod": "^4.4.3"
