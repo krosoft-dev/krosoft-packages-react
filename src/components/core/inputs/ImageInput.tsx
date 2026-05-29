@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui";
 import { useNotifications } from "@/hooks/ui/useNotifications";
-import { cn } from "@krosoft/react/helpers";
+import { cn } from "@/helpers/tailwind.helper";
 import { ImageIcon, UploadIcon, XIcon } from "lucide-react";
 import { forwardRef, useRef } from "react";
 

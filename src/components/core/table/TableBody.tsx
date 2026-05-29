@@ -86,17 +86,20 @@ export function TableBody<T>({
           >
             {hasBulkActions ? (
               <td
-                className="px-4 py-2 w-12"
+                className="p-1 text-center align-middle"
+                style={{ width: "32px", minWidth: "32px", maxWidth: "32px" }}
                 onClick={e => {
                   e.stopPropagation();
                 }}
               >
-                <Checkbox
-                  checked={selectedRows.includes(rowId)}
-                  onCheckedChange={() => {
-                    toggleRowSelection(rowId);
-                  }}
-                />
+                <div className="flex items-center justify-center">
+                  <Checkbox
+                    checked={selectedRows.includes(rowId)}
+                    onCheckedChange={() => {
+                      toggleRowSelection(rowId);
+                    }}
+                  />
+                </div>
               </td>
             ) : null}
             {visibleColumnsArray.map((column, index) => {
@@ -111,14 +114,19 @@ export function TableBody<T>({
                 </td>
               );
             })}
-            {hasActions && actions !== undefined && actions.length > 0 ? (
+            {hasActions ? (
               <td
-                className="px-2 py-2 w-12 text-end"
+                className="p-1 text-center align-middle"
+                style={{ width: "32px", minWidth: "32px", maxWidth: "32px" }}
                 onClick={e => {
                   e.stopPropagation();
                 }}
               >
-                <TableActions actions={actions} row={row} />
+                {actions !== undefined && actions.length > 0 ? (
+                  <div className="flex items-center justify-center">
+                    <TableActions actions={actions} row={row} />
+                  </div>
+                ) : null}
               </td>
             ) : null}
           </tr>
