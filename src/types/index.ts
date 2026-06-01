@@ -2,6 +2,7 @@ export * from "./AppAction";
 export * from "./BulkAction";
 export * from "./ButtonVariantType";
 export * from "./ColumnDef";
+export * from "./ConfirmDialogConfig";
 export * from "./FilterFieldConfig";
 export * from "./FilterSection";
 export * from "./RowAction";
