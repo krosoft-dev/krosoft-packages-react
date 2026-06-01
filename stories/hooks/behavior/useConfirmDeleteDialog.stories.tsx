@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useConfirmDeleteDialog } from "@/hooks/behavior/useConfirmDeleteDialog";
-import { ConfirmDeleteDialog } from "@/components/core/dialogs/ConfirmDeleteDialog";
+import { ConfirmationDialog } from "@/components/core/dialogs/ConfirmationDialog";
 import { Button } from "@/components/ui/button";
 import type { ErrorHttp } from "@krosoft/core/types";
 
 /**
- * Demo component that shows the hook driving the ConfirmDeleteDialog.
+ * Demo component that shows the hook driving the ConfirmationDialog for deletion.
  */
 const UseConfirmDeleteDialogDemo = ({
   simulateError,
@@ -54,7 +54,7 @@ const UseConfirmDeleteDialogDemo = ({
           Supprimer « Client Dupont SARL »
         </Button>
       </div>
-      <ConfirmDeleteDialog isLoading={simulateLoading ?? isLoading} error={error} config={config} />
+      <ConfirmationDialog isLoading={simulateLoading ?? isLoading} error={error} config={config} destructive />
     </div>
   );
 };

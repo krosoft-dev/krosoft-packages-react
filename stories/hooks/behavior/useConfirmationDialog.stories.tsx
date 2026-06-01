@@ -36,7 +36,7 @@ const UseConfirmationDialogDemo = ({
           Confirmer « Client Dupont SARL »
         </Button>
       </div>
-      <ConfirmationDialog config={config} destructive={destructive} />
+      <ConfirmationDialog isLoading={false} error={null} config={config} destructive={destructive} />
     </div>
   );
 };

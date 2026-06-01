@@ -1,6 +1,6 @@
+import { ErrorAlert } from "@/components/core/states/ErrorAlert";
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -8,21 +8,26 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
 import { ConfirmDialogConfig } from "@/types/ConfirmDialogConfig";
+import { ErrorHttp } from "@krosoft/core/types";
 import { useTranslation } from "react-i18next";
 
 interface ConfirmationDialogProps {
+  isLoading: boolean;
+  error: ErrorHttp | Error | null;
   config: ConfirmDialogConfig | null;
   destructive?: boolean;
 }
 
-export function ConfirmationDialog({ config, destructive = false }: ConfirmationDialogProps) {
+export function ConfirmationDialog({ isLoading, error, config, destructive = false }: ConfirmationDialogProps) {
   const { t } = useTranslation();
 
   if (!config) return null;
 
   const handleOpenChange = (open: boolean) => {
-    if (!open) {
+    // Ne permettre la fermeture que si on n'est pas en chargement
+    if (!open && !isLoading) {
       config.onClose();
     }
   };
@@ -31,7 +36,11 @@ export function ConfirmationDialog({ config, destructive = false }: Confirmation
     <AlertDialog open={config.isOpen} onOpenChange={handleOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>{t(config.title)}</AlertDialogTitle>
+          <AlertDialogTitle className={config.titleClassName}>
+            {config.icon && <config.icon className="size-4" />}
+            {t(config.title)}
+          </AlertDialogTitle>
+          {config.headerClassName && <AlertDialogHeader className={config.headerClassName} />}
           <AlertDialogDescription>{t(config.description)}</AlertDialogDescription>
           {config.itemName && (
             <AlertDialogDescription>
@@ -39,17 +48,19 @@ export function ConfirmationDialog({ config, destructive = false }: Confirmation
             </AlertDialogDescription>
           )}
         </AlertDialogHeader>
+        <ErrorAlert error={error instanceof Error ? null : error} />
         <AlertDialogFooter>
-          <AlertDialogCancel>{t("common.buttons.cancel")}</AlertDialogCancel>
-          <AlertDialogAction
+          <AlertDialogCancel disabled={isLoading}>{t("common.buttons.cancel")}</AlertDialogCancel>
+          <Button
             onClick={e => {
               e.preventDefault();
               config.onConfirm();
             }}
-            className={destructive ? "bg-red-600 hover:bg-red-700" : ""}
+            disabled={isLoading}
+            className={destructive ? "bg-destructive text-destructive-foreground hover:bg-destructive/90" : ""}
           >
-            {config.confirmKey}
-          </AlertDialogAction>
+            {isLoading ? t(config.loadingKey || "common.buttons.loading") : config.confirmKey}
+          </Button>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
