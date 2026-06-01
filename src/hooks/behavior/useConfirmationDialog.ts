@@ -1,5 +1,5 @@
 import { ConfirmDialogConfig } from "@/types/ConfirmDialogConfig";
-import { useState } from "react";
+import { useDialog } from "./useDialog";
 
 interface UseConfirmationDialogProps {
   titleKey: string;
@@ -16,26 +16,14 @@ export const useConfirmationDialog = ({
   onConfirm,
   onReset,
 }: UseConfirmationDialogProps): ConfirmDialogConfig => {
-  const [selectedItem, setSelectedItem] = useState<{
-    id: string;
-    name: string;
-  } | null>(null);
-
-  const openDialog = (id: string, name: string) => {
-    onReset?.();
-    setSelectedItem({ id, name });
-  };
-
-  const closeDialog = () => {
-    setSelectedItem(null);
-  };
+  const dialog = useDialog({ onReset });
 
   const handleConfirm = async () => {
-    if (!selectedItem) return;
+    if (!dialog.id) return;
 
     try {
-      await onConfirm(selectedItem.id);
-      closeDialog();
+      await onConfirm(dialog.id);
+      dialog.onClose();
     } catch (error) {
       // L'erreur est gérée par le hook parent et affichée dans le dialog
       // On ne ferme pas le dialog en cas d'erreur
@@ -44,13 +32,13 @@ export const useConfirmationDialog = ({
   };
 
   return {
-    isOpen: !!selectedItem,
-    itemName: selectedItem?.name ?? null,
+    isOpen: dialog.isOpen,
+    itemName: dialog.name,
     title: titleKey,
     description: descriptionKey,
     confirmKey,
-    openDialog,
-    onClose: closeDialog,
+    openDialog: dialog.openDialog,
+    onClose: dialog.onClose,
     onConfirm: handleConfirm,
   };
 };
