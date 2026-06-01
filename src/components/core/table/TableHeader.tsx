@@ -42,6 +42,13 @@ export function TableHeader<T>({
   hasActions,
   settingsNode,
 }: TableHeaderProps<T>): React.JSX.Element {
+  let checkboxChecked: boolean | "indeterminate" = false;
+  if (selectedRows.length === totalItems && totalItems > 0) {
+    checkboxChecked = true;
+  } else if (selectedRows.length > 0) {
+    checkboxChecked = "indeterminate";
+  }
+
   const getSortIcon = (column: ColumnDef<T>): React.ReactNode => {
     if (column.sortable !== true) return null;
     if (sortColumn === column.key) {
@@ -107,15 +114,18 @@ export function TableHeader<T>({
     <thead className="bg-muted/50 dark:bg-gray-900/50 border-b border-gray-200 dark:border-gray-800">
       <tr>
         {hasBulkActions ? (
-          <th className="px-4 py-2 w-12 flex-shrink-0 text-left">
-            <Checkbox
-              checked={selectedRows.length === totalItems && totalItems > 0 ? true : selectedRows.length > 0 ? "indeterminate" : false}
-              onCheckedChange={toggleSelectAll}
-            />
+          <th className="p-1 flex-shrink-0 text-center align-middle" style={{ width: "32px", minWidth: "32px", maxWidth: "32px" }}>
+            <div className="flex items-center justify-center">
+              <Checkbox checked={checkboxChecked} onCheckedChange={toggleSelectAll} />
+            </div>
           </th>
         ) : null}
         {visibleColumnsArray.map(column => renderColumnHeader(column, draggableColumns))}
-        {hasActions || settingsNode !== undefined ? <th className="w-12 px-2 py-2 text-center align-middle">{settingsNode}</th> : null}
+        {hasActions || settingsNode !== undefined ? (
+          <th className="p-1 text-center align-middle" style={{ width: "32px", minWidth: "32px", maxWidth: "32px" }}>
+            {settingsNode}
+          </th>
+        ) : null}
       </tr>
     </thead>
   );

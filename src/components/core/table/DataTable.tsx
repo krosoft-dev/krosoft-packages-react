@@ -150,7 +150,7 @@ export function DataTable<T>({
               toggleRowSelection={toggleRowSelection}
               visibleColumnsArray={visibleColumnsArray}
               columnWidths={columnWidths}
-              hasActions={hasActions}
+              hasActions={hasActions || columnVisibility}
               actions={actions}
               columns={columns}
             />

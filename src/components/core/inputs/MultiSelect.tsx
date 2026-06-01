@@ -13,6 +13,7 @@ interface MultiSelectProps {
   placeholder?: string;
   searchable?: boolean;
   searchPlaceholder?: string;
+  disabled?: boolean;
 }
 
 export const MultiSelect = ({
@@ -24,6 +25,7 @@ export const MultiSelect = ({
   placeholder = "Sélectionner...",
   searchable = false,
   searchPlaceholder = "Rechercher...",
+  disabled = false,
 }: MultiSelectProps): React.ReactElement => {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
@@ -93,6 +95,7 @@ export const MultiSelect = ({
   };
 
   const handleToggle = (): void => {
+    if (disabled) return;
     setOpen(prev => {
       if (prev) setQuery("");
       return !prev;
@@ -103,6 +106,7 @@ export const MultiSelect = ({
     <div ref={containerRef} className="relative w-full">
       <button
         type="button"
+        disabled={disabled}
         onClick={handleToggle}
         className={cn(
           "flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
@@ -112,7 +116,7 @@ export const MultiSelect = ({
       >
         <span className="truncate">{selected.length === 0 ? placeholder : selected.map(s => options.find(o => o.value === s)?.label ?? s).join(", ")}</span>
         <div className="flex shrink-0 items-center gap-1">
-          {selected.length > 0 && (
+          {selected.length > 0 && !disabled && (
             <span
               role="button"
               tabIndex={-1}

@@ -13,8 +13,8 @@ export function TableActions<T>({ actions, row }: TableActionsProps<T>): React.J
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-foreground">
-          <MoreVerticalIcon className="size-4" />
+        <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-foreground">
+          <MoreVerticalIcon className="size-3.5" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent
