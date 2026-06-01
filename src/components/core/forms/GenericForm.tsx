@@ -1,4 +1,5 @@
 import { ImageInput } from "@/components/core/inputs/ImageInput";
+import { AppSubTitle } from "@/components/core/layouts/AppSubTitle";
 import { MultiSelect } from "@/components/core/inputs/MultiSelect";
 import {
   Button,
@@ -28,6 +29,7 @@ import React, { useState } from "react";
 import { useForm, ControllerRenderProps, SubmitHandler } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
+import { useToast } from "@/hooks/ui/useToast";
 
 /**
  * Props mapping for the GenericForm component.
@@ -95,7 +97,9 @@ export const GenericForm = <T,>({
   defaultCols = 4,
 }: GenericFormProps<T>): React.ReactElement | null => {
   const { t } = useTranslation();
+  const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [imagePreview, setImagePreview] = useState<Record<string, string>>({});
 
   if (!schema) return null;
 
@@ -162,20 +166,99 @@ export const GenericForm = <T,>({
     }
   });
 
+  // Initialize image previews from initialData
+  useState(() => {
+    if (initialData) {
+      const imagePreviews: Record<string, string> = {};
+      schema.sections.forEach(section => {
+        section.fields.forEach(field => {
+          if (field.type === "image" && initialData[field.key as keyof T]) {
+            imagePreviews[field.key as string] = initialData[field.key as keyof T] as string;
+          }
+        });
+      });
+      setImagePreview(imagePreviews);
+    }
+  });
+
   const handleSubmitWithValidation = async (data: T): Promise<void> => {
     if (isSubmitting) return;
 
     const hasErrors = Object.keys(form.formState.errors).length > 0;
-    if (hasErrors) return;
+    if (hasErrors) {
+      toast({
+        title: "Erreur de validation",
+        description: "Veuillez vérifier les champs du formulaire",
+        variant: "destructive",
+      });
+      return;
+    }
 
     setIsSubmitting(true);
     try {
       await Promise.resolve(onSubmit(data));
     } catch (err) {
       console.error("Error during form submission:", err);
+      toast({
+        title: "Erreur",
+        description: "Une erreur est survenue lors de l'enregistrement",
+        variant: "destructive",
+      });
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleImagePreview = (fieldKey: string, url: string) => {
+    if (url) {
+      setImagePreview(prev => ({ ...prev, [fieldKey]: url }));
+    }
+  };
+
+  const renderImagePreview = (fieldKey: string) => {
+    const url = imagePreview[fieldKey];
+    if (!url) return null;
+
+    return (
+      <div className="mt-2 relative">
+        <div className="relative w-full h-40 bg-gray-100 rounded-md overflow-hidden">
+          <img
+            src={url}
+            alt="Preview"
+            className="w-full h-full object-cover"
+            onError={e => {
+              e.currentTarget.src = "https://via.placeholder.com/400x200?text=Aperçu+non+disponible";
+            }}
+          />
+        </div>
+      </div>
+    );
+  };
+
+  const hasNullableRule = (rules?: (_z: typeof z) => z.ZodType): boolean => {
+    if (!rules) return false;
+    const walk = (ruleSchema: unknown): boolean => {
+      if (!ruleSchema || !(ruleSchema as { _def?: unknown })._def) return false;
+      const def = (ruleSchema as { _def: { typeName?: string; innerType?: unknown; type?: unknown } })._def;
+      if (def.typeName === "ZodNullable") return true;
+      if (def.innerType) return walk(def.innerType);
+      if (def.type) return walk(def.type);
+      return false;
+    };
+    try {
+      const ruleSchema = rules(z);
+      return walk(ruleSchema);
+    } catch {
+      return false;
+    }
+  };
+
+  const hasMinRule = (rules?: (_z: typeof z) => z.ZodType): boolean => {
+    if (!rules) return false;
+    const rulesSchema = rules(z);
+    if (rulesSchema.safeParse(undefined).success) return false;
+    const def = (rulesSchema as unknown as { _def: { checks?: { kind: string }[] } })._def;
+    return def.checks?.some(check => check.kind === "min") ?? false;
   };
 
   const renderField = (field: FormField<T>, formField: ControllerRenderProps<Record<string, unknown>, string>): React.ReactElement | null => {
@@ -203,8 +286,15 @@ export const GenericForm = <T,>({
             value={imageValue ?? ""}
             onChange={file => {
               if (imageField.onChange) imageField.onChange(file);
-              // Also update form formField value, maybe store URL or File.
               formField.onChange(file);
+              // Update image preview
+              if (file) {
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                  handleImagePreview(field.key as string, reader.result as string);
+                };
+                reader.readAsDataURL(file);
+              }
             }}
             accept={imageField.accept}
             maxSizeMB={imageField.maxSizeMB}
@@ -282,6 +372,7 @@ export const GenericForm = <T,>({
       }
       case "select": {
         const selectField = field as SelectFormField<T>;
+        const isNullable = hasNullableRule(field.rules);
         const currentValue = formField.value === null || formField.value === undefined ? "" : (formField.value as string);
         const selectOptions = selectField.options as { value: string; label: string; color?: string }[];
         const selectedOption = selectOptions.find(opt => opt.value === currentValue);
@@ -289,7 +380,18 @@ export const GenericForm = <T,>({
         return (
           <Select value={currentValue} onValueChange={formField.onChange} disabled={isFieldDisabled}>
             <FormControl>
-              <SelectTrigger className={cn(hasError && "border-destructive")}>
+              <SelectTrigger
+                className={cn(hasError && "border-destructive")}
+                onClear={
+                  isNullable && currentValue
+                    ? e => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        formField.onChange(null);
+                      }
+                    : undefined
+                }
+              >
                 <SelectValue placeholder={field.placeholderKey ? t(field.placeholderKey) : ""}>
                   {selectedOption ? (
                     <div className="flex items-center gap-2">
@@ -344,14 +446,6 @@ export const GenericForm = <T,>({
     }
   };
 
-  const hasMinRule = (rules?: (_z: typeof z) => z.ZodType): boolean => {
-    if (!rules) return false;
-    const rulesSchema = rules(z);
-    if (rulesSchema.safeParse(undefined).success) return false;
-    const def = (rulesSchema as unknown as { _def: { checks?: { kind: string }[] } })._def;
-    return def.checks?.some(check => check.kind === "min") ?? false;
-  };
-
   const renderSection = (section: FormSection<T>, index: number): React.ReactElement => {
     const content = (
       <div className={cn(`grid grid-cols-4 gap-4`)}>
@@ -377,18 +471,10 @@ export const GenericForm = <T,>({
       </div>
     );
 
-    const sectionTitle = section.titleKey ? t(section.titleKey) : null;
-    const hasHeader = sectionTitle ?? section.icon;
-
     if (schema.useCards === false) {
       return (
         <div key={index} className="space-y-4 mb-6">
-          {hasHeader && (
-            <div className="flex items-center gap-2 mb-4">
-              {section.icon && <section.icon className={cn("size-6", section.iconClassName)} />}
-              <h3 className="text-lg font-semibold">{sectionTitle}</h3>
-            </div>
-          )}
+          {section.titleKey && <AppSubTitle titleKey={section.titleKey} />}
           {content}
         </div>
       );
@@ -396,12 +482,9 @@ export const GenericForm = <T,>({
 
     return (
       <Card key={index} className="mb-6">
-        {hasHeader && (
+        {section.titleKey && (
           <CardHeader>
-            <div className="flex items-center gap-2">
-              {section.icon && <section.icon className={cn("size-6", section.iconClassName)} />}
-              {sectionTitle && <h3 className="text-lg font-semibold">{sectionTitle}</h3>}
-            </div>
+            <AppSubTitle titleKey={section.titleKey} />
           </CardHeader>
         )}
         <CardContent>{content}</CardContent>
