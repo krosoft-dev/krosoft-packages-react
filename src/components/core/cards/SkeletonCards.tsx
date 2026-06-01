@@ -1,15 +1,15 @@
 import * as React from "react";
-import { CardSkeleton } from "./CardSkeleton";
+import { SkeletonCard } from "./SkeletonCard";
 
-interface CardsSkeletonProps {
+interface SkeletonCardsProps {
   count?: number;
 }
 
-export const CardsSkeleton = ({ count = 1 }: CardsSkeletonProps): React.JSX.Element => {
+export const SkeletonCards = ({ count = 1 }: SkeletonCardsProps): React.JSX.Element => {
   return (
     <div className="grid gap-6" style={{ gridTemplateColumns: `repeat(${count}, minmax(0, 1fr))` }}>
       {Array.from({ length: count }).map((_, index) => (
-        <CardSkeleton key={index} />
+        <SkeletonCard key={index} />
       ))}
     </div>
   );

@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { CardsSkeleton } from "@/components/core/cards/CardsSkeleton";
+import { SkeletonCards } from "@/components/core/cards/SkeletonCards";
 
-const meta: Meta<typeof CardsSkeleton> = {
-  title: "Core/Cards/CardsSkeleton",
-  component: CardsSkeleton,
+const meta: Meta<typeof SkeletonCards> = {
+  title: "Core/Cards/SkeletonCards",
+  component: SkeletonCards,
   args: {
     count: 3,
   },
@@ -16,7 +16,7 @@ const meta: Meta<typeof CardsSkeleton> = {
 
 export default meta;
 
-type Story = StoryObj<typeof CardsSkeleton>;
+type Story = StoryObj<typeof SkeletonCards>;
 
 export const Default: Story = {};
 

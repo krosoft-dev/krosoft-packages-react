@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import * as React from "react";
 
-export const CardSkeleton = (): React.JSX.Element => {
+export const SkeletonCard = (): React.JSX.Element => {
   return (
     <Card className="animate-pulse">
       <CardHeader>
