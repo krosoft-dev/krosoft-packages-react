@@ -1,10 +1,39 @@
+import React from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { useConfirmationDialog } from "@/hooks/behavior/useConfirmationDialog";
 import { ConfirmationDialog } from "@/components/core/dialogs/ConfirmationDialog";
 import { Button } from "@/components/ui/button";
 
-const meta: Meta<typeof ConfirmationDialog> = {
+/**
+ * Demo component that shows the ConfirmationDialog driven by useConfirmationDialog.
+ */
+const ConfirmationDialogDemo = ({
+  destructive,
+}: {
+  destructive?: boolean;
+}): React.ReactElement => {
+  const config = useConfirmationDialog({
+    titleKey: "Confirmer l'action",
+    descriptionKey: "Êtes-vous sûr de vouloir effectuer cette action ?",
+    onConfirm: async (_id: string) => {
+      await new Promise(r => setTimeout(r, 1500));
+    },
+  });
+
+  return (
+    <div className="flex flex-col items-center gap-4 p-8">
+      <p className="text-sm text-muted-foreground mb-2">Cliquez sur le bouton pour ouvrir le dialogue de confirmation.</p>
+      <Button onClick={() => config.openDialog("1", "Élément #1")}>
+        Confirmer l'action
+      </Button>
+      <ConfirmationDialog config={config} destructive={destructive} />
+    </div>
+  );
+};
+
+const meta: Meta<typeof ConfirmationDialogDemo> = {
   title: "Core/Dialogs/ConfirmationDialog",
-  component: ConfirmationDialog,
+  component: ConfirmationDialogDemo,
   parameters: {
     layout: "centered",
   },
@@ -12,40 +41,22 @@ const meta: Meta<typeof ConfirmationDialog> = {
   argTypes: {
     destructive: {
       control: "boolean",
+      description: "Affiche le bouton de confirmation en mode destructif",
     },
   },
 };
 
 export default meta;
-type Story = StoryObj<typeof ConfirmationDialog>;
+type Story = StoryObj<typeof ConfirmationDialogDemo>;
 
 export const Default: Story = {
   args: {
-    title: "Confirmer l'action",
-    description: "Êtes-vous sûr de vouloir effectuer cette action ?",
-    onConfirm: () => {},
-    children: <Button>Ouvrir</Button>,
+    destructive: false,
   },
 };
 
 export const Destructive: Story = {
   args: {
-    title: "Supprimer l'élément",
-    description: "Cette action est irréversible. L'élément sera définitivement supprimé.",
-    confirmText: "Supprimer",
     destructive: true,
-    onConfirm: () => {},
-    children: <Button variant="destructive">Supprimer</Button>,
-  },
-};
-
-export const CustomLabels: Story = {
-  args: {
-    title: "Publier l'article",
-    description: "L'article sera visible par tous les utilisateurs.",
-    confirmText: "Publier",
-    cancelText: "Pas maintenant",
-    onConfirm: () => {},
-    children: <Button>Publier</Button>,
   },
 };

@@ -17,11 +17,13 @@ import { useTranslation } from "react-i18next";
 interface ConfirmDeleteDialogProps {
   isLoading: boolean;
   error: ErrorHttp | Error | null;
-  config: ConfirmDialogConfig;
+  config: ConfirmDialogConfig | null;
 }
 
 export const ConfirmDeleteDialog = ({ isLoading, error, config }: ConfirmDeleteDialogProps) => {
   const { t } = useTranslation();
+
+  if (!config) return null;
 
   const handleOpenChange = (open: boolean) => {
     // Ne permettre la fermeture que si on n'est pas en chargement
