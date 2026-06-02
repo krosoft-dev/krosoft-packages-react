@@ -26,7 +26,7 @@ export function TablePagination({
   totalPages,
 }: TablePaginationProps): React.JSX.Element {
   return (
-    <div className="px-4 py-2 border-t border-border flex items-center justify-between bg-card flex-wrap gap-2">
+    <div className="px-4 py-2 border-t border-gray-200 dark:border-gray-800 flex items-center justify-between bg-muted/50 dark:bg-gray-900/50 flex-wrap gap-2">
       <div className="text-sm text-muted-foreground">
         {totalItems === 0 ? "0" : `${String(startIndex + 1)} - ${String(endIndex)}`} sur {totalItems}
       </div>
