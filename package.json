@@ -90,7 +90,7 @@
   },
   "devDependencies": {
     "@krosoft/core": "^0.0.40",
-    "@krosoft/tooling-eslint-react": "^0.0.21",
+    "@krosoft/tooling-eslint-react": "^0.0.22",
     "@krosoft/tooling-prettier": "^0.0.14",
     "@krosoft/tooling-tsconfig-react": "^0.0.10",
     "@storybook/addon-docs": "^10.4.1",
