@@ -1,9 +1,27 @@
+import type { FilterSection } from "@/types/FilterSection";
 import React, { useMemo } from "react";
 import { SearchInput } from "../inputs/SearchInput";
-import { SearchableFilterPill, FilterOption } from "./SearchableFilterPill";
 import { ActiveFilters } from "./ActiveFilters";
 import { AdvancedFilters } from "./AdvancedFilters";
-import { TableFilterProps } from "@/types/TableFilterProps";
+import { FilterOption, SearchableFilterPill } from "./SearchableFilterPill";
+
+export interface TableFilterProps<T extends Record<string, unknown> = Record<string, unknown>> {
+  // Recherche
+  searchQuery?: string;
+  onSearchChange?: (query: string) => void;
+  searchPlaceholder?: string;
+
+  // Filtres
+  filters: T;
+  onFiltersChange: (filters: T) => void;
+
+  // Configuration des filtres (regroupés par sections)
+  sections: FilterSection<T>[];
+
+  // Textes & Boutons
+  advancedButtonText?: string;
+  sheetTitle?: string;
+}
 
 export function TableFilter<T extends Record<string, unknown> = Record<string, unknown>>({
   searchQuery,
