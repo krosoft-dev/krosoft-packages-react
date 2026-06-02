@@ -13,8 +13,8 @@ interface TableFilterProps<T extends Record<string, unknown> = Record<string, un
   searchPlaceholder?: string;
 
   // Filtres
-  filters: Record<string, unknown>;
-  onFiltersChange: (filters: Record<string, unknown>) => void;
+  filters: T;
+  onFiltersChange: (filters: T) => void;
 
   // Configuration des filtres (regroupés par sections)
   sections: FilterSection<T>[];
@@ -35,33 +35,33 @@ export function TableFilter<T extends Record<string, unknown> = Record<string, u
   sheetTitle = "Filtres avancés",
 }: TableFilterProps<T>): React.ReactElement {
   const handleToggleQuickFilter = (key: string, optionValue: string): void => {
-    const current = filters[key];
+    const current = (filters as Record<string, unknown>)[key];
     const currentArray = Array.isArray(current) ? (current as string[]) : [];
     const next = currentArray.includes(optionValue) ? currentArray.filter(v => v !== optionValue) : [...currentArray, optionValue];
 
-    const updatedFilters = { ...filters };
+    const updatedFilters = { ...filters } as Record<string, unknown>;
     if (next.length === 0) {
       // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
       delete updatedFilters[key];
     } else {
       updatedFilters[key] = next;
     }
-    onFiltersChange(updatedFilters);
+    onFiltersChange(updatedFilters as T);
   };
 
   const handleClearQuickFilter = (key: string): void => {
-    const next = { ...filters };
+    const next = { ...filters } as Record<string, unknown>;
     // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
     delete next[key];
-    onFiltersChange(next);
+    onFiltersChange(next as T);
   };
 
   const handleClearAllFilters = (): void => {
-    onFiltersChange({});
+    onFiltersChange({} as unknown as T);
   };
 
   const handleRemoveActiveFilter = (key: string, valueToRemove?: unknown): void => {
-    const next = { ...filters };
+    const next = { ...filters } as Record<string, unknown>;
     const currentValue = next[key];
     if (Array.isArray(currentValue)) {
       if (valueToRemove !== undefined) {
@@ -78,7 +78,7 @@ export function TableFilter<T extends Record<string, unknown> = Record<string, u
       // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
       delete next[key];
     }
-    onFiltersChange(next);
+    onFiltersChange(next as T);
   };
 
   // Extraire dynamiquement les filtres rapides de l'ensemble des sections

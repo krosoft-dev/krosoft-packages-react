@@ -6,8 +6,8 @@ import { FilterField } from "./FilterField";
 
 export interface AdvancedFiltersProps<T extends Record<string, unknown> = Record<string, unknown>> {
   sections: FilterSection<T>[];
-  filters: Record<string, unknown>;
-  onFiltersChange: (filters: Record<string, unknown>) => void;
+  filters: T;
+  onFiltersChange: (filters: T) => void;
   buttonText?: string;
   sheetTitle?: string;
 }
@@ -39,13 +39,13 @@ export function AdvancedFilters<T extends Record<string, unknown> = Record<strin
   };
 
   const handleApplyFilters = (): void => {
-    onFiltersChange(localFilters);
+    onFiltersChange(localFilters as unknown as T);
     setIsOpen(false);
   };
 
   const handleClearAllFilters = (): void => {
     setLocalFilters({});
-    onFiltersChange({});
+    onFiltersChange({} as unknown as T);
     setIsOpen(false);
   };
 
