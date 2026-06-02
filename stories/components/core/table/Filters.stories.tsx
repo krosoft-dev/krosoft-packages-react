@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { TableFilter } from "@/components/core/filters";
+import { TableFilter, FilterSection } from "@/components/core/filters";
 
 const meta: Meta<typeof TableFilter> = {
   title: "Core/Filters/TableFilter",
@@ -31,13 +31,17 @@ Le composant \`TableFilter\` orchestre les sous-composants suivants :
 | \`DatePicker\` | Sélecteur de date avec calendrier localisé (français). |
 | \`ActiveFilters\` | Bandeau affichant les filtres actifs sous forme de badges supprimables, avec un bouton "Effacer tout". |
 
+### Paramètre Générique \`T\`
+Le composant \`TableFilter\`, ainsi que \`FilterSection\` et \`FilterFieldConfig\`, acceptent désormais un paramètre générique \`T\` représentant l'interface typée de vos filtres (héritant de \`Record<string, unknown>\`).
+Cela garantit que la propriété \`key\` de chaque configuration de filtre correspond bien à une clé valide de votre modèle de filtres.
+
 ---
 
 ### Propriétés de configuration des filtres (\`FilterFieldConfig\`)
 
 Chaque filtre est configuré à l'aide d'un objet possédant les propriétés suivantes :
 
-- **\`key\`** (\`string\`, requis) : Clé unique correspondant à la propriété à filtrer dans vos données.
+- **\`key\`** (\`keyof T\`, requis) : Clé unique correspondant à la propriété à filtrer dans vos données.
 - **\`label\`** (\`string\`, requis) : Titre textuel affiché pour le filtre.
 - **\`type\`** (\`"text" | "number" | "select" | "multi-select" | "date"\`, requis) :
   - \`"text"\` : Un champ de texte standard.
@@ -70,6 +74,14 @@ Chaque filtre est configuré à l'aide d'un objet possédant les propriétés su
 
 export default meta;
 
+interface UserFilters extends Record<string, unknown> {
+  name: string;
+  role: string[];
+  status: string;
+  lastLogin: Date | undefined;
+  budget: string;
+}
+
 const TableFilterStoryWrapper = (): React.ReactElement => {
   const [searchQuery, setSearchQuery] = useState("");
   const [appliedFilters, setAppliedFilters] = useState<Record<string, unknown>>({
@@ -80,7 +92,7 @@ const TableFilterStoryWrapper = (): React.ReactElement => {
     budget: "",
   });
 
-  const sections = [
+  const sections: FilterSection<UserFilters>[] = [
     {
       title: "Détails de l'utilisateur",
       filters: [
@@ -148,7 +160,7 @@ const TableFilterStoryWrapper = (): React.ReactElement => {
     <div className="p-4 space-y-4">
       <h3 className="text-lg font-medium mb-4">Composant de filtrage unifié (TableFilter)</h3>
 
-      <TableFilter
+      <TableFilter<UserFilters>
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         searchPlaceholder="Rechercher des éléments..."

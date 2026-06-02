@@ -4,21 +4,21 @@ import { Filter } from "lucide-react";
 import { FilterSection } from "@/types/FilterSection";
 import { FilterField } from "./FilterField";
 
-export interface AdvancedFiltersProps {
-  sections: FilterSection[];
-  filters: Record<string, unknown>;
-  onFiltersChange: (filters: Record<string, unknown>) => void;
+export interface AdvancedFiltersProps<T extends Record<string, unknown> = Record<string, unknown>> {
+  sections: FilterSection<T>[];
+  filters: T;
+  onFiltersChange: (filters: T) => void;
   buttonText?: string;
   sheetTitle?: string;
 }
 
-export function AdvancedFilters({
+export function AdvancedFilters<T extends Record<string, unknown> = Record<string, unknown>>({
   sections,
   filters,
   onFiltersChange,
   buttonText = "Plus de filtres",
   sheetTitle = "Filtres avancés",
-}: AdvancedFiltersProps): React.ReactElement {
+}: AdvancedFiltersProps<T>): React.ReactElement {
   const [isOpen, setIsOpen] = useState(false);
   const [localFilters, setLocalFilters] = useState<Record<string, unknown>>(filters);
 
@@ -39,13 +39,13 @@ export function AdvancedFilters({
   };
 
   const handleApplyFilters = (): void => {
-    onFiltersChange(localFilters);
+    onFiltersChange(localFilters as unknown as T);
     setIsOpen(false);
   };
 
   const handleClearAllFilters = (): void => {
     setLocalFilters({});
-    onFiltersChange({});
+    onFiltersChange({} as unknown as T);
     setIsOpen(false);
   };
 
