@@ -2,13 +2,9 @@ import * as React from "react";
 import { MenuIcon } from "lucide-react";
 import { Button } from "../../ui/button";
 import { cn } from "@/helpers/tailwind.helper";
+import { useSidebar } from "./useSidebar";
 
 export interface TopbarProps {
-  // Gestion de la sidebar
-  collapsed: boolean;
-  isMobile: boolean;
-  onToggleSidebar: () => void;
-
   // Actions
   actionsNode?: React.ReactNode;
 
@@ -16,7 +12,9 @@ export interface TopbarProps {
   userMenuNode?: React.ReactNode;
 }
 
-export const Topbar = ({ collapsed, isMobile, onToggleSidebar, actionsNode, userMenuNode }: TopbarProps): React.ReactElement => {
+export const Topbar = ({ actionsNode, userMenuNode }: TopbarProps): React.ReactElement => {
+  const { collapsed, isMobile, toggleSidebar } = useSidebar();
+
   return (
     <header
       className={cn(
@@ -32,7 +30,7 @@ export const Topbar = ({ collapsed, isMobile, onToggleSidebar, actionsNode, user
         <Button
           variant="ghost"
           size="icon"
-          onClick={onToggleSidebar}
+          onClick={toggleSidebar}
           className="text-topbar-foreground hover:bg-topbar-accent hover:text-topbar-accent-foreground"
         >
           <MenuIcon className="size-4" />
