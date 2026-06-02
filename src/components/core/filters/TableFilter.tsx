@@ -3,26 +3,7 @@ import { SearchInput } from "../inputs/SearchInput";
 import { SearchableFilterPill, FilterOption } from "./SearchableFilterPill";
 import { ActiveFilters } from "./ActiveFilters";
 import { AdvancedFilters } from "./AdvancedFilters";
-import { FilterSection } from "@/types/FilterSection";
-import { FilterFieldConfig } from "@/types/FilterFieldConfig";
-
-interface TableFilterProps<T extends Record<string, unknown> = Record<string, unknown>> {
-  // Recherche
-  searchQuery?: string;
-  onSearchChange?: (query: string) => void;
-  searchPlaceholder?: string;
-
-  // Filtres
-  filters: T;
-  onFiltersChange: (filters: T) => void;
-
-  // Configuration des filtres (regroupés par sections)
-  sections: FilterSection<T>[];
-
-  // Textes & Boutons
-  advancedButtonText?: string;
-  sheetTitle?: string;
-}
+import { TableFilterProps } from "@/types/TableFilterProps";
 
 export function TableFilter<T extends Record<string, unknown> = Record<string, unknown>>({
   searchQuery,
@@ -34,38 +15,38 @@ export function TableFilter<T extends Record<string, unknown> = Record<string, u
   advancedButtonText = "Filtres",
   sheetTitle = "Filtres avancés",
 }: TableFilterProps<T>): React.ReactElement {
-  const handleToggleQuickFilter = (key: string, optionValue: string): void => {
-    const current = (filters as Record<string, unknown>)[key];
+  const handleToggleQuickFilter = (key: keyof T, optionValue: string): void => {
+    const current = filters[key];
     const currentArray = Array.isArray(current) ? (current as string[]) : [];
     const next = currentArray.includes(optionValue) ? currentArray.filter(v => v !== optionValue) : [...currentArray, optionValue];
 
-    const updatedFilters = { ...filters } as Record<string, unknown>;
+    const updatedFilters = { ...filters };
     if (next.length === 0) {
       // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
       delete updatedFilters[key];
     } else {
-      updatedFilters[key] = next;
+      updatedFilters[key] = next as T[keyof T];
     }
-    onFiltersChange(updatedFilters as T);
+    onFiltersChange(updatedFilters);
   };
 
-  const handleClearQuickFilter = (key: string): void => {
-    const next = { ...filters } as Record<string, unknown>;
+  const handleClearQuickFilter = (key: keyof T): void => {
+    const next = { ...filters };
     // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
     delete next[key];
-    onFiltersChange(next as T);
+    onFiltersChange(next);
   };
 
   const handleClearAllFilters = (): void => {
     onFiltersChange({} as unknown as T);
   };
 
-  const handleRemoveActiveFilter = (key: string, valueToRemove?: unknown): void => {
-    const next = { ...filters } as Record<string, unknown>;
+  const handleRemoveActiveFilter = (key: keyof T, valueToRemove?: unknown): void => {
+    const next = { ...filters };
     const currentValue = next[key];
     if (Array.isArray(currentValue)) {
       if (valueToRemove !== undefined) {
-        next[key] = currentValue.filter(v => v !== valueToRemove);
+        next[key] = currentValue.filter(v => v !== valueToRemove) as T[keyof T];
         if (Array.isArray(next[key]) && (next[key] as unknown[]).length === 0) {
           // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
           delete next[key];
@@ -78,7 +59,7 @@ export function TableFilter<T extends Record<string, unknown> = Record<string, u
       // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
       delete next[key];
     }
-    onFiltersChange(next as T);
+    onFiltersChange(next);
   };
 
   // Extraire dynamiquement les filtres rapides de l'ensemble des sections
@@ -147,12 +128,12 @@ export function TableFilter<T extends Record<string, unknown> = Record<string, u
               key={q.key as string}
               label={q.label}
               options={q.options}
-              selected={Array.isArray(filters[q.key as string]) ? (filters[q.key as string] as string[]) : []}
+              selected={Array.isArray(filters[q.key]) ? (filters[q.key] as string[]) : []}
               onToggle={value => {
-                handleToggleQuickFilter(q.key as string, value);
+                handleToggleQuickFilter(q.key, value);
               }}
               onClear={() => {
-                handleClearQuickFilter(q.key as string);
+                handleClearQuickFilter(q.key);
               }}
               onSelectAll={values => {
                 onFiltersChange({ ...filters, [q.key]: values });
@@ -180,4 +161,3 @@ export function TableFilter<T extends Record<string, unknown> = Record<string, u
     </div>
   );
 }
-export type { FilterFieldConfig, FilterSection };

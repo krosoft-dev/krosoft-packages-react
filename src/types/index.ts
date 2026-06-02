@@ -10,3 +10,4 @@ export * from "./TabConfig";
 export * from "./UseDataTableProps";
 export * from "./UseDataTableResult";
 export * from "./forms";
+export * from "./TableFilterProps";
