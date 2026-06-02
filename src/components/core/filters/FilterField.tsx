@@ -5,8 +5,8 @@ import { DateRangePicker } from "@/components/core/inputs/DateRangePicker";
 import { MultiSelect } from "@/components/core/inputs/MultiSelect";
 import { SearchableSelect } from "@/components/core/inputs/SearchableSelect";
 import type { DateRange } from "react-day-picker";
-import type { FilterFieldConfig } from "./TableFilter";
 import { cn } from "@/helpers/tailwind.helper";
+import { FilterFieldConfig } from "@/types/FilterFieldConfig";
 
 interface FilterFieldProps<T extends Record<string, unknown>> {
   field: FilterFieldConfig<T>;
