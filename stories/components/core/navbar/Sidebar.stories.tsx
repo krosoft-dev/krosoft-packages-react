@@ -1,10 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import * as React from "react";
-import { Sidebar, SidebarProps } from "../../../../src/components/core/navbar/Sidebar";
+import { Sidebar, SidebarProvider, SidebarProps } from "../../../../src/components/core/navbar/Sidebar";
 import { Calendar, Home, Inbox, FileText, Settings, Users, LayoutDashboard, LogOut, Zap, ChevronsUpDown, Building2, Check, Shield } from "lucide-react";
 import { cn } from "../../../../src/helpers/tailwind.helper";
 
-const meta: Meta<typeof Sidebar> = {
+type SidebarStoryProps = SidebarProps & { collapsed?: boolean };
+
+const meta: Meta<SidebarStoryProps> = {
   title: "Core/Navbar/Sidebar",
   component: Sidebar,
   tags: ["autodocs"],
@@ -14,7 +16,7 @@ const meta: Meta<typeof Sidebar> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof Sidebar>;
+type Story = StoryObj<SidebarStoryProps>;
 
 // 2 groupes de menus distincts comme demandé
 const sampleGroups = [
@@ -61,53 +63,54 @@ const sampleGroups = [
   },
 ];
 
-const InteractiveSidebar = (args: SidebarProps): React.ReactElement => {
+const InteractiveSidebar = (args: SidebarStoryProps): React.ReactElement => {
   const [currentPath, setCurrentPath] = React.useState("/home");
-  const [collapsed, setCollapsed] = React.useState(args.collapsed);
+  const [collapsed, setCollapsed] = React.useState(args.collapsed ?? false);
 
   // Permet de réagir si on change la prop "collapsed" depuis les contrôles Storybook
   React.useEffect(() => {
-    setCollapsed(args.collapsed);
+    setCollapsed(args.collapsed ?? false);
   }, [args.collapsed]);
 
   return (
-    <div className="flex h-screen w-full bg-background font-sans">
-      <Sidebar
-        {...args}
-        currentPath={currentPath}
-        collapsed={collapsed}
-        onItemClick={path => {
-          setCurrentPath(path);
-        }}
-      />
+    <SidebarProvider collapsed={collapsed} onCollapsedChange={setCollapsed}>
+      <div className="flex h-screen w-full bg-background font-sans">
+        <Sidebar
+          {...args}
+          currentPath={currentPath}
+          onItemClick={path => {
+            setCurrentPath(path);
+          }}
+        />
 
-      <main className="flex-1 p-8 overflow-y-auto">
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground">Contenu Principal</h1>
-            <p className="text-muted-foreground mt-1">Exemple d&apos;intégration avec la KrosoftSidebar</p>
+        <main className="flex-1 p-8 overflow-y-auto">
+          <div className="flex justify-between items-center mb-8">
+            <div>
+              <h1 className="text-3xl font-bold text-foreground">Contenu Principal</h1>
+              <p className="text-muted-foreground mt-1">Exemple d&apos;intégration avec la KrosoftSidebar</p>
+            </div>
+            <button
+              onClick={() => {
+                setCollapsed(!collapsed);
+              }}
+              className="px-4 py-2 bg-primary text-primary-foreground font-medium rounded-lg text-sm hover:opacity-90 transition-opacity"
+            >
+              {collapsed ? "Ouvrir la Sidebar" : "Réduire la Sidebar"}
+            </button>
           </div>
-          <button
-            onClick={() => {
-              setCollapsed(!collapsed);
-            }}
-            className="px-4 py-2 bg-primary text-primary-foreground font-medium rounded-lg text-sm hover:opacity-90 transition-opacity"
-          >
-            {collapsed ? "Ouvrir la Sidebar" : "Réduire la Sidebar"}
-          </button>
-        </div>
 
-        <div className="p-8 border border-border rounded-xl bg-card shadow-sm">
-          <p className="text-card-foreground text-lg">
-            La route actuellement active est : <strong className="text-primary bg-primary/10 px-2 py-1 rounded">{currentPath}</strong>
-          </p>
-          <p className="text-muted-foreground mt-4 text-sm">
-            Essayez de cliquer sur les différents liens du menu. Le composant Sidebar va automatiquement mettre à jour le style actif en fonction de la route
-            sélectionnée, et gérer les tooltips si la barre est repliée.
-          </p>
-        </div>
-      </main>
-    </div>
+          <div className="p-8 border border-border rounded-xl bg-card shadow-sm">
+            <p className="text-card-foreground text-lg">
+              La route actuellement active est : <strong className="text-primary bg-primary/10 px-2 py-1 rounded">{currentPath}</strong>
+            </p>
+            <p className="text-muted-foreground mt-4 text-sm">
+              Essayez de cliquer sur les différents liens du menu. Le composant Sidebar va automatiquement mettre à jour le style actif en fonction de la route
+              sélectionnée, et gérer les tooltips si la barre est repliée.
+            </p>
+          </div>
+        </main>
+      </div>
+    </SidebarProvider>
   );
 };
 
@@ -119,12 +122,6 @@ export const Default: Story = {
     appName: "Appname",
     appSubName: "Subname",
     collapsed: false,
-    mobileOpen: false,
-    isMobile: false,
-
-    onMobileClose: () => {
-      // noop
-    },
   },
 };
 
@@ -234,14 +231,14 @@ const instances = [
   { id: "3", name: "Stark Industries", subName: "Instance de développement" },
 ];
 
-const InteractiveSidebarWithSelector = (args: SidebarProps): React.ReactElement => {
+const InteractiveSidebarWithSelector = (args: SidebarStoryProps): React.ReactElement => {
   const [currentPath, setCurrentPath] = React.useState("/home");
-  const [collapsed, setCollapsed] = React.useState(args.collapsed);
+  const [collapsed, setCollapsed] = React.useState(args.collapsed ?? false);
   const [isSelectorOpen, setIsSelectorOpen] = React.useState(false);
   const [selectedInstance, setSelectedInstance] = React.useState(instances[0]);
 
   React.useEffect(() => {
-    setCollapsed(args.collapsed);
+    setCollapsed(args.collapsed ?? false);
   }, [args.collapsed]);
 
   const InstanceSelector = (
@@ -304,34 +301,35 @@ const InteractiveSidebarWithSelector = (args: SidebarProps): React.ReactElement 
   );
 
   return (
-    <div className="flex h-screen w-full bg-background font-sans">
-      <Sidebar
-        {...args}
-        currentPath={currentPath}
-        collapsed={collapsed}
-        headerNode={InstanceSelector}
-        onItemClick={path => {
-          setCurrentPath(path);
-        }}
-      />
+    <SidebarProvider collapsed={collapsed} onCollapsedChange={setCollapsed}>
+      <div className="flex h-screen w-full bg-background font-sans">
+        <Sidebar
+          {...args}
+          currentPath={currentPath}
+          headerNode={InstanceSelector}
+          onItemClick={path => {
+            setCurrentPath(path);
+          }}
+        />
 
-      <main className="flex-1 p-8 overflow-y-auto">
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground">Sélecteur d&apos;instance</h1>
-            <p className="text-muted-foreground mt-1">Exemple d&apos;un header personnalisé avec un sélecteur d&apos;organisation.</p>
+        <main className="flex-1 p-8 overflow-y-auto">
+          <div className="flex justify-between items-center mb-8">
+            <div>
+              <h1 className="text-3xl font-bold text-foreground">Sélecteur d&apos;instance</h1>
+              <p className="text-muted-foreground mt-1">Exemple d&apos;un header personnalisé avec un sélecteur d&apos;organisation.</p>
+            </div>
+            <button
+              onClick={() => {
+                setCollapsed(!collapsed);
+              }}
+              className="px-4 py-2 bg-primary text-primary-foreground font-medium rounded-lg text-sm hover:opacity-90 transition-opacity"
+            >
+              {collapsed ? "Ouvrir la Sidebar" : "Réduire la Sidebar"}
+            </button>
           </div>
-          <button
-            onClick={() => {
-              setCollapsed(!collapsed);
-            }}
-            className="px-4 py-2 bg-primary text-primary-foreground font-medium rounded-lg text-sm hover:opacity-90 transition-opacity"
-          >
-            {collapsed ? "Ouvrir la Sidebar" : "Réduire la Sidebar"}
-          </button>
-        </div>
-      </main>
-    </div>
+        </main>
+      </div>
+    </SidebarProvider>
   );
 };
 

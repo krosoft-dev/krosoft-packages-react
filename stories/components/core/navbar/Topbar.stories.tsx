@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import * as React from "react";
 import { Topbar, TopbarProps } from "../../../../src/components/core/navbar/Topbar";
-import { Sidebar } from "../../../../src/components/core/navbar/Sidebar";
+import { Sidebar, SidebarProvider } from "../../../../src/components/core/navbar/Sidebar";
 import { Home, Settings, Users, SearchIcon, SunIcon, MoonIcon, BellIcon, Shield } from "lucide-react";
 import { Button } from "../../../../src/components/ui/button";
 
@@ -86,9 +86,9 @@ const sampleGroups = [
         path: "/settings",
         icon: Settings,
         subItems: [
-          { label: "Vue Générale", path: "/dashboard/overview" },
-          { label: "Statistiques", path: "/dashboard/stats", badge: 3 },
-          { label: "Rapports", path: "/dashboard/reports" },
+          { label: "Vue Générale", path: "/settings/overview" },
+          { label: "Statistiques", path: "/settings/stats", badge: 3 },
+          { label: "Rapports", path: "/settings/reports" },
         ],
       },
     ],
@@ -101,47 +101,45 @@ const InteractiveWithSidebar = (args: TopbarProps): React.ReactElement => {
   const [currentPath, setCurrentPath] = React.useState("/dashboard");
 
   return (
-    <div className={`flex h-screen w-full bg-background font-sans ${theme}`}>
-      {/* La Sidebar */}
-      <Sidebar
-        groups={sampleGroups}
-        collapsed={collapsed}
-        mobileOpen={false}
-        isMobile={false}
-        onMobileClose={() => {}}
-        onItemClick={path => {
-          setCurrentPath(path);
-        }}
-        currentPath={currentPath}
-        appIcon={Shield}
-        appName="Krosoft"
-        appSubName="CRM"
-      />
+    <SidebarProvider collapsed={collapsed} onCollapsedChange={setCollapsed}>
+      <div className={`flex h-screen w-full bg-background font-sans ${theme}`}>
+        {/* La Sidebar */}
+        <Sidebar
+          groups={sampleGroups}
+          onItemClick={path => {
+            setCurrentPath(path);
+          }}
+          currentPath={currentPath}
+          appIcon={Shield}
+          appName="Krosoft"
+          appSubName="CRM"
+        />
 
-      {/* La Topbar */}
-      <Topbar
-        {...args}
-        collapsed={collapsed}
-        onToggleSidebar={() => {
-          setCollapsed(!collapsed);
-        }}
-        actionsNode={<FakeActions theme={theme} setTheme={setTheme} />}
-        userMenuNode={<FakeUserMenu />}
-      />
+        {/* La Topbar */}
+        <Topbar
+          {...args}
+          collapsed={collapsed}
+          onToggleSidebar={() => {
+            setCollapsed(!collapsed);
+          }}
+          actionsNode={<FakeActions theme={theme} setTheme={setTheme} />}
+          userMenuNode={<FakeUserMenu />}
+        />
 
-      {/* Le contenu principal */}
-      <main className="flex-1 pt-24 px-8 overflow-y-auto">
-        <div className="p-8 border border-border rounded-xl bg-card shadow-sm">
-          <h1 className="text-3xl font-bold text-foreground mb-4">Layout Complet</h1>
-          <p className="text-muted-foreground text-lg mb-6">La Topbar et la Sidebar sont maintenant parfaitement synchronisées.</p>
-          <div className="bg-primary/10 text-primary px-4 py-3 rounded-lg border border-primary/20 inline-block font-medium">Route active : {currentPath}</div>
-          <p className="mt-6 text-sm text-muted-foreground">
-            Note: La Topbar étant en `fixed` et la Sidebar en statique (`flex-col`), le contenu principal prend naturellement l&apos;espace restant grâce à
-            `flex-1`. La largeur de la Topbar s&apos;ajuste dynamiquement pour ne pas recouvrir la Sidebar.
-          </p>
-        </div>
-      </main>
-    </div>
+        {/* Le contenu principal */}
+        <main className="flex-1 pt-24 px-8 overflow-y-auto">
+          <div className="p-8 border border-border rounded-xl bg-card shadow-sm">
+            <h1 className="text-3xl font-bold text-foreground mb-4">Layout Complet</h1>
+            <p className="text-muted-foreground text-lg mb-6">La Topbar et la Sidebar sont maintenant parfaitement synchronisées.</p>
+            <div className="bg-primary/10 text-primary px-4 py-3 rounded-lg border border-primary/20 inline-block font-medium">Route active : {currentPath}</div>
+            <p className="mt-6 text-sm text-muted-foreground">
+              Note: La Topbar étant en `fixed` et la Sidebar en statique (`flex-col`), le contenu principal prend naturellement l&apos;espace restant grâce à
+              `flex-1`. La largeur de la Topbar s&apos;ajuste dynamiquement pour ne pas recouvrir la Sidebar.
+            </p>
+          </div>
+        </main>
+      </div>
+    </SidebarProvider>
   );
 };
 
