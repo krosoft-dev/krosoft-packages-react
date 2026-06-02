@@ -21,6 +21,7 @@ export interface DataTableProps<T> {
   columnVisibility?: boolean; // Permet d'activer/désactiver le bouton de visibilité des colonnes
   isLoading?: boolean; // Indique si les données sont en cours de chargement
   noDataMessage?: string; // Message affiché lorsque le tableau est vide
+  bordered?: boolean; // Permet d'afficher les bordures des cellules (colonnes)
   defaultPageSize?: number; // Nombre par défaut de lignes par page
   pageSizeOptions?: number[]; // Options pour le nombre de lignes par page
 
@@ -48,6 +49,7 @@ export function DataTable<T>({
   resizableColumns = true,
   columnVisibility = true,
   isLoading = false,
+  bordered = false,
   noDataMessage = "Aucun résultat",
   defaultPageSize = DEFAULT_PAGE_SIZE,
   pageSizeOptions = DEFAULT_PAGE_SIZE_OPTIONS,
@@ -132,6 +134,7 @@ export function DataTable<T>({
               handleDrop={handleDrop}
               handleMouseDown={handleMouseDown}
               hasActions={hasActions}
+              bordered={bordered}
               settingsNode={
                 columnVisibility ? (
                   <TableSettings columns={columns} visibleColumns={visibleColumns} toggleColumnVisibility={toggleColumnVisibility} />
@@ -139,6 +142,7 @@ export function DataTable<T>({
               }
             />
             <TableBody
+              bordered={bordered}
               isLoading={isLoading}
               colSpanCount={colSpanCount}
               noDataMessage={noDataMessage}
