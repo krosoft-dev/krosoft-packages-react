@@ -20,6 +20,7 @@ export interface TableBodyProps<T> {
   hasActions: boolean;
   actions?: RowAction<T>[];
   columns: ColumnDef<T>[];
+  bordered?: boolean;
 }
 
 export function TableBody<T>({
@@ -37,6 +38,7 @@ export function TableBody<T>({
   hasActions,
   actions,
   columns,
+  bordered = false,
 }: TableBodyProps<T>): React.JSX.Element {
   const renderCellValue = (row: T, columnKey: string): React.ReactNode => {
     const columnDef = columns.find(col => col.key === columnKey);
@@ -107,7 +109,7 @@ export function TableBody<T>({
               return (
                 <td
                   key={column.key}
-                  className={`px-2 py-2 border-r border-gray-100 dark:border-gray-800 relative ${isLast ? "border-r-0" : ""}`}
+                  className={`px-2 py-2 relative ${bordered && !isLast ? "border-r border-gray-100 dark:border-gray-800" : ""}`}
                   style={{ width: columnWidths[column.key] }}
                 >
                   <div className="w-full h-full">{renderCellValue(row, column.key)}</div>

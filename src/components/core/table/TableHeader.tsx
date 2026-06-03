@@ -21,6 +21,7 @@ export interface TableHeaderProps<T> {
   handleMouseDown: (e: React.MouseEvent, columnKey: string) => void;
   hasActions: boolean;
   settingsNode?: React.ReactNode;
+  bordered?: boolean;
 }
 
 export function TableHeader<T>({
@@ -41,6 +42,7 @@ export function TableHeader<T>({
   handleMouseDown,
   hasActions,
   settingsNode,
+  bordered = false,
 }: TableHeaderProps<T>): React.JSX.Element {
   let checkboxChecked: boolean | "indeterminate" = false;
   if (selectedRows.length === totalItems && totalItems > 0) {
@@ -60,15 +62,14 @@ export function TableHeader<T>({
   const renderColumnHeader = (column: ColumnDef<T>, isDraggable?: boolean): React.ReactNode => {
     const draggable = isDraggable !== false;
     const isSortable = column.sortable === true;
-    const isActiveSort = sortColumn === column.key;
 
     return (
       <th
         key={column.key}
         className={[
-          "px-2 py-2 text-left text-sm font-medium text-gray-900 dark:text-gray-100 relative group border-r border-gray-200 dark:border-gray-800",
-          isSortable ? "cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 select-none" : "",
-          isActiveSort ? "bg-gray-100/80 dark:bg-gray-800/80" : "",
+          "px-2 py-2 text-left text-sm font-medium text-gray-900 dark:text-gray-100 relative group",
+          bordered ? "border-r border-gray-200 dark:border-gray-800" : "",
+          isSortable ? "cursor-pointer select-none" : "",
         ]
           .filter(Boolean)
           .join(" ")}
