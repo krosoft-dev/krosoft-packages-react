@@ -10,8 +10,11 @@ export interface AppLayoutProps {
   groups: SidebarGroup[];
   currentPath: string;
   onItemClick: (path: string) => void;
-  
+
   // Custom nodes (Header/Topbar)
+  appName?: string;
+  appSubName?: string;
+  appIcon?: React.ElementType;
   headerNode?: React.ReactNode;
   footerNode?: React.ReactNode;
   actionsNode?: React.ReactNode;
@@ -23,6 +26,7 @@ export interface AppLayoutProps {
   descriptionKey?: string;
   backTo?: string | null;
   hideTitle?: boolean;
+  className?: string;
   
   // App Title for tab document title prefix
   appTitle?: string;
@@ -34,6 +38,9 @@ export function AppLayout({
   groups,
   currentPath,
   onItemClick,
+  appName,
+  appSubName,
+  appIcon,
   headerNode,
   footerNode,
   actionsNode,
@@ -45,6 +52,7 @@ export function AppLayout({
   hideTitle = false,
   appTitle,
   children,
+  className,
 }: AppLayoutProps): React.JSX.Element {
   // Sidebar state
   const [collapsed, setCollapsed] = React.useState<boolean>(() => {
@@ -93,6 +101,9 @@ export function AppLayout({
           currentPath={currentPath}
           headerNode={headerNode}
           footerNode={footerNode}
+          appName={appName}
+          appSubName={appSubName}
+          appIcon={appIcon}
         />
         <Topbar actionsNode={actionsNode} userMenuNode={userMenuNode} />
         <PageContext.Provider value={{ registerActions, registerTitleKey, registerDescriptionKey, registerRenderPreActions }}>
@@ -107,6 +118,7 @@ export function AppLayout({
                   backTo={backTo}
                   renderPreActions={renderPreActions}
                   appTitle={appTitle}
+                  className={className}
                 />
               )}
               {children}
