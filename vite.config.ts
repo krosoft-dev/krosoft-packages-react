@@ -14,8 +14,17 @@ const entries = Object.fromEntries(
 );
 
 const pkg = JSON.parse(readFileSync("./package.json", "utf-8"));
-const peerDeps = Object.keys(pkg.peerDependencies || {});
-const externalPattern = new RegExp(`^(${[...peerDeps, "react-dom", "react/jsx-runtime"].map(d => d.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")})(/.*)?$`);
+
+// Externaliser TOUTES les dependencies et peerDependencies.
+// Une librairie ne doit bundler que son propre code source,
+// pas ses dépendances tierces (radix-ui, recharts, zod, etc.)
+const allDeps = [
+  ...Object.keys(pkg.peerDependencies || {}),
+  ...Object.keys(pkg.dependencies || {}),
+  "react-dom",
+  "react/jsx-runtime",
+];
+const externalPattern = new RegExp(`^(${allDeps.map(d => d.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")})(/.*)?$`);
 
 export default defineConfig({
   esbuild: {
