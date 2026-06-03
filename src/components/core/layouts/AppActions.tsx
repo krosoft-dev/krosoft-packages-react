@@ -6,12 +6,12 @@ import { MoreVerticalIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { AppAction } from "@/types/AppAction";
 
-export interface AppPageHeaderProps {
+export interface AppActionsProps {
   actions?: AppAction[];
   className?: string;
 }
 
-export function AppActions({ actions, className }: AppPageHeaderProps): React.JSX.Element | null {
+export function AppActions({ actions, className }: AppActionsProps): React.JSX.Element | null {
   const { t } = useTranslation();
   const isMobile = useMobile();
 
