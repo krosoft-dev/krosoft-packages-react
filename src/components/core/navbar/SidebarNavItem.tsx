@@ -66,7 +66,7 @@ export const SidebarNavItem = ({
       onClick={handleClick}
       className={cn(
         "flex items-center cursor-pointer transition-all duration-200 group",
-        dense ? "gap-2.5 rounded-lg mb-0.5" : "gap-3 rounded-2xl mb-2",
+        dense ? "gap-2.5 rounded-lg mb-0.5" : "gap-3 rounded-xl mb-1",
         collapsed ? collapsedClasses : expandedClasses,
         active ? activeClasses : "hover:bg-sidebar-accent text-sidebar-foreground hover:text-sidebar-accent-foreground",
       )}

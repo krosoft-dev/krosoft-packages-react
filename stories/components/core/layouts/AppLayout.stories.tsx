@@ -3,6 +3,7 @@ import { Bell, LayoutDashboard, Moon, Settings, Shield, Sun, Users, Plus } from 
 import * as React from "react";
 import { MemoryRouter } from "react-router-dom";
 import { AppLayout } from "@/components/core/layouts/AppLayout";
+import { SidebarHeader } from "@/components/core/navbar";
 import { Button } from "@/components/ui/button";
 
 const withRouter = (Story: React.ComponentType) => (
@@ -73,9 +74,7 @@ const meta: Meta<typeof AppLayout> = {
   },
   args: {
     groups: sampleGroups,
-    appName: "Krosoft",
-    appSubName: "CRM",
-    appIcon: Shield,
+    headerNode: <SidebarHeader name="Krosoft" subName="CRM" icon={Shield} />,
     appTitle: "Krosoft CRM",
   },
 };

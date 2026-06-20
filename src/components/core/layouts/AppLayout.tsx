@@ -1,7 +1,9 @@
 import * as React from "react";
-import { Sidebar, SidebarProvider, Topbar } from "@/components/core/navbar";
+import { Sidebar, Topbar } from "@/components/core/navbar";
 import type { SidebarGroup } from "@/components/core/navbar";
-import { PageContext } from "@/hooks/behavior/usePage";
+import { SidebarProvider } from "@/providers";
+import { useSidebar } from "@/hooks";
+import { PageContext } from "@/contexts";
 import { AppPageHeader } from "./AppPageHeader";
 import { AppAction } from "@/types/AppAction";
 
@@ -11,12 +13,11 @@ export interface AppLayoutProps {
   currentPath: string;
   onItemClick: (path: string) => void;
 
-  // Custom nodes (Header/Topbar)
-  appName?: string;
-  appSubName?: string;
-  appIcon?: React.ElementType;
+  // Custom nodes (Sidebar slots)
   headerNode?: React.ReactNode;
   footerNode?: React.ReactNode;
+
+  // Topbar custom nodes
   actionsNode?: React.ReactNode;
   userMenuNode?: React.ReactNode;
 
@@ -27,20 +28,25 @@ export interface AppLayoutProps {
   backTo?: string | null;
   hideTitle?: boolean;
   className?: string;
-  
+
   // App Title for tab document title prefix
   appTitle?: string;
 
   children: React.ReactNode;
 }
 
-export function AppLayout({
+export function AppLayout(props: AppLayoutProps): React.JSX.Element {
+  return (
+    <SidebarProvider>
+      <AppLayoutInner {...props} />
+    </SidebarProvider>
+  );
+}
+
+function AppLayoutInner({
   groups,
   currentPath,
   onItemClick,
-  appName,
-  appSubName,
-  appIcon,
   headerNode,
   footerNode,
   actionsNode,
@@ -54,15 +60,7 @@ export function AppLayout({
   children,
   className,
 }: AppLayoutProps): React.JSX.Element {
-  // Sidebar state
-  const [collapsed, setCollapsed] = React.useState<boolean>(() => {
-    const saved = localStorage.getItem("sidebar-collapsed");
-    return saved === "true";
-  });
-
-  React.useEffect(() => {
-    localStorage.setItem("sidebar-collapsed", JSON.stringify(collapsed));
-  }, [collapsed]);
+  const { collapsed, isMobile, toggleSidebar } = useSidebar();
 
   // Page context state
   const [actions, setActions] = React.useState<AppAction[]>([]);
@@ -93,19 +91,21 @@ export function AppLayout({
   const registerRenderPreActions = React.useCallback((fn: () => React.JSX.Element) => setRenderPreActions(() => fn), []);
 
   return (
-    <SidebarProvider collapsed={collapsed} onCollapsedChange={setCollapsed}>
-      <div className="flex h-screen w-full bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-950 font-sans">
-        <Sidebar
-          groups={groups}
-          onItemClick={onItemClick}
-          currentPath={currentPath}
-          headerNode={headerNode}
-          footerNode={footerNode}
-          appName={appName}
-          appSubName={appSubName}
-          appIcon={appIcon}
+    <div className="flex h-screen w-full bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-950 font-sans">
+      <Sidebar
+        groups={groups}
+        onItemClick={onItemClick}
+        currentPath={currentPath}
+        slots={{ header: headerNode, footer: footerNode }}
+      />
+      <div className="flex flex-col flex-1 min-w-0">
+        <Topbar
+          collapsed={collapsed}
+          isMobile={isMobile}
+          onToggleSidebar={toggleSidebar}
+          actionsNode={actionsNode}
+          userMenuNode={userMenuNode}
         />
-        <Topbar actionsNode={actionsNode} userMenuNode={userMenuNode} />
         <PageContext.Provider value={{ registerActions, registerTitleKey, registerDescriptionKey, registerRenderPreActions }}>
           <main className="flex-1 pt-24 px-4 md:px-8 overflow-y-auto">
             <div className="space-y-6 pb-8">
@@ -126,6 +126,6 @@ export function AppLayout({
           </main>
         </PageContext.Provider>
       </div>
-    </SidebarProvider>
+    </div>
   );
 }

@@ -38,18 +38,14 @@ export interface SidebarSearch {
 }
 
 export interface SidebarProps {
-  // Navigation — cœur, requis
   groups: SidebarGroup[];
   currentPath: string;
   onItemClick: (path: string) => void;
 
-  // Composition
   slots?: SidebarSlots;
 
-  // Recherche
   search?: SidebarSearch;
 
-  // Apparence
   dense?: boolean;
   loading?: boolean;
 }
