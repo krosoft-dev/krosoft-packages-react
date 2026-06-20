@@ -7,9 +7,7 @@ import { SidebarProvider } from "../../../../src/providers/SidebarProvider";
 import { Home, Settings, Users, SearchIcon, SunIcon, MoonIcon, BellIcon, Shield } from "lucide-react";
 import { Button } from "../../../../src/components/ui/button";
 
-type TopbarStoryProps = TopbarProps & { collapsed?: boolean };
-
-const meta: Meta<TopbarStoryProps> = {
+const meta: Meta<typeof Topbar> = {
   title: "Core/Navbar/Topbar",
   component: Topbar,
   tags: ["autodocs"],
@@ -19,7 +17,7 @@ const meta: Meta<TopbarStoryProps> = {
 };
 
 export default meta;
-type Story = StoryObj<TopbarStoryProps>;
+type Story = StoryObj<typeof Topbar>;
 
 // Un avatar factice pour simuler le menu utilisateur injecté depuis l'application
 const FakeUserMenu = (): React.ReactElement => (
@@ -51,20 +49,22 @@ const FakeActions = ({ theme, setTheme }: { theme: string; setTheme: (t: string)
 );
 
 // --- STORY 1 : STANDALONE ---
-const InteractiveStandalone = (args: TopbarProps & { collapsed?: boolean }): React.ReactElement => {
+const InteractiveStandalone = (args: TopbarProps): React.ReactElement => {
   const [theme, setTheme] = React.useState("light");
-  const [collapsed, setCollapsed] = React.useState(args.collapsed ?? false);
-
-  React.useEffect(() => {
-    setCollapsed(args.collapsed ?? false);
-  }, [args.collapsed]);
+  const [collapsed, setCollapsed] = React.useState(args.collapsed);
 
   return (
-    <SidebarProvider collapsed={collapsed} onCollapsedChange={setCollapsed}>
-      <div className={`flex h-screen w-full bg-background font-sans ${theme}`}>
-        <Topbar actionsNode={<FakeActions theme={theme} setTheme={setTheme} />} userMenuNode={<FakeUserMenu />} />
-      </div>
-    </SidebarProvider>
+    <div className={`flex h-screen w-full bg-background font-sans ${theme}`}>
+      <Topbar
+        {...args}
+        collapsed={collapsed}
+        onToggleSidebar={() => {
+          setCollapsed(!collapsed);
+        }}
+        actionsNode={<FakeActions theme={theme} setTheme={setTheme} />}
+        userMenuNode={<FakeUserMenu />}
+      />
+    </div>
   );
 };
 
@@ -72,6 +72,7 @@ export const Standalone: Story = {
   render: args => <InteractiveStandalone {...args} />,
   args: {
     collapsed: false,
+    isMobile: false,
   },
 };
 
@@ -96,14 +97,10 @@ const sampleGroups = [
   },
 ];
 
-const InteractiveWithSidebar = (args: TopbarProps & { collapsed?: boolean }): React.ReactElement => {
+const InteractiveWithSidebar = (args: TopbarProps): React.ReactElement => {
   const [theme, setTheme] = React.useState("light");
-  const [collapsed, setCollapsed] = React.useState(args.collapsed ?? false);
+  const [collapsed, setCollapsed] = React.useState(args.collapsed);
   const [currentPath, setCurrentPath] = React.useState("/dashboard");
-
-  React.useEffect(() => {
-    setCollapsed(args.collapsed ?? false);
-  }, [args.collapsed]);
 
   return (
     <SidebarProvider collapsed={collapsed} onCollapsedChange={setCollapsed}>
