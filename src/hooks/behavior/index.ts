@@ -3,3 +3,4 @@ export { useConfirmDeleteDialog } from "./useConfirmDeleteDialog";
 export { useDialog } from "./useDialog";
 export type { DialogState } from "./useDialog";
 export { usePage } from "./usePage";
+export { useSidebar } from "./useSidebar";
