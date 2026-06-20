@@ -33,6 +33,7 @@ export interface SidebarProps {
   loading?: boolean;
   searchable?: boolean;
   searchPlaceholder?: string;
+  dense?: boolean;
 }
 
 export const Sidebar = ({
@@ -48,6 +49,7 @@ export const Sidebar = ({
   loading = false,
   searchable = false,
   searchPlaceholder = "Rechercher...",
+  dense = false,
 }: SidebarProps): React.ReactElement => {
   const { collapsed, isMobile, setCollapsed } = useSidebar();
   const [query, setQuery] = React.useState("");
@@ -81,16 +83,16 @@ export const Sidebar = ({
     <div className="flex flex-col h-full bg-sidebar text-sidebar-foreground">
       {/* Header */}
       {headerNode ?? (
-        <div className={cn("flex items-center h-16 md:h-20 flex-shrink-0 gap-3 px-4", isCollapsed ? "justify-center" : "")}>
+        <div className={cn("flex items-center flex-shrink-0 gap-3 px-4", dense ? "h-14" : "h-16 md:h-20", isCollapsed ? "justify-center" : "")}>
           {AppIcon !== undefined && (
             <div className="flex-shrink-0 text-sidebar-foreground">
-              <AppIcon className="size-6" />
+              <AppIcon className={dense ? "size-5" : "size-6"} />
             </div>
           )}
           {!isCollapsed && (
             <div className="flex flex-col">
-              <h1 className="font-bold text-lg text-sidebar-foreground leading-tight">{appName}</h1>
-              <span className="text-xs text-sidebar-muted font-medium">{appSubName}</span>
+              <h1 className={cn("font-bold text-sidebar-foreground leading-tight", dense ? "text-base" : "text-lg")}>{appName}</h1>
+              <span className={cn("text-sidebar-muted font-medium", dense ? "text-[11px]" : "text-xs")}>{appSubName}</span>
             </div>
           )}
         </div>
@@ -98,7 +100,7 @@ export const Sidebar = ({
 
       {/* Search */}
       {searchable && !isCollapsed && (
-        <div className="px-4 pt-4">
+        <div className={cn("px-4", dense ? "pt-2" : "pt-4")}>
           <div className="relative">
             <SearchIcon className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-sidebar-muted" />
             <Input
@@ -108,29 +110,32 @@ export const Sidebar = ({
                 setQuery(event.target.value);
               }}
               placeholder={searchPlaceholder}
-              className="h-9 bg-sidebar-accent/40 border-sidebar-border pl-9 text-sidebar-foreground placeholder:text-sidebar-muted"
+              className={cn(
+                "bg-sidebar-accent/40 border-sidebar-border pl-9 text-sidebar-foreground placeholder:text-sidebar-muted",
+                dense ? "h-8 text-sm" : "h-9",
+              )}
             />
           </div>
         </div>
       )}
 
       {/* Navigation Groups */}
-      <div className="flex-1 overflow-y-auto py-4 px-2 scrollbar-modern">
+      <div className={cn("flex-1 overflow-y-auto px-2 scrollbar-modern", dense ? "py-2" : "py-4")}>
         {loading
           ? Array.from({ length: 5 }).map((_, idx) => (
-              <div key={idx} className={cn("flex items-center gap-3 mb-2 h-12", isCollapsed ? "justify-center px-3" : "px-4")}>
+              <div key={idx} className={cn("flex items-center gap-3", dense ? "mb-1 h-9" : "mb-2 h-12", isCollapsed ? "justify-center px-3" : "px-4")}>
                 <Skeleton className="size-5 flex-shrink-0 rounded-md" />
                 {!isCollapsed && <Skeleton className="h-4 flex-1" />}
               </div>
             ))
           : filteredGroups.map((group, groupIdx) => (
-              <div key={groupIdx} className="mb-6">
+              <div key={groupIdx} className={dense ? "mb-3" : "mb-6"}>
                 {!isCollapsed && group.title !== undefined && group.title !== "" && (
-                  <h3 className="px-4 mb-2 text-xs uppercase tracking-wider font-semibold text-sidebar-muted">{group.title}</h3>
+                  <h3 className={cn("px-4 text-xs uppercase tracking-wider font-semibold text-sidebar-muted", dense ? "mb-1" : "mb-2")}>{group.title}</h3>
                 )}
-                <nav className="flex flex-col gap-1">
+                <nav className={cn("flex flex-col", dense ? "gap-0.5" : "gap-1")}>
                   {group.items.map((item, itemIdx) => (
-                    <SidebarNavItem key={itemIdx} {...item} currentPath={currentPath} collapsed={isCollapsed} onItemClick={handleItemClick} />
+                    <SidebarNavItem key={itemIdx} {...item} currentPath={currentPath} collapsed={isCollapsed} dense={dense} onItemClick={handleItemClick} />
                   ))}
                 </nav>
               </div>
@@ -138,7 +143,7 @@ export const Sidebar = ({
       </div>
 
       {/* Footer */}
-      {footerNode && <div className={cn("p-4 border-t border-sidebar-border", isCollapsed ? "flex justify-center" : "")}>{footerNode}</div>}
+      {footerNode && <div className={cn("border-t border-sidebar-border", dense ? "p-2" : "p-4", isCollapsed ? "flex justify-center" : "")}>{footerNode}</div>}
     </div>
   );
 

@@ -125,6 +125,53 @@ export const Collapsed: Story = {
   },
 };
 
+export const Dense: Story = {
+  render: args => <InteractiveSidebar {...args} />,
+  args: {
+    ...Default.args,
+    dense: true,
+    appName: "eva",
+    appSubName: "",
+    appIcon: Building2,
+    groups: [
+      {
+        items: [
+          { label: "Dashboard", path: "/home", icon: LayoutDashboard },
+          { label: "Achats", path: "/achats", icon: Inbox },
+          { label: "Statistiques", path: "/stats", icon: Calendar },
+          { label: "Importer", path: "/import", icon: FileText },
+          { label: "Annonces", path: "/annonces", icon: Zap },
+        ],
+      },
+    ],
+    footerNode: (
+      <div className="flex flex-col gap-1">
+        <div className="flex items-center gap-2.5 text-sidebar-muted hover:text-sidebar-foreground cursor-pointer transition-colors duration-200 px-1 py-1.5 text-sm">
+          <Inbox className="size-4 flex-shrink-0" />
+          <span className="font-medium">Nouvel achat</span>
+        </div>
+        <div className="flex items-center gap-2.5 text-sidebar-muted hover:text-sidebar-foreground cursor-pointer transition-colors duration-200 px-1 py-1.5 text-sm">
+          <LogOut className="size-4 flex-shrink-0" />
+          <span className="font-medium">Déconnexion</span>
+        </div>
+      </div>
+    ),
+  },
+};
+
+export const DenseWithGroups: Story = {
+  render: args => <InteractiveSidebar {...args} />,
+  args: {
+    ...Default.args,
+    dense: true,
+    appName: "eva",
+    appSubName: "Espace de gestion",
+    appIcon: Building2,
+    groups: sampleGroups,
+    footerNode: Dense.args?.footerNode,
+  },
+};
+
 const sampleGroupsWithSubItems = [
   {
     title: "Application",
@@ -176,6 +223,19 @@ export const WithSubItems: Story = {
   args: {
     ...Default.args,
     groups: sampleGroupsWithSubItems,
+  },
+};
+
+export const DenseWithSubItems: Story = {
+  render: args => <InteractiveSidebar {...args} />,
+  args: {
+    ...Default.args,
+    dense: true,
+    appName: "eva",
+    appSubName: "Espace de gestion",
+    appIcon: Building2,
+    groups: sampleGroupsWithSubItems,
+    footerNode: Dense.args?.footerNode,
   },
 };
 
