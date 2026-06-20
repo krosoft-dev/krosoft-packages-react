@@ -62,10 +62,7 @@ const sampleGroups = [
   },
 ];
 
-const InteractiveSidebar = ({
-  defaultCollapsed = false,
-  ...args
-}: SidebarProps & { defaultCollapsed?: boolean }): React.ReactElement => {
+const InteractiveSidebar = ({ defaultCollapsed = false, ...args }: SidebarProps & { defaultCollapsed?: boolean }): React.ReactElement => {
   const [currentPath, setCurrentPath] = React.useState("/home");
   const [collapsed, setCollapsed] = React.useState(defaultCollapsed);
 
@@ -198,6 +195,23 @@ export const WithFooter: Story = {
   },
 };
 
+export const Searchable: Story = {
+  render: args => <InteractiveSidebar {...args} />,
+  args: {
+    ...Default.args,
+    searchable: true,
+    searchPlaceholder: "Rechercher une page...",
+  },
+};
+
+export const Loading: Story = {
+  render: args => <InteractiveSidebar {...args} />,
+  args: {
+    ...Default.args,
+    loading: true,
+  },
+};
+
 export const WithCustomIcon: Story = {
   render: args => <InteractiveSidebar {...args} />,
   args: {
@@ -226,10 +240,7 @@ const instances = [
   { id: "3", name: "Stark Industries", subName: "Instance de développement" },
 ];
 
-const InteractiveSidebarWithSelector = ({
-  defaultCollapsed = false,
-  ...args
-}: SidebarProps & { defaultCollapsed?: boolean }): React.ReactElement => {
+const InteractiveSidebarWithSelector = ({ defaultCollapsed = false, ...args }: SidebarProps & { defaultCollapsed?: boolean }): React.ReactElement => {
   const [currentPath, setCurrentPath] = React.useState("/home");
   const [collapsed, setCollapsed] = React.useState(defaultCollapsed);
   const [isSelectorOpen, setIsSelectorOpen] = React.useState(false);
@@ -238,7 +249,9 @@ const InteractiveSidebarWithSelector = ({
   const InstanceSelector = (
     <div className={cn("relative flex items-center h-16 md:h-20", collapsed ? "justify-center px-0" : "px-4")}>
       <button
-        onClick={() => setIsSelectorOpen(!isSelectorOpen)}
+        onClick={() => {
+          setIsSelectorOpen(!isSelectorOpen);
+        }}
         className={cn(
           "flex items-center w-full gap-3 rounded-xl hover:bg-sidebar-accent transition-colors duration-200 group text-left",
           collapsed ? "p-2 justify-center" : "p-2 px-3",
@@ -262,7 +275,12 @@ const InteractiveSidebarWithSelector = ({
       {/* Popover/Dropdown Menu */}
       {isSelectorOpen && (
         <>
-          <div className="fixed inset-0 z-40" onClick={() => setIsSelectorOpen(false)} />
+          <div
+            className="fixed inset-0 z-40"
+            onClick={() => {
+              setIsSelectorOpen(false);
+            }}
+          />
           <div
             className={cn(
               "absolute z-50 top-16 md:top-20 bg-card border border-border rounded-xl shadow-lg py-2 min-w-[240px] flex flex-col gap-1",
