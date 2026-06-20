@@ -160,6 +160,13 @@ export const Dense: Story = {
   },
 };
 
+export const DenseCollapsed: Story = {
+  render: args => <InteractiveSidebar {...args} defaultCollapsed />,
+  args: {
+    ...Dense.args,
+  },
+};
+
 export const DenseWithGroups: Story = {
   render: args => <InteractiveSidebar {...args} />,
   args: {

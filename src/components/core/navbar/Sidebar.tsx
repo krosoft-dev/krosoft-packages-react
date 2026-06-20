@@ -38,18 +38,14 @@ export interface SidebarSearch {
 }
 
 export interface SidebarProps {
-  // Navigation — cœur, requis
   groups: SidebarGroup[];
   currentPath: string;
   onItemClick: (path: string) => void;
 
-  // Composition
   slots?: SidebarSlots;
 
-  // Recherche
   search?: SidebarSearch;
 
-  // Apparence
   dense?: boolean;
   loading?: boolean;
 }
@@ -112,7 +108,7 @@ export const Sidebar = ({ groups, currentPath, onItemClick, slots, search, dense
       )}
 
       {/* Navigation Groups */}
-      <div className={cn("flex-1 overflow-y-auto px-2 scrollbar-modern", dense ? "py-2" : "py-4")}>
+      <div className={cn("flex-1 overflow-y-auto scrollbar-modern", isCollapsed ? "px-0" : "px-2", dense ? "py-2" : "py-4")}>
         {loading
           ? Array.from({ length: 5 }).map((_, idx) => (
               <div key={idx} className={cn("flex items-center gap-3", dense ? "mb-1 h-9" : "mb-2 h-12", isCollapsed ? "justify-center px-3" : "px-4")}>
@@ -166,7 +162,7 @@ export const Sidebar = ({ groups, currentPath, onItemClick, slots, search, dense
         )}
         style={{
           ["--navbar-width" as string]: "16rem",
-          ["--navbar-width-icon" as string]: "5rem",
+          ["--navbar-width-icon" as string]: "4rem",
         }}
       >
         {sidebarContent}
