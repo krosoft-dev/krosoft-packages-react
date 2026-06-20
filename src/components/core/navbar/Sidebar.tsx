@@ -159,7 +159,11 @@ export const Sidebar = ({ groups, currentPath, onItemClick, slots, search, dense
   return (
     <TooltipProvider delayDuration={0}>
       <aside
-        className={cn("flex flex-col bg-sidebar h-screen transition-all duration-300", isCollapsed ? "w-[--navbar-width-icon]" : "w-[--navbar-width]", "flex")}
+        className={cn(
+          "flex flex-col bg-sidebar h-screen border-r border-sidebar-border transition-all duration-300",
+          isCollapsed ? "w-[--navbar-width-icon]" : "w-[--navbar-width]",
+          "flex",
+        )}
         style={{
           ["--navbar-width" as string]: "16rem",
           ["--navbar-width-icon" as string]: "5rem",
