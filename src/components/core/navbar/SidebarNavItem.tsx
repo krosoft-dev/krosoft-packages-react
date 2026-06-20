@@ -2,7 +2,7 @@ import * as React from "react";
 import { ChevronDownIcon } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
 import { cn } from "@/helpers/tailwind.helper";
-import { SidebarItem } from "./Sidebar";
+import { SidebarItem, SidebarSubItem } from "./Sidebar";
 
 export interface SidebarNavItemProps extends SidebarItem {
   currentPath: string;
@@ -10,6 +10,21 @@ export interface SidebarNavItemProps extends SidebarItem {
   dense?: boolean;
   onItemClick: (path: string) => void;
 }
+
+/**
+ * Détermine si un path donné est actif par rapport au currentPath,
+ * en ne matchant via startsWith que s'il n'y a pas de sibling plus spécifique.
+ */
+const isPathActive = (path: string, currentPath: string, siblingPaths: string[]): boolean => {
+  if (currentPath === path) return true;
+  if (path === "/") return false;
+  if (!currentPath.startsWith(`${path}/`)) return false;
+
+  // Un sibling plus spécifique existe-t-il ?
+  return !siblingPaths.some(
+    sibling => sibling !== path && sibling.startsWith(`${path}/`) && (currentPath === sibling || currentPath.startsWith(`${sibling}/`)),
+  );
+};
 
 export const SidebarNavItem = ({
   path,
@@ -23,10 +38,11 @@ export const SidebarNavItem = ({
   dense = false,
   onItemClick,
 }: SidebarNavItemProps): React.ReactElement => {
-  const [isOpen, setIsOpen] = React.useState(subItems?.some(item => currentPath === item.path || currentPath.startsWith(`${item.path}/`)) ?? false);
+  const subPaths = subItems?.map(item => item.path) ?? [];
+  const [isOpen, setIsOpen] = React.useState(subItems?.some(item => isPathActive(item.path, currentPath, subPaths)) ?? false);
 
   const isActive = path ? currentPath === path || (path !== "/" && currentPath.startsWith(`${path}/`)) : false;
-  const isAnyChildActive = subItems?.some(item => currentPath === item.path || currentPath.startsWith(`${item.path}/`));
+  const isAnyChildActive = subItems?.some(item => isPathActive(item.path, currentPath, subPaths));
   const active = isActive || (!collapsed && isAnyChildActive);
 
   const handleClick = (e: React.MouseEvent): void => {
@@ -98,7 +114,7 @@ export const SidebarNavItem = ({
           )}
         >
           {subItems.map((subItem, idx) => {
-            const isSubActive = currentPath === subItem.path || (subItem.path !== "/" && currentPath.startsWith(`${subItem.path}/`));
+            const isSubActive = isPathActive(subItem.path, currentPath, subPaths);
             return (
               <a
                 key={idx}
@@ -127,3 +143,4 @@ export const SidebarNavItem = ({
     </>
   );
 };
+

@@ -88,9 +88,9 @@ const sampleGroups = [
         path: "/settings",
         icon: Settings,
         subItems: [
-          { label: "Vue Générale", path: "/dashboard/overview" },
-          { label: "Statistiques", path: "/dashboard/stats", badge: 3 },
-          { label: "Rapports", path: "/dashboard/reports" },
+          { label: "Vue Générale", path: "/settings/overview" },
+          { label: "Statistiques", path: "/settings/stats", badge: 3 },
+          { label: "Rapports", path: "/settings/reports" },
         ],
       },
     ],
