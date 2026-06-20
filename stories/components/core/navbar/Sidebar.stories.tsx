@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import * as React from "react";
 import { Sidebar, SidebarProps } from "../../../../src/components/core/navbar/Sidebar";
+import { SidebarHeader } from "../../../../src/components/core/navbar/SidebarHeader";
 import { SidebarProvider } from "../../../../src/providers/SidebarProvider";
 import { Calendar, Home, Inbox, FileText, Settings, Users, LayoutDashboard, LogOut, Zap, ChevronsUpDown, Building2, Check, Shield } from "lucide-react";
 import { cn } from "../../../../src/helpers/tailwind.helper";
@@ -112,9 +113,9 @@ export const Default: Story = {
   render: args => <InteractiveSidebar {...args} />,
   args: {
     groups: sampleGroups,
-    appIcon: Shield,
-    appName: "Appname",
-    appSubName: "Subname",
+    slots: {
+      header: <SidebarHeader name="Appname" subName="Subname" icon={Shield} />,
+    },
   },
 };
 
@@ -130,9 +131,6 @@ export const Dense: Story = {
   args: {
     ...Default.args,
     dense: true,
-    appName: "eva",
-    appSubName: "",
-    appIcon: Building2,
     groups: [
       {
         items: [
@@ -144,18 +142,21 @@ export const Dense: Story = {
         ],
       },
     ],
-    footerNode: (
-      <div className="flex flex-col gap-1">
-        <div className="flex items-center gap-2.5 text-sidebar-muted hover:text-sidebar-foreground cursor-pointer transition-colors duration-200 px-1 py-1.5 text-sm">
-          <Inbox className="size-4 flex-shrink-0" />
-          <span className="font-medium">Nouvel achat</span>
+    slots: {
+      header: <SidebarHeader name="eva" subName="" icon={Building2} dense />,
+      footer: (
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center gap-2.5 text-sidebar-muted hover:text-sidebar-foreground cursor-pointer transition-colors duration-200 px-1 py-1.5 text-sm">
+            <Inbox className="size-4 flex-shrink-0" />
+            <span className="font-medium">Nouvel achat</span>
+          </div>
+          <div className="flex items-center gap-2.5 text-sidebar-muted hover:text-sidebar-foreground cursor-pointer transition-colors duration-200 px-1 py-1.5 text-sm">
+            <LogOut className="size-4 flex-shrink-0" />
+            <span className="font-medium">Déconnexion</span>
+          </div>
         </div>
-        <div className="flex items-center gap-2.5 text-sidebar-muted hover:text-sidebar-foreground cursor-pointer transition-colors duration-200 px-1 py-1.5 text-sm">
-          <LogOut className="size-4 flex-shrink-0" />
-          <span className="font-medium">Déconnexion</span>
-        </div>
-      </div>
-    ),
+      ),
+    },
   },
 };
 
@@ -164,11 +165,11 @@ export const DenseWithGroups: Story = {
   args: {
     ...Default.args,
     dense: true,
-    appName: "eva",
-    appSubName: "Espace de gestion",
-    appIcon: Building2,
     groups: sampleGroups,
-    footerNode: Dense.args?.footerNode,
+    slots: {
+      header: <SidebarHeader name="eva" subName="Espace de gestion" icon={Building2} dense />,
+      footer: Dense.args?.slots?.footer,
+    },
   },
 };
 
@@ -231,11 +232,11 @@ export const DenseWithSubItems: Story = {
   args: {
     ...Default.args,
     dense: true,
-    appName: "eva",
-    appSubName: "Espace de gestion",
-    appIcon: Building2,
     groups: sampleGroupsWithSubItems,
-    footerNode: Dense.args?.footerNode,
+    slots: {
+      header: <SidebarHeader name="eva" subName="Espace de gestion" icon={Building2} dense />,
+      footer: Dense.args?.slots?.footer,
+    },
   },
 };
 
@@ -243,15 +244,18 @@ export const WithFooter: Story = {
   render: args => <InteractiveSidebar {...args} />,
   args: {
     ...Default.args,
-    footerNode: (
-      <div
-        className="flex items-center gap-3 text-sidebar-muted hover:text-sidebar-foreground cursor-pointer transition-colors duration-200"
-        title="Déconnexion"
-      >
-        <LogOut className="size-5 flex-shrink-0" />
-        <span className="font-medium whitespace-nowrap overflow-hidden">Déconnexion</span>
-      </div>
-    ),
+    slots: {
+      ...Default.args?.slots,
+      footer: (
+        <div
+          className="flex items-center gap-3 text-sidebar-muted hover:text-sidebar-foreground cursor-pointer transition-colors duration-200"
+          title="Déconnexion"
+        >
+          <LogOut className="size-5 flex-shrink-0" />
+          <span className="font-medium whitespace-nowrap overflow-hidden">Déconnexion</span>
+        </div>
+      ),
+    },
   },
 };
 
@@ -259,8 +263,7 @@ export const Searchable: Story = {
   render: args => <InteractiveSidebar {...args} />,
   args: {
     ...Default.args,
-    searchable: true,
-    searchPlaceholder: "Rechercher une page...",
+    search: { enabled: true, placeholder: "Rechercher une page..." },
   },
 };
 
@@ -276,9 +279,9 @@ export const WithCustomIcon: Story = {
   render: args => <InteractiveSidebar {...args} />,
   args: {
     ...Default.args,
-    appName: "Krosoft Energy",
-    appSubName: "Gestion réseau",
-    appIcon: Zap,
+    slots: {
+      header: <SidebarHeader name="Krosoft Energy" subName="Gestion réseau" icon={Zap} />,
+    },
   },
 };
 
@@ -286,11 +289,13 @@ export const WithCustomHeader: Story = {
   render: args => <InteractiveSidebar {...args} />,
   args: {
     ...Default.args,
-    headerNode: (
-      <div className="flex items-center justify-center h-16 md:h-20 bg-primary/10 border-b border-sidebar-border mx-4 rounded-xl mt-4 mb-2">
-        <span className="font-bold text-primary tracking-widest uppercase">Custom Header</span>
-      </div>
-    ),
+    slots: {
+      header: (
+        <div className="flex items-center justify-center h-16 md:h-20 bg-primary/10 border-b border-sidebar-border mx-4 rounded-xl mt-4 mb-2">
+          <span className="font-bold text-primary tracking-widest uppercase">Custom Header</span>
+        </div>
+      ),
+    },
   },
 };
 
@@ -378,7 +383,7 @@ const InteractiveSidebarWithSelector = ({ defaultCollapsed = false, ...args }: S
         <Sidebar
           {...args}
           currentPath={currentPath}
-          headerNode={InstanceSelector}
+          slots={{ header: InstanceSelector }}
           onItemClick={path => {
             setCurrentPath(path);
           }}

@@ -8,12 +8,18 @@ import { Sheet, SheetContent, SheetTitle, SheetDescription } from "../../ui/shee
 import { Input } from "../../ui/input";
 import { Skeleton } from "../../ui/skeleton";
 
+export interface SidebarSubItem {
+  label: string;
+  path: string;
+  badge?: number;
+}
+
 export interface SidebarItem {
   icon: React.ElementType;
   label: string;
   path?: string;
   badge?: number;
-  subItems?: { label: string; path: string; badge?: number }[];
+  subItems?: SidebarSubItem[];
 }
 
 export interface SidebarGroup {
@@ -21,36 +27,36 @@ export interface SidebarGroup {
   items: SidebarItem[];
 }
 
-export interface SidebarProps {
-  groups: SidebarGroup[];
-  onItemClick: (path: string) => void;
-  currentPath: string;
-  appName?: string;
-  appSubName?: string;
-  appIcon?: React.ElementType;
-  headerNode?: React.ReactNode;
-  footerNode?: React.ReactNode;
-  loading?: boolean;
-  searchable?: boolean;
-  searchPlaceholder?: string;
-  dense?: boolean;
+export interface SidebarSlots {
+  header?: React.ReactNode;
+  footer?: React.ReactNode;
 }
 
-export const Sidebar = ({
-  groups,
-  onItemClick,
-  currentPath,
-  appName = "appname",
-  appSubName = "appsubname",
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  appIcon: AppIcon,
-  headerNode,
-  footerNode,
-  loading = false,
-  searchable = false,
-  searchPlaceholder = "Rechercher...",
-  dense = false,
-}: SidebarProps): React.ReactElement => {
+export interface SidebarSearch {
+  enabled?: boolean;
+  placeholder?: string;
+}
+
+export interface SidebarProps {
+  // Navigation — cœur, requis
+  groups: SidebarGroup[];
+  currentPath: string;
+  onItemClick: (path: string) => void;
+
+  // Composition
+  slots?: SidebarSlots;
+
+  // Recherche
+  search?: SidebarSearch;
+
+  // Apparence
+  dense?: boolean;
+  loading?: boolean;
+}
+
+export const Sidebar = ({ groups, currentPath, onItemClick, slots, search, dense = false, loading = false }: SidebarProps): React.ReactElement => {
+  const { enabled: searchable = false, placeholder: searchPlaceholder = "Rechercher..." } = search ?? {};
+  const { header: headerNode, footer: footerNode } = slots ?? {};
   const { collapsed, isMobile, setCollapsed } = useSidebar();
   const [query, setQuery] = React.useState("");
 
@@ -82,21 +88,7 @@ export const Sidebar = ({
   const sidebarContent = (
     <div className="flex flex-col h-full bg-sidebar text-sidebar-foreground">
       {/* Header */}
-      {headerNode ?? (
-        <div className={cn("flex items-center flex-shrink-0 gap-3 px-4", dense ? "h-14" : "h-16 md:h-20", isCollapsed ? "justify-center" : "")}>
-          {AppIcon !== undefined && (
-            <div className="flex-shrink-0 text-sidebar-foreground">
-              <AppIcon className={dense ? "size-5" : "size-6"} />
-            </div>
-          )}
-          {!isCollapsed && (
-            <div className="flex flex-col">
-              <h1 className={cn("font-bold text-sidebar-foreground leading-tight", dense ? "text-base" : "text-lg")}>{appName}</h1>
-              <span className={cn("text-sidebar-muted font-medium", dense ? "text-[11px]" : "text-xs")}>{appSubName}</span>
-            </div>
-          )}
-        </div>
-      )}
+      {headerNode}
 
       {/* Search */}
       {searchable && !isCollapsed && (

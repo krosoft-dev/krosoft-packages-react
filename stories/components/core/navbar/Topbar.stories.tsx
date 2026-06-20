@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import * as React from "react";
 import { Topbar, TopbarProps } from "../../../../src/components/core/navbar/Topbar";
 import { Sidebar } from "../../../../src/components/core/navbar/Sidebar";
+import { SidebarHeader } from "../../../../src/components/core/navbar/SidebarHeader";
 import { SidebarProvider } from "../../../../src/providers/SidebarProvider";
 import { Home, Settings, Users, SearchIcon, SunIcon, MoonIcon, BellIcon, Shield } from "lucide-react";
 import { Button } from "../../../../src/components/ui/button";
@@ -111,9 +112,7 @@ const InteractiveWithSidebar = (args: TopbarProps): React.ReactElement => {
             setCurrentPath(path);
           }}
           currentPath={currentPath}
-          appIcon={Shield}
-          appName="Krosoft"
-          appSubName="CRM"
+          slots={{ header: <SidebarHeader name="Krosoft" subName="CRM" icon={Shield} /> }}
         />
 
         {/* La Topbar */}
@@ -132,7 +131,9 @@ const InteractiveWithSidebar = (args: TopbarProps): React.ReactElement => {
           <div className="p-8 border border-border rounded-xl bg-card shadow-sm">
             <h1 className="text-3xl font-bold text-foreground mb-4">Layout Complet</h1>
             <p className="text-muted-foreground text-lg mb-6">La Topbar et la Sidebar sont maintenant parfaitement synchronisées.</p>
-            <div className="bg-primary/10 text-primary px-4 py-3 rounded-lg border border-primary/20 inline-block font-medium">Route active : {currentPath}</div>
+            <div className="bg-primary/10 text-primary px-4 py-3 rounded-lg border border-primary/20 inline-block font-medium">
+              Route active : {currentPath}
+            </div>
             <p className="mt-6 text-sm text-muted-foreground">
               Note: La Topbar étant en `fixed` et la Sidebar en statique (`flex-col`), le contenu principal prend naturellement l&apos;espace restant grâce à
               `flex-1`. La largeur de la Topbar s&apos;ajuste dynamiquement pour ne pas recouvrir la Sidebar.

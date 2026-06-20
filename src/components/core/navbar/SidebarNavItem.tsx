@@ -23,13 +23,13 @@ export const SidebarNavItem = ({
   dense = false,
   onItemClick,
 }: SidebarNavItemProps): React.ReactElement => {
-  const [isOpen, setIsOpen] = React.useState(subItems?.some(item => currentPath === item.path || currentPath.startsWith(`${item.path}/`)) || false);
+  const [isOpen, setIsOpen] = React.useState(subItems?.some(item => currentPath === item.path || currentPath.startsWith(`${item.path}/`)) ?? false);
 
   const isActive = path ? currentPath === path || (path !== "/" && currentPath.startsWith(`${path}/`)) : false;
   const isAnyChildActive = subItems?.some(item => currentPath === item.path || currentPath.startsWith(`${item.path}/`));
   const active = isActive || (!collapsed && isAnyChildActive);
 
-  const handleClick = (e: React.MouseEvent) => {
+  const handleClick = (e: React.MouseEvent): void => {
     e.preventDefault();
     if (subItems && subItems.length > 0) {
       if (!collapsed) {
@@ -46,7 +46,7 @@ export const SidebarNavItem = ({
 
   const content = (
     <a
-      href={path || "#"}
+      href={path ?? "#"}
       onClick={handleClick}
       className={cn(
         "flex items-center cursor-pointer transition-all duration-200 group",

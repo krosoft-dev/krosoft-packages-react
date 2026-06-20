@@ -57,7 +57,7 @@ describe("Sidebar", () => {
   });
 
   it("filtre les items quand searchable est actif", () => {
-    renderSidebar({ searchable: true });
+    renderSidebar({ search: { enabled: true } });
 
     const input = screen.getByPlaceholderText("Rechercher...");
     fireEvent.change(input, { target: { value: "mess" } });
@@ -68,7 +68,7 @@ describe("Sidebar", () => {
   });
 
   it("masque les groupes vides après filtrage", () => {
-    renderSidebar({ searchable: true });
+    renderSidebar({ search: { enabled: true } });
 
     const input = screen.getByPlaceholderText("Rechercher...");
     fireEvent.change(input, { target: { value: "utilisat" } });
