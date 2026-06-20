@@ -2,6 +2,9 @@ import * as React from "react";
 import { TooltipProvider } from "../../ui/tooltip";
 import { cn } from "@/helpers/tailwind.helper";
 import { SidebarNavItem } from "./SidebarNavItem";
+import { useMobile } from "@/hooks";
+import { Sheet, SheetContent, SheetTitle, SheetDescription } from "../../ui/sheet";
+import { SidebarContext } from "@/contexts/sidebar.context";
 
 export interface SidebarItem {
   icon: React.ElementType;
@@ -18,10 +21,6 @@ export interface SidebarGroup {
 
 export interface SidebarProps {
   groups: SidebarGroup[];
-  collapsed: boolean;
-  mobileOpen: boolean;
-  isMobile: boolean;
-  onMobileClose: () => void;
   onItemClick: (path: string) => void;
   currentPath: string;
   appName?: string;
@@ -33,10 +32,6 @@ export interface SidebarProps {
 
 export const Sidebar = ({
   groups,
-  collapsed,
-  mobileOpen,
-  isMobile,
-  onMobileClose,
   onItemClick,
   currentPath,
   appName = "appname",
@@ -45,63 +40,92 @@ export const Sidebar = ({
   headerNode,
   footerNode,
 }: SidebarProps): React.ReactElement => {
+  const context = React.useContext(SidebarContext);
+  const localIsMobile = useMobile();
+  const isMobile = context ? context.isMobile : localIsMobile;
+
+  if (!context) {
+    throw new Error("useSidebar must be used within a SidebarProvider.");
+  }
+
+  const isCollapsed = isMobile ? false : context.collapsed;
+  const isMobileOpen = !context.collapsed;
+  const setCollapsedState = context.setCollapsed;
+
   const handleItemClick = (path: string): void => {
     onItemClick(path);
     if (isMobile) {
-      onMobileClose();
+      setCollapsedState(true);
     }
   };
+
+  const sidebarContent = (
+    <div className="flex flex-col h-full bg-sidebar text-sidebar-foreground">
+      {/* Header */}
+      {headerNode ?? (
+        <div className={cn("flex items-center h-16 md:h-20 flex-shrink-0 gap-3 px-4", isCollapsed ? "justify-center" : "")}>
+          {AppIcon !== undefined && (
+            <div className="flex-shrink-0 text-sidebar-foreground">
+              <AppIcon className="size-6" />
+            </div>
+          )}
+          {!isCollapsed && (
+            <div className="flex flex-col">
+              <h1 className="font-bold text-lg text-sidebar-foreground leading-tight">{appName}</h1>
+              <span className="text-xs text-sidebar-muted font-medium">{appSubName}</span>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Navigation Groups */}
+      <div className="flex-1 overflow-y-auto py-4 px-2 scrollbar-modern">
+        {groups.map((group, groupIdx) => (
+          <div key={groupIdx} className="mb-6">
+            {!isCollapsed && group.title !== undefined && group.title !== "" && (
+              <h3 className="px-4 mb-2 text-xs uppercase tracking-wider font-semibold text-sidebar-muted">{group.title}</h3>
+            )}
+            <nav className="flex flex-col gap-1">
+              {group.items.map((item, itemIdx) => (
+                <SidebarNavItem key={itemIdx} {...item} currentPath={currentPath} collapsed={isCollapsed} onItemClick={handleItemClick} />
+              ))}
+            </nav>
+          </div>
+        ))}
+      </div>
+
+      {/* Footer */}
+      {footerNode && <div className={cn("p-4 border-t border-sidebar-border", isCollapsed ? "flex justify-center" : "")}>{footerNode}</div>}
+    </div>
+  );
+
+  if (isMobile) {
+    return (
+      <Sheet
+        open={isMobileOpen}
+        onOpenChange={open => {
+          setCollapsedState(!open);
+        }}
+      >
+        <SheetContent side="left" className="w-[16rem] p-0 bg-sidebar border-r border-sidebar-border overflow-hidden [&>button]:text-sidebar-foreground">
+          <SheetTitle className="sr-only">Menu de navigation</SheetTitle>
+          <SheetDescription className="sr-only">Navigation principale de l&apos;application</SheetDescription>
+          {sidebarContent}
+        </SheetContent>
+      </Sheet>
+    );
+  }
 
   return (
     <TooltipProvider delayDuration={0}>
       <aside
-        className={cn(
-          "flex flex-col bg-sidebar h-screen transition-all duration-300",
-          collapsed ? "w-[--navbar-width-icon]" : "w-[--navbar-width]",
-          isMobile && !mobileOpen ? "hidden" : "flex",
-        )}
+        className={cn("flex flex-col bg-sidebar h-screen transition-all duration-300", isCollapsed ? "w-[--navbar-width-icon]" : "w-[--navbar-width]", "flex")}
         style={{
           ["--navbar-width" as string]: "16rem",
           ["--navbar-width-icon" as string]: "5rem",
         }}
       >
-        {/* Header */}
-        {headerNode ? (
-          headerNode
-        ) : (
-          <div className={cn("flex items-center h-16 md:h-20 flex-shrink-0 gap-3 px-4", collapsed ? "justify-center" : "")}>
-            {AppIcon !== undefined && (
-              <div className="flex-shrink-0 text-sidebar-foreground">
-                <AppIcon className="size-6" />
-              </div>
-            )}
-            {!collapsed && (
-              <div className="flex flex-col">
-                <h1 className="font-bold text-lg text-sidebar-foreground leading-tight">{appName}</h1>
-                <span className="text-xs text-sidebar-muted font-medium">{appSubName}</span>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Navigation Groups */}
-        <div className="flex-1 overflow-y-auto py-4 px-2 scrollbar-modern">
-          {groups.map((group, groupIdx) => (
-            <div key={groupIdx} className="mb-6">
-              {!collapsed && group.title !== undefined && group.title !== "" && (
-                <h3 className="px-4 mb-2 text-xs uppercase tracking-wider font-semibold text-sidebar-muted">{group.title}</h3>
-              )}
-              <nav className="flex flex-col gap-1">
-                {group.items.map((item, itemIdx) => (
-                  <SidebarNavItem key={itemIdx} {...item} currentPath={currentPath} collapsed={collapsed} onItemClick={handleItemClick} />
-                ))}
-              </nav>
-            </div>
-          ))}
-        </div>
-
-        {/* Footer */}
-        {footerNode && <div className={cn("p-4 border-t border-sidebar-border", collapsed ? "flex justify-center" : "")}>{footerNode}</div>}
+        {sidebarContent}
       </aside>
     </TooltipProvider>
   );
