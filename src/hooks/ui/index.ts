@@ -1,4 +1,5 @@
 export { useDataTable } from "./useDataTable";
+export { useDocumentTitle } from "./useDocumentTitle";
 export { useMobile } from "./useMobile";
 export { useNotifications } from "./useNotifications";
 export type { UseNotificationsResult } from "./useNotifications";

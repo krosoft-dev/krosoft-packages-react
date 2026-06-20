@@ -1,17 +1,17 @@
 import { Button } from "@/components/ui";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { cn } from "@/helpers/tailwind.helper";
-import { useMobile } from "../../../hooks/ui/useMobile";
+import { AppAction } from "@/types/AppAction";
 import { MoreVerticalIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { AppAction } from "@/types/AppAction";
+import { useMobile } from "@/hooks/ui/useMobile";
 
-export interface AppPageHeaderProps {
+export interface AppActionsProps {
   actions?: AppAction[];
   className?: string;
 }
 
-export function AppActions({ actions, className }: AppPageHeaderProps): React.JSX.Element | null {
+export function AppActions({ actions, className }: AppActionsProps): React.JSX.Element | null {
   const { t } = useTranslation();
   const isMobile = useMobile();
 
