@@ -6,9 +6,7 @@ import { SidebarProvider } from "../../../../src/providers/SidebarProvider";
 import { Calendar, Home, Inbox, FileText, Settings, Users, LayoutDashboard, LogOut, Zap, ChevronsUpDown, Building2, Check, Shield } from "lucide-react";
 import { cn } from "../../../../src/helpers/tailwind.helper";
 
-type SidebarStoryProps = SidebarProps & { collapsed?: boolean };
-
-const meta: Meta<SidebarStoryProps> = {
+const meta: Meta<typeof Sidebar> = {
   title: "Core/Navbar/Sidebar",
   component: Sidebar,
   tags: ["autodocs"],
@@ -18,7 +16,7 @@ const meta: Meta<SidebarStoryProps> = {
 };
 
 export default meta;
-type Story = StoryObj<SidebarStoryProps>;
+type Story = StoryObj<typeof Sidebar>;
 
 // 2 groupes de menus distincts comme demandé
 const sampleGroups = [
