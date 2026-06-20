@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import * as React from "react";
-import { Sidebar, SidebarProvider, SidebarProps } from "../../../../src/components/core/navbar/Sidebar";
+import { Sidebar, SidebarProps } from "../../../../src/components/core/navbar/Sidebar";
+import { SidebarHeader } from "../../../../src/components/core/navbar/SidebarHeader";
+import { SidebarProvider } from "../../../../src/providers/SidebarProvider";
 import { Calendar, Home, Inbox, FileText, Settings, Users, LayoutDashboard, LogOut, Zap, ChevronsUpDown, Building2, Check, Shield } from "lucide-react";
 import { cn } from "../../../../src/helpers/tailwind.helper";
 
@@ -63,14 +65,9 @@ const sampleGroups = [
   },
 ];
 
-const InteractiveSidebar = (args: SidebarStoryProps): React.ReactElement => {
+const InteractiveSidebar = ({ defaultCollapsed = false, ...args }: SidebarProps & { defaultCollapsed?: boolean }): React.ReactElement => {
   const [currentPath, setCurrentPath] = React.useState("/home");
-  const [collapsed, setCollapsed] = React.useState(args.collapsed ?? false);
-
-  // Permet de réagir si on change la prop "collapsed" depuis les contrôles Storybook
-  React.useEffect(() => {
-    setCollapsed(args.collapsed ?? false);
-  }, [args.collapsed]);
+  const [collapsed, setCollapsed] = React.useState(defaultCollapsed);
 
   return (
     <SidebarProvider collapsed={collapsed} onCollapsedChange={setCollapsed}>
@@ -118,18 +115,63 @@ export const Default: Story = {
   render: args => <InteractiveSidebar {...args} />,
   args: {
     groups: sampleGroups,
-    appIcon: Shield,
-    appName: "Appname",
-    appSubName: "Subname",
-    collapsed: false,
+    slots: {
+      header: <SidebarHeader name="Appname" subName="Subname" icon={Shield} />,
+    },
   },
 };
 
 export const Collapsed: Story = {
+  render: args => <InteractiveSidebar {...args} defaultCollapsed />,
+  args: {
+    ...Default.args,
+  },
+};
+
+export const Dense: Story = {
   render: args => <InteractiveSidebar {...args} />,
   args: {
     ...Default.args,
-    collapsed: true,
+    dense: true,
+    groups: [
+      {
+        items: [
+          { label: "Dashboard", path: "/home", icon: LayoutDashboard },
+          { label: "Achats", path: "/achats", icon: Inbox },
+          { label: "Statistiques", path: "/stats", icon: Calendar },
+          { label: "Importer", path: "/import", icon: FileText },
+          { label: "Annonces", path: "/annonces", icon: Zap },
+        ],
+      },
+    ],
+    slots: {
+      header: <SidebarHeader name="eva" subName="" icon={Building2} dense />,
+      footer: (
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center gap-2.5 text-sidebar-muted hover:text-sidebar-foreground cursor-pointer transition-colors duration-200 px-1 py-1.5 text-sm">
+            <Inbox className="size-4 flex-shrink-0" />
+            <span className="font-medium">Nouvel achat</span>
+          </div>
+          <div className="flex items-center gap-2.5 text-sidebar-muted hover:text-sidebar-foreground cursor-pointer transition-colors duration-200 px-1 py-1.5 text-sm">
+            <LogOut className="size-4 flex-shrink-0" />
+            <span className="font-medium">Déconnexion</span>
+          </div>
+        </div>
+      ),
+    },
+  },
+};
+
+export const DenseWithGroups: Story = {
+  render: args => <InteractiveSidebar {...args} />,
+  args: {
+    ...Default.args,
+    dense: true,
+    groups: sampleGroups,
+    slots: {
+      header: <SidebarHeader name="eva" subName="Espace de gestion" icon={Building2} dense />,
+      footer: Dense.args?.slots?.footer,
+    },
   },
 };
 
@@ -187,19 +229,51 @@ export const WithSubItems: Story = {
   },
 };
 
+export const DenseWithSubItems: Story = {
+  render: args => <InteractiveSidebar {...args} />,
+  args: {
+    ...Default.args,
+    dense: true,
+    groups: sampleGroupsWithSubItems,
+    slots: {
+      header: <SidebarHeader name="eva" subName="Espace de gestion" icon={Building2} dense />,
+      footer: Dense.args?.slots?.footer,
+    },
+  },
+};
+
 export const WithFooter: Story = {
   render: args => <InteractiveSidebar {...args} />,
   args: {
     ...Default.args,
-    footerNode: (
-      <div
-        className="flex items-center gap-3 text-sidebar-muted hover:text-sidebar-foreground cursor-pointer transition-colors duration-200"
-        title="Déconnexion"
-      >
-        <LogOut className="size-5 flex-shrink-0" />
-        <span className="font-medium whitespace-nowrap overflow-hidden">Déconnexion</span>
-      </div>
-    ),
+    slots: {
+      ...Default.args?.slots,
+      footer: (
+        <div
+          className="flex items-center gap-3 text-sidebar-muted hover:text-sidebar-foreground cursor-pointer transition-colors duration-200"
+          title="Déconnexion"
+        >
+          <LogOut className="size-5 flex-shrink-0" />
+          <span className="font-medium whitespace-nowrap overflow-hidden">Déconnexion</span>
+        </div>
+      ),
+    },
+  },
+};
+
+export const Searchable: Story = {
+  render: args => <InteractiveSidebar {...args} />,
+  args: {
+    ...Default.args,
+    search: { enabled: true, placeholder: "Rechercher une page..." },
+  },
+};
+
+export const Loading: Story = {
+  render: args => <InteractiveSidebar {...args} />,
+  args: {
+    ...Default.args,
+    loading: true,
   },
 };
 
@@ -207,9 +281,9 @@ export const WithCustomIcon: Story = {
   render: args => <InteractiveSidebar {...args} />,
   args: {
     ...Default.args,
-    appName: "Krosoft Energy",
-    appSubName: "Gestion réseau",
-    appIcon: Zap,
+    slots: {
+      header: <SidebarHeader name="Krosoft Energy" subName="Gestion réseau" icon={Zap} />,
+    },
   },
 };
 
@@ -217,11 +291,13 @@ export const WithCustomHeader: Story = {
   render: args => <InteractiveSidebar {...args} />,
   args: {
     ...Default.args,
-    headerNode: (
-      <div className="flex items-center justify-center h-16 md:h-20 bg-primary/10 border-b border-sidebar-border mx-4 rounded-xl mt-4 mb-2">
-        <span className="font-bold text-primary tracking-widest uppercase">Custom Header</span>
-      </div>
-    ),
+    slots: {
+      header: (
+        <div className="flex items-center justify-center h-16 md:h-20 bg-primary/10 border-b border-sidebar-border mx-4 rounded-xl mt-4 mb-2">
+          <span className="font-bold text-primary tracking-widest uppercase">Custom Header</span>
+        </div>
+      ),
+    },
   },
 };
 
@@ -231,20 +307,18 @@ const instances = [
   { id: "3", name: "Stark Industries", subName: "Instance de développement" },
 ];
 
-const InteractiveSidebarWithSelector = (args: SidebarStoryProps): React.ReactElement => {
+const InteractiveSidebarWithSelector = ({ defaultCollapsed = false, ...args }: SidebarProps & { defaultCollapsed?: boolean }): React.ReactElement => {
   const [currentPath, setCurrentPath] = React.useState("/home");
-  const [collapsed, setCollapsed] = React.useState(args.collapsed ?? false);
+  const [collapsed, setCollapsed] = React.useState(defaultCollapsed);
   const [isSelectorOpen, setIsSelectorOpen] = React.useState(false);
   const [selectedInstance, setSelectedInstance] = React.useState(instances[0]);
-
-  React.useEffect(() => {
-    setCollapsed(args.collapsed ?? false);
-  }, [args.collapsed]);
 
   const InstanceSelector = (
     <div className={cn("relative flex items-center h-16 md:h-20", collapsed ? "justify-center px-0" : "px-4")}>
       <button
-        onClick={() => setIsSelectorOpen(!isSelectorOpen)}
+        onClick={() => {
+          setIsSelectorOpen(!isSelectorOpen);
+        }}
         className={cn(
           "flex items-center w-full gap-3 rounded-xl hover:bg-sidebar-accent transition-colors duration-200 group text-left",
           collapsed ? "p-2 justify-center" : "p-2 px-3",
@@ -268,7 +342,12 @@ const InteractiveSidebarWithSelector = (args: SidebarStoryProps): React.ReactEle
       {/* Popover/Dropdown Menu */}
       {isSelectorOpen && (
         <>
-          <div className="fixed inset-0 z-40" onClick={() => setIsSelectorOpen(false)} />
+          <div
+            className="fixed inset-0 z-40"
+            onClick={() => {
+              setIsSelectorOpen(false);
+            }}
+          />
           <div
             className={cn(
               "absolute z-50 top-16 md:top-20 bg-card border border-border rounded-xl shadow-lg py-2 min-w-[240px] flex flex-col gap-1",
@@ -306,7 +385,7 @@ const InteractiveSidebarWithSelector = (args: SidebarStoryProps): React.ReactEle
         <Sidebar
           {...args}
           currentPath={currentPath}
-          headerNode={InstanceSelector}
+          slots={{ header: InstanceSelector }}
           onItemClick={path => {
             setCurrentPath(path);
           }}

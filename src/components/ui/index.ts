@@ -138,36 +138,6 @@ export {
 } from "./select";
 export { Separator } from "./separator";
 export { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetOverlay, SheetPortal, SheetTitle, SheetTrigger } from "./sheet";
-// export {
-//   Sidebar,
-//   SidebarContent,
-//   SidebarFooter,
-//   SidebarGroup,
-//   SidebarGroupAction,
-//   SidebarGroupContent,
-//   SidebarGroupLabel,
-//   SidebarHeader,
-//   SidebarInput,
-//   SidebarInset,
-//   SidebarMenu,
-//   SidebarMenuAction,
-//   SidebarMenuBadge,
-//   SidebarMenuButton,
-//   SidebarMenuItem,
-//   SidebarMenuSkeleton,
-//   SidebarMenuSub,
-//   SidebarMenuSubButton,
-//   SidebarMenuSubItem,
-//   SidebarProvider,
-//   SidebarRail,
-//   SidebarSeparator,
-//   SidebarTrigger,
-//   useSidebar,
-// } from "./sidebar";
-export { Skeleton } from "./skeleton";
-export { Slider } from "./slider";
-export { Toaster as Sonner, toast } from "./sonner";
-export { Switch } from "./switch";
 export {
   SimpleTable,
   SimpleTableBody,
@@ -178,6 +148,10 @@ export {
   SimpleTableHeader,
   SimpleTableRow,
 } from "./simple-table";
+export { Skeleton } from "./skeleton";
+export { Slider } from "./slider";
+export { Toaster as Sonner, toast } from "./sonner";
+export { Switch } from "./switch";
 export { Tabs, TabsContent, TabsList, TabsTrigger } from "./tabs";
 export { Textarea } from "./textarea";
 export { Toast, ToastAction, ToastClose, ToastDescription, ToastProvider, ToastTitle, ToastViewport } from "./toast";

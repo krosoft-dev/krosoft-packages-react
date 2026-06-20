@@ -1,61 +1,25 @@
 import * as React from "react";
+import { SearchIcon } from "lucide-react";
 import { TooltipProvider } from "../../ui/tooltip";
 import { cn } from "@/helpers/tailwind.helper";
 import { SidebarNavItem } from "./SidebarNavItem";
-import { useMobile } from "@/hooks";
+import { useSidebar } from "@/hooks";
 import { Sheet, SheetContent, SheetTitle, SheetDescription } from "../../ui/sheet";
-import { SidebarContext } from "./useSidebar";
+import { Input } from "../../ui/input";
+import { Skeleton } from "../../ui/skeleton";
 
-export const SidebarProvider = ({
-  children,
-  defaultCollapsed = false,
-  collapsed: collapsedProp,
-  onCollapsedChange: setCollapsedProp,
-}: {
-  children: React.ReactNode;
-  defaultCollapsed?: boolean;
-  collapsed?: boolean;
-  onCollapsedChange?: (collapsed: boolean) => void;
-}): React.JSX.Element => {
-  const isMobile = useMobile();
-  const [_collapsed, _setCollapsed] = React.useState(defaultCollapsed);
-
-  const collapsed = collapsedProp ?? _collapsed;
-  const setCollapsed = React.useCallback(
-    (value: boolean | ((value: boolean) => boolean)) => {
-      const collapsedState = typeof value === "function" ? value(collapsed) : value;
-      if (setCollapsedProp) {
-        setCollapsedProp(collapsedState);
-      } else {
-        _setCollapsed(collapsedState);
-      }
-    },
-    [setCollapsedProp, collapsed],
-  );
-
-  const toggleSidebar = React.useCallback(() => {
-    setCollapsed(c => !c);
-  }, [setCollapsed]);
-
-  const contextValue = React.useMemo<SidebarContext>(
-    () => ({
-      collapsed,
-      setCollapsed,
-      isMobile,
-      toggleSidebar,
-    }),
-    [collapsed, setCollapsed, isMobile, toggleSidebar],
-  );
-
-  return <SidebarContext.Provider value={contextValue}>{children}</SidebarContext.Provider>;
-};
+export interface SidebarSubItem {
+  label: string;
+  path: string;
+  badge?: number;
+}
 
 export interface SidebarItem {
   icon: React.ElementType;
   label: string;
   path?: string;
   badge?: number;
-  subItems?: { label: string; path: string; badge?: number }[];
+  subItems?: SidebarSubItem[];
 }
 
 export interface SidebarGroup {
@@ -63,83 +27,115 @@ export interface SidebarGroup {
   items: SidebarItem[];
 }
 
-export interface SidebarProps {
-  groups: SidebarGroup[];
-  onItemClick: (path: string) => void;
-  currentPath: string;
-  appName?: string;
-  appSubName?: string;
-  appIcon?: React.ElementType;
-  headerNode?: React.ReactNode;
-  footerNode?: React.ReactNode;
+export interface SidebarSlots {
+  header?: React.ReactNode;
+  footer?: React.ReactNode;
 }
 
-export const Sidebar = ({
-  groups,
-  onItemClick,
-  currentPath,
-  appName = "appname",
-  appSubName = "appsubname",
-  appIcon: AppIcon,
-  headerNode,
-  footerNode,
-}: SidebarProps): React.ReactElement => {
-  const context = React.useContext(SidebarContext);
-  const localIsMobile = useMobile();
-  const isMobile = context ? context.isMobile : localIsMobile;
+export interface SidebarSearch {
+  enabled?: boolean;
+  placeholder?: string;
+}
 
-  if (!context) {
-    throw new Error("useSidebar must be used within a SidebarProvider.");
-  }
+export interface SidebarProps {
+  // Navigation — cœur, requis
+  groups: SidebarGroup[];
+  currentPath: string;
+  onItemClick: (path: string) => void;
 
-  const isCollapsed = isMobile ? false : context.collapsed;
-  const isMobileOpen = !context.collapsed;
-  const setCollapsedState = context.setCollapsed;
+  // Composition
+  slots?: SidebarSlots;
+
+  // Recherche
+  search?: SidebarSearch;
+
+  // Apparence
+  dense?: boolean;
+  loading?: boolean;
+}
+
+export const Sidebar = ({ groups, currentPath, onItemClick, slots, search, dense = false, loading = false }: SidebarProps): React.ReactElement => {
+  const { enabled: searchable = false, placeholder: searchPlaceholder = "Rechercher..." } = search ?? {};
+  const { header: headerNode, footer: footerNode } = slots ?? {};
+  const { collapsed, isMobile, setCollapsed } = useSidebar();
+  const [query, setQuery] = React.useState("");
+
+  const isCollapsed = isMobile ? false : collapsed;
+  const isMobileOpen = !collapsed;
 
   const handleItemClick = (path: string): void => {
     onItemClick(path);
     if (isMobile) {
-      setCollapsedState(true);
+      setCollapsed(true);
     }
   };
+
+  const normalizedQuery = query.trim().toLowerCase();
+  const filteredGroups =
+    normalizedQuery === ""
+      ? groups
+      : groups
+          .map(group => ({
+            ...group,
+            items: group.items.filter(
+              item =>
+                item.label.toLowerCase().includes(normalizedQuery) ||
+                (item.subItems?.some(subItem => subItem.label.toLowerCase().includes(normalizedQuery)) ?? false),
+            ),
+          }))
+          .filter(group => group.items.length > 0);
 
   const sidebarContent = (
     <div className="flex flex-col h-full bg-sidebar text-sidebar-foreground">
       {/* Header */}
-      {headerNode ?? (
-        <div className={cn("flex items-center h-16 md:h-20 flex-shrink-0 gap-3 px-4", isCollapsed ? "justify-center" : "")}>
-          {AppIcon !== undefined && (
-            <div className="flex-shrink-0 text-sidebar-foreground">
-              <AppIcon className="size-6" />
-            </div>
-          )}
-          {!isCollapsed && (
-            <div className="flex flex-col">
-              <h1 className="font-bold text-lg text-sidebar-foreground leading-tight">{appName}</h1>
-              <span className="text-xs text-sidebar-muted font-medium">{appSubName}</span>
-            </div>
-          )}
+      {headerNode}
+
+      {/* Search */}
+      {searchable && !isCollapsed && (
+        <div className={cn("px-4", dense ? "pt-2" : "pt-4")}>
+          <div className="relative">
+            <SearchIcon className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-sidebar-muted" />
+            <Input
+              type="search"
+              value={query}
+              onChange={event => {
+                setQuery(event.target.value);
+              }}
+              placeholder={searchPlaceholder}
+              className={cn(
+                "bg-sidebar-accent/40 border-sidebar-border pl-9 text-sidebar-foreground placeholder:text-sidebar-muted",
+                dense ? "h-8 text-sm" : "h-9",
+              )}
+            />
+          </div>
         </div>
       )}
 
       {/* Navigation Groups */}
-      <div className="flex-1 overflow-y-auto py-4 px-2 scrollbar-modern">
-        {groups.map((group, groupIdx) => (
-          <div key={groupIdx} className="mb-6">
-            {!isCollapsed && group.title !== undefined && group.title !== "" && (
-              <h3 className="px-4 mb-2 text-xs uppercase tracking-wider font-semibold text-sidebar-muted">{group.title}</h3>
-            )}
-            <nav className="flex flex-col gap-1">
-              {group.items.map((item, itemIdx) => (
-                <SidebarNavItem key={itemIdx} {...item} currentPath={currentPath} collapsed={isCollapsed} onItemClick={handleItemClick} />
-              ))}
-            </nav>
-          </div>
-        ))}
+      <div className={cn("flex-1 overflow-y-auto px-2 scrollbar-modern", dense ? "py-2" : "py-4")}>
+        {loading
+          ? Array.from({ length: 5 }).map((_, idx) => (
+              <div key={idx} className={cn("flex items-center gap-3", dense ? "mb-1 h-9" : "mb-2 h-12", isCollapsed ? "justify-center px-3" : "px-4")}>
+                <Skeleton className="size-5 flex-shrink-0 rounded-md" />
+                {!isCollapsed && <Skeleton className="h-4 flex-1" />}
+              </div>
+            ))
+          : filteredGroups.map((group, groupIdx) => (
+              <div key={groupIdx} className={dense ? "mb-3" : "mb-6"}>
+                {!isCollapsed && group.title !== undefined && group.title !== "" && (
+                  <h3 className={cn("px-4 text-xs uppercase tracking-wider font-semibold text-sidebar-muted", dense ? "mb-1" : "mb-2")}>{group.title}</h3>
+                )}
+                <nav className={cn("flex flex-col", dense ? "gap-0.5" : "gap-1")}>
+                  {group.items.map((item, itemIdx) => (
+                    <SidebarNavItem key={itemIdx} {...item} currentPath={currentPath} collapsed={isCollapsed} dense={dense} onItemClick={handleItemClick} />
+                  ))}
+                </nav>
+              </div>
+            ))}
       </div>
 
       {/* Footer */}
-      {footerNode && <div className={cn("p-4 border-t border-sidebar-border", isCollapsed ? "flex justify-center" : "")}>{footerNode}</div>}
+      {footerNode && <div className={cn("border-t border-sidebar-border", dense ? "p-2" : "p-4", isCollapsed ? "flex justify-center" : "")}>{footerNode}</div>}
     </div>
   );
 
@@ -148,7 +144,7 @@ export const Sidebar = ({
       <Sheet
         open={isMobileOpen}
         onOpenChange={open => {
-          setCollapsedState(!open);
+          setCollapsed(!open);
         }}
       >
         <SheetContent side="left" className="w-[16rem] p-0 bg-sidebar border-r border-sidebar-border overflow-hidden [&>button]:text-sidebar-foreground">
@@ -163,7 +159,11 @@ export const Sidebar = ({
   return (
     <TooltipProvider delayDuration={0}>
       <aside
-        className={cn("flex flex-col bg-sidebar h-screen transition-all duration-300", isCollapsed ? "w-[--navbar-width-icon]" : "w-[--navbar-width]", "flex")}
+        className={cn(
+          "flex flex-col bg-sidebar h-screen border-r border-sidebar-border transition-all duration-300",
+          isCollapsed ? "w-[--navbar-width-icon]" : "w-[--navbar-width]",
+          "flex",
+        )}
         style={{
           ["--navbar-width" as string]: "16rem",
           ["--navbar-width-icon" as string]: "5rem",

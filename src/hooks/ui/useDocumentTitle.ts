@@ -1,13 +1,18 @@
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
-export const useDocumentTitle = (title: string, appTitle?: string): void => {
+export const useDocumentTitle = (titleKey: string, suffix?: string, appTitle?: string): void => {
+  const { t } = useTranslation();
   useEffect(() => {
+    const translatedTitle = t(titleKey);
     const previousTitle = document.title;
-    const baseTitle = appTitle || "";
-    document.title = title ? (baseTitle ? `${title} - ${baseTitle}` : title) : baseTitle;
+
+    const titleWithSuffix = suffix ? `${translatedTitle} - ${suffix}` : translatedTitle;
+    const fullTitle = appTitle ? `${titleWithSuffix} | ${appTitle}` : titleWithSuffix;
+    document.title = fullTitle;
 
     return (): void => {
       document.title = previousTitle;
     };
-  }, [title, appTitle]);
+  }, [appTitle, suffix, t, titleKey]);
 };
