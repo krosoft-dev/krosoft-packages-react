@@ -13,7 +13,7 @@ export interface AppPageHeaderProps {
   descriptionKey?: string;
   actions?: AppAction[];
   onBack?: (() => void) | null;
-  renderPreActions?: () => JSX.Element;
+  renderPreActions?: () => React.JSX.Element;
   className?: string;
 }
 
@@ -25,7 +25,7 @@ export function AppPageHeader({
   onBack,
   renderPreActions,
   className,
-}: AppPageHeaderProps): JSX.Element {
+}: AppPageHeaderProps): React.JSX.Element {
   const { t } = useTranslation();
 
   useDocumentTitle(t(titleKey));
