@@ -46,6 +46,10 @@ export const SidebarNavItem = ({
   const active = isActive || (!collapsed && isAnyChildActive);
 
   const handleClick = (e: React.MouseEvent): void => {
+    if (e.ctrlKey || e.metaKey || e.button === 1) {
+      return;
+    }
+
     e.preventDefault();
     if (subItems && subItems.length > 0) {
       if (!collapsed) {
@@ -120,6 +124,9 @@ export const SidebarNavItem = ({
                 key={idx}
                 href={subItem.path}
                 onClick={e => {
+                  if (e.ctrlKey || e.metaKey || e.button === 1) {
+                    return;
+                  }
                   e.preventDefault();
                   onItemClick(subItem.path);
                 }}
