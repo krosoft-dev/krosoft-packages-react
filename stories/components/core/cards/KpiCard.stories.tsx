@@ -51,23 +51,15 @@ export const WithCustomColors: Story = {
   },
 };
 
-export const Grid: StoryObj<typeof KpiCards> = {
-  render: () => (
-    <KpiCards
-      stats={[
-        {
-          titleKey: "total.users",
-          value: 1234,
-          icon: Users,
-          description: "+10% ce mois",
-          onClick: () => {
-            alert("KpiCard cliqué");
-          },
-        },
-        { titleKey: "total.revenue", value: 45678, icon: TrendingUp, description: "+20.1% ce mois" },
-        { titleKey: "orders", value: 573, icon: ShoppingCart, description: "+12 depuis hier" },
-        { titleKey: "alerts", value: 7, icon: AlertCircle, iconClassName: "text-destructive", valueClassName: "text-destructive" },
-      ]}
-    />
-  ),
+export const Loading: Story = {
+  args: {
+    isLoading: true,
+  },
 };
+
+export const WithError: Story = {
+  args: {
+    error: "Impossible de charger les statistiques",
+  },
+};
+

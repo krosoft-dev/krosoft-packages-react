@@ -46,3 +46,16 @@ export const TwoColumns: Story = {
     ],
   },
 };
+
+export const Loading: Story = {
+  args: {
+    isLoading: true,
+  },
+};
+
+export const WithError: Story = {
+  args: {
+    error: "Impossible de charger les statistiques",
+  },
+};
+

@@ -3,6 +3,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { cn } from "@/helpers/tailwind.helper";
 import { Card, CardContent, CardHeader, CardTitle } from "../../ui";
+import { Skeleton } from "../../ui";
 
 export interface KpiCardProps {
   titleKey: string;
@@ -13,6 +14,8 @@ export interface KpiCardProps {
   description?: string;
   descriptionClassName?: string;
   onClick?: () => void;
+  isLoading?: boolean;
+  error?: string | null;
 }
 
 export const KpiCard = ({
@@ -24,6 +27,8 @@ export const KpiCard = ({
   description,
   descriptionClassName,
   onClick,
+  isLoading,
+  error,
 }: KpiCardProps): React.ReactElement => {
   const { t } = useTranslation();
 
@@ -34,8 +39,22 @@ export const KpiCard = ({
         <Icon className={cn("size-6 text-muted-foreground", iconClassName)} />
       </CardHeader>
       <CardContent>
-        <div className={cn("text-2xl font-bold", valueClassName)}>{formatNumber(value)}</div>
-        <p className={cn("text-xs text-muted-foreground", descriptionClassName)}>{description}</p>
+        {isLoading ? (
+          <>
+            <Skeleton className="h-8 w-24 mb-1" />
+            <Skeleton className="h-3 w-32" />
+          </>
+        ) : error ? (
+          <>
+            <div className="text-2xl font-bold text-destructive">—</div>
+            <p className="text-xs text-destructive">{error}</p>
+          </>
+        ) : (
+          <>
+            <div className={cn("text-2xl font-bold", valueClassName)}>{formatNumber(value)}</div>
+            <p className={cn("text-xs text-muted-foreground", descriptionClassName)}>{description}</p>
+          </>
+        )}
       </CardContent>
     </Card>
   );
