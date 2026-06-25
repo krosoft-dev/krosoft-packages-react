@@ -7,7 +7,7 @@ import { Skeleton } from "../../ui";
 
 export interface KpiCardProps {
   titleKey: string;
-  value: number;
+  value: number | string | Date;
   valueClassName?: string;
   icon: React.ElementType;
   iconClassName?: string;
@@ -51,7 +51,9 @@ export const KpiCard = ({
           </>
         ) : (
           <>
-            <div className={cn("text-2xl font-bold", valueClassName)}>{formatNumber(value)}</div>
+            <div className={cn("text-2xl font-bold", valueClassName)}>
+              {typeof value === "number" ? formatNumber(value) : value instanceof Date ? value.toLocaleDateString() : value}
+            </div>
             <p className={cn("text-xs text-muted-foreground", descriptionClassName)}>{description}</p>
           </>
         )}

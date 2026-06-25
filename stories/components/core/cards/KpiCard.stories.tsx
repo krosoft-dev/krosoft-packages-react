@@ -63,3 +63,29 @@ export const WithError: Story = {
   },
 };
 
+export const WithNumberValue: Story = {
+  args: {
+    titleKey: "total.users",
+    value: 1234567,
+    icon: Users,
+    description: "Valeur de type number",
+  },
+};
+
+export const WithStringValue: Story = {
+  args: {
+    titleKey: "status",
+    value: "En ligne",
+    icon: TrendingUp,
+    description: "Valeur de type string",
+  },
+};
+
+export const WithDateValue: Story = {
+  args: {
+    titleKey: "last.update",
+    value: new Date("2026-06-25"),
+    icon: ShoppingCart,
+    description: "Valeur de type Date",
+  },
+};
