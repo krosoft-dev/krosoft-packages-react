@@ -68,7 +68,7 @@ export function AppDialog({ open, onOpenChange, config, isLoading, error, childr
           </div>
         ) : null}
 
-        <div className="flex-1 overflow-y-auto px-6  ">{children}</div>
+        <div className="flex-1 overflow-y-auto px-6 py-4">{children}</div>
 
         {actions !== undefined && actions.length > 0 ? (
           <div className="rounded-b-lg border-t border-gray-200 dark:border-gray-700 shrink-0 p-6 light:bg-gradient-to-r light:from-gray-50 light:to-gray-100 dark:bg-gray-950">
