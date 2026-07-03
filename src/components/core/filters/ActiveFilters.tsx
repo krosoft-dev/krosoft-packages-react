@@ -79,7 +79,7 @@ export function ActiveFilters({ filters, onRemoveFilter, onClearAll, filterLabel
         );
       })}
       {activeFilters.length > 0 && (
-        <button onClick={onClearAll} className="text-xs text-red-500 hover:text-red-600 transition-colors font-medium ml-2">
+        <button onClick={onClearAll} className="text-xs text-red-500 hover:text-red-600 transition-colors font-medium ml-auto">
           Effacer tout
         </button>
       )}

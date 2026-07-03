@@ -1,8 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Button, Label, Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetFooter } from "@/components/ui";
 import { Filter } from "lucide-react";
 import { FilterSection } from "@/types/FilterSection";
 import { FilterField } from "./FilterField";
+
+const isFilterActive = (value: unknown): boolean => {
+  if (value === undefined || value === null || value === "") return false;
+  if (Array.isArray(value) && value.length === 0) return false;
+  return true;
+};
 
 export interface AdvancedFiltersProps<T extends Record<string, unknown> = Record<string, unknown>> {
   sections: FilterSection<T>[];
@@ -49,12 +55,23 @@ export function AdvancedFilters<T extends Record<string, unknown> = Record<strin
     setIsOpen(false);
   };
 
+  // Nombre de critères actifs parmi les champs des sections
+  const activeCount = useMemo(() => {
+    const keys = new Set(sections.flatMap(section => section.filters.map(field => field.key as string)));
+    return Object.entries(filters).filter(([key, value]) => keys.has(key) && isFilterActive(value)).length;
+  }, [sections, filters]);
+
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
         <Button variant="outline" className="gap-2">
           <Filter className="size-4 shrink-0" />
           {buttonText}
+          {activeCount > 0 && (
+            <span className="ml-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-xs font-semibold text-primary-foreground">
+              {activeCount}
+            </span>
+          )}
         </Button>
       </SheetTrigger>
       <SheetContent side="right" className="w-[400px] sm:w-[500px] flex flex-col p-0">

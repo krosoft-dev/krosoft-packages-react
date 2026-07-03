@@ -160,12 +160,12 @@ export function TableFilter<T extends Record<string, unknown> = Record<string, u
               searchPlaceholder={q.searchPlaceholder}
             />
           ))}
-
-          {/* Déclencheur filtres avancés */}
-          {sections.length > 0 && (
-            <AdvancedFilters sections={sections} filters={filters} onFiltersChange={onFiltersChange} buttonText={advancedButtonText} sheetTitle={sheetTitle} />
-          )}
         </div>
+
+        {/* Déclencheur filtres avancés (aligné en bout de ligne) */}
+        {sections.length > 0 && (
+          <AdvancedFilters sections={sections} filters={filters} onFiltersChange={onFiltersChange} buttonText={advancedButtonText} sheetTitle={sheetTitle} />
+        )}
       </div>
 
       {/* Affichage des filtres actifs */}
