@@ -90,7 +90,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@krosoft/core": "^0.0.44",
+    "@krosoft/core": "^0.0.45",
     "@krosoft/tooling-eslint-react": "^0.0.24",
     "@krosoft/tooling-prettier": "^0.0.15",
     "@krosoft/tooling-tsconfig-react": "^0.0.10",
