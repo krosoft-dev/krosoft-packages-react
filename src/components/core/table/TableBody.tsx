@@ -11,7 +11,7 @@ export interface TableBodyProps<T> {
   noDataMessage: string;
   paginatedData: T[];
   getRowId: (row: T) => string;
-  onRowClick?: (row: T) => void;
+  onRowClick?: (row: T, event: React.MouseEvent<HTMLTableRowElement>) => void;
   hasBulkActions: boolean;
   selectedRows: string[];
   toggleRowSelection: (id: string) => void;
@@ -84,7 +84,7 @@ export function TableBody<T>({
           <tr
             key={rowId}
             className={`group hover:bg-muted/50 dark:hover:bg-gray-900/50 transition-colors ${onRowClick !== undefined ? "cursor-pointer" : ""}`}
-            onClick={() => onRowClick?.(row)}
+            onClick={e => onRowClick?.(row, e)}
           >
             {hasBulkActions ? (
               <td

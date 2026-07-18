@@ -13,7 +13,7 @@ export interface DataTableProps<T> {
   data: T[];
   columns: ColumnDef<T>[];
   getRowId: (row: T) => string; // Fonction obligatoire pour identifier chaque ligne de façon unique
-  onRowClick?: (row: T) => void;
+  onRowClick?: (row: T, event: React.MouseEvent<HTMLTableRowElement>) => void;
   actions?: RowAction<T>[]; // Actions personnalisées pour le menu
   bulkActions?: BulkAction[]; // Actions rapides pour la sélection multiple
   draggableColumns?: boolean; // Permet d'activer/désactiver le drag and drop des colonnes
