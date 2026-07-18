@@ -109,7 +109,7 @@ export function TableBody<T>({
               return (
                 <td
                   key={column.key}
-                  className={`px-2 py-2 relative ${bordered && !isLast ? "border-r border-gray-100 dark:border-gray-800" : ""}`}
+                  className={`px-2 py-2 relative ${bordered && !isLast ? "border-r border-gray-100 dark:border-gray-800" : ""} ${column.className ?? ""}`}
                   style={{ width: columnWidths[column.key] }}
                 >
                   <div className="w-full h-full">{renderCellValue(row, column.key)}</div>
@@ -118,8 +118,8 @@ export function TableBody<T>({
             })}
             {hasActions ? (
               <td
-                className="p-1 text-center align-middle"
-                style={{ width: "32px", minWidth: "32px", maxWidth: "32px" }}
+                className="p-1 text-center align-middle whitespace-nowrap"
+                style={{ minWidth: "32px" }}
                 onClick={e => {
                   e.stopPropagation();
                 }}

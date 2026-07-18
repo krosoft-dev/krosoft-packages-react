@@ -70,6 +70,7 @@ export function TableHeader<T>({
           "px-2 py-2 text-left text-sm font-medium text-gray-900 dark:text-gray-100 relative group",
           bordered ? "border-r border-gray-200 dark:border-gray-800" : "",
           isSortable ? "cursor-pointer select-none" : "",
+          column.className ?? "",
         ]
           .filter(Boolean)
           .join(" ")}
@@ -123,7 +124,7 @@ export function TableHeader<T>({
         ) : null}
         {visibleColumnsArray.map(column => renderColumnHeader(column, draggableColumns))}
         {hasActions || settingsNode !== undefined ? (
-          <th className="p-1 text-center align-middle" style={{ width: "32px", minWidth: "32px", maxWidth: "32px" }}>
+          <th className="p-1 text-center align-middle" style={{ minWidth: "32px" }}>
             {settingsNode}
           </th>
         ) : null}

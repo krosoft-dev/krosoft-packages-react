@@ -7,7 +7,6 @@ import { TableBulkActions } from "./TableBulkActions";
 import { TableHeader } from "./TableHeader";
 import { TablePagination } from "./TablePagination";
 import { TableSettings } from "./TableSettings";
-import { fa } from "zod/v4/locales";
 export type { BulkAction, ColumnDef, RowAction } from "../../../types";
 
 export interface DataTableProps<T> {

@@ -13,7 +13,7 @@ const meta: Meta<typeof DataTable> = {
     docs: {
       description: {
         component:
-          "Le composant `DataTable` permet d'afficher des données sous forme de tableau avec des fonctionnalités avancées (tri, sélection, menu d'actions).\n\n### Fonctionnalités\n\n- **Tri** : Activez le tri colonne par colonne avec `sortable: true` dans `ColumnDef`. Un icône `↕` apparaît sur les colonnes triables ; `↑`/`↓` indique la colonne et le sens actifs.\n- **Réorganisation des colonnes** : Glissez et déposez l'icône de poignée dans l'en-tête.\n- **Désactivation du glisser-déposer** : Vous pouvez figer toutes les colonnes en passant `draggableColumns={false}` au composant.\n- **Redimensionnement des colonnes** : Survoler le bord droit de l'en-tête d'une colonne pour la redimensionner. Vous pouvez désactiver cette option en passant `resizableColumns={false}` au composant.",
+          "Le composant `DataTable` permet d'afficher des données sous forme de tableau avec des fonctionnalités avancées (tri, sélection, menu d'actions).\n\n### Fonctionnalités\n\n- **Tri** : Activez le tri colonne par colonne avec `sortable: true` dans `ColumnDef`. Un icône `↕` apparaît sur les colonnes triables ; `↑`/`↓` indique la colonne et le sens actifs.\n- **Réorganisation des colonnes** : Glissez et déposez l'icône de poignée dans l'en-tête.\n- **Désactivation du glisser-déposer** : Vous pouvez figer toutes les colonnes en passant `draggableColumns={false}` au composant.\n- **Redimensionnement des colonnes** : Survoler le bord droit de l'en-tête d'une colonne pour la redimensionner. Vous pouvez désactiver cette option en passant `resizableColumns={false}` au composant.\n- **Style de colonne** : `className` sur un `ColumnDef` s'applique à l'en-tête et à chaque cellule de la colonne.\n- **Actions de ligne** : les entrées de `actions` s'affichent en ligne par défaut ; `overflow: true` les déplace dans le menu kebab. `visible(row)` masque une action au cas par cas, `disabled(row)` la désactive sans la masquer, `variant` contrôle son style de bouton.",
       },
     },
   },
@@ -175,6 +175,14 @@ export const NonResizable: Story = {
 };
 
 export const WithActions: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Par défaut (`overflow` non défini), les actions s'affichent en ligne. `variant` contrôle le style du bouton (ex: `destructive` pour Supprimer).",
+      },
+    },
+  },
   args: {
     data: mockData,
     columns,
@@ -190,7 +198,83 @@ export const WithActions: Story = {
       {
         label: "Supprimer",
         icon: TrashIcon,
+        variant: "destructive",
+        onClick: (row: UserData): void => {
+          console.warn(`Delete row: ${row.name}`);
+        },
+      },
+    ],
+  },
+};
+
+export const WithOverflowActions: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Les actions marquées `overflow: true` sont regroupées dans le menu kebab plutôt qu'affichées en ligne. Ici seule **Modifier** reste visible directement, **Dupliquer** et **Supprimer** passent dans le menu.",
+      },
+    },
+  },
+  args: {
+    data: mockData,
+    columns,
+    getRowId: (row: UserData) => row.id,
+    actions: [
+      {
+        label: "Modifier",
+        icon: PencilIcon,
+        onClick: (row: UserData): void => {
+          console.warn(`Edit row: ${row.name}`);
+        },
+      },
+      {
+        label: "Dupliquer",
+        onClick: (row: UserData): void => {
+          console.warn(`Duplicate row: ${row.name}`);
+        },
+        overflow: true,
+      },
+      {
+        label: "Supprimer",
+        icon: TrashIcon,
         className: "text-destructive focus:bg-destructive/10 focus:text-destructive",
+        onClick: (row: UserData): void => {
+          console.warn(`Delete row: ${row.name}`);
+        },
+        overflow: true,
+      },
+    ],
+  },
+};
+
+export const WithConditionalActions: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "`visible` masque l'action au cas par cas (ici **Supprimer** n'apparaît que pour le statut `inactive`), `disabled` la désactive sans la masquer (ici **Modifier** est désactivée pour `admin`).",
+      },
+    },
+  },
+  args: {
+    data: mockData,
+    columns,
+    getRowId: (row: UserData) => row.id,
+    actions: [
+      {
+        label: "Modifier",
+        icon: PencilIcon,
+        disabled: (row: UserData) => row.role === "admin",
+        onClick: (row: UserData): void => {
+          console.warn(`Edit row: ${row.name}`);
+        },
+      },
+      {
+        label: "Supprimer",
+        icon: TrashIcon,
+        variant: "destructive",
+        visible: (row: UserData) => row.status === "inactive",
         onClick: (row: UserData): void => {
           console.warn(`Delete row: ${row.name}`);
         },
@@ -261,9 +345,17 @@ export const CustomPageSize: Story = {
 };
 
 export const FullFeatured: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Combine toutes les fonctionnalités : tri, sélection avec actions groupées, colonne stylée (`className`), et actions de ligne mêlant inline/overflow/variant/visible/disabled.",
+      },
+    },
+  },
   args: {
     data: mockData,
-    columns,
+    columns: columns.map(col => (col.key === "lastLogin" ? { ...col, className: "text-right text-muted-foreground" } : col)),
     getRowId: (row: UserData) => row.id,
     onRowClick: (row: UserData) => {
       console.warn(`Clicked on row: ${row.name}`);
@@ -272,6 +364,7 @@ export const FullFeatured: Story = {
       {
         label: "Modifier",
         icon: PencilIcon,
+        disabled: (row: UserData) => row.role === "admin",
         onClick: (row: UserData): void => {
           console.warn(`Edit row: ${row.name}`);
         },
@@ -279,7 +372,9 @@ export const FullFeatured: Story = {
       {
         label: "Supprimer",
         icon: TrashIcon,
-        className: "text-destructive focus:bg-destructive/10 focus:text-destructive",
+        variant: "destructive",
+        visible: (row: UserData) => row.status === "inactive",
+        overflow: true,
         onClick: (row: UserData): void => {
           console.warn(`Delete row: ${row.name}`);
         },
@@ -318,6 +413,21 @@ export const WithoutColumnVisibility: Story = {
     columns,
     getRowId: (row: UserData) => row.id,
     columnVisibility: false,
+  },
+};
+
+export const WithColumnClassName: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story: "`className` sur un `ColumnDef` s'applique à l'en-tête et à chaque cellule de la colonne (ici **Last Login** est aligné à droite).",
+      },
+    },
+  },
+  args: {
+    data: mockData,
+    columns: columns.map(col => (col.key === "lastLogin" ? { ...col, className: "text-right text-muted-foreground" } : col)),
+    getRowId: (row: UserData) => row.id,
   },
 };
 

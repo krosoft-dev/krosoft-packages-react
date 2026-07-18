@@ -9,40 +9,73 @@ export interface TableActionsProps<T> {
   row: T;
 }
 
-export function TableActions<T>({ actions, row }: TableActionsProps<T>): React.JSX.Element {
+export function TableActions<T>({ actions, row }: TableActionsProps<T>): React.JSX.Element | null {
+  const visibleActions = actions.filter(action => action.visible === undefined || action.visible(row));
+
+  if (visibleActions.length === 0) {
+    return null;
+  }
+
+  const primaryActions = visibleActions.filter(action => action.overflow !== true);
+  const overflowActions = visibleActions.filter(action => action.overflow === true);
+
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-foreground">
-          <MoreVerticalIcon className="size-3.5" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent
-        align="end"
-        onClick={(e: React.MouseEvent) => {
-          e.stopPropagation();
-        }}
-      >
-        {actions.map((action, i) => {
-          const Icon = action.icon;
-          return (
-            <DropdownMenuItem
-              key={i}
-              onClick={() => {
-                action.onClick(row);
-              }}
-              className={action.className}
-            >
-              {Icon !== undefined && (
-                <span className="mr-2 size-4 flex items-center justify-center">
-                  <Icon className="size-4" />
-                </span>
-              )}
-              {action.label}
-            </DropdownMenuItem>
-          );
-        })}
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <div className="flex items-center justify-center gap-1">
+      {primaryActions.map((action, i) => {
+        const Icon = action.icon;
+        return (
+          <Button
+            key={i}
+            variant={action.variant ?? "ghost"}
+            size="sm"
+            disabled={action.disabled?.(row) ?? false}
+            className={`h-7 px-2 text-muted-foreground hover:text-foreground ${action.className ?? ""}`}
+            onClick={e => {
+              e.stopPropagation();
+              action.onClick(row);
+            }}
+          >
+            {Icon !== undefined && <Icon className="size-3.5" />}
+            {action.label}
+          </Button>
+        );
+      })}
+      {overflowActions.length > 0 && (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-foreground">
+              <MoreVerticalIcon className="size-3.5" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            align="end"
+            onClick={(e: React.MouseEvent) => {
+              e.stopPropagation();
+            }}
+          >
+            {overflowActions.map((action, i) => {
+              const Icon = action.icon;
+              return (
+                <DropdownMenuItem
+                  key={i}
+                  disabled={action.disabled?.(row) ?? false}
+                  onClick={() => {
+                    action.onClick(row);
+                  }}
+                  className={action.className}
+                >
+                  {Icon !== undefined && (
+                    <span className="mr-2 size-4 flex items-center justify-center">
+                      <Icon className="size-4" />
+                    </span>
+                  )}
+                  {action.label}
+                </DropdownMenuItem>
+              );
+            })}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )}
+    </div>
   );
 }
