@@ -7,6 +7,7 @@ import { TableBulkActions } from "./TableBulkActions";
 import { TableHeader } from "./TableHeader";
 import { TablePagination } from "./TablePagination";
 import { TableSettings } from "./TableSettings";
+import { fa } from "zod/v4/locales";
 export type { BulkAction, ColumnDef, RowAction } from "../../../types";
 
 export interface DataTableProps<T> {
@@ -45,9 +46,9 @@ export function DataTable<T>({
   onRowClick,
   actions,
   bulkActions,
-  draggableColumns = true,
-  resizableColumns = true,
-  columnVisibility = true,
+  draggableColumns = false,
+  resizableColumns = false,
+  columnVisibility = false,
   isLoading = false,
   bordered = false,
   noDataMessage = "Aucun résultat",

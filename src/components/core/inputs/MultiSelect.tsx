@@ -171,6 +171,7 @@ export const MultiSelect = ({
                     onToggle(opt.value);
                   }}
                 />
+                {opt.color && <span className="size-2.5 shrink-0 rounded-full" style={{ backgroundColor: opt.color }} />}
                 {opt.label}
               </label>
             ))}
