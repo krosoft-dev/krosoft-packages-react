@@ -21,6 +21,7 @@ export interface TableBodyProps<T> {
   actions?: RowAction<T>[];
   columns: ColumnDef<T>[];
   bordered?: boolean;
+  resizableColumns?: boolean;
 }
 
 export function TableBody<T>({
@@ -39,6 +40,7 @@ export function TableBody<T>({
   actions,
   columns,
   bordered = false,
+  resizableColumns = false,
 }: TableBodyProps<T>): React.JSX.Element {
   const renderCellValue = (row: T, columnKey: string): React.ReactNode => {
     const columnDef = columns.find(col => col.key === columnKey);
@@ -110,7 +112,7 @@ export function TableBody<T>({
                 <td
                   key={column.key}
                   className={`px-2 py-2 relative ${bordered && !isLast ? "border-r border-gray-100 dark:border-gray-800" : ""} ${column.className ?? ""}`}
-                  style={{ width: columnWidths[column.key] }}
+                  style={resizableColumns ? { width: columnWidths[column.key] } : { minWidth: columnWidths[column.key] }}
                 >
                   <div className="w-full h-full">{renderCellValue(row, column.key)}</div>
                 </td>

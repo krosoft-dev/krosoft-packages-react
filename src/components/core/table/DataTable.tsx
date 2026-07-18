@@ -157,6 +157,7 @@ export function DataTable<T>({
               hasActions={hasActions || columnVisibility}
               actions={actions}
               columns={columns}
+              resizableColumns={resizableColumns}
             />
           </table>
         </div>

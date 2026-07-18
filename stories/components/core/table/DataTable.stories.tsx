@@ -13,7 +13,7 @@ const meta: Meta<typeof DataTable> = {
     docs: {
       description: {
         component:
-          "Le composant `DataTable` permet d'afficher des données sous forme de tableau avec des fonctionnalités avancées (tri, sélection, menu d'actions).\n\n### Fonctionnalités\n\n- **Tri** : Activez le tri colonne par colonne avec `sortable: true` dans `ColumnDef`. Un icône `↕` apparaît sur les colonnes triables ; `↑`/`↓` indique la colonne et le sens actifs.\n- **Réorganisation des colonnes** : Glissez et déposez l'icône de poignée dans l'en-tête.\n- **Désactivation du glisser-déposer** : Vous pouvez figer toutes les colonnes en passant `draggableColumns={false}` au composant.\n- **Redimensionnement des colonnes** : Survoler le bord droit de l'en-tête d'une colonne pour la redimensionner. Vous pouvez désactiver cette option en passant `resizableColumns={false}` au composant.\n- **Style de colonne** : `className` sur un `ColumnDef` s'applique à l'en-tête et à chaque cellule de la colonne.\n- **Actions de ligne** : les entrées de `actions` s'affichent en ligne par défaut ; `overflow: true` les déplace dans le menu kebab. `visible(row)` masque une action au cas par cas, `disabled(row)` la désactive sans la masquer, `variant` contrôle son style de bouton.",
+          "Le composant `DataTable` permet d'afficher des données sous forme de tableau avec des fonctionnalités avancées (tri, sélection, menu d'actions).\n\n### Fonctionnalités\n\n- **Tri** : Activez le tri colonne par colonne avec `sortable: true` dans `ColumnDef`. Un icône `↕` apparaît sur les colonnes triables ; `↑`/`↓` indique la colonne et le sens actifs.\n- **Réorganisation des colonnes** : Glissez et déposez l'icône de poignée dans l'en-tête.\n- **Désactivation du glisser-déposer** : Vous pouvez figer toutes les colonnes en passant `draggableColumns={false}` au composant.\n- **Largeur des colonnes** : par défaut (`resizableColumns` non activé), `minWidth` sur un `ColumnDef` n'est qu'un plancher — la colonne s'élargit naturellement selon le contenu. Avec `resizableColumns={true}`, `minWidth` devient la largeur figée de départ et une poignée sur le bord droit de l'en-tête permet de la redimensionner manuellement.\n- **Style de colonne** : `className` sur un `ColumnDef` s'applique à l'en-tête et à chaque cellule de la colonne.\n- **Actions de ligne** : les entrées de `actions` s'affichent en ligne par défaut ; `overflow: true` les déplace dans le menu kebab. `visible(row)` masque une action au cas par cas, `disabled(row)` la désactive sans la masquer, `variant` contrôle son style de bouton.",
       },
     },
   },
@@ -171,6 +171,44 @@ export const NonResizable: Story = {
     columns,
     getRowId: (row: UserData) => row.id,
     resizableColumns: false,
+  },
+};
+
+const dataWithLongEmail: UserData[] = [
+  { ...mockData[0], email: "john.doe.avec.une.adresse.email.tres.longue.pour.la.demo@exemple-entreprise.com" },
+  ...mockData.slice(1),
+];
+
+export const FlexibleColumnWidths: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Sans `resizableColumns` (comportement par défaut), `minWidth` sur un `ColumnDef` n'est qu'un plancher : la colonne s'élargit naturellement si le contenu le nécessite (ici l'email de John Doe dépasse largement les 200px de `minWidth`).",
+      },
+    },
+  },
+  args: {
+    data: dataWithLongEmail,
+    columns,
+    getRowId: (row: UserData) => row.id,
+  },
+};
+
+export const WithResizableColumns: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Avec `resizableColumns: true`, `minWidth` redevient la largeur de départ figée de la colonne : le contenu qui dépasse est tronqué, et l'utilisateur peut redimensionner manuellement via la poignée sur le bord droit de l'en-tête.",
+      },
+    },
+  },
+  args: {
+    data: dataWithLongEmail,
+    columns,
+    getRowId: (row: UserData) => row.id,
+    resizableColumns: true,
   },
 };
 

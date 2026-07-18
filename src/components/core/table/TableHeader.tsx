@@ -74,7 +74,7 @@ export function TableHeader<T>({
         ]
           .filter(Boolean)
           .join(" ")}
-        style={{ width: columnWidths[column.key] }}
+        style={resizableColumns ? { width: columnWidths[column.key] } : { minWidth: columnWidths[column.key] }}
         draggable={draggable}
         onClick={() => {
           handleSort(column.key);
