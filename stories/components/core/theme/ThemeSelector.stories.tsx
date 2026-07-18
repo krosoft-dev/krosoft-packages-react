@@ -4,11 +4,19 @@ import { ThemeSelector } from "@/components/core/theme/ThemeSelector";
 import { ToastProvider } from "@/components/ui/toast";
 import { DEMO_THEME_OPTIONS } from "../../../constants/themes";
 import { ThemeOption } from "@/components";
-import { SunIcon, MoonIcon } from "lucide-react";
+import { SunIcon, MoonIcon, MonitorIcon, SparklesIcon, WavesIcon } from "lucide-react";
 
 const TWO_THEME_OPTIONS: ThemeOption[] = [
   { value: "light", label: "Clair", icon: SunIcon },
   { value: "dark", label: "Sombre", icon: MoonIcon },
+];
+
+const THEME_OPTIONS_WITH_HIDDEN_MINI: ThemeOption[] = [
+  { value: "system", label: "Automatique", icon: MonitorIcon, message: "Suit les préférences système" },
+  { value: "light", label: "Clair", icon: SunIcon },
+  { value: "dark", label: "Sombre", icon: MoonIcon },
+  { value: "dark-temporal", label: "Temporal", icon: SparklesIcon, hideInMini: true },
+  { value: "dark-ocean", label: "Ocean", icon: WavesIcon, hideInMini: true },
 ];
 
 const withProviders = (Story: React.ComponentType) => (
@@ -89,6 +97,22 @@ export const TwoThemesMini: Story = {
     themeOptions: TWO_THEME_OPTIONS,
     variant: "mini",
   },
+};
+
+export const HideInMini: Story = {
+  args: {
+    themeOptions: THEME_OPTIONS_WITH_HIDDEN_MINI,
+    variant: "mini",
+  },
+  render: args => (
+    <div className="flex flex-col gap-2">
+      <p className="text-sm text-muted-foreground">
+        « Temporal » et « Ocean » ont <code>hideInMini: true</code> : ils restent choisissables via le variant <code>select</code> mais sont ignorés par le
+        cycle du bouton <code>mini</code>.
+      </p>
+      <ThemeSelector {...args} />
+    </div>
+  ),
 };
 
 export const BothVariants: Story = {

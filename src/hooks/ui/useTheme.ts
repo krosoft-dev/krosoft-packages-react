@@ -7,6 +7,7 @@ export interface ThemeOption {
   label: string;
   icon: React.ComponentType<{ className?: string }>;
   message?: string;
+  hideInMini?: boolean;
 }
 
 export function useTheme(themeOptions: readonly ThemeOption[]) {
@@ -19,14 +20,19 @@ export function useTheme(themeOptions: readonly ThemeOption[]) {
     showSuccess("Thème mis à jour", `Le thème a été changé vers ${option?.label ?? newTheme}.`);
   };
 
+  const cyclableThemeOptions = themeOptions.filter(o => !o.hideInMini);
   const currentThemeOption = themeOptions.find(o => o.value === theme);
-  const currentIndex = themeOptions.findIndex(o => o.value === theme);
-  const nextThemeOption = themeOptions[(currentIndex + 1) % themeOptions.length];
+  const currentIndex = cyclableThemeOptions.findIndex(o => o.value === theme);
+  const nextThemeOption = cyclableThemeOptions.length > 0 ? cyclableThemeOptions[(currentIndex + 1) % cyclableThemeOptions.length] : undefined;
 
   // true for "dark", "dark-temporal" and any future "dark-*" variant
   const isDark = theme?.startsWith("dark") ?? false;
 
-  const cycleTheme = () => handleThemeChange(nextThemeOption.value);
+  const cycleTheme = () => {
+    if (nextThemeOption) {
+      handleThemeChange(nextThemeOption.value);
+    }
+  };
 
   return {
     theme,

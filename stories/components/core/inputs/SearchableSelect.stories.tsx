@@ -15,6 +15,12 @@ const PAYS = [
   { value: "gb", label: "Royaume-Uni" },
 ];
 
+const STATUTS = [
+  { value: "nouveau", label: "Nouveau", color: "#3b82f6" },
+  { value: "disponible", label: "Disponible", color: "#22c55e" },
+  { value: "indisponible", label: "Indisponible", color: "#ef4444" },
+];
+
 const meta: Meta<typeof SearchableSelect> = {
   title: "Core/Inputs/SearchableSelect",
   component: SearchableSelect,
@@ -103,6 +109,28 @@ export const DisabledWithValue: Story = {
   args: {
     value: "fr",
     disabled: true,
+  },
+};
+
+export const WithColors: Story = {
+  args: {
+    options: STATUTS,
+    value: "disponible",
+    placeholder: "Sélectionner un statut",
+  },
+};
+
+export const WithColorsInteractive: Story = {
+  render: () => {
+    const [value, setValue] = useState<string | undefined>(undefined);
+    return (
+      <div className="w-64 pb-72 space-y-2">
+        <SearchableSelect options={STATUTS} value={value} onChange={setValue} onClear={() => setValue(undefined)} placeholder="Sélectionner un statut" />
+        <p className="text-xs text-muted-foreground">
+          {value !== undefined ? `Sélectionné : ${STATUTS.find(s => s.value === value)?.label}` : "Aucune sélection"}
+        </p>
+      </div>
+    );
   },
 };
 
