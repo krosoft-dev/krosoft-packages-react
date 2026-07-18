@@ -32,10 +32,12 @@ export const SearchableSelect = ({
     return options.filter(o => o.label.toLowerCase().includes(query.toLowerCase()));
   }, [options, query]);
 
-  const selectedLabel = useMemo(() => {
+  const selectedOption = useMemo(() => {
     if (value === undefined || value === "") return undefined;
-    return options.find(o => o.value === value)?.label ?? value;
+    return options.find(o => o.value === value);
   }, [options, value]);
+
+  const selectedLabel = value === undefined || value === "" ? undefined : (selectedOption?.label ?? value);
 
   // Focus l'input quand le dropdown s'ouvre
   useEffect(() => {
@@ -88,7 +90,10 @@ export const SearchableSelect = ({
           (value === undefined || value === "") && "text-muted-foreground",
         )}
       >
-        <span className="truncate">{selectedLabel ?? placeholder}</span>
+        <span className="flex items-center gap-2 truncate">
+          {selectedOption?.color && <span className="size-2.5 shrink-0 rounded-full" style={{ backgroundColor: selectedOption.color }} />}
+          <span className="truncate">{selectedLabel ?? placeholder}</span>
+        </span>
         <div className="flex items-center gap-1">
           {onClear && value !== undefined && value !== "" && !disabled && (
             <span
@@ -142,6 +147,7 @@ export const SearchableSelect = ({
                 )}
               >
                 <CheckIcon className={cn("size-3.5 shrink-0", value === opt.value ? "opacity-100" : "opacity-0")} />
+                {opt.color && <span className="size-2.5 shrink-0 rounded-full" style={{ backgroundColor: opt.color }} />}
                 {opt.label}
               </button>
             ))}
