@@ -372,6 +372,15 @@ export const Loading: Story = {
   },
 };
 
+export const WithError: Story = {
+  args: {
+    data: [],
+    columns,
+    getRowId: (row: UserData) => row.id,
+    error: "Impossible de charger les données. Veuillez réessayer.",
+  },
+};
+
 export const CustomPageSize: Story = {
   args: {
     data: mockData50,

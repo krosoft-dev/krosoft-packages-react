@@ -1,5 +1,5 @@
 import { Checkbox } from "@/components/ui";
-import { Loader2Icon } from "lucide-react";
+import { AlertTriangleIcon, Loader2Icon } from "lucide-react";
 import React from "react";
 import { TableActions } from "./TableActions";
 import { ColumnDef, RowAction } from "@/types";
@@ -7,6 +7,7 @@ export type { BulkAction, ColumnDef, RowAction } from "../../../types";
 
 export interface TableBodyProps<T> {
   isLoading: boolean;
+  error?: string | null;
   colSpanCount: number;
   noDataMessage: string;
   paginatedData: T[];
@@ -26,6 +27,7 @@ export interface TableBodyProps<T> {
 
 export function TableBody<T>({
   isLoading,
+  error,
   colSpanCount,
   noDataMessage,
   paginatedData,
@@ -59,6 +61,21 @@ export function TableBody<T>({
             <div className="flex flex-col items-center justify-center gap-2 text-muted-foreground">
               <Loader2Icon className="h-6 w-6 animate-spin text-primary" />
               <span className="text-sm">Chargement...</span>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    );
+  }
+
+  if (error) {
+    return (
+      <tbody className="divide-y divide-gray-200 dark:divide-gray-800">
+        <tr>
+          <td colSpan={colSpanCount} className="py-8 text-center">
+            <div className="flex flex-col items-center justify-center gap-2 text-destructive">
+              <AlertTriangleIcon className="h-6 w-6" />
+              <span className="text-sm">{error}</span>
             </div>
           </td>
         </tr>
