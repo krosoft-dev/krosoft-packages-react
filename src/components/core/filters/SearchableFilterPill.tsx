@@ -5,6 +5,7 @@ import { Checkbox, Popover, PopoverContent, PopoverTrigger } from "@/components/
 export interface FilterOption {
   value: string;
   label: string;
+  color?: string;
 }
 
 export function SearchableFilterPill<T extends string>({
@@ -124,6 +125,7 @@ export function SearchableFilterPill<T extends string>({
                   onToggle(opt.value as T);
                 }}
               />
+              {opt.color && <span className="size-2.5 shrink-0 rounded-full" style={{ backgroundColor: opt.color }} />}
               {opt.label}
             </label>
           ))}

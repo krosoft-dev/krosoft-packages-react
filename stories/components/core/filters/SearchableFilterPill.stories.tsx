@@ -14,13 +14,19 @@ type SearchableFilterPillStringProps = {
   searchPlaceholder?: string;
 };
 
-const SearchableFilterPillString = (props: SearchableFilterPillStringProps) => <SearchableFilterPill<string> {...props} />;
+const SearchableFilterPillString = (props: SearchableFilterPillStringProps): React.ReactElement => <SearchableFilterPill<string> {...props} />;
 
 const STATUTS: FilterOption[] = [
   { value: "actif", label: "Actif" },
   { value: "inactif", label: "Inactif" },
   { value: "prospect", label: "Prospect" },
   { value: "archive", label: "Archivé" },
+];
+
+const STATUTS_COLORES: FilterOption[] = [
+  { value: "nouveau", label: "Nouveau", color: "#3b82f6" },
+  { value: "disponible", label: "Disponible", color: "#22c55e" },
+  { value: "indisponible", label: "Indisponible", color: "#ef4444" },
 ];
 
 const VILLES: FilterOption[] = [
@@ -38,7 +44,8 @@ const meta: Meta<typeof SearchableFilterPillString> = {
   title: "Core/Filters/SearchableFilterPill",
   component: SearchableFilterPillString,
   decorators: [
-    (Story) => (
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    (Story: React.ComponentType): React.ReactElement => (
       <div className="pb-64">
         <Story />
       </div>
@@ -79,6 +86,37 @@ export const Searchable: Story = {
   },
 };
 
+export const WithColors: Story = {
+  args: {
+    label: "Statut",
+    options: STATUTS_COLORES,
+    selected: ["disponible"],
+  },
+};
+
+export const WithColorsInteractive: Story = {
+  render: () => {
+    const [selected, setSelected] = useState<string[]>([]);
+    return (
+      <div className="pb-64 space-y-4">
+        <SearchableFilterPill<string>
+          label="Statut"
+          options={STATUTS_COLORES}
+          selected={selected}
+          onToggle={v => {
+            setSelected(prev => (prev.includes(v) ? prev.filter(x => x !== v) : [...prev, v]));
+          }}
+          onClear={() => {
+            setSelected([]);
+          }}
+          onSelectAll={setSelected}
+        />
+        <p className="text-xs text-muted-foreground">{selected.length === 0 ? "Aucun statut sélectionné" : `Sélectionnés : ${selected.join(", ")}`}</p>
+      </div>
+    );
+  },
+};
+
 export const Interactive: Story = {
   render: () => {
     const [selected, setSelected] = useState<string[]>([]);
@@ -96,9 +134,7 @@ export const Interactive: Story = {
           }}
           onSelectAll={setSelected}
         />
-        <p className="text-xs text-muted-foreground">
-          {selected.length === 0 ? "Aucun statut sélectionné" : `Sélectionnés : ${selected.join(", ")}`}
-        </p>
+        <p className="text-xs text-muted-foreground">{selected.length === 0 ? "Aucun statut sélectionné" : `Sélectionnés : ${selected.join(", ")}`}</p>
       </div>
     );
   },
