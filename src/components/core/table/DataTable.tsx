@@ -111,12 +111,16 @@ export function DataTable<T>({
   });
 
   return (
-    <div className="space-y-4">
+    // Le tableau suit le preset de l'application — square reste square — mais
+    // bascule sur les valeurs plafonnées : ni ses contrôles ni son cadre ne
+    // prennent la forme capsule. Le scope couvre le cadre, les actions
+    // groupées et la pagination. Les fallbacks correspondent au preset "soft".
+    <div className="space-y-4 [--radius-control:var(--radius-control-dense,0.5rem)] [--radius-surface:var(--radius-surface-dense,0.75rem)]">
       {selectedRows.length > 0 && bulkActions !== undefined && bulkActions.length > 0 && (
         <TableBulkActions selectedRows={selectedRows} setSelectedRows={setSelectedRows} bulkActions={bulkActions} />
       )}
 
-      <div className="w-full bg-card dark:bg-gray-950 rounded-md border border-gray-200 dark:border-gray-800 overflow-hidden">
+      <div className="w-full bg-card dark:bg-gray-950 rounded-surface border border-gray-200 dark:border-gray-800 overflow-hidden">
         <div className="overflow-x-auto">
           <table ref={tableRef} className="w-full">
             <TableHeader

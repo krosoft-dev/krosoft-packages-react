@@ -34,12 +34,12 @@ export function AppPageHeader({
     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
       <div className="flex items-center gap-4">
         {onBack && (
-          <Button variant="ghost" size="icon" onClick={onBack} className="rounded-2xl">
+          <Button variant="ghost" size="icon" onClick={onBack}>
             <ArrowLeftIcon className="h-4 w-4" />
           </Button>
         )}
         {Icon && (
-          <div className="size-12 bg-blue-100 rounded-lg flex items-center justify-center">
+          <div className="size-12 bg-blue-100 rounded-control flex items-center justify-center">
             <Icon className="h-6 w-6 text-blue-600" />
           </div>
         )}

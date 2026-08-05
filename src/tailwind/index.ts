@@ -78,9 +78,17 @@ const krosoftPreset = {
         },
       },
       borderRadius: {
+        // Tokens sémantiques — à privilégier dans les composants.
+        // Ils garantissent qu'un input, un bouton et une pastille de filtre
+        // posés côte à côte partagent toujours la même forme.
+        control: "var(--radius-control, var(--radius))",
+        surface: "var(--radius-surface, var(--radius))",
+        // Échelle historique, dérivée de --radius : réservée aux éléments
+        // internes (items de menu, checkbox, poignées…) qui ne doivent jamais
+        // devenir des capsules. max() protège le preset "square" (--radius: 0).
         lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+        md: "max(0px, calc(var(--radius) - 2px))",
+        sm: "max(0px, calc(var(--radius) - 4px))",
       },
       keyframes: {
         "accordion-down": {

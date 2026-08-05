@@ -43,7 +43,13 @@
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
 
+    /* Radius — valeurs par défaut, équivalentes au preset [data-radius="soft"].
+       Voir la section « Presets de radius » plus bas pour les basculer. */
     --radius: 0.5rem;
+    --radius-control: 0.5rem;
+    --radius-surface: 0.75rem;
+    --radius-control-dense: 0.5rem;
+    --radius-surface-dense: 0.75rem;
 
     --sidebar-background: 0 0% 98%;
     --sidebar-foreground: 240 5.3% 26.1%;
@@ -244,6 +250,60 @@
     --topbar-border: 222 35% 14%;
     --topbar-ring: 199 89% 55%;
     --topbar-muted: 215 20% 55%;
+  }
+}
+
+/* ------------------------------------------------------------------------- *
+ * Presets de radius
+ *
+ * Se pose sur <html> (ou sur n'importe quel conteneur pour ne styler qu'une
+ * partie de l'écran) :
+ *
+ *   <html lang="fr" data-radius="square">
+ *
+ * Trois tokens, deux publics :
+ *   --radius-control : contrôles interactifs — boutons, inputs, selects,
+ *                      pastilles de filtre, badges, onglets, jours du
+ *                      calendrier. Utilitaire Tailwind : rounded-control
+ *   --radius-surface : conteneurs — cards, dialogs, popovers, menus,
+ *                      tableaux, panneaux flottants.
+ *                      Utilitaire Tailwind : rounded-surface
+ *   --radius         : token interne dont dérivent rounded-sm/md/lg, réservé
+ *                      aux éléments imbriqués (items de menu, checkbox,
+ *                      poignées) qui ne doivent jamais devenir des capsules.
+ *
+ * Les deux variantes *-dense sont les valeurs plafonnées appliquées aux blocs
+ * denses (DataTable) : elles suivent le preset mais ne prennent jamais la
+ * forme capsule, illisible dans une ligne de tableau.
+ *
+ * Un preset ne convient pas ? Redéfinir les variables suffit, aucun preset
+ * n'est requis :
+ *
+ *   :root { --radius-control: 4px; --radius-surface: 16px; }
+ * ------------------------------------------------------------------------- */
+@layer base {
+  [data-radius="square"] {
+    --radius: 0rem;
+    --radius-control: 0rem;
+    --radius-surface: 0rem;
+    --radius-control-dense: 0rem;
+    --radius-surface-dense: 0rem;
+  }
+
+  [data-radius="soft"] {
+    --radius: 0.5rem;
+    --radius-control: 0.5rem;
+    --radius-surface: 0.75rem;
+    --radius-control-dense: 0.5rem;
+    --radius-surface-dense: 0.75rem;
+  }
+
+  [data-radius="round"] {
+    --radius: 0.75rem;
+    --radius-control: 9999px;
+    --radius-surface: 1.25rem;
+    --radius-control-dense: 0.5rem;
+    --radius-surface-dense: 0.75rem;
   }
 }
 

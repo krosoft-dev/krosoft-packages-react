@@ -221,7 +221,7 @@ export const GenericForm = <T,>({
 
     return (
       <div className="mt-2 relative">
-        <div className="relative w-full h-40 bg-gray-100 rounded-md overflow-hidden">
+        <div className="relative w-full h-40 bg-gray-100 rounded-surface overflow-hidden">
           <img
             src={url}
             alt="Preview"

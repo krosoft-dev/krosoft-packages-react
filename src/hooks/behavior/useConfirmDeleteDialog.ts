@@ -30,6 +30,6 @@ export const useConfirmDeleteDialog = ({
     loadingKey: "Suppression...",
     icon: TrashIcon,
     titleClassName: "flex items-center gap-2 text-destructive",
-    headerClassName: "bg-gradient-to-r from-slate-900 to-purple-700 rounded-t-lg shrink-0",
+    headerClassName: "bg-gradient-to-r from-slate-900 to-purple-700 rounded-t-surface shrink-0",
   };
 };

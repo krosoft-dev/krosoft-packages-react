@@ -74,7 +74,7 @@ export function TablePagination({
             <Button
               variant="ghost"
               size="icon"
-              className="h-8 w-8 rounded-full"
+              className="h-8 w-8 rounded-control"
               onClick={() => {
                 setCurrentPage(prev => Math.max(1, prev - 1));
               }}
@@ -94,7 +94,7 @@ export function TablePagination({
                   key={page}
                   variant={page === currentPage ? "default" : "ghost"}
                   size="icon"
-                  className="h-8 w-8 rounded-full text-sm"
+                  className="h-8 w-8 rounded-control text-sm"
                   onClick={() => {
                     setCurrentPage(page);
                   }}
@@ -108,7 +108,7 @@ export function TablePagination({
             <Button
               variant="ghost"
               size="icon"
-              className="h-8 w-8 rounded-full"
+              className="h-8 w-8 rounded-control"
               onClick={() => {
                 setCurrentPage(prev => Math.min(totalPages, prev + 1));
               }}

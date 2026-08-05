@@ -112,7 +112,7 @@ export const Sidebar = ({ groups, currentPath, onItemClick, slots, search, dense
         {loading
           ? Array.from({ length: 5 }).map((_, idx) => (
               <div key={idx} className={cn("flex items-center gap-3", dense ? "mb-1 h-9" : "mb-2 h-12", isCollapsed ? "justify-center px-3" : "px-4")}>
-                <Skeleton className="size-5 flex-shrink-0 rounded-md" />
+                <Skeleton className="size-5 flex-shrink-0 rounded-control" />
                 {!isCollapsed && <Skeleton className="h-4 flex-1" />}
               </div>
             ))
