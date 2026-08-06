@@ -3,6 +3,19 @@ import type { Config } from "tailwindcss";
 import tailwindcssAnimate from "tailwindcss-animate";
 
 /**
+ * Fichiers du package à scanner par Tailwind.
+ *
+ * Tailwind n'additionne pas les `content` : celui du projet écrase purement et
+ * simplement celui de ses presets — `resolveConfig` garde le dernier déclaré,
+ * quelle que soit la forme utilisée (tableau ou `{ files }`). Un preset ne peut
+ * donc pas déclarer les fichiers qu'il faut scanner pour lui : c'est au projet
+ * d'étaler cette constante dans son propre `content`, sinon aucune classe des
+ * composants du package n'est générée (`rounded-control`, `bg-topbar`,
+ * `animate-in`…) et ils s'affichent sans style.
+ */
+export const krosoftContent = ["./node_modules/@krosoft/react/dist/**/*.js"];
+
+/**
  * Shared Tailwind CSS preset for @krosoft/react projects.
  *
  * Contains the common shadcn/ui design tokens shared across all projects:
@@ -11,16 +24,16 @@ import tailwindcssAnimate from "tailwindcss-animate";
  * - Base color mappings (border, input, ring, background, foreground, primary, etc.)
  * - Border radius tokens
  * - Accordion keyframes & animations
- * - Content scanning for @krosoft/react compiled components
+ * - tailwindcss-animate plugin
  *
  * Usage in a consuming project's tailwind.config.ts:
  *
  * ```ts
- * import krosoftPreset from "@krosoft/react/tailwind";
+ * import krosoftPreset, { krosoftContent } from "@krosoft/react/tailwind";
  *
  * export default {
  *   presets: [krosoftPreset],
- *   content: ["./src/**\/*.{ts,tsx}"],
+ *   content: [...krosoftContent, "./src/**\/*.{ts,tsx}"],
  *   theme: {
  *     extend: {
  *       // project-specific overrides
@@ -33,7 +46,6 @@ const krosoftPreset = {
   // [class*='dark'] is the CSS equivalent of ".dark*" — matches any class containing "dark"
   // (e.g. "dark", "dark-temporal", "dark-forest"…). CSS has no .dark* wildcard syntax.
   darkMode: ["class", "[class*='dark']"],
-  content: ["./node_modules/@krosoft/react/dist/**/*.js"],
   theme: {
     container: {
       center: true,
@@ -167,6 +179,8 @@ const krosoftPreset = {
   // sans transition. Le plugin est porté par le preset pour que les projets
   // consommateurs n'aient rien à déclarer de leur côté.
   plugins: [tailwindcssAnimate],
-} satisfies Config;
+  // Partial<Config> et non Config : c'est le type d'un preset (`presets: Array<Partial<Config>>`).
+  // Un preset ne déclare pas de `content` — voir krosoftContent ci-dessus.
+} satisfies Partial<Config>;
 
 export default krosoftPreset;

@@ -4,6 +4,26 @@
 
 Krosoft shared React package.
 
+## Preset Tailwind
+
+Le preset partagé apporte le `darkMode`, le `container`, les couleurs shadcn (`--primary`, `--background`, `--border`, `--sidebar-*`…), les couleurs krosoft (`--k-success`, `--k-topbar-*`…), les radius, les keyframes accordéon et le plugin `tailwindcss-animate`. Un projet consommateur qui déclarait tout ça dans son propre `tailwind.config` peut supprimer ces lignes et ne garder que ce qui lui est propre.
+
+```ts
+import krosoftPreset, { krosoftContent } from "@krosoft/react/tailwind";
+
+export default {
+  presets: [krosoftPreset],
+  content: [...krosoftContent, "./src/**/*.{ts,tsx}"],
+  theme: {
+    extend: {
+      // uniquement les tokens propres au projet
+    },
+  },
+} satisfies Config;
+```
+
+> **`krosoftContent` n'est pas optionnel.** Tailwind n'additionne pas les `content` : celui du projet écrase purement et simplement celui de ses presets. Le preset ne peut donc pas déclarer les fichiers à scanner pour lui — sans le spread, aucune classe des composants du package n'est générée (`rounded-control`, `bg-topbar`, `animate-in`…) et ils s'affichent sans style.
+
 ## Radius des composants
 
 La forme des composants est pilotée par des variables CSS, pas par des classes `rounded-*` codées en dur : un input, un bouton et une pastille de filtre posés côte à côte ont toujours la même forme.
