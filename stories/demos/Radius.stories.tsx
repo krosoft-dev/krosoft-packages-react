@@ -2,7 +2,8 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { TableFilter } from "@/components/core/filters/TableFilter";
 import { Badge, Button, Card, CardContent, CardHeader, CardTitle, Input, Switch } from "@/components/ui";
-import { tokensToStyle } from "@/tokens";
+import { radiusPresets, tokensToStyle } from "@/tokens";
+import type { RadiusPreset } from "@/tokens";
 import type { FilterSection } from "@/types/FilterSection";
 
 const SECTIONS: FilterSection[] = [
@@ -46,20 +47,20 @@ const SECTIONS: FilterSection[] = [
 ];
 
 const PRESETS = [
-  { value: "square", label: "square", description: "Angles vifs — --k-radius-control: 0" },
-  { value: "soft", label: "soft", description: "Défaut — --k-radius-control: 0.5rem" },
-  { value: "round", label: "round", description: "Capsules — --k-radius-control: 9999px" },
-] as const;
+  { value: "square", description: "Angles vifs — --k-radius-control: 0" },
+  { value: "soft", description: "Défaut — --k-radius-control: 0.5rem" },
+  { value: "round", description: "Capsules — --k-radius-control: 9999px" },
+] as const satisfies readonly { value: RadiusPreset; description: string }[];
 
 /** Une barre de filtres complète + quelques contrôles, sous un preset donné. */
-const Echantillon = ({ radius, description }: { radius: string; description: string }): React.JSX.Element => {
+const Echantillon = ({ radius, description }: { radius: RadiusPreset; description: string }): React.JSX.Element => {
   const [search, setSearch] = useState("");
   const [filters, setFilters] = useState<Record<string, unknown>>({});
 
   return (
-    <div data-radius={radius} className="space-y-4">
+    <div style={tokensToStyle(radiusPresets[radius])} className="space-y-4">
       <div>
-        <code className="text-sm font-semibold">data-radius=&quot;{radius}&quot;</code>
+        <code className="text-sm font-semibold">radiusPresets.{radius}</code>
         <p className="text-xs text-muted-foreground">{description}</p>
       </div>
 
@@ -102,7 +103,7 @@ const meta: Meta = {
     docs: {
       description: {
         component:
-          "Comparaison des trois presets de radius. Chaque bloc porte son propre `data-radius` — en production, l'attribut se pose une seule fois sur `<html>`. " +
+          "Comparaison des trois presets de radius. Chaque bloc pose ses variables en `style` inline via `tokensToStyle` — en production, le thème du projet les définit une fois dans `:root`. " +
           "Note : les contenus rendus en portail (popovers, sheets, dialogs) héritent de la racine du document, pas du bloc — le sélecteur « Radius » de la barre d'outils les couvre.",
       },
     },

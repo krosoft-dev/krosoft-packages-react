@@ -54,8 +54,8 @@
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
 
-    /* Radius — valeurs par défaut, équivalentes au preset [data-radius="soft"].
-       Voir la section « Presets de radius » plus bas pour les basculer. */
+    /* Radius — valeurs du preset "soft". Voir la section « Radius » plus bas
+       pour en choisir un autre. */
     --radius: 0.5rem;
     --k-radius-control: 0.5rem;
     --k-radius-surface: 0.75rem;
@@ -265,16 +265,7 @@
 }
 
 /* ------------------------------------------------------------------------- *
- * Presets de radius
- *
- * Se pose sur <html> (ou sur n'importe quel conteneur pour ne styler qu'une
- * partie de l'écran) :
- *
- *   <html lang="fr" data-radius="square">
- *
- * Convention de nommage : les tokens ajoutés par krosoft portent le préfixe
- * --k-, ceux hérités de shadcn gardent leur nom d'origine (--radius, --primary,
- * --background…) pour rester compatibles avec les thèmes et composants shadcn.
+ * Radius
  *
  * Trois tokens, deux publics :
  *   --k-radius-control : contrôles interactifs — boutons, inputs, selects,
@@ -291,36 +282,14 @@
  * denses (DataTable) : elles suivent le preset mais ne prennent jamais la
  * forme capsule, illisible dans une ligne de tableau.
  *
- * Un preset ne convient pas ? Redéfinir les variables suffit, aucun preset
- * n'est requis :
+ * Les valeurs par défaut de :root sont celles du preset "soft". Pour en choisir
+ * un autre, redéfinir les variables dans le thème du projet :
  *
- *   :root { --k-radius-control: 4px; --k-radius-surface: 16px; }
+ *   :root { --k-radius-control: 9999px; --k-radius-surface: 1.25rem; }
+ *
+ * Les trois presets existent aussi en TypeScript (@krosoft/react/tokens), pour
+ * les appliquer au runtime : applyTokenPreset(radiusPresets, "round").
  * ------------------------------------------------------------------------- */
-@layer base {
-  [data-radius="square"] {
-    --radius: 0rem;
-    --k-radius-control: 0rem;
-    --k-radius-surface: 0rem;
-    --k-radius-control-dense: 0rem;
-    --k-radius-surface-dense: 0rem;
-  }
-
-  [data-radius="soft"] {
-    --radius: 0.5rem;
-    --k-radius-control: 0.5rem;
-    --k-radius-surface: 0.75rem;
-    --k-radius-control-dense: 0.5rem;
-    --k-radius-surface-dense: 0.75rem;
-  }
-
-  [data-radius="round"] {
-    --radius: 0.75rem;
-    --k-radius-control: 9999px;
-    --k-radius-surface: 1.25rem;
-    --k-radius-control-dense: 0.5rem;
-    --k-radius-surface-dense: 0.75rem;
-  }
-}
 
 @layer base {
   * {

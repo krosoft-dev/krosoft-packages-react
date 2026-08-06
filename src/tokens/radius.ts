@@ -3,10 +3,12 @@ import type { TokenFamily } from "./types";
 /**
  * Presets de radius.
  *
- * Ces valeurs sont dupliquées dans `src/styles/globals.css` sous forme de blocs
- * `[data-radius="…"]` : l'attribut reste le moyen le plus sûr de fixer la forme
- * dès le premier rendu, sans flash. `tests/tokens/radius.test.ts` vérifie que
- * les deux restent alignés.
+ * Source de vérité des trois presets. `globals.css` n'en reprend qu'un — les
+ * valeurs par défaut de `:root` sont celles de `soft` — et
+ * `tests/tokens/radius.test.ts` vérifie que les deux restent alignés.
+ *
+ * Un projet consommateur fige sa forme en redéfinissant les variables dans son
+ * propre thème, ou bascule à chaud avec `applyTokenPreset`.
  *
  * Les tokens ajoutés par krosoft portent le préfixe --k- ; ceux hérités de
  * shadcn gardent leur nom d'origine.
