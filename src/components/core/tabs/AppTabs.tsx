@@ -14,7 +14,10 @@ export interface AppTabsProps<T = unknown> {
 export function AppTabs({ tabs, itemId, item, fit }: AppTabsProps): React.JSX.Element {
   const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
-  const activeTab = searchParams.get("tab") || tabs[0]?.value;
+  // L'onglet de l'URL peut ne pas exister dans la liste : lien obsolète, ou onglet retiré selon
+  // les droits de l'utilisateur. On retombe alors sur le premier onglet plutôt que de n'afficher aucun contenu.
+  const requestedTab = searchParams.get("tab");
+  const activeTab = tabs.find(tab => tab.value === requestedTab)?.value ?? tabs[0]?.value;
 
   const handleTabChange = (value: string) => {
     const newSearchParams = new URLSearchParams();
