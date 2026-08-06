@@ -2,6 +2,7 @@ import { cn } from "@/helpers/tailwind.helper";
 import * as SelectPrimitive from "@radix-ui/react-select";
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon, XIcon } from "lucide-react";
 import * as React from "react";
+import { controlTriggerClass } from "./control";
 
 const Select = SelectPrimitive.Root;
 
@@ -15,14 +16,7 @@ type SelectTriggerProps = React.ComponentPropsWithoutRef<typeof SelectPrimitive.
 
 const SelectTrigger = React.forwardRef<React.ElementRef<typeof SelectPrimitive.Trigger>, SelectTriggerProps>(
   ({ className, children, onClear, ...props }, ref) => (
-    <SelectPrimitive.Trigger
-      ref={ref}
-      className={cn(
-        "flex h-10 w-full items-center justify-between rounded-control border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
-        className,
-      )}
-      {...props}
-    >
+    <SelectPrimitive.Trigger ref={ref} className={cn(controlTriggerClass, "w-full placeholder:text-muted-foreground", className)} {...props}>
       {children}
       <div className="flex items-center gap-1">
         {onClear && (

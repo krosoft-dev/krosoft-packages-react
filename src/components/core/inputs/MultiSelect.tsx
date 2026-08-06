@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
-import { Checkbox } from "@/components/ui";
+import { Checkbox, controlTriggerClass } from "@/components/ui";
 import { ChevronDownIcon, SearchIcon, XIcon } from "lucide-react";
 import { cn } from "@/helpers/tailwind.helper";
 import type { SelectOption } from "@krosoft/core/types";
@@ -108,11 +108,7 @@ export const MultiSelect = ({
         type="button"
         disabled={disabled}
         onClick={handleToggle}
-        className={cn(
-          "flex h-10 w-full items-center justify-between rounded-control border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
-          open && "ring-2 ring-ring ring-offset-2",
-          selected.length === 0 && "text-muted-foreground",
-        )}
+        className={cn(controlTriggerClass, "w-full", open && "ring-2 ring-ring ring-offset-2", selected.length === 0 && "text-muted-foreground")}
       >
         <span className="truncate">{selected.length === 0 ? placeholder : selected.map(s => options.find(o => o.value === s)?.label ?? s).join(", ")}</span>
         <div className="flex shrink-0 items-center gap-1">

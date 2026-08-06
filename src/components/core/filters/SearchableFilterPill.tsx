@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { ChevronDown, Search } from "lucide-react";
-import { Checkbox, Popover, PopoverContent, PopoverTrigger } from "@/components/ui";
+import { Checkbox, controlBaseClass, Popover, PopoverContent, PopoverTrigger } from "@/components/ui";
+import { cn } from "@/helpers/tailwind.helper";
 
 export interface FilterOption {
   value: string;
@@ -79,9 +80,11 @@ export function SearchableFilterPill<T extends string>({
     >
       <PopoverTrigger asChild>
         <button
-          className={`inline-flex items-center gap-1.5 rounded-control border px-3 py-1.5 text-sm transition-colors whitespace-nowrap ${
-            isActive ? "border-primary bg-primary/10 text-primary font-medium" : "border-border bg-card text-card-foreground hover:bg-muted"
-          }`}
+          className={cn(
+            controlBaseClass,
+            "inline-flex items-center gap-1.5 whitespace-nowrap transition-colors",
+            isActive ? "border-primary bg-primary/10 text-primary font-medium" : "hover:bg-muted",
+          )}
         >
           {label}
           {selected.length > 0 && (
