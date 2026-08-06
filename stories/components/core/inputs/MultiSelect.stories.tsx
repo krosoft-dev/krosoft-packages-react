@@ -106,6 +106,14 @@ export const WithClearIcon: Story = {
   },
 };
 
+export const WithMaxCount: Story = {
+  args: {
+    options: NOMBREUSES_OPTIONS,
+    selected: ["paris", "lyon", "marseille", "bordeaux", "nice"],
+    maxCount: 2,
+  },
+};
+
 export const WithColors: Story = {
   args: {
     options: STATUTS,
