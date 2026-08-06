@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import { ChevronDownIcon, SearchIcon, CheckIcon, XIcon } from "lucide-react";
+import { controlTriggerClass } from "@/components/ui";
 import { cn } from "@/helpers/tailwind.helper";
 import type { SelectOption } from "@krosoft/core/types";
 
@@ -85,7 +86,8 @@ export const SearchableSelect = ({
         onClick={handleToggle}
         disabled={disabled}
         className={cn(
-          "flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
+          controlTriggerClass,
+          "w-full",
           open && "ring-2 ring-ring ring-offset-2",
           (value === undefined || value === "") && "text-muted-foreground",
         )}
@@ -117,13 +119,13 @@ export const SearchableSelect = ({
       </button>
 
       {open ? (
-        <div className="absolute left-0 right-0 top-[calc(100%+4px)] z-[100] rounded-md border bg-popover text-popover-foreground shadow-md animate-in fade-in-0 zoom-in-95 slide-in-from-top-2">
+        <div className="absolute left-0 right-0 top-[calc(100%+4px)] z-[100] rounded-surface border bg-popover text-popover-foreground shadow-md animate-in fade-in-0 zoom-in-95 slide-in-from-top-2">
           <div className="border-b border-border p-2">
             <div className="relative">
               <SearchIcon className="absolute left-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
               <input
                 ref={inputRef}
-                className="w-full rounded-md bg-muted/50 py-1.5 pl-7 pr-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-1 focus:ring-ring"
+                className="w-full rounded-control bg-muted/50 py-1.5 pl-7 pr-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-1 focus:ring-ring"
                 placeholder={searchPlaceholder}
                 value={query}
                 onChange={e => {

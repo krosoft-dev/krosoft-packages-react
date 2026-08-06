@@ -70,7 +70,7 @@ export const MetricCard = ({ title, value, unit, subtitle, icon, iconSize = "md"
               </div>
             )}
           </div>
-          <div className={`p-2 rounded-lg ${colorClasses[color]} shadow-lg`}>
+          <div className={`p-2 rounded-control ${colorClasses[color]} shadow-lg`}>
             <Icon className={iconSizeClasses[iconSize]} />
           </div>
         </div>

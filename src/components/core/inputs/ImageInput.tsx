@@ -49,7 +49,7 @@ export const ImageInput = forwardRef<HTMLDivElement, ImageInputProps>(
     return (
       <div ref={ref} className={className}>
         {value ? (
-          <div className="relative w-32 h-32 rounded-lg overflow-hidden border-2 border-border">
+          <div className="relative w-32 h-32 rounded-surface overflow-hidden border-2 border-border">
             <img src={value} alt="Preview" className="w-full h-full object-cover" />
             {!disabled && (
               <Button type="button" variant="destructive" size="sm" className="absolute top-1 right-1 h-6 w-6 p-0" onClick={handleRemove}>
@@ -58,7 +58,7 @@ export const ImageInput = forwardRef<HTMLDivElement, ImageInputProps>(
             )}
           </div>
         ) : disabled ? (
-          <div className={cn("flex flex-col items-center justify-center w-full h-32", "border-2 border-dashed border-border rounded-lg", "bg-muted/30")}>
+          <div className={cn("flex flex-col items-center justify-center w-full h-32", "border-2 border-dashed border-border rounded-surface", "bg-muted/30")}>
             <ImageIcon className="h-8 w-8 text-muted-foreground/50 mb-2" />
             <span className="text-sm text-muted-foreground/50">Aucune image</span>
           </div>
@@ -66,7 +66,7 @@ export const ImageInput = forwardRef<HTMLDivElement, ImageInputProps>(
           <label
             className={cn(
               "flex flex-col items-center justify-center w-full h-32",
-              "border-2 border-dashed border-border rounded-lg",
+              "border-2 border-dashed border-border rounded-surface",
               "cursor-pointer hover:bg-muted/50 transition-colors",
             )}
           >

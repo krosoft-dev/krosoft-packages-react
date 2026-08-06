@@ -1,10 +1,12 @@
 import { useState, useMemo } from "react";
 import { ChevronDown, Search } from "lucide-react";
-import { Checkbox, Popover, PopoverContent, PopoverTrigger } from "@/components/ui";
+import { Checkbox, controlBaseClass, Popover, PopoverContent, PopoverTrigger } from "@/components/ui";
+import { cn } from "@/helpers/tailwind.helper";
 
 export interface FilterOption {
   value: string;
   label: string;
+  color?: string;
 }
 
 export function SearchableFilterPill<T extends string>({
@@ -78,9 +80,11 @@ export function SearchableFilterPill<T extends string>({
     >
       <PopoverTrigger asChild>
         <button
-          className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm transition-colors whitespace-nowrap ${
-            isActive ? "border-primary bg-primary/10 text-primary font-medium" : "border-border bg-card text-card-foreground hover:bg-muted"
-          }`}
+          className={cn(
+            controlBaseClass,
+            "inline-flex items-center gap-1.5 whitespace-nowrap transition-colors",
+            isActive ? "border-primary bg-primary/10 text-primary font-medium" : "hover:bg-muted",
+          )}
         >
           {label}
           {selected.length > 0 && (
@@ -97,7 +101,7 @@ export function SearchableFilterPill<T extends string>({
             <div className="relative">
               <Search className="absolute left-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
               <input
-                className="w-full rounded-md bg-muted/50 py-1.5 pl-7 pr-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-1 focus:ring-ring"
+                className="w-full rounded-control bg-muted/50 py-1.5 pl-7 pr-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-1 focus:ring-ring"
                 placeholder={searchPlaceholder}
                 value={query}
                 onChange={e => {
@@ -124,6 +128,7 @@ export function SearchableFilterPill<T extends string>({
                   onToggle(opt.value as T);
                 }}
               />
+              {opt.color && <span className="size-2.5 shrink-0 rounded-full" style={{ backgroundColor: opt.color }} />}
               {opt.label}
             </label>
           ))}

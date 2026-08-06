@@ -49,7 +49,7 @@ export const AppVerticalTabs = ({ tabs, item }: AppVerticalTabsProps): React.JSX
             {tabs.map((tab, index) => (
               <div
                 key={index}
-                className={`px-2 py-2 rounded-2xl text-sm transition-colors flex items-center gap-2 ${
+                className={`px-2 py-2 rounded-control text-sm transition-colors flex items-center gap-2 ${
                   tab.disabled
                     ? "text-gray-400 cursor-not-allowed opacity-50"
                     : activeTab === tab.value
