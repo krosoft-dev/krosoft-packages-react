@@ -31,21 +31,21 @@ export function AppPageHeader({
   useDocumentTitle(t(titleKey));
 
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-      <div className="flex items-center gap-4">
+    <div className="flex flex-row items-center justify-between gap-3 md:gap-4">
+      <div className="flex min-w-0 items-center gap-3 md:gap-4">
         {onBack && (
-          <Button variant="ghost" size="icon" onClick={onBack}>
+          <Button variant="ghost" size="icon" className="shrink-0" onClick={onBack}>
             <ArrowLeftIcon className="h-4 w-4" />
           </Button>
         )}
         {Icon && (
-          <div className="size-12 bg-blue-100 rounded-control flex items-center justify-center">
+          <div className="size-12 shrink-0 bg-blue-100 rounded-control flex items-center justify-center">
             <Icon className="h-6 w-6 text-blue-600" />
           </div>
         )}
         <AppTitle titleKey={titleKey} descriptionKey={descriptionKey} />
       </div>
-      <div className="flex items-center gap-4">
+      <div className="flex shrink-0 items-center gap-2 md:gap-4">
         {renderPreActions && renderPreActions()}
         <AppActions actions={actions} className={className} />
       </div>
