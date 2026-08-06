@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import type { Config } from "tailwindcss";
+import tailwindcssAnimate from "tailwindcss-animate";
 
 /**
  * Shared Tailwind CSS preset for @krosoft/react projects.
@@ -111,6 +112,12 @@ const krosoftPreset = {
       },
     },
   },
+  // Les composants shadcn du package utilisent `animate-in`, `fade-in-0`,
+  // `zoom-in-95`, `slide-in-from-*`… Sans ce plugin, ces classes ne sont pas
+  // générées et les overlays (dialog, popover, select, dropdown) s'affichent
+  // sans transition. Le plugin est porté par le preset pour que les projets
+  // consommateurs n'aient rien à déclarer de leur côté.
+  plugins: [tailwindcssAnimate],
 } satisfies Config;
 
 export default krosoftPreset;
