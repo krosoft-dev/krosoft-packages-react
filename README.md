@@ -46,15 +46,16 @@ Ces couleurs sont désormais mappées par le preset partagé : un projet consomm
 
 Story `Démos/Radius` pour comparer les presets, sélecteur **Radius** dans la barre d'outils Storybook pour les appliquer à n'importe quelle story.
 
-### Changer de preset au runtime
+### Appliquer un preset depuis le code
 
-Quand la forme est figée pour toute l'application, l'override de `:root` ci-dessus reste le bon choix : servi avec la feuille de style, il évite tout flash au premier rendu.
+La forme est une décision de design, pas une préférence utilisateur : elle se fixe une fois pour l'application, aux côtés des couleurs du thème. L'override de `:root` ci-dessus est la voie normale — servi avec la feuille de style, il évite tout flash au premier rendu.
 
-Pour un changement à chaud (sélecteur utilisateur, Storybook), les mêmes presets sont exposés en TypeScript — un preset n'est rien d'autre qu'un jeu de variables CSS :
+Les mêmes presets sont exposés en TypeScript pour les cas où la forme vient du code plutôt que du CSS : configuration chargée au démarrage, application multi-marques, aperçu dans une story.
 
 ```ts
 import { applyTokenPreset, radiusPresets } from "@krosoft/react/tokens";
 
+// dans main.tsx, avant createRoot().render()
 applyTokenPreset(radiusPresets, "round"); // pose les variables sur <html>
 ```
 
