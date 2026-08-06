@@ -77,13 +77,62 @@ const krosoftPreset = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+
+        // Couleurs ajoutées par krosoft (variables préfixées --k-). Les composants
+        // du package utilisent ces classes (bg-success, text-topbar-foreground,
+        // text-sidebar-muted…) : sans ce mapping, elles ne sont pas générées et
+        // chaque projet consommateur doit les redéclarer de son côté.
+        success: {
+          DEFAULT: "hsl(var(--k-success))",
+          foreground: "hsl(var(--k-success-foreground))",
+        },
+        warning: {
+          DEFAULT: "hsl(var(--k-warning))",
+          foreground: "hsl(var(--k-warning-foreground))",
+        },
+        info: {
+          DEFAULT: "hsl(var(--k-info))",
+          foreground: "hsl(var(--k-info-foreground))",
+        },
+        // sidebar-* vient de shadcn, seul --k-sidebar-muted est un ajout krosoft.
+        sidebar: {
+          DEFAULT: "hsl(var(--sidebar-background))",
+          foreground: "hsl(var(--sidebar-foreground))",
+          primary: {
+            DEFAULT: "hsl(var(--sidebar-primary))",
+            foreground: "hsl(var(--sidebar-primary-foreground))",
+          },
+          accent: {
+            DEFAULT: "hsl(var(--sidebar-accent))",
+            foreground: "hsl(var(--sidebar-accent-foreground))",
+          },
+          border: "hsl(var(--sidebar-border))",
+          ring: "hsl(var(--sidebar-ring))",
+          muted: "hsl(var(--k-sidebar-muted))",
+        },
+        topbar: {
+          DEFAULT: "hsl(var(--k-topbar-background))",
+          foreground: "hsl(var(--k-topbar-foreground))",
+          primary: {
+            DEFAULT: "hsl(var(--k-topbar-primary))",
+            foreground: "hsl(var(--k-topbar-primary-foreground))",
+          },
+          accent: {
+            DEFAULT: "hsl(var(--k-topbar-accent))",
+            foreground: "hsl(var(--k-topbar-accent-foreground))",
+          },
+          border: "hsl(var(--k-topbar-border))",
+          ring: "hsl(var(--k-topbar-ring))",
+          muted: "hsl(var(--k-topbar-muted))",
+        },
       },
       borderRadius: {
-        // Tokens sémantiques — à privilégier dans les composants.
-        // Ils garantissent qu'un input, un bouton et une pastille de filtre
-        // posés côte à côte partagent toujours la même forme.
-        control: "var(--radius-control, var(--radius))",
-        surface: "var(--radius-surface, var(--radius))",
+        // Tokens sémantiques krosoft (préfixe --k-) — à privilégier dans les
+        // composants. Ils garantissent qu'un input, un bouton et une pastille de
+        // filtre posés côte à côte partagent toujours la même forme. Le repli sur
+        // --radius laisse un projet purement shadcn fonctionner sans les déclarer.
+        control: "var(--k-radius-control, var(--radius))",
+        surface: "var(--k-radius-surface, var(--radius))",
         // Échelle historique, dérivée de --radius : réservée aux éléments
         // internes (items de menu, checkbox, poignées…) qui ne doivent jamais
         // devenir des capsules. max() protège le preset "square" (--radius: 0).

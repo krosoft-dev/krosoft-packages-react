@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { TableFilter } from "@/components/core/filters/TableFilter";
 import { Badge, Button, Card, CardContent, CardHeader, CardTitle, Input, Switch } from "@/components/ui";
+import { tokensToStyle } from "@/tokens";
 import type { FilterSection } from "@/types/FilterSection";
 
 const SECTIONS: FilterSection[] = [
@@ -45,9 +46,9 @@ const SECTIONS: FilterSection[] = [
 ];
 
 const PRESETS = [
-  { value: "square", label: "square", description: "Angles vifs — --radius-control: 0" },
-  { value: "soft", label: "soft", description: "Défaut — --radius-control: 0.5rem" },
-  { value: "round", label: "round", description: "Capsules — --radius-control: 9999px" },
+  { value: "square", label: "square", description: "Angles vifs — --k-radius-control: 0" },
+  { value: "soft", label: "soft", description: "Défaut — --k-radius-control: 0.5rem" },
+  { value: "round", label: "round", description: "Capsules — --k-radius-control: 9999px" },
 ] as const;
 
 /** Une barre de filtres complète + quelques contrôles, sous un preset donné. */
@@ -87,7 +88,7 @@ const Echantillon = ({ radius, description }: { radius: string; description: str
           <CardTitle className="text-base">Surface</CardTitle>
         </CardHeader>
         <CardContent className="text-sm text-muted-foreground">
-          Les conteneurs suivent <code>--radius-surface</code>, distinct de <code>--radius-control</code> : en preset
+          Les conteneurs suivent <code>--k-radius-surface</code>, distinct de <code>--k-radius-control</code> : en preset
           <em> round</em>, les contrôles deviennent des capsules sans que les cartes ne s&apos;arrondissent à l&apos;excès.
         </CardContent>
       </Card>
@@ -124,13 +125,9 @@ export const Comparaison: Story = {
 export const ValeursPersonnalisees: Story = {
   name: "Valeurs personnalisées",
   render: () => (
-    <div
-      className="space-y-4 p-4"
-      style={{ "--radius-control": "3px", "--radius-surface": "18px", "--radius": "4px" } as React.CSSProperties}
-    >
+    <div className="space-y-4 p-4" style={tokensToStyle({ "--k-radius-control": "3px", "--k-radius-surface": "18px", "--radius": "4px" })}>
       <p className="text-xs text-muted-foreground">
-        Aucun preset : les variables sont redéfinies directement (<code>--radius-control: 3px</code>,{" "}
-        <code>--radius-surface: 18px</code>).
+        Aucun preset : les variables sont redéfinies directement (<code>--k-radius-control: 3px</code>, <code>--k-radius-surface: 18px</code>).
       </p>
       <div className="flex flex-wrap items-center gap-3">
         <Button>Enregistrer</Button>

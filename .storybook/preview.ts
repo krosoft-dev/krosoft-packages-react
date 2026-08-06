@@ -1,7 +1,9 @@
 import type { Decorator, Preview } from "@storybook/react-vite";
 import { withThemeByClassName } from "@storybook/addon-themes";
 import "../src/styles/globals.css";
+import { applyTokenPreset } from "@/tokens";
 import { DEMO_THEME_OPTIONS } from "../stories/constants/themes";
+import { DEMO_TOKEN_FAMILIES } from "../stories/constants/tokens";
 
 // Construit depuis DEMO_THEME_OPTIONS — source de vérité unique pour les thèmes
 const themes = Object.fromEntries(
@@ -10,12 +12,39 @@ const themes = Object.fromEntries(
     .map(o => [o.label, o.value === "light" ? "" : o.value]),
 );
 
-// Reflète le preset de radius sélectionné sur <html data-radius="…">,
-// exactement comme une application consommatrice le ferait.
-const withRadius: Decorator = (Story, context) => {
-  document.documentElement.setAttribute("data-radius", context.globals.radius as string);
+// Un seul décorateur pour toutes les familles de tokens : les presets sélectionnés
+// sont posés en variables CSS sur <html>, ce que ferait un sélecteur runtime dans
+// une application consommatrice. Ajouter une famille = une entrée dans
+// DEMO_TOKEN_FAMILIES, rien d'autre.
+const withTokens: Decorator = (Story, context) => {
+  const globals = context.globals as Record<string, string | undefined>;
+
+  for (const family of DEMO_TOKEN_FAMILIES) {
+    const preset = globals[family.id];
+    if (preset && preset in family.presets) {
+      applyTokenPreset(family.presets, preset);
+    }
+  }
+
   return Story();
 };
+
+const tokenGlobalTypes = Object.fromEntries(
+  DEMO_TOKEN_FAMILIES.map(family => [
+    family.id,
+    {
+      description: `Preset de ${family.title.toLowerCase()} appliqué à tous les composants`,
+      toolbar: {
+        title: family.title,
+        icon: family.icon,
+        items: Object.keys(family.presets).map(value => ({ value, title: family.labels?.[value] ?? value })),
+        dynamicTitle: true,
+      },
+    },
+  ]),
+);
+
+const tokenInitialGlobals = Object.fromEntries(DEMO_TOKEN_FAMILIES.map(family => [family.id, family.defaultPreset]));
 
 const preview: Preview = {
   parameters: {
@@ -26,26 +55,10 @@ const preview: Preview = {
       },
     },
   },
-  globalTypes: {
-    radius: {
-      description: "Preset de radius appliqué à tous les composants",
-      toolbar: {
-        title: "Radius",
-        icon: "component",
-        items: [
-          { value: "soft", title: "Soft (défaut)" },
-          { value: "square", title: "Square" },
-          { value: "round", title: "Round" },
-        ],
-        dynamicTitle: true,
-      },
-    },
-  },
-  initialGlobals: {
-    radius: "soft",
-  },
+  globalTypes: tokenGlobalTypes,
+  initialGlobals: tokenInitialGlobals,
   decorators: [
-    withRadius,
+    withTokens,
     withThemeByClassName({
       themes,
       defaultTheme: "Clair",

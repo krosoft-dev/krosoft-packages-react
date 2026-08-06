@@ -115,7 +115,7 @@ export function DataTable<T>({
     // bascule sur les valeurs plafonnées : ni ses contrôles ni son cadre ne
     // prennent la forme capsule. Le scope couvre le cadre, les actions
     // groupées et la pagination. Les fallbacks correspondent au preset "soft".
-    <div className="space-y-4 [--radius-control:var(--radius-control-dense,0.5rem)] [--radius-surface:var(--radius-surface-dense,0.75rem)]">
+    <div className="space-y-4 [--k-radius-control:var(--k-radius-control-dense,0.5rem)] [--k-radius-surface:var(--k-radius-surface-dense,0.75rem)]">
       {selectedRows.length > 0 && bulkActions !== undefined && bulkActions.length > 0 && (
         <TableBulkActions selectedRows={selectedRows} setSelectedRows={setSelectedRows} bulkActions={bulkActions} />
       )}
