@@ -110,6 +110,15 @@ const krosoftPreset = {
           DEFAULT: "hsl(var(--k-info))",
           foreground: "hsl(var(--k-info-foreground))",
         },
+        // Palette des séries de graphes : utilisable en classes (fill-chart-1,
+        // text-chart-2…) pour les légendes et pastilles rendues hors du SVG.
+        chart: {
+          1: "hsl(var(--k-chart-1))",
+          2: "hsl(var(--k-chart-2))",
+          3: "hsl(var(--k-chart-3))",
+          4: "hsl(var(--k-chart-4))",
+          5: "hsl(var(--k-chart-5))",
+        },
         // sidebar-* vient de shadcn, seul --k-sidebar-muted est un ajout krosoft.
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
