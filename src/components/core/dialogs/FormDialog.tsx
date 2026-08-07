@@ -130,7 +130,7 @@ export default function FormDialog<T>({
       config={config}
       isLoading={isSaving || isLoading}
     >
-      <div className="py-4">
+      <div>
         {headerBadge !== undefined ? <div className="mb-4">{headerBadge(data)}</div> : null}
 
         <GenericForm

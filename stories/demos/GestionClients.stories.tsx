@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { PlusIcon, UserIcon } from "lucide-react";
+import { PlusIcon, UserIcon, UsersIcon } from "lucide-react";
 import React, { useState } from "react";
 import FormDialog from "@/components/core/dialogs/FormDialog";
+import { AppPageHeader } from "@/components/core/layouts/AppPageHeader";
 import { ColumnDef, DataTable } from "@/components/core/table/DataTable";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import type { FormSchema } from "@/types";
 
 // --- Modèle de données -------------------------------------------------------
@@ -210,19 +210,12 @@ const GestionClientsPage = (): React.JSX.Element => {
 
   return (
     <div className="mx-auto max-w-5xl space-y-6 p-4">
-      <div className="flex items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">Gestion des clients</h1>
-          <p className="text-sm text-muted-foreground">
-            Démo de <code>FormDialog</code> : cliquez une ligne pour consulter la fiche (lecture seule), puis « Modifier » pour l&apos;éditer, ou créez un
-            nouveau client.
-          </p>
-        </div>
-        <Button onClick={ouvrirCreation}>
-          <PlusIcon className="mr-2 size-4" />
-          Nouveau client
-        </Button>
-      </div>
+      <AppPageHeader
+        icon={UsersIcon}
+        titleKey="Gestion des clients"
+        descriptionKey="Démo de FormDialog : cliquez une ligne pour consulter la fiche (lecture seule), puis « Modifier » pour l'éditer, ou créez un nouveau client."
+        actions={[{ labelKey: "Nouveau client", icon: PlusIcon, onClick: ouvrirCreation }]}
+      />
 
       <DataTable data={clients} columns={columns} getRowId={row => row.id} onRowClick={ouvrirFiche} defaultPageSize={10} columnVisibility={false} />
 
