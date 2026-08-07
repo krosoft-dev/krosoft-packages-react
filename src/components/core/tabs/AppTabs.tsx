@@ -1,5 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { TabConfig } from "@/types/TabConfig";
+import { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 import { cn } from "@/helpers/tailwind.helper";
@@ -25,9 +26,18 @@ export function AppTabs({ tabs, itemId, item, fit }: AppTabsProps): React.JSX.El
     setSearchParams(newSearchParams);
   };
 
+  // La liste défile horizontalement quand les onglets ne tiennent pas dans la largeur : sans ce
+  // recentrage, un onglet actif situé hors écran (lien profond ?tab=…, ou beaucoup d'onglets sur
+  // mobile) resterait invisible. "nearest" ne bouge rien quand l'onglet est déjà visible.
+  const listRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const activeTrigger = listRef.current?.querySelector<HTMLElement>('[data-state="active"]');
+    activeTrigger?.scrollIntoView?.({ behavior: "smooth", block: "nearest", inline: "nearest" });
+  }, [activeTab]);
+
   return (
     <Tabs value={activeTab} onValueChange={handleTabChange}>
-      <TabsList className={cn("w-full justify-start", fit && "sm:w-fit")}>
+      <TabsList ref={listRef} className={cn("w-full justify-start", fit && "sm:w-fit")}>
         {tabs.map(tab => (
           <TabsTrigger key={tab.value} value={tab.value} className="gap-2" disabled={tab.disabled}>
             {tab.icon ? (

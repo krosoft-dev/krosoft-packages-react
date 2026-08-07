@@ -35,6 +35,12 @@ const tabsWithIcons: TabConfig[] = [
   { value: "parametres", titleKey: "Paramètres", icon: Settings, component: makeContent("Paramètres") },
 ];
 
+const manyTabs: TabConfig[] = ["Informations générales", "Visualisation", "Exécutions", "Planifications", "Historique", "Paramètres"].map(label => ({
+  value: label.toLowerCase().replace(/\s/g, "-"),
+  titleKey: label,
+  component: makeContent(label),
+}));
+
 type SampleItem = { contacts: number; documents: number };
 
 const tabsWithCount: TabConfig<SampleItem>[] = [
@@ -118,4 +124,17 @@ export const FitWidth: Story = {
     tabs: tabsWithIcons,
     fit: true,
   },
+};
+
+// Largeur volontairement contrainte pour reproduire le mobile : la liste défile
+// horizontalement au lieu d'élargir la page.
+export const ScrollableTabs: Story = {
+  args: {
+    tabs: manyTabs,
+  },
+  render: args => (
+    <div className="max-w-[360px] border border-dashed border-border p-2">
+      <AppTabs {...args} />
+    </div>
+  ),
 };
