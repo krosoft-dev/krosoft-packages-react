@@ -3,6 +3,7 @@ import { BuildingIcon, EuroIcon, UsersIcon, ZapIcon } from "lucide-react";
 import React, { useMemo, useState } from "react";
 import { KpiCards } from "@/components/core/cards/KpiCards";
 import { TableFilter } from "@/components/core/filters/TableFilter";
+import { AppPageHeader } from "@/components/core/layouts/AppPageHeader";
 import { ColumnDef, DataTable } from "@/components/core/table/DataTable";
 import { Badge } from "@/components/ui/badge";
 import type { FilterSection } from "@/types/FilterSection";
@@ -213,12 +214,11 @@ const FiltersAppDemo = (): React.JSX.Element => {
 
   return (
     <div className="mx-auto max-w-6xl space-y-6 p-2">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight">Portefeuille clients</h1>
-        <p className="text-sm text-muted-foreground">
-          Démo d&apos;une application : recherche, filtres rapides, filtres avancés, KPIs et tableau se mettent à jour ensemble en temps réel.
-        </p>
-      </div>
+      <AppPageHeader
+        icon={UsersIcon}
+        titleKey="Portefeuille clients"
+        descriptionKey="Démo d'une application : recherche, filtres rapides, filtres avancés, KPIs et tableau se mettent à jour ensemble en temps réel."
+      />
 
       <KpiCards
         stats={[

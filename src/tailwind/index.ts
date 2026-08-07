@@ -16,17 +16,17 @@ import tailwindcssAnimate from "tailwindcss-animate";
 export const krosoftContent = ["./node_modules/@krosoft/react/dist/**/*.js"];
 
 /**
- * Shared Tailwind CSS preset for @krosoft/react projects.
+ * Preset Tailwind CSS partagé par les projets @krosoft/react.
  *
- * Contains the common shadcn/ui design tokens shared across all projects:
- * - Dark mode configuration
- * - Container settings
- * - Base color mappings (border, input, ring, background, foreground, primary, etc.)
- * - Border radius tokens
- * - Accordion keyframes & animations
- * - tailwindcss-animate plugin
+ * Regroupe les tokens de design shadcn/ui communs à tous les projets :
+ * - configuration du mode sombre ;
+ * - réglages du conteneur ;
+ * - mapping des couleurs de base (border, input, ring, background, foreground, primary…) ;
+ * - tokens de rayon de bordure ;
+ * - keyframes & animations de l'accordéon ;
+ * - plugin tailwindcss-animate.
  *
- * Usage in a consuming project's tailwind.config.ts:
+ * Utilisation dans le tailwind.config.ts d'un projet consommateur :
  *
  * ```ts
  * import krosoftPreset, { krosoftContent } from "@krosoft/react/tailwind";
@@ -36,16 +36,20 @@ export const krosoftContent = ["./node_modules/@krosoft/react/dist/**/*.js"];
  *   content: [...krosoftContent, "./src/**\/*.{ts,tsx}"],
  *   theme: {
  *     extend: {
- *       // project-specific overrides
+ *       // surcharges spécifiques au projet
  *     },
  *   },
  * } satisfies Config;
  * ```
  */
 const krosoftPreset = {
-  // [class*='dark'] is the CSS equivalent of ".dark*" — matches any class containing "dark"
-  // (e.g. "dark", "dark-temporal", "dark-forest"…). CSS has no .dark* wildcard syntax.
-  darkMode: ["class", "[class*='dark']"],
+  // Les thèmes sombres sont des classes posées sur <html> ("dark", "dark-temporal", "dark-forest"…)
+  // et CSS n'a pas de syntaxe .dark*. [class*='dark'] la simulait, mais la sous-chaîne matche aussi
+  // le préfixe des utilitaires eux-mêmes (class="dark:bg-gray-900") : n'importe quel ancêtre portant
+  // une classe dark:* activait donc le mode sombre sur tout son sous-arbre, même en thème clair.
+  // Matcher "dark" comme classe entière, plus tout ce qui contient "dark-", couvre la famille .dark*
+  // sans ce faux positif.
+  darkMode: ["class", ':is([class~="dark"],[class*="dark-"])'],
   theme: {
     container: {
       center: true,
@@ -105,6 +109,15 @@ const krosoftPreset = {
         info: {
           DEFAULT: "hsl(var(--k-info))",
           foreground: "hsl(var(--k-info-foreground))",
+        },
+        // Palette des séries de graphes : utilisable en classes (fill-chart-1,
+        // text-chart-2…) pour les légendes et pastilles rendues hors du SVG.
+        chart: {
+          1: "hsl(var(--k-chart-1))",
+          2: "hsl(var(--k-chart-2))",
+          3: "hsl(var(--k-chart-3))",
+          4: "hsl(var(--k-chart-4))",
+          5: "hsl(var(--k-chart-5))",
         },
         // sidebar-* vient de shadcn, seul --k-sidebar-muted est un ajout krosoft.
         sidebar: {

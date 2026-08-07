@@ -1,7 +1,7 @@
 import { cleanup, render, screen } from "@testing-library/react";
 import * as React from "react";
 import { MemoryRouter } from "react-router-dom";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { AppTabs } from "../../../../src/components/core/tabs/AppTabs";
 import type { TabConfig } from "../../../../src/types/TabConfig";
 
@@ -19,6 +19,8 @@ const renderTabs = (initialUrl: string): ReturnType<typeof render> =>
 
 afterEach(() => {
   cleanup();
+  // scrollIntoView n'existe pas dans jsdom : le supprimer rend son absence aux autres tests.
+  Reflect.deleteProperty(Element.prototype, "scrollIntoView");
 });
 
 describe("AppTabs", () => {
@@ -38,5 +40,16 @@ describe("AppTabs", () => {
     renderTabs("/?tab=inexistant");
 
     expect(screen.getByText("contenu utilisateurs")).toBeTruthy();
+  });
+
+  it("ramène l'onglet actif dans la zone visible de la liste", () => {
+    // La liste défile horizontalement : un onglet actif hors écran doit être recentré.
+    // jsdom n'implémente pas scrollIntoView, on l'observe via un stub.
+    const scrollIntoView = vi.fn();
+    Element.prototype.scrollIntoView = scrollIntoView;
+
+    renderTabs("/?tab=roles");
+
+    expect(scrollIntoView.mock.contexts[0]).toBe(screen.getByRole("tab", { name: "Rôles" }));
   });
 });
