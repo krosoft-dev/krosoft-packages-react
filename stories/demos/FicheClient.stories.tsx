@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react-vite";
 import { BriefcaseIcon, MapPinIcon, UserIcon } from "lucide-react";
 import React, { useState } from "react";
 import { GenericForm } from "@/components/core/forms/GenericForm";
+import { AppPageHeader } from "@/components/core/layouts/AppPageHeader";
 import { Badge } from "@/components/ui/badge";
 import type { FormSchema } from "@/types";
 
@@ -205,17 +206,11 @@ const FicheClientPage = (initialData?: FicheClient): React.JSX.Element => {
 
   return (
     <div className="mx-auto max-w-4xl space-y-6 p-4">
-      <div className="flex items-center gap-4">
-        <div className="flex size-12 items-center justify-center rounded-lg bg-blue-100">
-          <BriefcaseIcon className="size-6 text-blue-600" />
-        </div>
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight">{estEdition ? "Modifier la fiche client" : "Nouveau client"}</h1>
-          <p className="text-sm text-muted-foreground">
-            Démo d&apos;une page de formulaire applicative : sections, validation Zod, grille responsive et retour de soumission.
-          </p>
-        </div>
-      </div>
+      <AppPageHeader
+        icon={BriefcaseIcon}
+        titleKey={estEdition ? "Modifier la fiche client" : "Nouveau client"}
+        descriptionKey="Démo d'une page de formulaire applicative : sections, validation Zod, grille responsive et retour de soumission."
+      />
 
       <GenericForm<FicheClient>
         schema={schema}

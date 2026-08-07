@@ -14,6 +14,8 @@ interface MultiSelectProps {
   searchable?: boolean;
   searchPlaceholder?: string;
   disabled?: boolean;
+  /** Nombre de libellés affichés dans le trigger, le reste est résumé par un compteur `+N`. */
+  maxCount?: number;
 }
 
 export const MultiSelect = ({
@@ -26,6 +28,7 @@ export const MultiSelect = ({
   searchable = false,
   searchPlaceholder = "Rechercher...",
   disabled = false,
+  maxCount,
 }: MultiSelectProps): React.ReactElement => {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
@@ -41,6 +44,13 @@ export const MultiSelect = ({
     if (filteredOptions.length === 0) return false;
     return filteredOptions.every(opt => selected.includes(opt.value));
   }, [filteredOptions, selected]);
+
+  // Au-delà de `maxCount`, les libellés restants sont résumés par un compteur gardé hors
+  // de la zone tronquée : sinon des libellés longs mangent tout le trigger et on ne voit
+  // plus combien de valeurs sont réellement sélectionnées.
+  const selectedLabels = useMemo(() => selected.map(s => options.find(o => o.value === s)?.label ?? s), [options, selected]);
+  const visibleLabels = maxCount !== undefined && maxCount > 0 ? selectedLabels.slice(0, maxCount) : selectedLabels;
+  const hiddenCount = selectedLabels.length - visibleLabels.length;
 
   // Focus l'input quand le dropdown s'ouvre
   useEffect(() => {
@@ -110,8 +120,9 @@ export const MultiSelect = ({
         onClick={handleToggle}
         className={cn(controlTriggerClass, "w-full", open && "ring-2 ring-ring ring-offset-2", selected.length === 0 && "text-muted-foreground")}
       >
-        <span className="truncate">{selected.length === 0 ? placeholder : selected.map(s => options.find(o => o.value === s)?.label ?? s).join(", ")}</span>
+        <span className="truncate">{selected.length === 0 ? placeholder : visibleLabels.join(", ")}</span>
         <div className="flex shrink-0 items-center gap-1">
+          {hiddenCount > 0 && <span className="rounded-control bg-muted px-1.5 py-0.5 text-xs font-medium text-foreground">+{hiddenCount}</span>}
           {selected.length > 0 && !disabled && (
             <span
               role="button"

@@ -3,6 +3,7 @@ export { useDocumentTitle } from "./useDocumentTitle";
 export { useMobile } from "./useMobile";
 export { useNotifications } from "./useNotifications";
 export type { UseNotificationsResult } from "./useNotifications";
+export { useScrollFade } from "./useScrollFade";
 export { useServerTable } from "./useServerTable";
 export type { UseServerTableResult } from "./useServerTable";
 export { useTheme } from "./useTheme";

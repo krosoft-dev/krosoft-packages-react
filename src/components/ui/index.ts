@@ -23,6 +23,7 @@ export type { CalendarProps } from "./calendar";
 export { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "./card";
 export { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from "./carousel";
 export { ChartContainer, ChartLegend, ChartLegendContent, ChartStyle, ChartTooltip, ChartTooltipContent } from "./chart";
+export type { ChartConfig } from "./chart";
 export { Checkbox } from "./checkbox";
 export { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./collapsible";
 export { controlBaseClass, controlTriggerClass } from "./control";

@@ -1,17 +1,43 @@
-import React, { useState, useMemo, useRef, useEffect } from "react";
-import { ChevronDownIcon, SearchIcon, CheckIcon, XIcon } from "lucide-react";
-import { controlTriggerClass } from "@/components/ui";
+import React, { useMemo, useState } from "react";
+import { CheckIcon, ChevronDownIcon, PlusIcon, XIcon } from "lucide-react";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  controlTriggerClass,
+} from "@/components/ui";
 import { cn } from "@/helpers/tailwind.helper";
 import type { SelectOption } from "@krosoft/core/types";
 
+export interface SearchableSelectOption extends SelectOption {
+  /** Texte secondaire affiché en gris à côté du libellé (ex. le groupe d'un tenant). Inclus dans la recherche. */
+  description?: string;
+}
+
 interface SearchableSelectProps {
-  options?: SelectOption[];
+  options?: SearchableSelectOption[];
   value: string | undefined;
   onChange: (value: string) => void;
   onClear?: () => void;
+  /** Fourni : propose de créer une option quand la saisie ne correspond à aucun libellé existant. */
+  onCreate?: (label: string) => void;
   placeholder?: string;
   searchPlaceholder?: string;
+  emptyLabel?: string;
+  createLabel?: (search: string) => string;
   disabled?: boolean;
+  /**
+   * Panneau rendu en modal (défaut, comme le `Select`). À laisser tel quel dans une boîte de
+   * dialogue : sans ça, le `Dialog` neutralise les clics sur le panneau porté dans le portail.
+   */
+  modal?: boolean;
+  className?: string;
 }
 
 export const SearchableSelect = ({
@@ -19,143 +45,124 @@ export const SearchableSelect = ({
   value,
   onChange,
   onClear,
+  onCreate,
   placeholder = "Sélectionner...",
   searchPlaceholder = "Rechercher...",
+  emptyLabel = "Aucun résultat",
+  createLabel = search => `Créer « ${search} »`,
   disabled = false,
+  modal = true,
+  className,
 }: SearchableSelectProps): React.ReactElement => {
-  const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const [search, setSearch] = useState("");
 
-  const filteredOptions = useMemo(() => {
-    if (query === "") return options;
-    return options.filter(o => o.label.toLowerCase().includes(query.toLowerCase()));
-  }, [options, query]);
+  const hasValue = value !== undefined && value !== "";
+  const selectedOption = useMemo(() => (hasValue ? options.find(o => o.value === value) : undefined), [hasValue, options, value]);
+  const selectedLabel = hasValue ? (selectedOption?.label ?? value) : undefined;
 
-  const selectedOption = useMemo(() => {
-    if (value === undefined || value === "") return undefined;
-    return options.find(o => o.value === value);
-  }, [options, value]);
+  const trimmedSearch = search.trim();
+  const canCreate = onCreate !== undefined && trimmedSearch !== "" && !options.some(o => o.label.toLowerCase() === trimmedSearch.toLowerCase());
 
-  const selectedLabel = value === undefined || value === "" ? undefined : (selectedOption?.label ?? value);
-
-  // Focus l'input quand le dropdown s'ouvre
-  useEffect(() => {
-    if (open) {
-      // Petit délai pour que le DOM soit rendu
-      requestAnimationFrame(() => {
-        inputRef.current?.focus();
-      });
-    }
-  }, [open]);
-
-  // Fermer quand on clique en dehors
-  useEffect(() => {
-    if (!open) return;
-    const handleClickOutside = (e: MouseEvent): void => {
-      if (containerRef.current !== null && !containerRef.current.contains(e.target as Node)) {
-        setOpen(false);
-        setQuery("");
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [open]);
+  const handleOpenChange = (isOpen: boolean): void => {
+    setOpen(isOpen);
+    if (!isOpen) setSearch("");
+  };
 
   const handleSelect = (optionValue: string): void => {
     onChange(optionValue);
-    setOpen(false);
-    setQuery("");
+    handleOpenChange(false);
   };
 
-  const handleToggle = (): void => {
-    if (disabled) return;
-    setOpen(prev => {
-      if (prev) setQuery("");
-      return !prev;
-    });
+  const handleCreate = (): void => {
+    onCreate?.(trimmedSearch);
+    handleOpenChange(false);
   };
 
   return (
-    <div ref={containerRef} className="relative w-full">
-      <button
-        type="button"
-        onClick={handleToggle}
-        disabled={disabled}
-        className={cn(
-          controlTriggerClass,
-          "w-full",
-          open && "ring-2 ring-ring ring-offset-2",
-          (value === undefined || value === "") && "text-muted-foreground",
-        )}
-      >
-        <span className="flex items-center gap-2 truncate">
-          {selectedOption?.color && <span className="size-2.5 shrink-0 rounded-full" style={{ backgroundColor: selectedOption.color }} />}
-          <span className="truncate">{selectedLabel ?? placeholder}</span>
-        </span>
-        <div className="flex items-center gap-1">
-          {onClear && value !== undefined && value !== "" && !disabled && (
-            <span
-              role="button"
-              tabIndex={-1}
-              onClick={e => {
-                e.stopPropagation();
-              }}
-              onPointerDown={e => {
-                e.preventDefault();
-                e.stopPropagation();
-                onClear();
-              }}
-              className="text-muted-foreground hover:text-foreground"
-            >
-              <XIcon className="size-4" />
-            </span>
+    <Popover open={open} onOpenChange={handleOpenChange} modal={modal}>
+      <PopoverTrigger asChild>
+        <button
+          type="button"
+          role="combobox"
+          aria-expanded={open}
+          disabled={disabled}
+          className={cn(
+            controlTriggerClass,
+            "w-full",
+            "data-[state=open]:ring-2 data-[state=open]:ring-ring data-[state=open]:ring-offset-2",
+            !hasValue && "text-muted-foreground",
+            className,
           )}
-          <ChevronDownIcon className={cn("size-4 opacity-50 shrink-0 transition-transform", open && "rotate-180")} />
-        </div>
-      </button>
-
-      {open ? (
-        <div className="absolute left-0 right-0 top-[calc(100%+4px)] z-[100] rounded-surface border bg-popover text-popover-foreground shadow-md animate-in fade-in-0 zoom-in-95 slide-in-from-top-2">
-          <div className="border-b border-border p-2">
-            <div className="relative">
-              <SearchIcon className="absolute left-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
-              <input
-                ref={inputRef}
-                className="w-full rounded-control bg-muted/50 py-1.5 pl-7 pr-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-1 focus:ring-ring"
-                placeholder={searchPlaceholder}
-                value={query}
-                onChange={e => {
-                  setQuery(e.target.value);
+        >
+          {/* Marges explicites plutôt qu'un `gap` : `controlTriggerClass` applique `line-clamp-1`
+              à ce span, ce qui le passe en `-webkit-box` et neutralise la mise en page flex. */}
+          <span className="flex items-center truncate">
+            {selectedOption?.color && <span className="mr-2 size-2.5 shrink-0 rounded-full" style={{ backgroundColor: selectedOption.color }} />}
+            <span className="truncate">{selectedLabel ?? placeholder}</span>
+            {selectedOption?.description !== undefined && <span className="ml-1 truncate text-muted-foreground">({selectedOption.description})</span>}
+          </span>
+          <div className="flex items-center gap-1">
+            {onClear && hasValue && !disabled && (
+              <span
+                role="button"
+                tabIndex={-1}
+                onClick={e => {
+                  e.stopPropagation();
                 }}
-              />
-            </div>
-          </div>
-          <div className="flex flex-col gap-0.5 max-h-56 overflow-y-auto p-1.5 scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-muted-foreground/20 scrollbar-track-transparent [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-muted-foreground/20 [&::-webkit-scrollbar-track]:bg-transparent">
-            {filteredOptions.length === 0 && <p className="px-2 py-3 text-center text-xs text-muted-foreground">Aucun résultat</p>}
-            {filteredOptions.map(opt => (
-              <button
-                key={opt.value}
-                type="button"
-                onClick={() => {
-                  handleSelect(opt.value);
+                onPointerDown={e => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  onClear();
                 }}
-                className={cn(
-                  "flex items-center gap-2.5 rounded-md px-2 py-2 text-sm hover:bg-muted cursor-pointer transition-colors text-left w-full",
-                  value === opt.value && "bg-muted font-medium",
-                )}
+                className="text-muted-foreground hover:text-foreground"
               >
-                <CheckIcon className={cn("size-3.5 shrink-0", value === opt.value ? "opacity-100" : "opacity-0")} />
-                {opt.color && <span className="size-2.5 shrink-0 rounded-full" style={{ backgroundColor: opt.color }} />}
-                {opt.label}
-              </button>
-            ))}
+                <XIcon className="size-4" />
+              </span>
+            )}
+            <ChevronDownIcon className={cn("size-4 shrink-0 opacity-50 transition-transform", open && "rotate-180")} />
           </div>
-        </div>
-      ) : null}
-    </div>
+        </button>
+      </PopoverTrigger>
+
+      <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
+        {/* Le filtrage ne porte que sur les mots-clés : la `value` d'un item est son identifiant
+            (souvent un GUID), qui produirait des correspondances absurdes. */}
+        <Command
+          filter={(_, searchValue, keywords) => {
+            const haystack = (keywords ?? []).join(" ").toLowerCase();
+            return haystack.includes(searchValue.trim().toLowerCase()) ? 1 : 0;
+          }}
+        >
+          <CommandInput placeholder={searchPlaceholder} value={search} onValueChange={setSearch} />
+          <CommandList>
+            {!canCreate && <CommandEmpty>{emptyLabel}</CommandEmpty>}
+            <CommandGroup>
+              {options.map(option => (
+                <CommandItem
+                  key={option.value}
+                  value={option.value}
+                  keywords={[option.label, option.description ?? ""]}
+                  onSelect={() => {
+                    handleSelect(option.value);
+                  }}
+                >
+                  <CheckIcon className={cn("mr-2 size-4 shrink-0", value === option.value ? "opacity-100" : "opacity-0")} />
+                  {option.color !== undefined && <span className="mr-2 size-2.5 shrink-0 rounded-full" style={{ backgroundColor: option.color }} />}
+                  <span className="truncate">{option.label}</span>
+                  {option.description !== undefined && <span className="ml-1 truncate text-muted-foreground">({option.description})</span>}
+                </CommandItem>
+              ))}
+              {canCreate && (
+                <CommandItem forceMount value="__create__" onSelect={handleCreate}>
+                  <PlusIcon className="mr-2 size-4 shrink-0" />
+                  <span className="truncate">{createLabel(trimmedSearch)}</span>
+                </CommandItem>
+              )}
+            </CommandGroup>
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
   );
 };

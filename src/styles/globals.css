@@ -50,6 +50,15 @@
     --k-info: 217 91% 60%;
     --k-info-foreground: 0 0% 100%;
 
+    /* Palette des séries de graphes (CHART_COLORS). Volontairement déclarée sur
+       :root seulement : ces teintes moyennes restent lisibles sur fond clair
+       comme sur les thèmes sombres, qui n'ont donc pas à les redéfinir. */
+    --k-chart-1: 217 91% 60%;
+    --k-chart-2: 152 69% 41%;
+    --k-chart-3: 38 92% 50%;
+    --k-chart-4: 262 83% 58%;
+    --k-chart-5: 340 82% 60%;
+
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
