@@ -9,7 +9,7 @@ export interface BarChartHorizontalProps {
   data: ChartDatum[];
   /** Libellé de la série dans le tooltip. */
   label?: string;
-  /** Couleur des barres. Par défaut la couleur primaire du thème. */
+  /** Couleur des barres, sauf celles dont la donnée porte son propre `color`. Par défaut la couleur primaire du thème. */
   color?: string;
   /** Largeur réservée aux libellés de catégories, en pixels. */
   categoryWidth?: number;
@@ -40,10 +40,17 @@ export const BarChartHorizontal = ({
 }: BarChartHorizontalProps): React.JSX.Element => {
   const config = React.useMemo(() => ({ value: { label, color } }), [label, color]);
   const tooltipFormatter = React.useMemo(() => buildTooltipValueFormatter(valueFormatter, label), [valueFormatter, label]);
+  // `fill` porté par la donnée : recharts l'étale sur le rectangle après les
+  // props de `Bar`, il prime donc sur `color`. C'est le remplaçant de `Cell`,
+  // déprécié depuis recharts 3.
+  const chartData = React.useMemo(
+    () => (data.some(datum => datum.color !== undefined) ? data.map(datum => ({ ...datum, fill: datum.color ?? color })) : data),
+    [data, color],
+  );
 
   return (
     <ChartContainer config={config} className={cn("aspect-auto size-full", className)}>
-      <BarChart data={data} layout="vertical" margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
+      <BarChart data={chartData} layout="vertical" margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
         <CartesianGrid strokeDasharray="3 3" horizontal={false} />
         <XAxis
           type="number"

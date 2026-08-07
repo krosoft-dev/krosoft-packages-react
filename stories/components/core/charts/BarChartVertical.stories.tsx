@@ -55,3 +55,15 @@ export const AngledLabels: Story = {
 export const CustomColor: Story = {
   args: { color: "hsl(var(--k-chart-2))" },
 };
+
+export const ColorPerDatum: Story = {
+  args: {
+    label: "Occupation",
+    valueFormatter: value => `${value.toFixed(0)} %`,
+    data: [
+      { name: "Disque C", value: 42, color: "hsl(var(--k-success))" },
+      { name: "Disque D", value: 78, color: "hsl(var(--k-warning))" },
+      { name: "Disque E", value: 94, color: "hsl(var(--destructive))" },
+    ],
+  },
+};

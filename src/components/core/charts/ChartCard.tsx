@@ -5,19 +5,25 @@ import * as React from "react";
 
 export interface ChartCardProps {
   title: string;
-  description?: string;
+  /** Sous-titre. Accepte du contenu riche : mention de troncature, période couverte… */
+  description?: React.ReactNode;
   icon?: React.ElementType;
   /** Contenu aligné à droite de l'en-tête : filtre de période, bascule détaillé/agrégé… */
   actions?: React.ReactNode;
+  /** Contenu sous la zone de rendu : détail chiffré, légende étendue… Masqué pendant le chargement et sur données vides. */
+  footer?: React.ReactNode;
   isLoading?: boolean;
   isEmpty?: boolean;
   emptyLabel?: string;
   /**
-   * Hauteur de la zone de rendu, en pixels. Appliquée en style inline et non en
-   * classe Tailwind : une classe arbitraire construite dynamiquement ne serait
-   * jamais générée dans le CSS du projet consommateur.
+   * Hauteur de la zone de rendu, en pixels (ou toute valeur CSS). Appliquée en
+   * style inline et non en classe Tailwind : une classe arbitraire construite
+   * dynamiquement ne serait jamais générée dans le CSS du projet consommateur.
+   *
+   * `null` retire le style inline pour laisser `contentClassName` piloter la
+   * hauteur — le seul moyen de la faire varier selon le point de rupture.
    */
-  height?: number;
+  height?: number | string | null;
   className?: string;
   contentClassName?: string;
   children: React.ReactNode;
@@ -37,6 +43,7 @@ export const ChartCard = ({
   description,
   icon,
   actions,
+  footer,
   isLoading = false,
   isEmpty = false,
   emptyLabel = "Aucune donnée disponible",
@@ -78,9 +85,10 @@ export const ChartCard = ({
         </div>
       </CardHeader>
       <CardContent>
-        <div className={cn("w-full", contentClassName)} style={{ height }}>
+        <div className={cn("w-full", contentClassName)} style={height === null ? undefined : { height }}>
           {renderContent()}
         </div>
+        {!isLoading && !isEmpty && footer !== undefined && footer !== null ? <div className="mt-4">{footer}</div> : null}
       </CardContent>
     </Card>
   );
