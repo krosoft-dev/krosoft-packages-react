@@ -26,6 +26,12 @@ const DialogOverlay = React.forwardRef<React.ComponentRef<typeof DialogPrimitive
 );
 DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
 
+/**
+ * Plein écran sur mobile, dialog centrée à partir de `sm`.
+ * Passer `h-auto max-h-[95vh] rounded-surface` en `className` pour y déroger.
+ */
+const dialogContentSizing = "w-full max-w-none h-[100dvh] max-h-[100dvh] content-start rounded-none sm:h-auto sm:max-h-[95vh] sm:max-w-lg sm:rounded-surface";
+
 const DialogContent = React.forwardRef<React.ComponentRef<typeof DialogPrimitive.Content>, React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>>(
   ({ className, children, ...props }, ref) => (
     <DialogPortal>
@@ -33,7 +39,8 @@ const DialogContent = React.forwardRef<React.ComponentRef<typeof DialogPrimitive
       <DialogPrimitive.Content
         ref={ref}
         className={cn(
-          "fixed left-[50%] top-[50%] z-[70] grid w-full max-w-lg max-h-[95vh] overflow-y-auto translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-surface",
+          "fixed left-[50%] top-[50%] z-[70] grid overflow-y-auto translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%]",
+          dialogContentSizing,
           className,
         )}
         {...props}
