@@ -99,6 +99,6 @@ Le Storybook est publié sur **https://design.krosoft.fr** — même socle que l
 | `tools/devops/vars/vars.yml`                    | Nom d'image, dossier cible, préfixe d'endpoint SSH |
 | `tools/devops/vars/vars-krosoft-production.yml` | Hôte, chemin et URL de contrôle de l'environnement |
 
-Le pipeline enchaîne `npm ci` → `npm run storybook:build` → image docker nginx (`Dockerfile` et `nginx.conf.template` du repo [`Krosoft.DevOps.AzureDevOps`](https://github.com/krosoft-dev/Krosoft.DevOps.AzureDevOps)) → transfert SSH → `docker compose up`.
+Le pipeline étend `docker-deploy-template.yml` du repo [`Krosoft.DevOps.AzureDevOps`](https://github.com/krosoft-dev/Krosoft.DevOps.AzureDevOps), comme les applis krosoft : `npm ci` → build → image docker nginx → transfert SSH → `docker compose up`.
 
-> **Pourquoi un pipeline autonome et pas un `extends: docker-deploy-template.yml` comme les applis ?** Ce template appelle en dur `npm run build`, qui construit ici le package npm, pas le Storybook. Seule l'étape de build diffère : tout le reste réutilise les templates partagés.
+> **Seule différence avec une appli** : le build est `npm run storybook:build`, pas le `build` du package npm. Le template le prend en charge via `buildScript`, `passViteArgs: false` (storybook refuse les options `--mode`/`--base` de vite) et `outputDir: storybook-static`.

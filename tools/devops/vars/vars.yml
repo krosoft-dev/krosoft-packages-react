@@ -1,5 +1,6 @@
 variables:
   # déploiement
   sshEndpointPrefix: "krosoft-"
+  envVariablesFilePrefix: "tools/devops/vars/vars-krosoft"
   targetFolder: $(remoteBasePath)/krosoft/design
   imageName: "design"
