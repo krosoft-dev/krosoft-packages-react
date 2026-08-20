@@ -3,7 +3,7 @@ import { type DialogProps } from "@radix-ui/react-dialog";
 import { Command as CommandPrimitive } from "cmdk";
 import { SearchIcon } from "lucide-react";
 import * as React from "react";
-import { Dialog, DialogContent } from "./dialog";
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from "./dialog";
 
 const Command = React.forwardRef<React.ElementRef<typeof CommandPrimitive>, React.ComponentPropsWithoutRef<typeof CommandPrimitive>>(
   ({ className, ...props }, ref) => (
@@ -16,13 +16,47 @@ const Command = React.forwardRef<React.ElementRef<typeof CommandPrimitive>, Reac
 );
 Command.displayName = CommandPrimitive.displayName;
 
-interface CommandDialogProps extends DialogProps {}
+export interface CommandDialogProps extends DialogProps {
+  /** Titre de la palette, en `sr-only` : Radix exige un titre sur toute Dialog. */
+  title?: string;
+  /** Description de la palette, en `sr-only`, pour les lecteurs d'écran. */
+  description?: string;
+  /**
+   * `false` désactive le filtrage interne de cmdk : les items rendus sont exactement
+   * ceux passés en enfants. Indispensable quand le filtrage est fait en amont
+   * (côté serveur, ou insensible aux accents) — sinon cmdk masque des résultats déjà filtrés.
+   */
+  shouldFilter?: boolean;
+  /** Classes ajoutées au `Command` interne. */
+  className?: string;
+}
 
-const CommandDialog = ({ children, ...props }: CommandDialogProps) => {
+/**
+ * Palette de commandes : une `Command` dans une `Dialog`.
+ *
+ * Le dimensionnement des icônes des items n'est pas imposé — chaque item garde
+ * les classes qu'on lui donne (`size-4`, `size-5`…).
+ */
+const CommandDialog = ({
+  title = "Palette de commandes",
+  description = "Rechercher une commande à exécuter.",
+  shouldFilter,
+  className,
+  children,
+  ...props
+}: CommandDialogProps): React.ReactElement => {
   return (
     <Dialog {...props}>
       <DialogContent className="overflow-hidden p-0 shadow-lg">
-        <Command className="[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0 [&_[cmdk-group]]:px-2 [&_[cmdk-input-wrapper]_svg]:h-5 [&_[cmdk-input-wrapper]_svg]:w-5 [&_[cmdk-input]]:h-12 [&_[cmdk-item]]:px-2 [&_[cmdk-item]]:py-3 [&_[cmdk-item]_svg]:h-5 [&_[cmdk-item]_svg]:w-5">
+        <DialogTitle className="sr-only">{title}</DialogTitle>
+        <DialogDescription className="sr-only">{description}</DialogDescription>
+        <Command
+          shouldFilter={shouldFilter}
+          className={cn(
+            "[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0 [&_[cmdk-group]]:px-2 [&_[cmdk-input-wrapper]_svg]:size-5 [&_[cmdk-input]]:h-12 [&_[cmdk-item]]:px-2 [&_[cmdk-item]]:py-3",
+            className,
+          )}
+        >
           {children}
         </Command>
       </DialogContent>

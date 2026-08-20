@@ -28,6 +28,7 @@ export { Checkbox } from "./checkbox";
 export { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./collapsible";
 export { controlBaseClass, controlTriggerClass } from "./control";
 export { Command, CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator, CommandShortcut } from "./command";
+export type { CommandDialogProps } from "./command";
 export {
   ContextMenu,
   ContextMenuCheckboxItem,
