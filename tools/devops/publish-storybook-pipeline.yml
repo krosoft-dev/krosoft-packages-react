@@ -1,0 +1,177 @@
+name: Krosoft Design - Publish - $(Date:yyyy.MM.dd).$(BuildID)
+
+# Déploiement du Storybook (design system) en site statique, sur le même socle
+# docker/traefik que les autres applis krosoft. Pipeline autonome — et pas un
+# `extends` de docker-deploy-template.yml@templates — parce que ce template
+# appelle en dur `npm run build`, qui ici construit le package npm et non le
+# Storybook. Seule l'étape de build change : le reste (image nginx, transfert
+# SSH, docker compose) réutilise les templates partagés.
+
+trigger:
+  batch: true
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - .storybook/**
+      - src/**
+      - stories/**
+      - package.json
+      - package-lock.json
+      - tailwind.config.ts
+      - tools/devops/**
+pr: none
+
+resources:
+  repositories:
+    - repository: templates
+      type: github
+      name: krosoft-dev/Krosoft.DevOps.AzureDevOps
+      endpoint: github.com_krosoft-dev
+      ref: refs/heads/main
+
+parameters:
+  - name: environments
+    displayName: "Environnements à déployer"
+    type: object
+    default:
+      - Production
+
+variables:
+  - template: vars/vars_node.yml@templates
+  - template: vars/vars.yml@templates
+  - template: vars/vars.yml
+
+stages:
+  - ${{ each env in parameters.environments }}:
+      - stage: Deploy_${{ replace(env,'-','_') }}_Stage
+        displayName: Deploy '${{ replace(env,'-','_') }}'
+        variables:
+          - template: vars/vars-krosoft-${{ lower(env) }}.yml
+        jobs:
+          - deployment: Deploy_${{ replace(env,'-','_') }}
+            displayName: "Build & Deploy"
+            pool:
+              name: ${{ variables.poolName }}
+            workspace:
+              clean: all
+            environment: ${{ replace(env,'-','_') }}
+            strategy:
+              runOnce:
+                deploy:
+                  steps:
+                    - checkout: templates
+                      path: s/templates
+                    - checkout: self
+                    - template: templates/steps/resolve-basepath-template.yml@templates
+
+                    - task: UseNode@1
+                      displayName: "Use Node.js ${{ variables.nodeVersion }}"
+                      inputs:
+                        version: ${{ variables.nodeVersion }}
+
+                    - script: npm ci --include=dev
+                      displayName: "Install dependencies"
+                      workingDirectory: $(basePath)
+
+                    - script: npm run storybook:build -- --output-dir storybook-static
+                      displayName: "Build Storybook"
+                      workingDirectory: $(basePath)
+
+                    - script: ls -la $(basePath)/storybook-static
+                      displayName: "Check Storybook output"
+
+                    - script: |
+                        set -e
+                        mkdir -p /tmp/docker-build-context
+                        cp -r $(basePath)/storybook-static                      /tmp/docker-build-context/dist
+                        cp $(templatesPath)/templates/docker/Dockerfile          /tmp/docker-build-context/Dockerfile
+                        cp $(templatesPath)/templates/docker/nginx.conf.template /tmp/docker-build-context/nginx.conf.template
+                      displayName: "Assemble docker build context"
+
+                    - script: |
+                        set -e
+
+                        # Chargement des variables depuis le .env du repo templates
+                        set -a
+                        source $(templatesPath)/templates/docker/.env
+                        set +a
+
+                        echo "→ NGINX_VERSION : $NGINX_VERSION"
+                        echo "→ TZ           : $TZ"
+
+                        docker build \
+                          --build-arg NGINX_VERSION="$NGINX_VERSION" \
+                          --build-arg TZ="$TZ" \
+                          --build-arg APP_BASE_PATH="$(deploy_path)" \
+                          -t ${{ variables.imageName }}:$(Build.BuildId) \
+                          /tmp/docker-build-context
+
+                        mkdir -p /tmp/deploy
+                        docker save ${{ variables.imageName }}:$(Build.BuildId) \
+                          | gzip > /tmp/deploy/${{ variables.imageName }}.tar.gz
+                      displayName: "Docker build & save"
+
+                    - script: |
+                        set -e
+                        export IMAGE_NAME="${{ variables.imageName }}"
+                        export BUILD_ID="$(Build.BuildId)"
+                        export ENV_NAME="${{ lower(env) }}"
+                        export DEPLOY_HOST="$(deploy_host)"
+                        export DEPLOY_PATH="$(deploy_path)"
+                        export DEPLOY_NETWORK="$(deploy_network)"
+
+                        envsubst < $(templatesPath)/templates/docker/docker-compose.template.yml \
+                          > /tmp/deploy/docker-compose.${{ lower(env) }}.yml
+
+                        echo "--- docker-compose.${{ lower(env) }}.yml ---"
+                        cat /tmp/deploy/docker-compose.${{ lower(env) }}.yml
+                      displayName: "Generate docker-compose.${{ lower(env) }}.yml"
+
+                    - task: SSH@0
+                      displayName: "Prepare target folder on server"
+                      inputs:
+                        sshEndpoint: ${{ variables.sshEndpointPrefix }}${{ lower(env) }}
+                        runOptions: inline
+                        inline: |
+                          mkdir -p ${{ variables.targetFolder }}
+                          chmod u+rwx ${{ variables.targetFolder }}
+
+                    - task: CopyFilesOverSSH@0
+                      displayName: "Transfer files to server"
+                      inputs:
+                        sshEndpoint: ${{ variables.sshEndpointPrefix }}${{ lower(env) }}
+                        sourceFolder: /tmp/deploy
+                        contents: |
+                          ${{ variables.imageName }}.tar.gz
+                          docker-compose.${{ lower(env) }}.yml
+                        targetFolder: ${{ variables.targetFolder }}
+                        cleanTargetFolder: false
+
+                    - task: SSH@0
+                      displayName: "Deploy ${{ env }} on server"
+                      inputs:
+                        sshEndpoint: ${{ variables.sshEndpointPrefix }}${{ lower(env) }}
+                        runOptions: inline
+                        readyTimeout: "20000"
+                        failOnStdErr: false
+                        inline: |
+                          set -e
+
+                          TARGET_DIR="${{ variables.targetFolder }}"
+
+                          echo "→ Chargement image Docker..."
+                          sudo docker load < $TARGET_DIR/${{ variables.imageName }}.tar.gz
+
+                          echo "→ Nettoyage archive..."
+                          rm -f $TARGET_DIR/${{ variables.imageName }}.tar.gz
+
+                          echo "→ docker compose up..."
+                          sudo docker compose -p ${{ variables.imageName }}-${{ lower(env) }} -f $TARGET_DIR/docker-compose.${{ lower(env) }}.yml up -d --remove-orphans
+
+                          echo "Storybook déployé avec succès sur ${{ env }} !"
+
+                    - template: templates/steps/check-url-template.yml@templates
+                      parameters:
+                        url: ${{ variables.check_url }}

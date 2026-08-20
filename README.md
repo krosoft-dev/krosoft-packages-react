@@ -88,3 +88,17 @@ applyTokenPreset(radiusPresets, "round"); // pose les variables sur <html>
 | `tokensToStyle`    | Les mêmes variables en `style` React, pour un sous-arbre   |
 
 C'est aussi ce qui rend la suite extensible : une nouvelle famille de tokens (densité, élévation…) ne demande ni attribut dédié ni preset CSS, seulement un objet à côté de `radiusPresets` et ses variables dans `:root`.
+
+## Déploiement du Storybook
+
+Le Storybook est publié sur **https://design.krosoft.fr** — même socle que les autres applis krosoft : image nginx derrière traefik, sur le serveur de production.
+
+| Fichier                                         | Rôle                                               |
+| ----------------------------------------------- | -------------------------------------------------- |
+| `tools/devops/publish-storybook-pipeline.yml`   | Pipeline Azure DevOps (déclenché sur `main`)       |
+| `tools/devops/vars/vars.yml`                    | Nom d'image, dossier cible, préfixe d'endpoint SSH |
+| `tools/devops/vars/vars-krosoft-production.yml` | Hôte, chemin et URL de contrôle de l'environnement |
+
+Le pipeline enchaîne `npm ci` → `npm run storybook:build` → image docker nginx (`Dockerfile` et `nginx.conf.template` du repo [`Krosoft.DevOps.AzureDevOps`](https://github.com/krosoft-dev/Krosoft.DevOps.AzureDevOps)) → transfert SSH → `docker compose up`.
+
+> **Pourquoi un pipeline autonome et pas un `extends: docker-deploy-template.yml` comme les applis ?** Ce template appelle en dur `npm run build`, qui construit ici le package npm, pas le Storybook. Seule l'étape de build diffère : tout le reste réutilise les templates partagés.
