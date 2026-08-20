@@ -1,3 +1,5 @@
+export { GlobalSearch } from "./GlobalSearch";
+export type { GlobalSearchProps, GlobalSearchItem, GlobalSearchGroup } from "./GlobalSearch";
 export { Sidebar } from "./Sidebar";
 export type { SidebarProps, SidebarItem, SidebarGroup, SidebarSubItem, SidebarSlots, SidebarSearch } from "./Sidebar";
 export { SidebarHeader } from "./SidebarHeader";
