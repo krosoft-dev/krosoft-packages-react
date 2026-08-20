@@ -18,12 +18,7 @@ const pkg = JSON.parse(readFileSync("./package.json", "utf-8"));
 // Externaliser TOUTES les dependencies et peerDependencies.
 // Une librairie ne doit bundler que son propre code source,
 // pas ses dépendances tierces (radix-ui, recharts, zod, etc.)
-const allDeps = [
-  ...Object.keys(pkg.peerDependencies || {}),
-  ...Object.keys(pkg.dependencies || {}),
-  "react-dom",
-  "react/jsx-runtime",
-];
+const allDeps = [...Object.keys(pkg.peerDependencies || {}), ...Object.keys(pkg.dependencies || {}), "react-dom", "react/jsx-runtime"];
 const externalPattern = new RegExp(`^(${allDeps.map(d => d.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")})(/.*)?$`);
 
 export default defineConfig({
@@ -36,7 +31,9 @@ export default defineConfig({
       formats: ["es"],
     },
     rollupOptions: {
-      external: id => externalPattern.test(id),
+      // `virtual:pwa-register/react` est fourni par vite-plugin-pwa dans l'application
+      // hôte : il n'existe pas à la compilation du package, il doit rester externe.
+      external: id => id.startsWith("virtual:") || externalPattern.test(id),
     },
   },
   resolve: {
