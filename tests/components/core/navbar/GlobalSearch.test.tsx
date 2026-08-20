@@ -137,6 +137,33 @@ describe("GlobalSearch", () => {
     expect(screen.queryByText("Accueil")).toBeNull();
   });
 
+  it("applique les classes de pastille fournies par l'item", () => {
+    renderGlobalSearch({
+      open: true,
+      groups: [
+        { heading: "Pages", items: [{ key: "page-home", label: "Accueil", path: "/", icon: DummyIcon, iconClassName: "bg-blue-500/10 text-blue-500" }] },
+      ],
+    });
+
+    const tile = screen.getByTestId("icon").parentElement;
+
+    expect(tile?.className).toContain("bg-blue-500/10");
+    expect(tile?.className).toContain("text-blue-500");
+    // Le fond neutre par défaut a bien été remplacé, pas seulement complété.
+    expect(tile?.className).not.toContain("bg-muted");
+  });
+
+  it("n'affiche la ligne d'aide que lorsqu'il y a des résultats", () => {
+    const hint = "↑↓ pour naviguer";
+    const { rerender } = renderGlobalSearch({ open: true, hint });
+
+    expect(screen.queryByText(hint)).not.toBeNull();
+
+    rerender(<GlobalSearch groups={[{ heading: "Pages", items: [] }]} search="" onSearch={vi.fn()} onSelect={vi.fn()} open hint={hint} />);
+
+    expect(screen.queryByText(hint)).toBeNull();
+  });
+
   it("accepte des libellés personnalisés", () => {
     const { rerender } = renderGlobalSearch({ groups: [], triggerLabel: "Search", placeholder: "Search...", emptyLabel: "No result." });
 

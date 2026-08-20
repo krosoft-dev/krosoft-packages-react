@@ -1,5 +1,6 @@
 import * as React from "react";
 import { LoaderCircleIcon, SearchIcon } from "lucide-react";
+import { cn } from "@/helpers/tailwind.helper";
 import { Button } from "../../ui/button";
 import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "../../ui/command";
 
@@ -10,6 +11,12 @@ export interface GlobalSearchItem {
   /** Seconde ligne, en plus discret : module parent, référence, date… */
   description?: string;
   icon?: React.ElementType;
+  /**
+   * Classes de la pastille d'icône : fond et couleur du glyphe, qui hérite de
+   * `currentColor` — par exemple `"bg-blue-500/10 text-blue-500"`. Sans valeur,
+   * la pastille est neutre.
+   */
+  iconClassName?: string;
   /** Chemin de destination, laissé à la charge de l'appelant dans `onSelect`. */
   path?: string;
 }
@@ -45,6 +52,8 @@ export interface GlobalSearchProps {
   loadingLabel?: string;
   title?: string;
   description?: string;
+  /** Ligne d'aide sous la liste, visible seulement quand il y a des résultats. */
+  hint?: React.ReactNode;
 
   className?: string;
 }
@@ -78,6 +87,7 @@ export const GlobalSearch = ({
   loadingLabel = "Recherche...",
   title = "Recherche globale",
   description = "Rechercher une page ou une donnée dans l'application.",
+  hint,
   className,
 }: GlobalSearchProps): React.ReactElement => {
   const [uncontrolledOpen, setUncontrolledOpen] = React.useState(false);
@@ -157,15 +167,23 @@ export const GlobalSearch = ({
                     <CommandItem
                       key={item.key}
                       value={item.key}
+                      className="gap-3 px-2 py-2"
                       onSelect={() => {
                         handleSelect(item);
                       }}
                     >
-                      {Icon && <Icon className="mr-2 size-4 shrink-0" />}
-                      <span className="truncate">{item.label}</span>
-                      {item.description !== undefined && item.description !== "" && (
-                        <span className="ml-2 truncate text-xs text-muted-foreground">{item.description}</span>
+                      {Icon && (
+                        <span className={cn("flex size-8 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground", item.iconClassName)}>
+                          <Icon className="size-4" />
+                        </span>
                       )}
+
+                      <span className="flex min-w-0 flex-1 flex-col">
+                        <span className="truncate font-medium">{item.label}</span>
+                        {item.description !== undefined && item.description !== "" && (
+                          <span className="truncate text-xs text-muted-foreground">{item.description}</span>
+                        )}
+                      </span>
                     </CommandItem>
                   );
                 })}
@@ -173,6 +191,8 @@ export const GlobalSearch = ({
             ),
           )}
         </CommandList>
+
+        {hint !== undefined && hasResults && !loading && <div className="border-t border-border p-2 text-center text-xs text-muted-foreground">{hint}</div>}
       </CommandDialog>
     </>
   );

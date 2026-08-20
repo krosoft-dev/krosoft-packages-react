@@ -28,6 +28,14 @@ const documents: GlobalSearchItem[] = [
   { key: "doc-2", label: "Facture 2024-019", description: "Stark Industries — 890,00 €", path: "/factures/19", icon: FileTextIcon },
 ];
 
+/** Une pastille par catégorie : le fond et la couleur du glyphe viennent de l'application. */
+const coloredPages: GlobalSearchItem[] = [
+  { ...pages[0], iconClassName: "bg-blue-500/10 text-blue-500" },
+  { ...pages[1], iconClassName: "bg-green-500/10 text-green-500" },
+  { ...pages[2], iconClassName: "bg-red-500/10 text-red-500" },
+  { ...pages[3], iconClassName: "bg-amber-500/10 text-amber-500" },
+];
+
 /** Filtrage insensible à la casse et aux accents, comme le ferait l'application en amont. */
 const normalize = (value: string): string => value.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
 
@@ -37,14 +45,16 @@ const matches = (item: GlobalSearchItem, search: string): boolean =>
 interface InteractiveProps extends Partial<GlobalSearchProps> {
   /** Simule un aller-retour serveur sur le groupe « Documents ». */
   simulateLoading?: boolean;
+  /** Utilise le jeu de pages avec pastilles colorées. */
+  colored?: boolean;
 }
 
-const InteractiveGlobalSearch = ({ simulateLoading = false, ...args }: InteractiveProps): React.ReactElement => {
+const InteractiveGlobalSearch = ({ simulateLoading = false, colored = false, ...args }: InteractiveProps): React.ReactElement => {
   const [search, setSearch] = React.useState("");
   const [selected, setSelected] = React.useState<GlobalSearchItem | null>(null);
 
   const groups: GlobalSearchGroup[] = [
-    { heading: "Pages", items: pages.filter(page => matches(page, search)) },
+    { heading: "Pages", items: (colored ? coloredPages : pages).filter(page => matches(page, search)) },
     { heading: "Documents", items: search.trim() === "" ? [] : documents.filter(document => matches(document, search)) },
   ];
 
@@ -64,6 +74,14 @@ const InteractiveGlobalSearch = ({ simulateLoading = false, ...args }: Interacti
 
 export const Default: Story = {
   render: args => <InteractiveGlobalSearch {...args} />,
+};
+
+/** Pastilles colorées par catégorie, et ligne d'aide sous la liste. */
+export const WithIconColors: Story = {
+  render: args => <InteractiveGlobalSearch {...args} colored />,
+  args: {
+    hint: "Utilisez ↑↓ pour naviguer et Entrée pour sélectionner",
+  },
 };
 
 export const Loading: Story = {
