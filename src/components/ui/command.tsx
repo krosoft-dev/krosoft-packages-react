@@ -36,6 +36,12 @@ export interface CommandDialogProps extends DialogProps {
  *
  * Le dimensionnement des icônes des items n'est pas imposé — chaque item garde
  * les classes qu'on lui donne (`size-4`, `size-5`…).
+ *
+ * Sur mobile la dialog occupe tout l'écran : la colonne flex laisse la liste
+ * prendre la hauteur restante (`flex-1`, plafond de 300px levé) au lieu de
+ * s'arrêter au tiers de l'écran, la saisie restant en haut et le `hint` en bas.
+ * À partir de `sm`, la dialog reprend sa hauteur automatique et la liste son
+ * plafond habituel.
  */
 const CommandDialog = ({
   title = "Palette de commandes",
@@ -47,13 +53,14 @@ const CommandDialog = ({
 }: CommandDialogProps): React.ReactElement => {
   return (
     <Dialog {...props}>
-      <DialogContent className="overflow-hidden p-0 shadow-lg">
+      <DialogContent className="flex flex-col overflow-hidden p-0 shadow-lg">
         <DialogTitle className="sr-only">{title}</DialogTitle>
         <DialogDescription className="sr-only">{description}</DialogDescription>
         <Command
           shouldFilter={shouldFilter}
           className={cn(
             "[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0 [&_[cmdk-group]]:px-2 [&_[cmdk-input-wrapper]_svg]:size-5 [&_[cmdk-input]]:h-12 [&_[cmdk-item]]:px-2 [&_[cmdk-item]]:py-3",
+            "[&_[cmdk-list]]:max-h-none [&_[cmdk-list]]:min-h-0 [&_[cmdk-list]]:flex-1 sm:[&_[cmdk-list]]:max-h-[300px] sm:[&_[cmdk-list]]:flex-none",
             className,
           )}
         >
