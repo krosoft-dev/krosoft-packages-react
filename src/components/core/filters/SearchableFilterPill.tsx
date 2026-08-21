@@ -1,3 +1,4 @@
+import { useKrosoftTranslation } from "@/i18n";
 import { useState, useMemo } from "react";
 import { ChevronDown, Search } from "lucide-react";
 import { Checkbox, controlBaseClass, Popover, PopoverContent, PopoverTrigger } from "@/components/ui";
@@ -17,7 +18,7 @@ export function SearchableFilterPill<T extends string>({
   onClear,
   onSelectAll,
   searchable = false,
-  searchPlaceholder = "Rechercher...",
+  searchPlaceholder,
 }: {
   label: string;
   options: FilterOption[];
@@ -28,6 +29,7 @@ export function SearchableFilterPill<T extends string>({
   searchable?: boolean;
   searchPlaceholder?: string;
 }): React.ReactElement {
+  const { t } = useKrosoftTranslation();
   const [query, setQuery] = useState("");
   const isActive = selected.length > 0;
 
@@ -102,7 +104,7 @@ export function SearchableFilterPill<T extends string>({
               <Search className="absolute left-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
               <input
                 className="w-full rounded-control bg-muted/50 py-1.5 pl-7 pr-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-1 focus:ring-ring"
-                placeholder={searchPlaceholder}
+                placeholder={searchPlaceholder ?? t("search.placeholder")}
                 value={query}
                 onChange={e => {
                   setQuery(e.target.value);
@@ -119,7 +121,7 @@ export function SearchableFilterPill<T extends string>({
               Tout sélectionner
             </label>
           )}
-          {filteredOptions.length === 0 && <p className="px-2 py-3 text-center text-xs text-muted-foreground">Aucun résultat</p>}
+          {filteredOptions.length === 0 && <p className="px-2 py-3 text-center text-xs text-muted-foreground">{t("states.noResult")}</p>}
           {filteredOptions.map(opt => (
             <label key={opt.value} className="flex items-center gap-2.5 rounded-md px-2 py-2 text-sm hover:bg-muted cursor-pointer transition-colors">
               <Checkbox

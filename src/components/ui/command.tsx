@@ -1,3 +1,4 @@
+import { useKrosoftTranslation } from "@/i18n";
 import { cn } from "@/helpers/tailwind.helper";
 import { type DialogProps } from "@radix-ui/react-dialog";
 import { Command as CommandPrimitive } from "cmdk";
@@ -43,19 +44,13 @@ export interface CommandDialogProps extends DialogProps {
  * À partir de `sm`, la dialog reprend sa hauteur automatique et la liste son
  * plafond habituel.
  */
-const CommandDialog = ({
-  title = "Palette de commandes",
-  description = "Rechercher une commande à exécuter.",
-  shouldFilter,
-  className,
-  children,
-  ...props
-}: CommandDialogProps): React.ReactElement => {
+const CommandDialog = ({ title, description, shouldFilter, className, children, ...props }: CommandDialogProps): React.ReactElement => {
+  const { t } = useKrosoftTranslation();
   return (
     <Dialog {...props}>
       <DialogContent className="flex flex-col overflow-hidden p-0 shadow-lg">
-        <DialogTitle className="sr-only">{title}</DialogTitle>
-        <DialogDescription className="sr-only">{description}</DialogDescription>
+        <DialogTitle className="sr-only">{title ?? t("search.commandTitle")}</DialogTitle>
+        <DialogDescription className="sr-only">{description ?? t("search.commandDescription")}</DialogDescription>
         <Command
           shouldFilter={shouldFilter}
           className={cn(

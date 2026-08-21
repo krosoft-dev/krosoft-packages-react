@@ -1,3 +1,4 @@
+import { useKrosoftTranslation } from "@/i18n";
 import React, { useState, useEffect, useMemo } from "react";
 import { Button, Label, Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetFooter } from "@/components/ui";
 import { Filter } from "lucide-react";
@@ -22,9 +23,10 @@ export function AdvancedFilters<T extends Record<string, unknown> = Record<strin
   sections,
   filters,
   onFiltersChange,
-  buttonText = "Plus de filtres",
-  sheetTitle = "Filtres avancés",
+  buttonText,
+  sheetTitle,
 }: AdvancedFiltersProps<T>): React.ReactElement {
+  const { t } = useKrosoftTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [localFilters, setLocalFilters] = useState<Record<string, unknown>>(filters);
 
@@ -66,7 +68,7 @@ export function AdvancedFilters<T extends Record<string, unknown> = Record<strin
       <SheetTrigger asChild>
         <Button variant="outline" className="gap-2">
           <Filter className="size-4 shrink-0" />
-          {buttonText}
+          {buttonText ?? t("filters.more")}
           {activeCount > 0 && (
             <span className="ml-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-xs font-semibold text-primary-foreground">
               {activeCount}
@@ -76,7 +78,7 @@ export function AdvancedFilters<T extends Record<string, unknown> = Record<strin
       </SheetTrigger>
       <SheetContent side="right" className="w-[400px] sm:w-[500px] flex flex-col p-0">
         <SheetHeader className="p-6 pb-0">
-          <SheetTitle>{sheetTitle}</SheetTitle>
+          <SheetTitle>{sheetTitle ?? t("filters.advanced")}</SheetTitle>
         </SheetHeader>
 
         <div className="flex-1 overflow-y-auto p-6 pt-6">

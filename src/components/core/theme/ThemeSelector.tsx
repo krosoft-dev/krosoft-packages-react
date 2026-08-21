@@ -1,3 +1,4 @@
+import { useKrosoftTranslation } from "@/i18n";
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -10,6 +11,7 @@ interface ThemeSelectorProps {
 }
 
 export function ThemeSelector({ themeOptions, variant = "select" }: ThemeSelectorProps): React.JSX.Element {
+  const { t } = useKrosoftTranslation();
   const { theme, handleThemeChange, currentThemeOption, nextThemeOption, cycleTheme } = useTheme(themeOptions);
 
   if (variant === "mini") {
@@ -41,7 +43,7 @@ export function ThemeSelector({ themeOptions, variant = "select" }: ThemeSelecto
     <div className="space-y-2">
       <Select value={theme} onValueChange={handleThemeChange}>
         <SelectTrigger className="w-full">
-          <SelectValue placeholder="Sélectionner un thème" />
+          <SelectValue placeholder={t("select.theme")} />
         </SelectTrigger>
         <SelectContent>
           {themeOptions.map(option => {

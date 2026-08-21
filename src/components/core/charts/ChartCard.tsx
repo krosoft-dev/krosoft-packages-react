@@ -1,3 +1,4 @@
+import { useKrosoftTranslation } from "@/i18n";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/helpers/tailwind.helper";
@@ -46,12 +47,13 @@ export const ChartCard = ({
   footer,
   isLoading = false,
   isEmpty = false,
-  emptyLabel = "Aucune donnée disponible",
+  emptyLabel,
   height = 300,
   className,
   contentClassName,
   children,
 }: ChartCardProps): React.JSX.Element => {
+  const { t } = useKrosoftTranslation();
   const Icon = icon;
 
   const renderContent = (): React.ReactNode => {
@@ -62,7 +64,7 @@ export const ChartCard = ({
     if (isEmpty) {
       return (
         <div className="flex size-full items-center justify-center">
-          <p className="text-sm text-muted-foreground">{emptyLabel}</p>
+          <p className="text-sm text-muted-foreground">{emptyLabel ?? t("states.noData")}</p>
         </div>
       );
     }

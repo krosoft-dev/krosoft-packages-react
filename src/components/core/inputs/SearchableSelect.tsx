@@ -1,3 +1,4 @@
+import { useKrosoftTranslation } from "@/i18n";
 import React, { useMemo, useState } from "react";
 import { CheckIcon, ChevronDownIcon, PlusIcon, XIcon } from "lucide-react";
 import {
@@ -46,14 +47,15 @@ export const SearchableSelect = ({
   onChange,
   onClear,
   onCreate,
-  placeholder = "Sélectionner...",
-  searchPlaceholder = "Rechercher...",
-  emptyLabel = "Aucun résultat",
-  createLabel = search => `Créer « ${search} »`,
+  placeholder,
+  searchPlaceholder,
+  emptyLabel,
+  createLabel,
   disabled = false,
   modal = true,
   className,
 }: SearchableSelectProps): React.ReactElement => {
+  const { t } = useKrosoftTranslation();
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
 
@@ -99,7 +101,7 @@ export const SearchableSelect = ({
               à ce span, ce qui le passe en `-webkit-box` et neutralise la mise en page flex. */}
           <span className="flex items-center truncate">
             {selectedOption?.color && <span className="mr-2 size-2.5 shrink-0 rounded-full" style={{ backgroundColor: selectedOption.color }} />}
-            <span className="truncate">{selectedLabel ?? placeholder}</span>
+            <span className="truncate">{selectedLabel ?? placeholder ?? t("select.placeholder")}</span>
             {selectedOption?.description !== undefined && <span className="ml-1 truncate text-muted-foreground">({selectedOption.description})</span>}
           </span>
           <div className="flex items-center gap-1">
@@ -134,9 +136,9 @@ export const SearchableSelect = ({
             return haystack.includes(searchValue.trim().toLowerCase()) ? 1 : 0;
           }}
         >
-          <CommandInput placeholder={searchPlaceholder} value={search} onValueChange={setSearch} />
+          <CommandInput placeholder={searchPlaceholder ?? t("search.placeholder")} value={search} onValueChange={setSearch} />
           <CommandList>
-            {!canCreate && <CommandEmpty>{emptyLabel}</CommandEmpty>}
+            {!canCreate && <CommandEmpty>{emptyLabel ?? t("states.noResult")}</CommandEmpty>}
             <CommandGroup>
               {options.map(option => (
                 <CommandItem
@@ -156,7 +158,7 @@ export const SearchableSelect = ({
               {canCreate && (
                 <CommandItem forceMount value="__create__" onSelect={handleCreate}>
                   <PlusIcon className="mr-2 size-4 shrink-0" />
-                  <span className="truncate">{createLabel(trimmedSearch)}</span>
+                  <span className="truncate">{createLabel ? createLabel(trimmedSearch) : t("select.create", { search: trimmedSearch })}</span>
                 </CommandItem>
               )}
             </CommandGroup>

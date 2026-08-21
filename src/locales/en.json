@@ -1,0 +1,69 @@
+{
+  "actions": {
+    "cancel": "Cancel",
+    "save": "Save",
+    "saving": "Saving...",
+    "edit": "Edit",
+    "delete": "Delete"
+  },
+  "states": {
+    "loading": "Loading...",
+    "error": "Something went wrong.",
+    "errorPrefix": "Error:",
+    "errorTitle": "Error",
+    "noResult": "No result",
+    "noResultDot": "No result.",
+    "noData": "No data available",
+    "underConstruction": "Section under development",
+    "comingSoon": "This feature will be available soon"
+  },
+  "search": {
+    "trigger": "Search",
+    "placeholder": "Search...",
+    "globalTitle": "Global search",
+    "globalDescription": "Search for a page or a record across the application.",
+    "commandTitle": "Command palette",
+    "commandDescription": "Search for a command to run.",
+    "loading": "Searching..."
+  },
+  "select": {
+    "placeholder": "Select...",
+    "create": "Create “{{search}}”",
+    "section": "Select a section",
+    "theme": "Select a theme"
+  },
+  "date": {
+    "pickDate": "Select a date",
+    "pickPeriod": "Select a period",
+    "clearPeriod": "Clear the selected period"
+  },
+  "filters": {
+    "advanced": "Advanced filters",
+    "more": "More filters",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "form": {
+    "validationTitle": "Validation error",
+    "validationMessage": "Please check the form fields",
+    "submitError": "Something went wrong while saving"
+  },
+  "image": {
+    "empty": "No image",
+    "upload": "Click to upload",
+    "invalidType": "Only {{types}} files are accepted",
+    "tooLarge": "The file must not exceed {{size}}MB"
+  },
+  "table": {
+    "previousPage": "Previous page",
+    "nextPage": "Next page"
+  },
+  "sidebar": {
+    "menu": "Navigation menu",
+    "description": "Main navigation of the application"
+  },
+  "theme": {
+    "updatedTitle": "Theme updated",
+    "updatedMessage": "The theme has been changed to {{theme}}."
+  }
+}

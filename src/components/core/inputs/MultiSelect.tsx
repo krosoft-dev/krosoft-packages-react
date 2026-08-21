@@ -1,3 +1,4 @@
+import { useKrosoftTranslation } from "@/i18n";
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import { Checkbox, controlTriggerClass } from "@/components/ui";
 import { ChevronDownIcon, SearchIcon, XIcon } from "lucide-react";
@@ -24,12 +25,13 @@ export const MultiSelect = ({
   onToggle,
   onClear,
   onSelectAll,
-  placeholder = "Sélectionner...",
+  placeholder,
   searchable = false,
-  searchPlaceholder = "Rechercher...",
+  searchPlaceholder,
   disabled = false,
   maxCount,
 }: MultiSelectProps): React.ReactElement => {
+  const { t } = useKrosoftTranslation();
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -120,7 +122,7 @@ export const MultiSelect = ({
         onClick={handleToggle}
         className={cn(controlTriggerClass, "w-full", open && "ring-2 ring-ring ring-offset-2", selected.length === 0 && "text-muted-foreground")}
       >
-        <span className="truncate">{selected.length === 0 ? placeholder : visibleLabels.join(", ")}</span>
+        <span className="truncate">{selected.length === 0 ? (placeholder ?? t("select.placeholder")) : visibleLabels.join(", ")}</span>
         <div className="flex shrink-0 items-center gap-1">
           {hiddenCount > 0 && <span className="rounded-control bg-muted px-1.5 py-0.5 text-xs font-medium text-foreground">+{hiddenCount}</span>}
           {selected.length > 0 && !disabled && (
@@ -153,7 +155,7 @@ export const MultiSelect = ({
                 <input
                   ref={inputRef}
                   className="w-full rounded-control bg-muted/50 py-1.5 pl-7 pr-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-1 focus:ring-ring"
-                  placeholder={searchPlaceholder}
+                  placeholder={searchPlaceholder ?? t("search.placeholder")}
                   value={query}
                   onChange={e => {
                     setQuery(e.target.value);
@@ -169,7 +171,7 @@ export const MultiSelect = ({
                 Tout sélectionner
               </label>
             )}
-            {filteredOptions.length === 0 && <p className="px-2 py-3 text-center text-xs text-muted-foreground">Aucun résultat</p>}
+            {filteredOptions.length === 0 && <p className="px-2 py-3 text-center text-xs text-muted-foreground">{t("states.noResult")}</p>}
             {filteredOptions.map(opt => (
               <label key={opt.value} className="flex items-center gap-2.5 rounded-md px-2 py-2 text-sm hover:bg-muted cursor-pointer transition-colors">
                 <Checkbox
