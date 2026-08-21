@@ -191,7 +191,6 @@ const meta: Meta<typeof GenericForm> = {
       },
     },
   },
-  tags: ["autodocs"],
 };
 
 export default meta;

@@ -6,11 +6,7 @@ import { DEMO_THEME_OPTIONS } from "../stories/constants/themes";
 import { DEMO_TOKEN_FAMILIES } from "../stories/constants/tokens";
 
 // Construit depuis DEMO_THEME_OPTIONS — source de vérité unique pour les thèmes
-const themes = Object.fromEntries(
-  DEMO_THEME_OPTIONS
-    .filter(o => o.value !== "system")
-    .map(o => [o.label, o.value === "light" ? "" : o.value]),
-);
+const themes = Object.fromEntries(DEMO_THEME_OPTIONS.filter(o => o.value !== "system").map(o => [o.label, o.value === "light" ? "" : o.value]));
 
 // Un seul décorateur pour toutes les familles de tokens : les presets sélectionnés
 // sont posés en variables CSS sur <html>, ce que ferait un sélecteur runtime dans
@@ -47,7 +43,14 @@ const tokenGlobalTypes = Object.fromEntries(
 const tokenInitialGlobals = Object.fromEntries(DEMO_TOKEN_FAMILIES.map(family => [family.id, family.defaultPreset]));
 
 const preview: Preview = {
+  // Tout composant publié a droit à son onglet Docs : le Storybook déployé est
+  // la référence publique du design system.
+  tags: ["autodocs"],
   parameters: {
+    options: {
+      // L'ordre de la barre latérale est une décision, pas l'alphabet.
+      storySort: { order: ["Introduction", "UI", "Core", "Hooks", "Démos"] },
+    },
     controls: {
       matchers: {
         color: /(background|color)$/i,

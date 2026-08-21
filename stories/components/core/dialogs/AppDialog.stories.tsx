@@ -10,7 +10,6 @@ const meta: Meta<typeof AppDialog> = {
   parameters: {
     layout: "centered",
   },
-  tags: ["autodocs"],
   argTypes: {
     open: {
       control: "boolean",

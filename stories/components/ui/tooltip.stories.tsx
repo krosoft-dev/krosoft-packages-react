@@ -6,7 +6,6 @@ import * as React from "react";
 const meta: Meta<typeof Tooltip> = {
   title: "UI/Tooltip",
   component: Tooltip,
-  tags: ["autodocs"],
   decorators: [
     (story: () => React.ReactNode): React.ReactElement => (
       <TooltipProvider>

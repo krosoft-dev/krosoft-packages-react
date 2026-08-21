@@ -9,7 +9,6 @@ import { cn } from "../../../../src/helpers/tailwind.helper";
 const meta: Meta<typeof Sidebar> = {
   title: "Core/Navbar/Sidebar",
   component: Sidebar,
-  tags: ["autodocs"],
   parameters: {
     layout: "fullscreen",
   },

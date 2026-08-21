@@ -6,7 +6,6 @@ import * as React from "react";
 const meta: Meta<typeof Sheet> = {
   title: "UI/Sheet",
   component: Sheet,
-  tags: ["autodocs"],
 };
 
 export default meta;

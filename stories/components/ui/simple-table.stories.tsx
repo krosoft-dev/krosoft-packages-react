@@ -16,7 +16,6 @@ const meta: Meta<typeof SimpleTable> = {
   parameters: {
     layout: "padded",
   },
-  tags: ["autodocs"],
 };
 
 export default meta;

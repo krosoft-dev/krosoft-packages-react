@@ -64,7 +64,10 @@ export const Interactive: Story = {
             <>
               Du <strong>{range.from.toLocaleDateString("fr-FR")}</strong>
               {range.to && range.from.getTime() !== range.to.getTime() && (
-                <> au <strong>{range.to.toLocaleDateString("fr-FR")}</strong></>
+                <>
+                  {" "}
+                  au <strong>{range.to.toLocaleDateString("fr-FR")}</strong>
+                </>
               )}
             </>
           ) : (

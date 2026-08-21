@@ -58,7 +58,10 @@ export const WithRichContent: Story = {
         {["Alice Martin", "Bob Dupont", "Claire Bernard"].map(name => (
           <div key={name} className="flex items-center gap-3 p-3 rounded-lg border bg-muted/30">
             <div className="size-8 rounded-full bg-primary/20 flex items-center justify-center text-primary text-xs font-semibold">
-              {name.split(" ").map(n => n[0]).join("")}
+              {name
+                .split(" ")
+                .map(n => n[0])
+                .join("")}
             </div>
             <span className="text-sm font-medium">{name}</span>
           </div>

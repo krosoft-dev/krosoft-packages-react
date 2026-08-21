@@ -29,12 +29,8 @@ const UseConfirmationDialogDemo = ({
     <div className="flex flex-col items-center gap-4 p-8">
       <p className="text-sm text-muted-foreground mb-2">Cliquez sur un bouton pour ouvrir le dialogue de confirmation.</p>
       <div className="flex gap-3">
-        <Button onClick={() => config.openDialog("1", "Facture #2024-001")}>
-          Confirmer « Facture #2024-001 »
-        </Button>
-        <Button onClick={() => config.openDialog("2", "Client Dupont SARL")}>
-          Confirmer « Client Dupont SARL »
-        </Button>
+        <Button onClick={() => config.openDialog("1", "Facture #2024-001")}>Confirmer « Facture #2024-001 »</Button>
+        <Button onClick={() => config.openDialog("2", "Client Dupont SARL")}>Confirmer « Client Dupont SARL »</Button>
       </div>
       <ConfirmationDialog isLoading={false} error={null} config={config} destructive={destructive} />
     </div>
@@ -47,7 +43,6 @@ const meta: Meta<typeof UseConfirmationDialogDemo> = {
   parameters: {
     layout: "centered",
   },
-  tags: ["autodocs"],
   argTypes: {
     simulateLoading: {
       control: "boolean",

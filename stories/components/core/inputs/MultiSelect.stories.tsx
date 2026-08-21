@@ -34,7 +34,7 @@ const meta: Meta<typeof MultiSelect> = {
   title: "Core/Inputs/MultiSelect",
   component: MultiSelect,
   decorators: [
-    (Story) => (
+    Story => (
       <div className="w-72 pb-72">
         <Story />
       </div>
@@ -98,9 +98,7 @@ export const WithClearIcon: Story = {
           }}
           placeholder="Sélectionner des villes"
         />
-        <p className="text-xs text-muted-foreground">
-          {selected.length === 0 ? "Sélection vidée via le ×" : `Sélectionnés : ${selected.join(", ")}`}
-        </p>
+        <p className="text-xs text-muted-foreground">{selected.length === 0 ? "Sélection vidée via le ×" : `Sélectionnés : ${selected.join(", ")}`}</p>
       </div>
     );
   },
@@ -139,9 +137,7 @@ export const WithColorsInteractive: Story = {
           }}
           placeholder="Sélectionner des statuts"
         />
-        <p className="text-xs text-muted-foreground">
-          {selected.length === 0 ? "Aucune sélection" : `Sélectionnés : ${selected.join(", ")}`}
-        </p>
+        <p className="text-xs text-muted-foreground">{selected.length === 0 ? "Aucune sélection" : `Sélectionnés : ${selected.join(", ")}`}</p>
       </div>
     );
   },
@@ -167,9 +163,7 @@ export const Interactive: Story = {
           searchPlaceholder="Rechercher une ville..."
           placeholder="Sélectionner des villes"
         />
-        <p className="text-xs text-muted-foreground">
-          {selected.length === 0 ? "Aucune sélection" : `Sélectionnés : ${selected.join(", ")}`}
-        </p>
+        <p className="text-xs text-muted-foreground">{selected.length === 0 ? "Aucune sélection" : `Sélectionnés : ${selected.join(", ")}`}</p>
       </div>
     );
   },
