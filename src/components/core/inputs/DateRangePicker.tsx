@@ -1,3 +1,4 @@
+import { useKrosoftTranslation } from "@/i18n";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -15,7 +16,8 @@ interface DateRangePickerProps {
   className?: string;
 }
 
-export const DateRangePicker = ({ value, onChange, placeholder = "Selectionner une periode", className }: DateRangePickerProps) => {
+export const DateRangePicker = ({ value, onChange, placeholder, className }: DateRangePickerProps) => {
+  const { t } = useKrosoftTranslation();
   const [open, setOpen] = React.useState(false);
   const [tempRange, setTempRange] = React.useState<DateRange | undefined>(value);
 
@@ -46,7 +48,7 @@ export const DateRangePicker = ({ value, onChange, placeholder = "Selectionner u
   };
 
   const formatRange = (range?: DateRange) => {
-    if (!range?.from) return placeholder;
+    if (!range?.from) return placeholder ?? t("date.pickPeriod");
 
     if (!range.to || range.from.getTime() === range.to.getTime()) {
       return format(range.from, "dd MMM yyyy", { locale: fr });
@@ -67,7 +69,7 @@ export const DateRangePicker = ({ value, onChange, placeholder = "Selectionner u
                 type="button"
                 variant="ghost"
                 size="icon"
-                aria-label="Effacer la periode selectionnee"
+                aria-label={t("date.clearPeriod")}
                 className="ml-auto h-5 w-5 opacity-50 hover:opacity-100"
                 onClick={handleClear}
               >

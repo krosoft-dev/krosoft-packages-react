@@ -1,3 +1,4 @@
+import { useKrosoftTranslation } from "@/i18n";
 import { Input } from "@/components/ui";
 import { cn } from "@/helpers/tailwind.helper";
 import { SearchIcon, XIcon } from "lucide-react";
@@ -12,15 +13,8 @@ interface SearchInputProps {
   className?: string;
 }
 
-export const SearchInput = ({
-  searchQuery,
-  search,
-  placeholder = "Rechercher...",
-  onSearch,
-  onSubmit,
-  onClear,
-  className,
-}: SearchInputProps): React.JSX.Element => {
+export const SearchInput = ({ searchQuery, search, placeholder, onSearch, onSubmit, onClear, className }: SearchInputProps): React.JSX.Element => {
+  const { t } = useKrosoftTranslation();
   const currentValue = searchQuery ?? search ?? "";
   const handleClear = (): void => {
     onSearch("");
@@ -33,7 +27,7 @@ export const SearchInput = ({
     <div className={cn("relative h-fit w-full md:w-64", className)}>
       <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
       <Input
-        placeholder={placeholder}
+        placeholder={placeholder ?? t("search.placeholder")}
         value={currentValue}
         onChange={e => {
           onSearch(e.target.value);

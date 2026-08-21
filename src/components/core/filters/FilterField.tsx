@@ -1,3 +1,4 @@
+import { useKrosoftTranslation } from "@/i18n";
 import React from "react";
 import { Input, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui";
 import { DatePicker } from "@/components/core/inputs/DatePicker";
@@ -21,6 +22,7 @@ export const FilterField = <T extends Record<string, unknown>>({
   onChange,
   onToggleMultiSelect,
 }: FilterFieldProps<T>): React.ReactElement | null => {
+  const { t } = useKrosoftTranslation();
   switch (field.type) {
     case "text":
       return (
@@ -75,7 +77,7 @@ export const FilterField = <T extends Record<string, unknown>>({
       );
 
     case "date":
-      return <DatePicker date={value as Date | undefined} onDateChange={onChange} placeholder={field.placeholder ?? "Sélectionner une date"} />;
+      return <DatePicker date={value as Date | undefined} onDateChange={onChange} placeholder={field.placeholder ?? t("date.pickDate")} />;
 
     case "date-range":
       return <DateRangePicker value={value as DateRange | undefined} onChange={onChange} placeholder={field.placeholder} />;
