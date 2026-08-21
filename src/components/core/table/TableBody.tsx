@@ -1,7 +1,9 @@
 import { Checkbox } from "@/components/ui";
+import type { FixedColumnOffset } from "@/hooks/ui/useFixedColumns";
 import { AlertTriangleIcon, Loader2Icon } from "lucide-react";
 import React from "react";
 import { TableActions } from "./TableActions";
+import { ACTIONS_COLUMN_KEY, getFixedCellProps, SELECTION_COLUMN_KEY } from "./fixedColumns";
 import { ColumnDef, RowAction } from "@/types";
 export type { BulkAction, ColumnDef, RowAction } from "../../../types";
 
@@ -23,6 +25,8 @@ export interface TableBodyProps<T> {
   columns: ColumnDef<T>[];
   bordered?: boolean;
   resizableColumns?: boolean;
+  // Décalages mesurés sur l'en-tête : le corps ne décide pas de ce qui est figé, il suit.
+  fixedColumns?: Record<string, FixedColumnOffset>;
 }
 
 export function TableBody<T>({
@@ -43,6 +47,7 @@ export function TableBody<T>({
   columns,
   bordered = false,
   resizableColumns = false,
+  fixedColumns = {},
 }: TableBodyProps<T>): React.JSX.Element {
   const renderCellValue = (row: T, columnKey: string): React.ReactNode => {
     const columnDef = columns.find(col => col.key === columnKey);
@@ -95,6 +100,9 @@ export function TableBody<T>({
     );
   }
 
+  const selectionFixed = getFixedCellProps(fixedColumns[SELECTION_COLUMN_KEY], "body");
+  const actionsFixed = getFixedCellProps(fixedColumns[ACTIONS_COLUMN_KEY], "body");
+
   return (
     <tbody className="divide-y divide-gray-200 dark:divide-gray-800">
       {paginatedData.map(row => {
@@ -107,8 +115,8 @@ export function TableBody<T>({
           >
             {hasBulkActions ? (
               <td
-                className="p-1 text-center align-middle"
-                style={{ width: "32px", minWidth: "32px", maxWidth: "32px" }}
+                className={`p-1 text-center align-middle ${selectionFixed.className}`}
+                style={{ width: "32px", minWidth: "32px", maxWidth: "32px", ...selectionFixed.style }}
                 onClick={e => {
                   e.stopPropagation();
                 }}
@@ -125,11 +133,17 @@ export function TableBody<T>({
             ) : null}
             {visibleColumnsArray.map((column, index) => {
               const isLast = index === visibleColumnsArray.length - 1;
+              // La cellule reprend exactement le décalage mesuré sur son en-tête : les deux
+              // s'accrochent au bord au même pixel, sans décrochage pendant le défilement.
+              const fixed = getFixedCellProps(fixedColumns[column.key], "body");
               return (
                 <td
                   key={column.key}
-                  className={`px-2 py-2 relative ${bordered && !isLast ? "border-r border-gray-100 dark:border-gray-800" : ""} ${column.className ?? ""}`}
-                  style={resizableColumns ? { width: columnWidths[column.key] } : { minWidth: columnWidths[column.key] }}
+                  className={`px-2 py-2 ${fixed.className} ${bordered && !isLast ? "border-r border-gray-100 dark:border-gray-800" : ""} ${column.className ?? ""}`}
+                  style={{
+                    ...(resizableColumns ? { width: columnWidths[column.key] } : { minWidth: columnWidths[column.key] }),
+                    ...fixed.style,
+                  }}
                 >
                   <div className="w-full h-full">{renderCellValue(row, column.key)}</div>
                 </td>
@@ -137,8 +151,8 @@ export function TableBody<T>({
             })}
             {hasActions ? (
               <td
-                className="p-1 text-center align-middle whitespace-nowrap"
-                style={{ minWidth: "32px" }}
+                className={`p-1 text-center align-middle whitespace-nowrap ${actionsFixed.className}`}
+                style={{ minWidth: "32px", ...actionsFixed.style }}
                 onClick={e => {
                   e.stopPropagation();
                 }}
