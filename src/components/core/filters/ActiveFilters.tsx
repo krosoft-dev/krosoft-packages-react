@@ -1,4 +1,5 @@
 import { useKrosoftTranslation } from "@/i18n";
+import { getLocale } from "@krosoft/core/helpers";
 import { Badge } from "@/components/ui";
 import { XIcon } from "lucide-react";
 
@@ -10,10 +11,9 @@ interface ActiveFiltersProps {
   optionLabels?: Record<string, string>;
 }
 
-const getFilterDisplayValue = (key: string, value: unknown, optionLabels: Record<string, string> = {}): React.ReactNode => {
-  const { t } = useKrosoftTranslation();
+const getFilterDisplayValue = (key: string, value: unknown, t: (key: string) => string, optionLabels: Record<string, string> = {}): React.ReactNode => {
   if (value instanceof Date) {
-    return value.toLocaleDateString("fr-FR");
+    return value.toLocaleDateString(getLocale());
   }
 
   const strValue = String(value);
@@ -28,6 +28,7 @@ const getFilterDisplayValue = (key: string, value: unknown, optionLabels: Record
 };
 
 export function ActiveFilters({ filters, onRemoveFilter, onClearAll, filterLabels = {}, optionLabels = {} }: ActiveFiltersProps): React.ReactElement | null {
+  const { t } = useKrosoftTranslation();
   const activeFilters = Object.entries(filters).filter(([_key, value]) => {
     if (value === undefined || value === null || value === "") return false;
     if (Array.isArray(value) && value.length === 0) return false;
@@ -44,7 +45,7 @@ export function ActiveFilters({ filters, onRemoveFilter, onClearAll, filterLabel
 
         if (Array.isArray(value)) {
           return value.map(val => {
-            const displayValue = getFilterDisplayValue(key, val, optionLabels);
+            const displayValue = getFilterDisplayValue(key, val, t, optionLabels);
             return (
               <Badge
                 key={`${key}_${String(val)}`}
@@ -65,7 +66,7 @@ export function ActiveFilters({ filters, onRemoveFilter, onClearAll, filterLabel
           });
         }
 
-        const displayValue = getFilterDisplayValue(key, value, optionLabels);
+        const displayValue = getFilterDisplayValue(key, value, t, optionLabels);
         return (
           <Badge key={key} variant="secondary" className="flex items-center gap-1 px-3 py-1 bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100">
             {label}: {displayValue}

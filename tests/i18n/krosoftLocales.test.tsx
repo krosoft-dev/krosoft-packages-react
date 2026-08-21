@@ -1,5 +1,5 @@
 import { cleanup, render, screen } from "@testing-library/react";
-import i18next from "i18next";
+import i18next, { type i18n as I18nInstance } from "i18next";
 import * as React from "react";
 import { I18nextProvider, initReactI18next } from "react-i18next";
 import { afterEach, describe, expect, it } from "vitest";
@@ -11,7 +11,7 @@ afterEach(() => {
 });
 
 /** Instance dédiée : les tests ne doivent pas se marcher dessus via l'instance globale. */
-const createInstance = async (language: string) => {
+const createInstance = async (language: string): Promise<I18nInstance> => {
   const instance = i18next.createInstance();
   await instance.use(initReactI18next).init({ lng: language, fallbackLng: "fr", resources: {}, interpolation: { escapeValue: false } });
 

@@ -137,7 +137,7 @@ export const GlobalSearch = ({
           variant="ghost"
           size="icon"
           aria-label={triggerLabel ?? t("search.trigger")}
-          title={shortcut ? `${triggerLabel} (${shortcutLabel})` : triggerLabel}
+          title={shortcut ? `${triggerLabel ?? t("search.trigger")} (${shortcutLabel})` : (triggerLabel ?? t("search.trigger"))}
           className="rounded-full"
           onClick={() => {
             setOpen(true);
