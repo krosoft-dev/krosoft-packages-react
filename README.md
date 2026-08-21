@@ -88,3 +88,4 @@ applyTokenPreset(radiusPresets, "round"); // pose les variables sur <html>
 | `tokensToStyle`    | Les mêmes variables en `style` React, pour un sous-arbre   |
 
 C'est aussi ce qui rend la suite extensible : une nouvelle famille de tokens (densité, élévation…) ne demande ni attribut dédié ni preset CSS, seulement un objet à côté de `radiusPresets` et ses variables dans `:root`.
+ 
