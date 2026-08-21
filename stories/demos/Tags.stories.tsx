@@ -13,30 +13,30 @@ import type { FormSchema } from "@/types";
 interface Tag extends Record<string, unknown> {
   id: string;
   nom: string;
-  recettes: number;
-  repas: number;
+  documents: number;
+  projets: number;
 }
 
-// Les compteurs sont volontairement contrastés : des tags très utilisés (plat, végétarien),
-// des tags réservés aux repas prédéfinis (livraison, à emporter) et des doublons à fusionner.
+// Compteurs volontairement contrastés : des tags très utilisés, des tags réservés à un seul
+// des deux référentiels, et des doublons évidents à fusionner (« en cours » / « en-cours »).
 const TAGS_INITIAUX: Tag[] = [
-  { id: "1", nom: "à emporter", recettes: 0, repas: 1 },
-  { id: "2", nom: "asiatique", recettes: 2, repas: 1 },
-  { id: "3", nom: "de saison", recettes: 2, repas: 0 },
-  { id: "4", nom: "dessert", recettes: 2, repas: 0 },
-  { id: "5", nom: "entrée", recettes: 2, repas: 0 },
-  { id: "6", nom: "italien", recettes: 2, repas: 1 },
-  { id: "7", nom: "livraison", recettes: 0, repas: 1 },
-  { id: "8", nom: "plat", recettes: 6, repas: 0 },
-  { id: "9", nom: "rapide", recettes: 4, repas: 2 },
-  { id: "10", nom: "réconfortant", recettes: 3, repas: 0 },
-  { id: "11", nom: "salade", recettes: 1, repas: 0 },
-  { id: "12", nom: "sans gluten", recettes: 2, repas: 0 },
-  { id: "13", nom: "soupe", recettes: 2, repas: 1 },
-  { id: "14", nom: "végétarien", recettes: 5, repas: 1 },
+  { id: "1", nom: "archivé", documents: 12, projets: 3 },
+  { id: "2", nom: "à relire", documents: 4, projets: 0 },
+  { id: "3", nom: "bloqué", documents: 0, projets: 2 },
+  { id: "4", nom: "brouillon", documents: 7, projets: 0 },
+  { id: "5", nom: "client", documents: 9, projets: 6 },
+  { id: "6", nom: "confidentiel", documents: 3, projets: 1 },
+  { id: "7", nom: "en cours", documents: 5, projets: 8 },
+  { id: "8", nom: "en-cours", documents: 1, projets: 2 },
+  { id: "9", nom: "interne", documents: 6, projets: 4 },
+  { id: "10", nom: "prioritaire", documents: 2, projets: 5 },
+  { id: "11", nom: "public", documents: 8, projets: 0 },
+  { id: "12", nom: "récurrent", documents: 0, projets: 3 },
+  { id: "13", nom: "urgent", documents: 3, projets: 7 },
+  { id: "14", nom: "validé", documents: 11, projets: 2 },
 ];
 
-const TAG_VIERGE: Tag = { id: "", nom: "", recettes: 0, repas: 0 };
+const TAG_VIERGE: Tag = { id: "", nom: "", documents: 0, projets: 0 };
 
 const schema: FormSchema<Tag> = {
   useCards: false,
@@ -50,7 +50,7 @@ const schema: FormSchema<Tag> = {
           key: "nom",
           labelKey: "Nom du tag",
           type: "text",
-          placeholderKey: "végétarien, rapide, dessert...",
+          placeholderKey: "urgent, interne, validé...",
           rules: z => z.string().min(1, "Le nom est requis").max(30, "30 caractères maximum"),
           layout: { cols: 4 },
         },
@@ -61,7 +61,7 @@ const schema: FormSchema<Tag> = {
 
 // --- Page de démonstration ---------------------------------------------------
 
-const TagsCuisinePage = (): React.JSX.Element => {
+const TagsPage = (): React.JSX.Element => {
   const [tags, setTags] = useState<Tag[]>(TAGS_INITIAUX);
   const [recherche, setRecherche] = useState("");
   const [selection, setSelection] = useState<Tag | null>(null);
@@ -105,7 +105,7 @@ const TagsCuisinePage = (): React.JSX.Element => {
       if (creation) {
         if (existant) return prev;
         const id = (Math.max(0, ...prev.map(t => Number(t.id))) + 1).toString();
-        return [...prev, { nom, recettes: 0, repas: 0, id }];
+        return [...prev, { nom, documents: 0, projets: 0, id }];
       }
 
       if (!existant) return prev.map(t => (t.id === cibleId ? { ...t, nom } : t));
@@ -113,7 +113,7 @@ const TagsCuisinePage = (): React.JSX.Element => {
       const source = prev.find(t => t.id === cibleId);
       return prev
         .filter(t => t.id !== cibleId)
-        .map(t => (t.id === existant.id ? { ...t, recettes: t.recettes + (source?.recettes ?? 0), repas: t.repas + (source?.repas ?? 0) } : t));
+        .map(t => (t.id === existant.id ? { ...t, documents: t.documents + (source?.documents ?? 0), projets: t.projets + (source?.projets ?? 0) } : t));
     });
     // La modale reste ouverte après un enregistrement : la refermer évite d'afficher une fiche
     // périmée, en particulier après une fusion où le tag renommé n'existe plus.
@@ -132,8 +132,9 @@ const TagsCuisinePage = (): React.JSX.Element => {
         </Badge>
       ),
     },
-    { key: "recettes", label: "Recettes", minWidth: 120, sortable: true, className: "text-right" },
-    { key: "repas", label: "Repas", minWidth: 120, sortable: true, className: "text-right" },
+    // `align: "right"` range les nombres ET leur en-tête du même côté.
+    { key: "documents", label: "Documents", minWidth: 130, sortable: true, align: "right" },
+    { key: "projets", label: "Projets", minWidth: 130, sortable: true, align: "right" },
   ];
 
   const actions: RowAction<Tag>[] = [
@@ -143,8 +144,8 @@ const TagsCuisinePage = (): React.JSX.Element => {
       icon: Trash2Icon,
       overflow: true,
       className: "text-destructive focus:bg-destructive/10 focus:text-destructive",
-      // Un tag encore rattaché à une recette ou à un repas ne peut pas disparaître.
-      disabled: row => row.recettes > 0 || row.repas > 0,
+      // Un tag encore rattaché à un document ou à un projet ne peut pas disparaître.
+      disabled: row => row.documents > 0 || row.projets > 0,
       onClick: supprimer,
     },
   ];
@@ -153,8 +154,8 @@ const TagsCuisinePage = (): React.JSX.Element => {
     <div className="mx-auto max-w-5xl space-y-6 p-4">
       <AppPageHeader
         icon={TagsIcon}
-        titleKey="Tags Cuisine"
-        descriptionKey="Partagés par les recettes et les repas prédéfinis. Renommez pour fusionner les doublons, supprimez ceux qui ne servent plus."
+        titleKey="Tags"
+        descriptionKey="Partagés par les documents et les projets. Renommez pour fusionner les doublons, supprimez ceux qui ne servent plus."
         actions={[{ labelKey: "Nouveau tag", icon: PlusIcon, onClick: ouvrirCreation }]}
       />
 
@@ -177,13 +178,13 @@ const TagsCuisinePage = (): React.JSX.Element => {
 };
 
 const meta: Meta = {
-  title: "Démos/Tags Cuisine",
+  title: "Démos/Tags",
   parameters: {
     layout: "fullscreen",
     docs: {
       description: {
         component:
-          "Page d'administration d'un référentiel de tags : `AppPageHeader` avec son action principale, `SearchInput` en filtre, puis un `DataTable` trié par défaut sur la première colonne triable, paginé (14 tags, 10 par page) et doté d'un menu d'actions par ligne.\n\nÀ essayer : renommer un tag vers un nom déjà pris le fusionne avec l'existant en cumulant les compteurs, et la suppression est désactivée tant que le tag est rattaché à une recette ou à un repas.",
+          "Page d'administration d'un référentiel de tags : `AppPageHeader` avec son action principale, `SearchInput` en filtre, puis un `DataTable` trié par défaut sur la première colonne triable, paginé (14 tags, 10 par page) et doté d'un menu d'actions par ligne.\n\nLes deux colonnes de comptage utilisent `align: \"right\"` : les nombres et leur en-tête se rangent du même côté.\n\nÀ essayer : renommer « en-cours » en « en cours » fusionne les deux doublons en cumulant les compteurs, et la suppression reste désactivée tant que le tag est rattaché à un document ou à un projet.",
       },
     },
   },
@@ -192,7 +193,7 @@ const meta: Meta = {
 export default meta;
 type Story = StoryObj;
 
-export const TagsCuisine: Story = {
+export const Tags: Story = {
   name: "Référentiel de tags",
-  render: () => <TagsCuisinePage />,
+  render: () => <TagsPage />,
 };

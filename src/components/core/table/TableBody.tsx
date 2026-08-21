@@ -4,6 +4,7 @@ import type { FixedColumnOffset } from "@/hooks/ui/useFixedColumns";
 import { AlertTriangleIcon, Loader2Icon } from "lucide-react";
 import React from "react";
 import { TableActions } from "./TableActions";
+import { getAlignmentClass, getColumnAlignment } from "./columnAlignment";
 import { ACTIONS_COLUMN_KEY, getFixedCellProps, SELECTION_COLUMN_KEY } from "./fixedColumns";
 import { ColumnDef, RowAction } from "@/types";
 export type { BulkAction, ColumnDef, RowAction } from "../../../types";
@@ -141,7 +142,7 @@ export function TableBody<T>({
               return (
                 <td
                   key={column.key}
-                  className={`px-2 py-2 ${fixed.className} ${bordered && !isLast ? "border-r border-gray-100 dark:border-gray-800" : ""} ${column.className ?? ""}`}
+                  className={`px-2 py-2 ${getAlignmentClass(getColumnAlignment(column))} ${fixed.className} ${bordered && !isLast ? "border-r border-gray-100 dark:border-gray-800" : ""} ${column.className ?? ""}`}
                   style={{
                     ...(resizableColumns ? { width: columnWidths[column.key] } : { minWidth: columnWidths[column.key] }),
                     ...fixed.style,

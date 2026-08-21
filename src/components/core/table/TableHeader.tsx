@@ -3,6 +3,7 @@ import { ColumnDef } from "@/types";
 import { ArrowDownIcon, ArrowUpDownIcon, ArrowUpIcon, GripVerticalIcon } from "lucide-react";
 import React from "react";
 import { Checkbox } from "../../ui/checkbox";
+import { getAlignmentClass, getColumnAlignment } from "./columnAlignment";
 import { ACTIONS_COLUMN_KEY, getFixedCellProps, SELECTION_COLUMN_KEY } from "./fixedColumns";
 
 export interface TableHeaderProps<T> {
@@ -28,6 +29,12 @@ export interface TableHeaderProps<T> {
   fixedSelection?: boolean;
   fixedActions?: boolean;
 }
+
+const HEADER_JUSTIFY: Record<"left" | "center" | "right", string> = {
+  left: "justify-between",
+  center: "justify-center",
+  right: "justify-end",
+};
 
 export function TableHeader<T>({
   hasBulkActions,
@@ -73,6 +80,7 @@ export function TableHeader<T>({
     const draggable = isDraggable !== false && column.fixed === undefined;
     const isSortable = column.sortable === true;
     const fixed = getFixedCellProps(fixedColumns[column.key], "header");
+    const alignment = getColumnAlignment(column);
 
     return (
       <th
@@ -80,7 +88,8 @@ export function TableHeader<T>({
         data-column-key={column.key}
         data-fixed-side={column.fixed}
         className={[
-          "px-2 py-2 text-left text-sm font-medium text-gray-900 dark:text-gray-100 group",
+          "px-2 py-2 text-sm font-medium text-gray-900 dark:text-gray-100 group",
+          getAlignmentClass(alignment),
           fixed.className,
           bordered ? "border-r border-gray-200 dark:border-gray-800" : "",
           isSortable ? "cursor-pointer select-none" : "",
@@ -110,12 +119,16 @@ export function TableHeader<T>({
           handleDrop(e, column.key);
         }}
       >
-        <div className="flex items-center justify-between pr-2">
+        {/* Le libellé se range du même côté que ses cellules et vient s'aligner au même bord :
+            sur une colonne de nombres poussés à droite, un en-tête resté à gauche flotte au-dessus
+            du vide. L'icône de tri passe alors devant le libellé pour ne pas décaler ce bord. */}
+        <div className={`flex items-center ${HEADER_JUSTIFY[alignment]} ${alignment === "left" ? "pr-2" : ""}`}>
+          {alignment === "right" ? <div className="mr-1 shrink-0">{getSortIcon(column)}</div> : null}
           <div className="flex items-center gap-1">
             {draggable ? <GripVerticalIcon className="size-4 text-gray-400 cursor-grab dark:text-gray-300 shrink-0" /> : null}
             <span className="truncate">{column.label}</span>
           </div>
-          <div className="ml-1 shrink-0">{getSortIcon(column)}</div>
+          {alignment === "right" ? null : <div className="ml-1 shrink-0">{getSortIcon(column)}</div>}
         </div>
         {resizableColumns ? (
           <div

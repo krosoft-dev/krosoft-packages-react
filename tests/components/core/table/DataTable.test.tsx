@@ -47,6 +47,63 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
+describe("DataTable — alignement des colonnes", () => {
+  const alignedColumns: ColumnDef<Row>[] = [
+    { key: "name", label: "Name" },
+    { key: "email", label: "Email", align: "right" },
+    { key: "role", label: "Role", className: "text-right" },
+  ];
+
+  it("range le libellé du même côté que les cellules quand la colonne est alignée à droite", () => {
+    const container = renderTable({ columns: alignedColumns });
+
+    for (const key of ["email", "role"]) {
+      const header = headerCell(container, key);
+      expect(header.className).toContain("text-right");
+      // L'en-tête par défaut pousse le libellé à gauche et l'icône de tri à droite : sur une
+      // colonne alignée à droite les deux doivent se regrouper au bord droit.
+      expect(header.querySelector("div")?.className).toContain("justify-end");
+      expect(header.querySelector("div")?.className).not.toContain("justify-between");
+    }
+  });
+
+  it("laisse l'en-tête par défaut aux colonnes alignées à gauche", () => {
+    const container = renderTable({ columns: alignedColumns });
+
+    const header = headerCell(container, "name");
+    expect(header.className).toContain("text-left");
+    expect(header.querySelector("div")?.className).toContain("justify-between");
+  });
+
+  it("aligne les cellules quand l'alignement vient de align", () => {
+    const container = renderTable({ columns: alignedColumns });
+
+    expect(bodyCells(container, "email").every(cell => cell.className.includes("text-right"))).toBe(true);
+    expect(bodyCells(container, "name").every(cell => cell.className.includes("text-left"))).toBe(true);
+  });
+
+  it("place l'icône de tri devant le libellé à droite, pour que le libellé reste au bord", () => {
+    const container = renderTable({ columns: [{ key: "name", label: "Name", align: "right", sortable: true }] });
+
+    const header = headerCell(container, "name");
+    const contenu = header.querySelector("div");
+    // Le libellé doit être le dernier élément : c'est lui qui vient s'aligner sur le bord des
+    // cellules, et une icône posée après le décalerait de sa largeur.
+    expect(contenu?.lastElementChild?.textContent).toBe("Name");
+    expect(contenu?.firstElementChild?.querySelector("svg")).toBeTruthy();
+    // Pas de retrait à droite : il éloignerait l'en-tête du bord sur lequel les cellules s'alignent.
+    expect(contenu?.className).not.toContain("pr-2");
+  });
+
+  it("centre l'en-tête d'une colonne centrée", () => {
+    const container = renderTable({ columns: [{ key: "name", label: "Name", align: "center" }] });
+
+    const header = headerCell(container, "name");
+    expect(header.className).toContain("text-center");
+    expect(header.querySelector("div")?.className).toContain("justify-center");
+  });
+});
+
 describe("DataTable — colonnes figées", () => {
   it("accroche l'en-tête au même bord et au même décalage que ses cellules", () => {
     const container = renderTable();
