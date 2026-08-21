@@ -1,3 +1,4 @@
+import { useKrosoftTranslation } from "@/i18n";
 import { useTheme as useNextTheme } from "next-themes";
 import * as React from "react";
 import { useNotifications } from "./useNotifications";
@@ -11,13 +12,14 @@ export interface ThemeOption {
 }
 
 export function useTheme(themeOptions: readonly ThemeOption[]) {
+  const { t } = useKrosoftTranslation();
   const { showSuccess } = useNotifications();
   const { theme, setTheme } = useNextTheme();
 
   const handleThemeChange = (newTheme: string) => {
     setTheme(newTheme);
     const option = themeOptions.find(o => o.value === newTheme);
-    showSuccess("Thème mis à jour", `Le thème a été changé vers ${option?.label ?? newTheme}.`);
+    showSuccess(t("theme.updatedTitle"), t("theme.updatedMessage", { theme: option?.label ?? newTheme }));
   };
 
   const cyclableThemeOptions = themeOptions.filter(o => !o.hideInMini);

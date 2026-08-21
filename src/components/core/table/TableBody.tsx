@@ -1,3 +1,4 @@
+import { useKrosoftTranslation } from "@/i18n";
 import { Checkbox } from "@/components/ui";
 import { AlertTriangleIcon, Loader2Icon } from "lucide-react";
 import React from "react";
@@ -9,7 +10,7 @@ export interface TableBodyProps<T> {
   isLoading: boolean;
   error?: string | null;
   colSpanCount: number;
-  noDataMessage: string;
+  noDataMessage?: string;
   paginatedData: T[];
   getRowId: (row: T) => string;
   onRowClick?: (row: T, event: React.MouseEvent<HTMLTableRowElement>) => void;
@@ -44,6 +45,7 @@ export function TableBody<T>({
   bordered = false,
   resizableColumns = false,
 }: TableBodyProps<T>): React.JSX.Element {
+  const { t } = useKrosoftTranslation();
   const renderCellValue = (row: T, columnKey: string): React.ReactNode => {
     const columnDef = columns.find(col => col.key === columnKey);
     if (columnDef?.renderCell !== undefined) {
@@ -60,7 +62,7 @@ export function TableBody<T>({
           <td colSpan={colSpanCount} className="py-8 text-center">
             <div className="flex flex-col items-center justify-center gap-2 text-muted-foreground">
               <Loader2Icon className="h-6 w-6 animate-spin text-primary" />
-              <span className="text-sm">Chargement...</span>
+              <span className="text-sm">{t("states.loading")}</span>
             </div>
           </td>
         </tr>
@@ -88,7 +90,7 @@ export function TableBody<T>({
       <tbody className="divide-y divide-gray-200 dark:divide-gray-800">
         <tr>
           <td colSpan={colSpanCount} className="py-8 text-center text-sm text-muted-foreground">
-            {noDataMessage}
+            {noDataMessage ?? t("states.noResult")}
           </td>
         </tr>
       </tbody>

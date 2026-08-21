@@ -1,3 +1,4 @@
+import { useKrosoftTranslation } from "@/i18n";
 import { AppDialog, AppDialogConfig, DialogAction } from "@/components/core/dialogs/AppDialog";
 import { Button } from "@/components/ui";
 import { Pen, Save, X } from "lucide-react";
@@ -35,11 +36,12 @@ export default function FormDialog<T>({
   defaultEditing = false,
   footerActions = true,
   saveLabel = "Sauvegarder",
-  cancelLabel = "Annuler",
+  cancelLabel,
   hideSaveIcon = false,
   maxWidth = "sm:max-w-4xl",
   isLoading = false,
 }: FormDialogProps<T>): React.ReactElement | null {
+  const { t } = useKrosoftTranslation();
   const [isEditing, setIsEditing] = useState(defaultEditing);
   const [isSaving, setIsSaving] = useState(false);
   const [submitForm, setSubmitForm] = useState<(() => void) | null>(null);
@@ -90,7 +92,7 @@ export default function FormDialog<T>({
     if (isEditing) {
       if (cancelLabel !== "") {
         actions.push({
-          label: cancelLabel,
+          label: cancelLabel ?? t("actions.cancel"),
           onClick: handleCancel,
           variant: "outline",
           disabled: isSaving || isLoading,
@@ -106,7 +108,7 @@ export default function FormDialog<T>({
       });
     } else {
       actions.push({
-        label: "Modifier",
+        label: t("actions.edit"),
         onClick: handleEditToggle,
         variant: "outline",
         icon: Pen,
@@ -156,7 +158,7 @@ export default function FormDialog<T>({
                 {cancelLabel !== "" ? (
                   <Button onClick={handleCancel} variant="outline" size="sm" disabled={isSaving || isLoading}>
                     <X className="size-4 mr-2" />
-                    {cancelLabel}
+                    {cancelLabel ?? t("actions.cancel")}
                   </Button>
                 ) : null}
                 <Button onClick={handleSaveClick} size="sm" disabled={isSaving || isLoading} className="text-white">
