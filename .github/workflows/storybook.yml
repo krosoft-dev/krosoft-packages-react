@@ -6,26 +6,11 @@ on:
   pull_request:
     branches: [main]
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-  STORYBOOK_DISABLE_TELEMETRY: 1
-
 jobs:
+  # Le déploiement de design.krosoft.fr lance ce même build : une story
+  # cassée doit échouer ici, pas dans le pipeline Azure DevOps.
   storybook:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "24"
-          cache: npm
-
-      - name: Install dependencies
-        run: npm ci
-
-      # Le déploiement de design.krosoft.fr lance ce même build : une story
-      # cassée doit échouer ici, pas dans le pipeline Azure DevOps.
-      - name: Build Storybook
-        run: npm run storybook:build
+    uses: krosoft-dev/Krosoft.DevOps.GitHub/.github/workflows/npm-build.yml@main
+    with:
+      build-script: storybook:build
+      run-tests: false
