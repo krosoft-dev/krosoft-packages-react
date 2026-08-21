@@ -10,4 +10,7 @@ jobs:
   # Le déploiement de design.krosoft.fr lance ce même build : une story
   # cassée doit échouer ici, pas dans le pipeline Azure DevOps.
   storybook:
-    uses: krosoft-dev/Krosoft.DevOps.GitHub/.github/workflows/npm-storybook.yml@main
+    uses: krosoft-dev/Krosoft.DevOps.GitHub/.github/workflows/npm-build.yml@main
+    with:
+      build-script: storybook:build
+      run-tests: false
