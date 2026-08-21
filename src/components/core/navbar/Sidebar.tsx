@@ -1,3 +1,4 @@
+import { useKrosoftTranslation } from "@/i18n";
 import * as React from "react";
 import { SearchIcon } from "lucide-react";
 import { TooltipProvider } from "../../ui/tooltip";
@@ -51,7 +52,8 @@ export interface SidebarProps {
 }
 
 export const Sidebar = ({ groups, currentPath, onItemClick, slots, search, dense = false, loading = false }: SidebarProps): React.ReactElement => {
-  const { enabled: searchable = false, placeholder: searchPlaceholder = "Rechercher..." } = search ?? {};
+  const { t } = useKrosoftTranslation();
+  const { enabled: searchable = false, placeholder: searchPlaceholder } = search ?? {};
   const { header: headerNode, footer: footerNode } = slots ?? {};
   const { collapsed, isMobile, setCollapsed } = useSidebar();
   const [query, setQuery] = React.useState("");
@@ -97,7 +99,7 @@ export const Sidebar = ({ groups, currentPath, onItemClick, slots, search, dense
               onChange={event => {
                 setQuery(event.target.value);
               }}
-              placeholder={searchPlaceholder}
+              placeholder={searchPlaceholder ?? t("search.placeholder")}
               className={cn(
                 "bg-sidebar-accent/40 border-sidebar-border pl-9 text-sidebar-foreground placeholder:text-sidebar-muted",
                 dense ? "h-8 text-sm" : "h-9",
@@ -144,8 +146,8 @@ export const Sidebar = ({ groups, currentPath, onItemClick, slots, search, dense
         }}
       >
         <SheetContent side="left" className="w-[16rem] p-0 bg-sidebar border-r border-sidebar-border overflow-hidden [&>button]:text-sidebar-foreground">
-          <SheetTitle className="sr-only">Menu de navigation</SheetTitle>
-          <SheetDescription className="sr-only">Navigation principale de l&apos;application</SheetDescription>
+          <SheetTitle className="sr-only">{t("sidebar.menu")}</SheetTitle>
+          <SheetDescription className="sr-only">{t("sidebar.description")}</SheetDescription>
           {sidebarContent}
         </SheetContent>
       </Sheet>

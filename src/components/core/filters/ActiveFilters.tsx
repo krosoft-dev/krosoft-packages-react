@@ -1,3 +1,4 @@
+import { useKrosoftTranslation } from "@/i18n";
 import { Badge } from "@/components/ui";
 import { XIcon } from "lucide-react";
 
@@ -10,6 +11,7 @@ interface ActiveFiltersProps {
 }
 
 const getFilterDisplayValue = (key: string, value: unknown, optionLabels: Record<string, string> = {}): React.ReactNode => {
+  const { t } = useKrosoftTranslation();
   if (value instanceof Date) {
     return value.toLocaleDateString("fr-FR");
   }
@@ -19,7 +21,7 @@ const getFilterDisplayValue = (key: string, value: unknown, optionLabels: Record
   if (resolvedLabel !== undefined) return resolvedLabel;
 
   if (key.includes("ok") || value === "true" || value === "false") {
-    return value === "true" ? "Oui" : "Non";
+    return t(value === "true" ? "filters.yes" : "filters.no");
   }
 
   return strValue;

@@ -1,3 +1,4 @@
+import { useKrosoftTranslation } from "@/i18n";
 import { Button } from "@/components/ui";
 import { useNotifications } from "@/hooks/ui/useNotifications";
 import { cn } from "@/helpers/tailwind.helper";
@@ -16,6 +17,7 @@ interface ImageInputProps {
 
 export const ImageInput = forwardRef<HTMLDivElement, ImageInputProps>(
   ({ value, onChange, accept = "image/jpeg,image/png,image/webp", maxSizeMB = 2, disabled = false, className = "", hint = "JPG, PNG, WEBP" }, ref) => {
+    const { t } = useKrosoftTranslation();
     const { showError } = useNotifications();
     const inputRef = useRef<HTMLInputElement>(null);
 
@@ -26,14 +28,14 @@ export const ImageInput = forwardRef<HTMLDivElement, ImageInputProps>(
       // Validation du type MIME
       const acceptedTypes = accept.split(",").map(t => t.trim());
       if (!acceptedTypes.includes(file.type)) {
-        showError("Erreur", `Seuls les fichiers ${hint} sont acceptés`);
+        showError(t("states.errorTitle"), t("image.invalidType", { types: hint }));
         if (inputRef.current) inputRef.current.value = "";
         return;
       }
 
       // Validation de la taille
       if (file.size > maxSizeMB * 1024 * 1024) {
-        showError("Erreur", `Le fichier ne doit pas dépasser ${maxSizeMB}MB`);
+        showError(t("states.errorTitle"), t("image.tooLarge", { size: maxSizeMB }));
         if (inputRef.current) inputRef.current.value = "";
         return;
       }
@@ -60,7 +62,7 @@ export const ImageInput = forwardRef<HTMLDivElement, ImageInputProps>(
         ) : disabled ? (
           <div className={cn("flex flex-col items-center justify-center w-full h-32", "border-2 border-dashed border-border rounded-surface", "bg-muted/30")}>
             <ImageIcon className="h-8 w-8 text-muted-foreground/50 mb-2" />
-            <span className="text-sm text-muted-foreground/50">Aucune image</span>
+            <span className="text-sm text-muted-foreground/50">{t("image.empty")}</span>
           </div>
         ) : (
           <label
@@ -71,7 +73,7 @@ export const ImageInput = forwardRef<HTMLDivElement, ImageInputProps>(
             )}
           >
             <UploadIcon className="h-8 w-8 text-muted-foreground mb-2" />
-            <span className="text-sm text-muted-foreground">Cliquer pour uploader</span>
+            <span className="text-sm text-muted-foreground">{t("image.upload")}</span>
             <span className="text-xs text-muted-foreground mt-1">
               {hint} (max {maxSizeMB}MB)
             </span>

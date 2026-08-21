@@ -1,3 +1,4 @@
+import { useKrosoftTranslation } from "@/i18n";
 import * as React from "react";
 import { LoaderCircleIcon, SearchIcon } from "lucide-react";
 import { cn } from "@/helpers/tailwind.helper";
@@ -79,17 +80,18 @@ export const GlobalSearch = ({
   open,
   onOpenChange,
   trigger = true,
-  triggerLabel = "Rechercher",
+  triggerLabel,
   shortcut = true,
   shortcutLabel = "Ctrl+K",
-  placeholder = "Rechercher...",
-  emptyLabel = "Aucun résultat.",
-  loadingLabel = "Recherche...",
-  title = "Recherche globale",
-  description = "Rechercher une page ou une donnée dans l'application.",
+  placeholder,
+  emptyLabel,
+  loadingLabel,
+  title,
+  description,
   hint,
   className,
 }: GlobalSearchProps): React.ReactElement => {
+  const { t } = useKrosoftTranslation();
   const [uncontrolledOpen, setUncontrolledOpen] = React.useState(false);
   const isControlled = open !== undefined;
   const isOpen = isControlled ? open : uncontrolledOpen;
@@ -134,7 +136,7 @@ export const GlobalSearch = ({
         <Button
           variant="ghost"
           size="icon"
-          aria-label={triggerLabel}
+          aria-label={triggerLabel ?? t("search.trigger")}
           title={shortcut ? `${triggerLabel} (${shortcutLabel})` : triggerLabel}
           className="rounded-full"
           onClick={() => {
@@ -145,17 +147,24 @@ export const GlobalSearch = ({
         </Button>
       )}
 
-      <CommandDialog open={isOpen} onOpenChange={setOpen} title={title} description={description} shouldFilter={false} className={className}>
-        <CommandInput value={search} onValueChange={onSearch} placeholder={placeholder} />
+      <CommandDialog
+        open={isOpen}
+        onOpenChange={setOpen}
+        title={title ?? t("search.globalTitle")}
+        description={description ?? t("search.globalDescription")}
+        shouldFilter={false}
+        className={className}
+      >
+        <CommandInput value={search} onValueChange={onSearch} placeholder={placeholder ?? t("search.placeholder")} />
         <CommandList>
           {loading && (
             <div className="flex items-center justify-center gap-2 py-6 text-sm text-muted-foreground">
               <LoaderCircleIcon className="size-4 animate-spin" />
-              {loadingLabel}
+              {loadingLabel ?? t("search.loading")}
             </div>
           )}
 
-          {!hasResults && !loading && <CommandEmpty>{emptyLabel}</CommandEmpty>}
+          {!hasResults && !loading && <CommandEmpty>{emptyLabel ?? t("states.noResultDot")}</CommandEmpty>}
 
           {groups.map(group =>
             group.items.length === 0 ? null : (

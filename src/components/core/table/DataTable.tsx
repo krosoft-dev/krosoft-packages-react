@@ -52,7 +52,7 @@ export function DataTable<T>({
   isLoading = false,
   error = null,
   bordered = false,
-  noDataMessage = "Aucun résultat",
+  noDataMessage,
   defaultPageSize = DEFAULT_PAGE_SIZE,
   pageSizeOptions = DEFAULT_PAGE_SIZE_OPTIONS,
   totalRows,
