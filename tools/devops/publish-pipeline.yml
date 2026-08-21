@@ -1,9 +1,4 @@
-name: Krosoft Design - Publish - $(Date:yyyy.MM.dd).$(BuildID)
-
-# Déploiement du Storybook (design system) en site statique, sur le même socle
-# docker/traefik que les applis krosoft. Seule particularité : le build est
-# `storybook:build` et non le `build` du package npm — d'où buildScript,
-# passViteArgs (storybook refuse --mode/--base) et outputDir.
+name: Design - Publish - $(Date:yyyy.MM.dd).$(BuildID) 
 
 trigger:
   batch: true
