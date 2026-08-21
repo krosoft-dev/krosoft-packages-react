@@ -45,9 +45,7 @@ const ConfirmationDialogDemo = ({
   return (
     <div className="flex flex-col items-center gap-4 p-8">
       <p className="text-sm text-muted-foreground mb-2">Cliquez sur le bouton pour ouvrir le dialogue de confirmation.</p>
-      <Button onClick={() => config.openDialog("1", "Élément #1")}>
-        Confirmer l'action
-      </Button>
+      <Button onClick={() => config.openDialog("1", "Élément #1")}>Confirmer l'action</Button>
       <ConfirmationDialog isLoading={simulateLoading ?? isLoading} error={error} config={config} destructive={destructive} />
     </div>
   );
@@ -59,7 +57,6 @@ const meta: Meta<typeof ConfirmationDialogDemo> = {
   parameters: {
     layout: "centered",
   },
-  tags: ["autodocs"],
   argTypes: {
     simulateError: {
       control: "boolean",

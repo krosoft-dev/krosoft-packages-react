@@ -7,7 +7,6 @@ import { PencilIcon, TrashIcon } from "lucide-react";
 const meta: Meta<typeof DataTable> = {
   title: "Core/Table/DataTable",
   component: DataTable,
-  tags: ["autodocs"],
   parameters: {
     layout: "padded",
     docs: {

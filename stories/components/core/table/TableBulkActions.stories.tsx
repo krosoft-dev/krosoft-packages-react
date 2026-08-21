@@ -8,12 +8,16 @@ const ACTIONS_DEFAULT: BulkAction[] = [
   {
     label: "Exporter",
     icon: Download,
-    onClick: (_ids, clear) => { clear(); },
+    onClick: (_ids, clear) => {
+      clear();
+    },
   },
   {
     label: "Envoyer un email",
     icon: Mail,
-    onClick: (_ids, clear) => { clear(); },
+    onClick: (_ids, clear) => {
+      clear();
+    },
   },
 ];
 
@@ -23,7 +27,9 @@ const ACTIONS_WITH_DESTRUCTIVE: BulkAction[] = [
     label: "Supprimer",
     icon: Trash2,
     variant: "destructive",
-    onClick: (_ids, clear) => { clear(); },
+    onClick: (_ids, clear) => {
+      clear();
+    },
   },
 ];
 
@@ -31,7 +37,7 @@ const meta: Meta<typeof TableBulkActions> = {
   title: "Core/Table/TableBulkActions",
   component: TableBulkActions,
   decorators: [
-    (Story) => (
+    Story => (
       <div className="w-full p-4">
         <Story />
       </div>
@@ -74,8 +80,18 @@ export const NoIcon: Story = {
   render: () => {
     const [selected, setSelected] = useState(["1", "2"]);
     const actions: BulkAction[] = [
-      { label: "Archiver", onClick: (_ids, clear) => { clear(); } },
-      { label: "Dupliquer", onClick: (_ids, clear) => { clear(); } },
+      {
+        label: "Archiver",
+        onClick: (_ids, clear) => {
+          clear();
+        },
+      },
+      {
+        label: "Dupliquer",
+        onClick: (_ids, clear) => {
+          clear();
+        },
+      },
     ];
     return <TableBulkActions selectedRows={selected} setSelectedRows={setSelected} bulkActions={actions} />;
   },
@@ -119,7 +135,9 @@ export const Interactive: Story = {
         <TableBulkActions selectedRows={selected} setSelectedRows={setSelected} bulkActions={actions} />
         {log.length > 0 && (
           <ul className="text-xs text-muted-foreground space-y-1">
-            {log.map((entry, i) => <li key={i}>→ {entry}</li>)}
+            {log.map((entry, i) => (
+              <li key={i}>→ {entry}</li>
+            ))}
           </ul>
         )}
       </div>

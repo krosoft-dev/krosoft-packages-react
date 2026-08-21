@@ -10,7 +10,6 @@ import { Button } from "../../../../src/components/ui/button";
 const meta: Meta<typeof Topbar> = {
   title: "Core/Navbar/Topbar",
   component: Topbar,
-  tags: ["autodocs"],
   parameters: {
     layout: "fullscreen",
   },

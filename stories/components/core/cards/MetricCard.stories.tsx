@@ -114,7 +114,7 @@ export const StringValue: Story = {
 export const AllColors: Story = {
   render: () => (
     <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
-      {(["blue", "green", "orange", "red", "purple", "accent", "success", "info", "warning", "destructive"] as const).map((color) => (
+      {(["blue", "green", "orange", "red", "purple", "accent", "success", "info", "warning", "destructive"] as const).map(color => (
         <MetricCard key={color} title={color} value={42} unit="%" icon={Thermometer} color={color} />
       ))}
     </div>

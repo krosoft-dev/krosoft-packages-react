@@ -4,6 +4,8 @@
 
 Krosoft shared React package.
 
+Storybook : **https://design.krosoft.fr**
+
 ## Libellés du package
 
 Les composants portent leurs propres libellés — « Annuler », « Aucun résultat », placeholders de recherche, messages d'erreur de formulaire. Ils vivent dans `src/locales/{fr,en}.json`, sous le namespace i18next `krosoft`, séparé de celui de l'application pour qu'aucune clé ne se marche dessus.

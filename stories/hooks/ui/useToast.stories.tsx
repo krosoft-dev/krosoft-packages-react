@@ -86,7 +86,6 @@ const meta: Meta<typeof UseToastDemo> = {
   parameters: {
     layout: "centered",
   },
-  tags: ["autodocs"],
 };
 
 export default meta;

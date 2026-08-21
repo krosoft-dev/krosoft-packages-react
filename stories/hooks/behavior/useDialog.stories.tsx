@@ -25,19 +25,26 @@ const UseDialogDemo = (): React.ReactElement => {
         Cliquez sur un bouton pour ouvrir le dialogue. Le hook gère l'état open/close et l'élément sélectionné.
       </p>
       <div className="flex gap-3">
-        <Button onClick={() => dialog.openDialog("1", "Facture #2024-001")}>
-          Sélectionner « Facture #2024-001 »
-        </Button>
-        <Button onClick={() => dialog.openDialog("2", "Client Dupont SARL")}>
-          Sélectionner « Client Dupont SARL »
-        </Button>
+        <Button onClick={() => dialog.openDialog("1", "Facture #2024-001")}>Sélectionner « Facture #2024-001 »</Button>
+        <Button onClick={() => dialog.openDialog("2", "Client Dupont SARL")}>Sélectionner « Client Dupont SARL »</Button>
       </div>
       <div className="text-xs text-muted-foreground mt-2">
-        <p>isOpen: <strong>{String(dialog.isOpen)}</strong></p>
-        <p>id: <strong>{dialog.id ?? "null"}</strong></p>
-        <p>name: <strong>{dialog.name ?? "null"}</strong></p>
+        <p>
+          isOpen: <strong>{String(dialog.isOpen)}</strong>
+        </p>
+        <p>
+          id: <strong>{dialog.id ?? "null"}</strong>
+        </p>
+        <p>
+          name: <strong>{dialog.name ?? "null"}</strong>
+        </p>
       </div>
-      <AlertDialog open={dialog.isOpen} onOpenChange={open => { if (!open) dialog.onClose(); }}>
+      <AlertDialog
+        open={dialog.isOpen}
+        onOpenChange={open => {
+          if (!open) dialog.onClose();
+        }}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Élément sélectionné</AlertDialogTitle>
@@ -61,7 +68,6 @@ const meta: Meta<typeof UseDialogDemo> = {
   parameters: {
     layout: "centered",
   },
-  tags: ["autodocs"],
 };
 
 export default meta;

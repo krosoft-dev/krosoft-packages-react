@@ -80,7 +80,7 @@ const meta: Meta<typeof TableFilter> = {
   title: "Core/Filters/TableFilter",
   component: TableFilter,
   decorators: [
-    (Story) => (
+    Story => (
       <div className="w-full p-4">
         <Story />
       </div>

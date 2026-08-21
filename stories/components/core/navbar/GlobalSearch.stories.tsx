@@ -7,7 +7,6 @@ import { Button } from "../../../../src/components/ui/button";
 const meta: Meta<typeof GlobalSearch> = {
   title: "Core/Navbar/GlobalSearch",
   component: GlobalSearch,
-  tags: ["autodocs"],
   parameters: {
     layout: "centered",
   },
