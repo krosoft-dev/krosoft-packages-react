@@ -34,7 +34,7 @@ const meta: Meta<typeof SearchableSelect> = {
   title: "Core/Inputs/SearchableSelect",
   component: SearchableSelect,
   decorators: [
-    (Story) => (
+    Story => (
       <div className="w-64 pb-72">
         <Story />
       </div>
@@ -71,13 +71,7 @@ export const WithClear: Story = {
     const [value, setValue] = useState<string | undefined>("fr");
     return (
       <div className="w-64 pb-72 space-y-2">
-        <SearchableSelect
-          options={PAYS}
-          value={value}
-          onChange={setValue}
-          onClear={() => setValue(undefined)}
-          placeholder="Sélectionner un pays"
-        />
+        <SearchableSelect options={PAYS} value={value} onChange={setValue} onClear={() => setValue(undefined)} placeholder="Sélectionner un pays" />
         <p className="text-xs text-muted-foreground">
           {value !== undefined ? `Sélectionné : ${PAYS.find(p => p.value === value)?.label}` : "Aucune sélection"}
         </p>

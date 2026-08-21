@@ -65,7 +65,6 @@ const meta: Meta<typeof UseConfirmDeleteDialogDemo> = {
   parameters: {
     layout: "centered",
   },
-  tags: ["autodocs"],
   argTypes: {
     simulateError: {
       control: "boolean",

@@ -10,7 +10,7 @@ const meta: Meta<typeof DatePicker> = {
     onDateChange: () => {},
   },
   decorators: [
-    (Story) => (
+    Story => (
       <div className="w-64 pb-96">
         <Story />
       </div>
@@ -46,9 +46,7 @@ export const Interactive: Story = {
     return (
       <div className="w-64 space-y-3 pb-96">
         <DatePicker date={date} onDateChange={setDate} placeholder="Sélectionner une date" />
-        <p className="text-sm text-muted-foreground">
-          {date !== undefined ? `Sélectionné : ${date.toLocaleDateString("fr-FR")}` : "Aucune date sélectionnée"}
-        </p>
+        <p className="text-sm text-muted-foreground">{date !== undefined ? `Sélectionné : ${date.toLocaleDateString("fr-FR")}` : "Aucune date sélectionnée"}</p>
       </div>
     );
   },
