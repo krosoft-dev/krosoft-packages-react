@@ -11,7 +11,7 @@ env:
   STORYBOOK_DISABLE_TELEMETRY: 1
 
 jobs:
-  build:
+  storybook:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
