@@ -1,5 +1,6 @@
 import type { Decorator, Preview } from "@storybook/react-vite";
 import { withThemeByClassName } from "@storybook/addon-themes";
+import { krosoftDarkTheme } from "./theme";
 import "../src/styles/globals.css";
 import { applyTokenPreset } from "@/tokens";
 import { DEMO_THEME_OPTIONS } from "../stories/constants/themes";
@@ -47,6 +48,9 @@ const preview: Preview = {
   // la référence publique du design system.
   tags: ["autodocs"],
   parameters: {
+    // Les pages Docs suivent le sombre du manager, sinon elles resteraient
+    // blanches autour de stories rendues en sombre.
+    docs: { theme: krosoftDarkTheme },
     options: {
       // L'ordre de la barre latérale est une décision, pas l'alphabet.
       storySort: { order: ["Introduction", "UI", "Core", "Hooks", "Démos"] },
@@ -64,7 +68,7 @@ const preview: Preview = {
     withTokens,
     withThemeByClassName({
       themes,
-      defaultTheme: "Clair",
+      defaultTheme: "Sombre",
     }),
   ],
 };
