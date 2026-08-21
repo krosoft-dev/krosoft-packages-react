@@ -55,7 +55,7 @@ Les conventions du repo, pour que la barre latérale reste lisible :
 <table>
   <tbody>
     <tr>
-      <td>Version du package</td>
+      <td>Version publiée sur npm</td>
       <td>
         <code>{buildInfo.version}</code>
       </td>
@@ -73,6 +73,8 @@ Les conventions du repo, pour que la barre latérale reste lisible :
   </tbody>
 </table>
 
-Le site suit la branche `main` et est redéployé à chaque merge. La version affichée ci-dessus est celle
-déclarée dans le dépôt : la version réellement publiée sur npm est incrémentée au moment de la
-publication, elle peut donc être en avance.
+Le site suit la branche `main` et est redéployé à chaque merge. La version ci-dessus est lue sur le
+registre npm au moment du build (`npm view @krosoft/react version`), pas dans le dépôt — le
+`package.json` versionné reste à `0.0.1`, c'est le pipeline de publication qui incrémente le patch au
+moment du publish. Publication et déploiement du site partant du même merge, la version affichée peut
+rester un patch en arrière le temps que le publish se termine ; le commit ci-dessus, lui, est exact.
