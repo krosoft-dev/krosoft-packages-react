@@ -66,6 +66,14 @@ export interface NotificationsBellProps {
   contentClassName?: string;
   /** Classes de la pastille de comptage, pour l'accorder à la charte de l'application. */
   badgeClassName?: string;
+  /** Classes ajoutées à chaque entrée de la liste. */
+  itemClassName?: string;
+  /**
+   * Classes des entrées non lues. Remplace la mise en avant par défaut (`bg-accent/40`) plutôt
+   * que de s'y ajouter : deux fonds concurrents ne se départagent pas, l'ordre des classes
+   * Tailwind ne décidant pas du gagnant.
+   */
+  unreadItemClassName?: string;
 }
 
 const DEFAULT_MAX_BADGE_COUNT = 9;
@@ -96,6 +104,8 @@ export const NotificationsBell = ({
   className,
   contentClassName,
   badgeClassName,
+  itemClassName,
+  unreadItemClassName,
 }: NotificationsBellProps): React.ReactElement => {
   const { t } = useKrosoftTranslation();
   const [uncontrolledOpen, setUncontrolledOpen] = React.useState(false);
@@ -162,7 +172,7 @@ export const NotificationsBell = ({
                 const Icon = item.icon;
 
                 return (
-                  <li key={item.key} className={cn("flex items-start gap-2 px-3 py-2", !item.read && "bg-accent/40")}>
+                  <li key={item.key} className={cn("flex items-start gap-2 px-3 py-2", !item.read && (unreadItemClassName ?? "bg-accent/40"), itemClassName)}>
                     {/* Toute la zone de texte est cliquable : c'est le geste attendu sur une
                         notification, le bouton de suppression restant à part pour ne pas être touché par erreur. */}
                     <button
