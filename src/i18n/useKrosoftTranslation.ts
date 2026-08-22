@@ -30,9 +30,11 @@ export const useKrosoftTranslation = (): { t: (key: string, values?: Interpolati
   const { t, i18n, ready } = useTranslation(KROSOFT_NAMESPACE, { useSuspense: false });
 
   const translate = (key: string, values?: InterpolationValues): string => {
-    const isRegistered = ready && i18n.hasResourceBundle(i18n.language, KROSOFT_NAMESPACE);
-
-    if (isRegistered) {
+    // `exists` suit la résolution d'i18next — région puis langue de base puis
+    // `fallbackLng`. Comparer `i18n.language` au pied de la lettre ratait les
+    // langues régionalisées : une langue détectée depuis le navigateur vaut
+    // « en-GB », alors que le bundle est enregistré sous « en ».
+    if (ready && i18n.exists(key, { ns: KROSOFT_NAMESPACE })) {
       return t(key, values ?? {});
     }
 

@@ -39,6 +39,7 @@ const resolvePublishedVersion = (): string => {
 };
 
 const version = resolvePublishedVersion();
+const versionScript = `<script>window.__KROSOFT_VERSION__ = ${JSON.stringify(version)};</script>`;
 
 // Le site déployé suit `main`, pas une version npm : on affiche aussi de quoi
 // identifier le build. Azure DevOps et GitHub Actions exposent le commit dans
@@ -54,9 +55,11 @@ const config: StorybookConfig = {
     name: "@storybook/react-vite",
     options: {},
   },
-  // Le manager n'est pas construit par Vite : il ne voit pas les `define`
-  // ci-dessous, on lui passe donc la version par le `<head>`.
-  managerHead: head => `${head}\n<script>window.__KROSOFT_VERSION__ = ${JSON.stringify(version)};</script>`,
+  // Le thème (`.storybook/theme.ts`) affiche la version et sert au manager comme à
+  // la preview. Le manager n'étant pas construit par Vite, il ne voit pas les
+  // `define` ci-dessous : on passe la version par le `<head>`, des deux côtés.
+  managerHead: head => `${head}\n${versionScript}`,
+  previewHead: head => `${head}\n${versionScript}`,
   viteFinal: config => {
     const alias = config.resolve?.alias;
 

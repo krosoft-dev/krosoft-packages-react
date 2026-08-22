@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Button, Calendar } from "@/components/ui";
 import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
-import { fr } from "date-fns/locale";
+import { useDateFnsLocale } from "@/i18n";
 import { cn } from "@/helpers/tailwind.helper";
 
 interface DatePickerProps {
@@ -12,6 +12,7 @@ interface DatePickerProps {
 }
 
 export const DatePicker = ({ date, onDateChange, placeholder }: DatePickerProps): React.ReactElement => {
+  const locale = useDateFnsLocale();
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -51,12 +52,12 @@ export const DatePicker = ({ date, onDateChange, placeholder }: DatePickerProps)
         )}
       >
         <CalendarIcon className="mr-2 size-4 shrink-0" />
-        {date !== undefined ? format(date, "dd/MM/yyyy", { locale: fr }) : <span>{placeholder}</span>}
+        {date !== undefined ? format(date, "dd/MM/yyyy", { locale }) : <span>{placeholder}</span>}
       </Button>
 
       {open ? (
         <div className="absolute left-0 top-[calc(100%+4px)] z-[100] rounded-surface border bg-popover text-popover-foreground shadow-md animate-in fade-in-0 zoom-in-95 slide-in-from-top-2">
-          <Calendar mode="single" selected={date} onSelect={handleDateSelect} />
+          <Calendar mode="single" locale={locale} selected={date} onSelect={handleDateSelect} />
         </div>
       ) : null}
     </div>
