@@ -25,12 +25,12 @@ const createInstance = async (language: string): Promise<I18nInstance> => {
   return instance;
 };
 
-const renderSelector = async (language: string, variant: "select" | "mini" = "select"): Promise<I18nInstance> => {
+const renderSelector = async (language: string, variant: "select" | "mini" = "select", id?: string): Promise<I18nInstance> => {
   const instance = await createInstance(language);
 
   render(
     <I18nextProvider i18n={instance}>
-      <LanguageSelector languageOptions={LANGUAGE_OPTIONS} variant={variant} />
+      <LanguageSelector languageOptions={LANGUAGE_OPTIONS} variant={variant} id={id} />
     </I18nextProvider>,
   );
 
@@ -50,6 +50,18 @@ describe("LanguageSelector", () => {
 
     expect(screen.getByText("English")).toBeTruthy();
     expect(screen.getByText("Choose the interface language")).toBeTruthy();
+  });
+
+  it("pose l'id sur le déclencheur, pour qu'un label de l'application s'y associe", async () => {
+    await renderSelector("fr", "select", "language");
+
+    expect(screen.getByRole("combobox").id).toBe("language");
+  });
+
+  it("pose l'id sur le bouton de la variante mini", async () => {
+    await renderSelector("fr", "mini", "language");
+
+    expect(screen.getByRole("button").id).toBe("language");
   });
 
   it("bascule sur la langue suivante depuis le bouton mini", async () => {
