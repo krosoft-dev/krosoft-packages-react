@@ -4,7 +4,9 @@
     "save": "Enregistrer",
     "saving": "Enregistrement...",
     "edit": "Modifier",
-    "delete": "Supprimer"
+    "delete": "Supprimer",
+    "clear": "Effacer",
+    "apply": "Appliquer"
   },
   "states": {
     "loading": "Chargement...",
