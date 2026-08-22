@@ -28,6 +28,13 @@
     "commandDescription": "Search for a command to run.",
     "loading": "Searching..."
   },
+  "notifications": {
+    "trigger": "Notifications",
+    "title": "Notifications",
+    "empty": "No notifications.",
+    "markAllAsRead": "Mark all as read",
+    "remove": "Delete notification"
+  },
   "select": {
     "placeholder": "Select...",
     "create": "Create “{{search}}”",

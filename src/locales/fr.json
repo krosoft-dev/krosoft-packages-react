@@ -28,6 +28,13 @@
     "commandDescription": "Rechercher une commande à exécuter.",
     "loading": "Recherche..."
   },
+  "notifications": {
+    "trigger": "Notifications",
+    "title": "Notifications",
+    "empty": "Aucune notification.",
+    "markAllAsRead": "Tout marquer comme lu",
+    "remove": "Supprimer la notification"
+  },
   "select": {
     "placeholder": "Sélectionner...",
     "create": "Créer « {{search}} »",
