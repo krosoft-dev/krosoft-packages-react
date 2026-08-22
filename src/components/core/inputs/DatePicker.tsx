@@ -57,7 +57,8 @@ export const DatePicker = ({ date, onDateChange, placeholder }: DatePickerProps)
 
       {open ? (
         <div className="absolute left-0 top-[calc(100%+4px)] z-[100] rounded-surface border bg-popover text-popover-foreground shadow-md animate-in fade-in-0 zoom-in-95 slide-in-from-top-2">
-          <Calendar mode="single" locale={locale} selected={date} onSelect={handleDateSelect} />
+          {/* `defaultMonth` : le calendrier est monté à chaque ouverture, il repart donc du mois de la date choisie. */}
+          <Calendar mode="single" locale={locale} defaultMonth={date} selected={date} onSelect={handleDateSelect} />
         </div>
       ) : null}
     </div>
