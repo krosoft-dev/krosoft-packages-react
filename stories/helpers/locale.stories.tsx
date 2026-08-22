@@ -4,7 +4,11 @@ import { createInstance, type i18n as I18n } from "i18next";
 import { I18nextProvider, initReactI18next, useTranslation } from "react-i18next";
 import { HardDrive, TrendingUp } from "lucide-react";
 import { formatFullDateTime, formatNumber, formatShortDate, formatShortDateTime, formatSize, getLocale, resetLocale, setLocale } from "@krosoft/core/helpers";
+import type { DateRange } from "react-day-picker";
 import { KpiCard } from "@/components/core/cards/KpiCard";
+import { DatePicker } from "@/components/core/inputs/DatePicker";
+import { DateRangePicker } from "@/components/core/inputs/DateRangePicker";
+import { registerKrosoftLocales, useDateFnsLocale } from "@/i18n";
 
 interface DemoLanguage {
   code: string;
@@ -33,6 +37,9 @@ const resources = {
         helper: "Helper",
         result: "Résultat",
         reset: "Revenir au français",
+        date: "Date",
+        period: "Période",
+        dateFns: "Locale date-fns",
       },
     },
   },
@@ -46,6 +53,9 @@ const resources = {
         helper: "Helper",
         result: "Result",
         reset: "Back to French",
+        date: "Date",
+        period: "Period",
+        dateFns: "date-fns locale",
       },
     },
   },
@@ -59,6 +69,9 @@ const resources = {
         helper: "Helfer",
         result: "Ergebnis",
         reset: "Zurück zu Französisch",
+        date: "Datum",
+        period: "Zeitraum",
+        dateFns: "date-fns-Locale",
       },
     },
   },
@@ -72,6 +85,9 @@ const resources = {
         helper: "ヘルパー",
         result: "結果",
         reset: "フランス語に戻す",
+        date: "日付",
+        period: "期間",
+        dateFns: "date-fns のロケール",
       },
     },
   },
@@ -91,6 +107,10 @@ const createDemoI18n = (): I18n => {
     resources,
     interpolation: { escapeValue: false },
   });
+
+  // Les libellés propres aux composants du package suivent la même instance :
+  // sans cet appel, le pied du `DateRangePicker` resterait en français.
+  registerKrosoftLocales(instance);
 
   instance.on("languageChanged", language => {
     setLocale(localeOf(language));
@@ -112,6 +132,24 @@ const SAMPLE_DATE = "2026-03-14T09:05:07.000Z";
 const SAMPLE_NUMBER = 1234567.891;
 const SAMPLE_BYTES = 2_684_354_560;
 
+const LanguageSwitcher = (): React.ReactElement => {
+  const { i18n } = useTranslation();
+
+  return (
+    <div className="flex flex-wrap gap-2">
+      {LANGUAGES.map(language => (
+        <button
+          key={language.code}
+          onClick={() => void i18n.changeLanguage(language.code)}
+          className={`rounded-md border px-3 py-1.5 text-sm transition-colors hover:bg-accent ${i18n.language === language.code ? "border-primary bg-primary/10 font-medium" : ""}`}
+        >
+          {language.label}
+        </button>
+      ))}
+    </div>
+  );
+};
+
 const HelperRow = ({ call, result }: { call: string; result: string }): React.ReactElement => (
   <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-4 border-t px-3 py-2 text-sm">
     <code className="font-mono text-xs text-muted-foreground break-all">{call}</code>
@@ -131,17 +169,7 @@ const LocaleDemo = (): React.ReactElement => {
 
   return (
     <div className="flex flex-col gap-6 p-4 max-w-3xl">
-      <div className="flex flex-wrap gap-2">
-        {LANGUAGES.map(language => (
-          <button
-            key={language.code}
-            onClick={() => void i18n.changeLanguage(language.code)}
-            className={`rounded-md border px-3 py-1.5 text-sm transition-colors hover:bg-accent ${i18n.language === language.code ? "border-primary bg-primary/10 font-medium" : ""}`}
-          >
-            {language.label}
-          </button>
-        ))}
-      </div>
+      <LanguageSwitcher />
 
       <div className="rounded-md border p-4 space-y-2 text-sm">
         <div className="flex justify-between">
@@ -180,6 +208,56 @@ const LocaleDemo = (): React.ReactElement => {
           {t("demo.reset")}
         </button>
       </div>
+    </div>
+  );
+};
+
+/**
+ * Les sélecteurs de date ne passent pas par `setLocale` : ils lisent la langue
+ * i18next et en dérivent une locale date-fns, qui pilote à la fois le format
+ * affiché, les noms de mois et de jours, et le premier jour de la semaine.
+ */
+const CalendarDemo = (): React.ReactElement => {
+  const { t, i18n } = useTranslation();
+  const locale = useDateFnsLocale();
+  const [date, setDate] = useState<Date | undefined>(new Date(SAMPLE_DATE));
+  const [range, setRange] = useState<DateRange | undefined>({ from: new Date("2026-03-02T00:00:00.000Z"), to: new Date("2026-03-20T00:00:00.000Z") });
+
+  return (
+    <div className="flex flex-col gap-6 p-4 max-w-3xl">
+      <LanguageSwitcher />
+
+      <div className="rounded-md border p-4 space-y-2 text-sm">
+        <div className="flex justify-between">
+          <span className="text-muted-foreground">{t("demo.language")}</span>
+          <code className="font-mono">{i18n.language}</code>
+        </div>
+        <div className="flex justify-between">
+          <span className="text-muted-foreground">{t("demo.dateFns")} — useDateFnsLocale()</span>
+          <code className="font-mono">{locale.code}</code>
+        </div>
+        <div className="flex justify-between">
+          <span className="text-muted-foreground">{t("demo.locale")} — getLocale()</span>
+          <code className="font-mono">{getLocale()}</code>
+        </div>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div className="space-y-1.5">
+          <span className="text-xs font-medium uppercase text-muted-foreground">{t("demo.date")}</span>
+          <DatePicker date={date} onDateChange={setDate} placeholder={t("demo.date")} />
+        </div>
+        <div className="space-y-1.5">
+          <span className="text-xs font-medium uppercase text-muted-foreground">{t("demo.period")}</span>
+          <DateRangePicker value={range} onChange={setRange} />
+        </div>
+      </div>
+
+      <p className="text-sm text-muted-foreground">
+        Ouvrir les deux sélecteurs : noms de mois, abréviations de jours, premier jour de la semaine et libellés du pied suivent la langue. Le package
+        n&apos;embarque que le français et l&apos;anglais britannique — en allemand et en japonais, les calendriers retombent sur le français, comme les
+        libellés.
+      </p>
     </div>
   );
 };
@@ -268,11 +346,25 @@ setLocale(localeOf(i18n.language));
 - \`resetLocale()\` rétablit \`fr-FR\`, la valeur par défaut du package.
 - chaque helper accepte une locale explicite en dernier argument, prioritaire sur la locale par défaut.
 
+### Les calendriers, un second canal
+
+Les sélecteurs de date ne lisent pas la locale des helpers : \`react-day-picker\` et \`format()\` attendent un objet locale de date-fns, pas un identifiant \`Intl\`. \`useDateFnsLocale\` fait le pont, à partir de la langue i18next :
+
+\`\`\`tsx
+import { registerKrosoftLocales } from "@krosoft/react/i18n";
+
+registerKrosoftLocales(i18n); // libellés du package
+// puis rien de plus : DatePicker et DateRangePicker suivent la langue.
+\`\`\`
+
+Le package embarque le français et l'anglais britannique (\`enGB\`, pour garder JJ/MM/AAAA et la semaine démarrant le lundi) ; toute autre langue retombe sur le français.
+
 ### Points d'attention
 
 - \`formatSize\` conserve les suffixes français (o / Ko / Mo / Go) et bascule sur les symboles internationaux (B / KB / MB / GB) hors français.
 - La locale est un état de module, partagé par toute l'application : la changer suffit, mais il faut un rendu pour que l'affichage suive — le \`languageChanged\` de i18next s'en charge via \`useTranslation\`.
 - Les applications monolingues n'ont rien à faire : sans \`setLocale\`, le comportement reste \`fr-FR\`.
+- Les deux canaux sont indépendants : cette démo mappe \`en\` sur \`en-US\` côté helpers alors que les calendriers utilisent \`enGB\`, d'où un \`3/14/2026\` à côté d'un calendrier démarrant le lundi. Une application cohérente choisit la même convention des deux côtés — \`en-GB\` dans eva-ui et modulus.
 `,
       },
     },
@@ -292,6 +384,11 @@ type Story = StoryObj<typeof LocaleDemo>;
 
 /** La langue i18next pilote la locale des helpers, donc l'affichage des composants. */
 export const Default: Story = {};
+
+/** Les calendriers dérivent leur locale date-fns de la langue i18next. */
+export const Calendriers: StoryObj<typeof CalendarDemo> = {
+  render: () => <CalendarDemo />,
+};
 
 /** Une locale passée en argument l'emporte, sans toucher à la locale par défaut. */
 export const LocaleExplicite: StoryObj<typeof ExplicitLocaleDemo> = {
