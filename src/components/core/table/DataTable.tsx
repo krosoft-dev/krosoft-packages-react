@@ -1,4 +1,5 @@
 import { useDataTable } from "@/hooks/ui/useDataTable";
+import { useFixedColumns } from "@/hooks/ui/useFixedColumns";
 import React from "react";
 import { defaultPageSize as DEFAULT_PAGE_SIZE, pagesSizes as DEFAULT_PAGE_SIZE_OPTIONS } from "../../../constants/datatable";
 import type { BulkAction, ColumnDef, RowAction } from "../../../types";
@@ -23,6 +24,7 @@ export interface DataTableProps<T> {
   error?: string | null; // Message d'erreur affiché si le chargement des données a échoué
   noDataMessage?: string; // Message affiché lorsque le tableau est vide
   bordered?: boolean; // Permet d'afficher les bordures des cellules (colonnes)
+  fixedActions?: boolean; // Fige la colonne des actions (et du réglage des colonnes) sur le bord droit
   defaultPageSize?: number; // Nombre par défaut de lignes par page
   pageSizeOptions?: number[]; // Options pour le nombre de lignes par page
 
@@ -52,6 +54,7 @@ export function DataTable<T>({
   isLoading = false,
   error = null,
   bordered = false,
+  fixedActions = false,
   noDataMessage,
   defaultPageSize = DEFAULT_PAGE_SIZE,
   pageSizeOptions = DEFAULT_PAGE_SIZE_OPTIONS,
@@ -110,6 +113,11 @@ export function DataTable<T>({
     onSortChange,
   });
 
+  // La case de sélection est toujours la première colonne : si une colonne est figée à gauche,
+  // elle ne peut pas rester dans le flux, sinon la colonne figée viendrait la recouvrir.
+  const fixedSelection = hasBulkActions && visibleColumnsArray.some(column => column.fixed === "left");
+  const fixedColumns = useFixedColumns(tableRef);
+
   return (
     // Le tableau suit le preset de l'application — square reste square — mais
     // bascule sur les valeurs plafonnées : ni ses contrôles ni son cadre ne
@@ -141,6 +149,9 @@ export function DataTable<T>({
               handleMouseDown={handleMouseDown}
               hasActions={hasActions}
               bordered={bordered}
+              fixedColumns={fixedColumns}
+              fixedSelection={fixedSelection}
+              fixedActions={fixedActions}
               settingsNode={
                 columnVisibility ? (
                   <TableSettings columns={columns} visibleColumns={visibleColumns} toggleColumnVisibility={toggleColumnVisibility} />
@@ -165,6 +176,7 @@ export function DataTable<T>({
               actions={actions}
               columns={columns}
               resizableColumns={resizableColumns}
+              fixedColumns={fixedColumns}
             />
           </table>
         </div>

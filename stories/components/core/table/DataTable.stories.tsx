@@ -12,7 +12,7 @@ const meta: Meta<typeof DataTable> = {
     docs: {
       description: {
         component:
-          "Le composant `DataTable` permet d'afficher des données sous forme de tableau avec des fonctionnalités avancées (tri, sélection, menu d'actions).\n\n### Fonctionnalités\n\n- **Tri** : Activez le tri colonne par colonne avec `sortable: true` dans `ColumnDef`. Un icône `↕` apparaît sur les colonnes triables ; `↑`/`↓` indique la colonne et le sens actifs.\n- **Réorganisation des colonnes** : Glissez et déposez l'icône de poignée dans l'en-tête.\n- **Désactivation du glisser-déposer** : Vous pouvez figer toutes les colonnes en passant `draggableColumns={false}` au composant.\n- **Largeur des colonnes** : par défaut (`resizableColumns` non activé), `minWidth` sur un `ColumnDef` n'est qu'un plancher — la colonne s'élargit naturellement selon le contenu. Avec `resizableColumns={true}`, `minWidth` devient la largeur figée de départ et une poignée sur le bord droit de l'en-tête permet de la redimensionner manuellement.\n- **Style de colonne** : `className` sur un `ColumnDef` s'applique à l'en-tête et à chaque cellule de la colonne.\n- **Actions de ligne** : les entrées de `actions` s'affichent en ligne par défaut ; `overflow: true` les déplace dans le menu kebab. `visible(row)` masque une action au cas par cas, `disabled(row)` la désactive sans la masquer, `variant` contrôle son style de bouton.",
+          "Le composant `DataTable` permet d'afficher des données sous forme de tableau avec des fonctionnalités avancées (tri, sélection, menu d'actions).\n\n### Fonctionnalités\n\n- **Tri** : Activez le tri colonne par colonne avec `sortable: true` dans `ColumnDef`. Un icône `↕` apparaît sur les colonnes triables ; `↑`/`↓` indique la colonne et le sens actifs.\n- **Réorganisation des colonnes** : Glissez et déposez l'icône de poignée dans l'en-tête.\n- **Désactivation du glisser-déposer** : Vous pouvez figer toutes les colonnes en passant `draggableColumns={false}` au composant.\n- **Largeur des colonnes** : par défaut (`resizableColumns` non activé), `minWidth` sur un `ColumnDef` n'est qu'un plancher — la colonne s'élargit naturellement selon le contenu. Avec `resizableColumns={true}`, `minWidth` devient la largeur figée de départ et une poignée sur le bord droit de l'en-tête permet de la redimensionner manuellement.\n- **Style de colonne** : `className` sur un `ColumnDef` s'applique à l'en-tête et à chaque cellule de la colonne.\n- **Alignement** : `align: \"left\" | \"center\" | \"right\"` range les cellules **et** leur en-tête du même côté. Il est déduit automatiquement quand `className` porte déjà `text-right` ou `text-center`.\n- **Colonnes figées** : `fixed: \"left\" | \"right\"` sur un `ColumnDef` accroche la colonne à un bord ; l'en-tête est figé avec elle, au même pixel. `fixedActions` fige de la même façon la colonne des actions. Une colonne figée n'est pas déplaçable au glisser-déposer.\n- **Actions de ligne** : les entrées de `actions` s'affichent en ligne par défaut ; `overflow: true` les déplace dans le menu kebab. `visible(row)` masque une action au cas par cas, `disabled(row)` la désactive sans la masquer, `variant` contrôle son style de bouton.",
       },
     },
   },
@@ -462,17 +462,93 @@ export const WithoutColumnVisibility: Story = {
   },
 };
 
+const wideColumns: ColumnDef<UserData>[] = [
+  { ...columns[0], fixed: "left" },
+  ...columns.slice(1),
+  { key: "team", label: "Team", minWidth: 160, renderCell: row => `Team ${row.id}` },
+  { key: "manager", label: "Manager", minWidth: 180, renderCell: row => `Manager ${row.id}` },
+  { key: "location", label: "Location", minWidth: 180, renderCell: () => "Paris, France" },
+  { key: "phone", label: "Phone", minWidth: 160, renderCell: () => "+33 1 23 45 67 89" },
+];
+
+export const WithFixedColumns: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Le tableau déborde en largeur : **Name** est figée à gauche (`fixed: "left"`) et la colonne des actions à droite (`fixedActions`). Faites défiler horizontalement — les en-têtes restent accrochés en même temps que leurs cellules, et la case de sélection est figée avec la première colonne.',
+      },
+    },
+  },
+  args: {
+    data: mockData,
+    columns: wideColumns,
+    getRowId: (row: UserData) => row.id,
+    fixedActions: true,
+    columnVisibility: true,
+    bulkActions: [
+      {
+        label: "Supprimer",
+        icon: TrashIcon,
+        variant: "destructive" as const,
+        onClick: (selectedIds: string[], clearSelection: () => void): void => {
+          console.warn(`Deleting users with IDs: ${selectedIds.join(", ")}`);
+          clearSelection();
+        },
+      },
+    ],
+    actions: [
+      {
+        label: "Modifier",
+        icon: PencilIcon,
+        onClick: (row: UserData): void => {
+          console.warn("Edit", row.id);
+        },
+      },
+      {
+        label: "Supprimer",
+        icon: TrashIcon,
+        overflow: true,
+        onClick: (row: UserData): void => {
+          console.warn("Delete", row.id);
+        },
+      },
+    ],
+  },
+};
+
 export const WithColumnClassName: Story = {
   parameters: {
     docs: {
       description: {
-        story: "`className` sur un `ColumnDef` s'applique à l'en-tête et à chaque cellule de la colonne (ici **Last Login** est aligné à droite).",
+        story:
+          "`className` sur un `ColumnDef` s'applique à l'en-tête et à chaque cellule de la colonne (ici **Last Login** est aligné à droite). L'en-tête suit l'alignement des cellules : le libellé et l'icône de tri se regroupent au bord droit.",
       },
     },
   },
   args: {
     data: mockData,
     columns: columns.map(col => (col.key === "lastLogin" ? { ...col, className: "text-right text-muted-foreground" } : col)),
+    getRowId: (row: UserData) => row.id,
+  },
+};
+
+export const WithAlignedColumns: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "`align` range les cellules et leur en-tête du même côté : **Role** est centrée, **Last Login** est alignée à droite. Sans cela le libellé resterait à gauche, au-dessus du vide laissé par des valeurs poussées à droite.",
+      },
+    },
+  },
+  args: {
+    data: mockData,
+    columns: columns.map(col => {
+      if (col.key === "lastLogin") return { ...col, align: "right" as const };
+      if (col.key === "role") return { ...col, align: "center" as const };
+      return col;
+    }),
     getRowId: (row: UserData) => row.id,
   },
 };
