@@ -2,6 +2,8 @@ export { useDataTable } from "./useDataTable";
 export { useDocumentTitle } from "./useDocumentTitle";
 export { useFixedColumns } from "./useFixedColumns";
 export type { FixedColumnOffset } from "./useFixedColumns";
+export { useLanguage } from "./useLanguage";
+export type { LanguageOption } from "./useLanguage";
 export { useMobile } from "./useMobile";
 export { useNotifications } from "./useNotifications";
 export type { UseNotificationsResult } from "./useNotifications";
