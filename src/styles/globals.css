@@ -17,6 +17,11 @@
  * ------------------------------------------------------------------------- */
 @layer base {
   :root {
+    /* Indique au navigateur comment peindre les contrôles natifs : icône du
+       sélecteur de `input[type=date]`, popups de date, scrollbars, autofill.
+       Sans ça ils restent en clair sur les thèmes sombres. */
+    color-scheme: light;
+
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
 
@@ -96,6 +101,8 @@
   }
 
   .dark {
+    color-scheme: dark;
+
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
 
@@ -155,6 +162,8 @@
   }
 
   .dark-temporal {
+    color-scheme: dark;
+
     --background: 0 0% 4%;
     --foreground: 0 0% 95%;
 
@@ -214,6 +223,8 @@
   }
 
   .dark-ocean {
+    color-scheme: dark;
+
     --background: 222 47% 6%;
     --foreground: 210 40% 92%;
 
