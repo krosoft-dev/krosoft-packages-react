@@ -4,7 +4,9 @@
     "save": "Save",
     "saving": "Saving...",
     "edit": "Edit",
-    "delete": "Delete"
+    "delete": "Delete",
+    "clear": "Clear",
+    "apply": "Apply"
   },
   "states": {
     "loading": "Loading...",
