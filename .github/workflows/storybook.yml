@@ -1,8 +1,8 @@
 name: Storybook
 
+# Sur `main`, le Storybook est construit et déployé par le workflow Publish, une fois
+# la version npm publiée — ici on ne fait que valider les PR.
 on:
-  push:
-    branches: [main]
   pull_request:
     branches: [main]
 

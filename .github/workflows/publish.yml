@@ -5,9 +5,57 @@ on:
     branches: [main]
   workflow_dispatch:
 
+# Le numéro de version est calculé à partir du registre npm au moment du publish :
+# deux exécutions simultanées viseraient le même patch. Et GitHub Pages refuse deux
+# déploiements concurrents.
+concurrency:
+  group: publish
+  cancel-in-progress: false
+
 jobs:
   publish:
     permissions:
       id-token: write
     uses: krosoft-dev/Krosoft.DevOps.GitHub/.github/workflows/npm-publish.yml@main
     secrets: inherit
+
+  # Le Storybook est construit APRÈS le publish : `.storybook/main.ts` lit la version
+  # sur le registre npm, elle est donc déjà celle qui vient d'être publiée.
+  storybook:
+    needs: publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Storybook
+        run: npm run storybook:build
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: storybook-static
+
+      - name: Deploy to GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v4
