@@ -1,10 +1,9 @@
-import { useKrosoftTranslation } from "@/i18n";
+import { useDateFnsLocale, useKrosoftTranslation } from "@/i18n";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/helpers/tailwind.helper";
 import { format } from "date-fns";
-import { fr } from "date-fns/locale";
 import { CalendarIcon, XIcon } from "lucide-react";
 import * as React from "react";
 import type { DateRange } from "react-day-picker";
@@ -18,6 +17,7 @@ interface DateRangePickerProps {
 
 export const DateRangePicker = ({ value, onChange, placeholder, className }: DateRangePickerProps) => {
   const { t } = useKrosoftTranslation();
+  const locale = useDateFnsLocale();
   const [open, setOpen] = React.useState(false);
   const [tempRange, setTempRange] = React.useState<DateRange | undefined>(value);
 
@@ -51,10 +51,10 @@ export const DateRangePicker = ({ value, onChange, placeholder, className }: Dat
     if (!range?.from) return placeholder ?? t("date.pickPeriod");
 
     if (!range.to || range.from.getTime() === range.to.getTime()) {
-      return format(range.from, "dd MMM yyyy", { locale: fr });
+      return format(range.from, "dd MMM yyyy", { locale });
     }
 
-    return `${format(range.from, "dd MMM yyyy", { locale: fr })} - ${format(range.to, "dd MMM yyyy", { locale: fr })}`;
+    return `${format(range.from, "dd MMM yyyy", { locale })} - ${format(range.to, "dd MMM yyyy", { locale })}`;
   };
 
   return (
@@ -85,19 +85,19 @@ export const DateRangePicker = ({ value, onChange, placeholder, className }: Dat
             selected={tempRange}
             onSelect={setTempRange}
             numberOfMonths={2}
-            weekStartsOn={1}
+            locale={locale}
             className="pointer-events-auto p-3"
           />
           <div className="flex items-center justify-between border-t border-border px-3 py-2">
             <Button variant="ghost" size="sm" onClick={handleClearInside}>
-              Effacer
+              {t("actions.clear")}
             </Button>
             <div className="flex gap-2">
               <Button variant="ghost" size="sm" onClick={handleCancel}>
-                Annuler
+                {t("actions.cancel")}
               </Button>
               <Button size="sm" onClick={handleApply}>
-                Appliquer
+                {t("actions.apply")}
               </Button>
             </div>
           </div>
