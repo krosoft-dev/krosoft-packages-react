@@ -8,9 +8,11 @@ import { useTheme, type ThemeOption } from "@/hooks/ui/useTheme";
 interface ThemeSelectorProps {
   themeOptions: readonly ThemeOption[];
   variant?: "select" | "mini";
+  /** Posé sur le déclencheur, pour qu'un `<Label htmlFor>` de l'application puisse s'y associer. */
+  id?: string;
 }
 
-export function ThemeSelector({ themeOptions, variant = "select" }: ThemeSelectorProps): React.JSX.Element {
+export function ThemeSelector({ themeOptions, variant = "select", id }: ThemeSelectorProps): React.JSX.Element {
   const { t } = useKrosoftTranslation();
   const { theme, handleThemeChange, currentThemeOption, nextThemeOption, cycleTheme } = useTheme(themeOptions);
 
@@ -22,6 +24,7 @@ export function ThemeSelector({ themeOptions, variant = "select" }: ThemeSelecto
         <Tooltip>
           <TooltipTrigger asChild>
             <Button
+              id={id}
               variant="ghost"
               size="icon"
               onClick={cycleTheme}
@@ -42,7 +45,7 @@ export function ThemeSelector({ themeOptions, variant = "select" }: ThemeSelecto
   return (
     <div className="space-y-2">
       <Select value={theme} onValueChange={handleThemeChange}>
-        <SelectTrigger className="w-full">
+        <SelectTrigger id={id} className="w-full">
           <SelectValue placeholder={t("select.theme")} />
         </SelectTrigger>
         <SelectContent>

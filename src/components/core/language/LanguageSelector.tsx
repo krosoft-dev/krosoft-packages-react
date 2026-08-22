@@ -9,9 +9,11 @@ import { LanguagesIcon } from "lucide-react";
 interface LanguageSelectorProps {
   languageOptions: readonly LanguageOption[];
   variant?: "select" | "mini";
+  /** Posé sur le déclencheur, pour qu'un `<Label htmlFor>` de l'application puisse s'y associer. */
+  id?: string;
 }
 
-export function LanguageSelector({ languageOptions, variant = "select" }: LanguageSelectorProps): React.JSX.Element {
+export function LanguageSelector({ languageOptions, variant = "select", id }: LanguageSelectorProps): React.JSX.Element {
   const { t } = useKrosoftTranslation();
   const { currentLanguageOption, nextLanguageOption, changeLanguage, cycleLanguage } = useLanguage(languageOptions);
 
@@ -23,6 +25,7 @@ export function LanguageSelector({ languageOptions, variant = "select" }: Langua
         <Tooltip>
           <TooltipTrigger asChild>
             <Button
+              id={id}
               variant="ghost"
               size="icon"
               onClick={cycleLanguage}
@@ -43,7 +46,7 @@ export function LanguageSelector({ languageOptions, variant = "select" }: Langua
   return (
     <div className="space-y-2">
       <Select value={currentLanguageOption?.value} onValueChange={changeLanguage}>
-        <SelectTrigger className="w-full">
+        <SelectTrigger id={id} className="w-full">
           <SelectValue placeholder={t("select.language")} />
         </SelectTrigger>
         <SelectContent>
