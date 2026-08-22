@@ -81,6 +81,39 @@ describe("libellés du package", () => {
     expect(screen.getByText("No data available")).toBeTruthy();
   });
 
+  it("suit une langue régionalisée en retombant sur la langue de base", async () => {
+    // Cas d'une langue détectée depuis le navigateur : i18next conserve la région,
+    // alors que les traductions du package sont enregistrées sous « en ».
+    const instance = await createInstance("en-GB");
+    registerKrosoftLocales(instance);
+
+    render(
+      <I18nextProvider i18n={instance}>
+        <ChartCard title="Monthly additions" isEmpty>
+          <div>the chart</div>
+        </ChartCard>
+      </I18nextProvider>,
+    );
+
+    expect(screen.getByText("No data available")).toBeTruthy();
+  });
+
+  it("retombe sur le français embarqué pour une clé absente du bundle enregistré", async () => {
+    const instance = await createInstance("fr");
+    // Bundle partiel : l'application n'a enregistré qu'une partie des clés.
+    instance.addResourceBundle("fr", KROSOFT_NAMESPACE, { actions: { cancel: "Abandonner" } }, true, true);
+
+    render(
+      <I18nextProvider i18n={instance}>
+        <ChartCard title="Ajouts par mois" isEmpty>
+          <div>le graphe</div>
+        </ChartCard>
+      </I18nextProvider>,
+    );
+
+    expect(screen.getByText("Aucune donnée disponible")).toBeTruthy();
+  });
+
   it("laisse l'application surcharger un libellé du package", async () => {
     const instance = await createInstance("fr");
     registerKrosoftLocales(instance);
