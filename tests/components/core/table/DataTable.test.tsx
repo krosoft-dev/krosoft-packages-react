@@ -72,7 +72,25 @@ describe("DataTable — alignement des colonnes", () => {
 
     const header = headerCell(container, "name");
     expect(header.className).toContain("text-left");
-    expect(header.querySelector("div")?.className).toContain("justify-between");
+    expect(header.querySelector("div")?.className).toContain("justify-start");
+  });
+
+  it("colle l'icône de tri au libellé plutôt qu'au bord de la colonne", () => {
+    const container = renderTable({ columns: [{ key: "name", label: "Name", sortable: true }] });
+
+    const contenu = headerCell(container, "name").querySelector("div");
+    // Rien ne doit pousser l'icône à l'autre extrémité : elle qualifie le libellé, pas la colonne.
+    expect(contenu?.className).not.toContain("justify-between");
+    expect(contenu?.children.length).toBe(2);
+    expect(contenu?.firstElementChild?.textContent).toBe("Name");
+    expect(contenu?.lastElementChild?.querySelector("svg")).toBeTruthy();
+  });
+
+  it("n'ajoute aucun élément d'icône sur une colonne non triable", () => {
+    const container = renderTable({ columns: [{ key: "name", label: "Name" }] });
+
+    // Un conteneur d'icône vide ouvrirait une gouttière après le libellé.
+    expect(headerCell(container, "name").querySelector("div")?.children.length).toBe(1);
   });
 
   it("aligne les cellules quand l'alignement vient de align", () => {

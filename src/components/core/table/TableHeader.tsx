@@ -31,7 +31,7 @@ export interface TableHeaderProps<T> {
 }
 
 const HEADER_JUSTIFY: Record<"left" | "center" | "right", string> = {
-  left: "justify-between",
+  left: "justify-start",
   center: "justify-center",
   right: "justify-end",
 };
@@ -81,6 +81,7 @@ export function TableHeader<T>({
     const isSortable = column.sortable === true;
     const fixed = getFixedCellProps(fixedColumns[column.key], "header");
     const alignment = getColumnAlignment(column);
+    const sortIcon = getSortIcon(column);
 
     return (
       <th
@@ -119,19 +120,17 @@ export function TableHeader<T>({
           handleDrop(e, column.key);
         }}
       >
-        {/* Le libellé se range du même côté que ses cellules : sur une colonne de nombres poussés
-            à droite, un en-tête resté à gauche flotte au-dessus du vide. L'icône de tri suit
-            toujours le libellé.
+        {/* L'icône de tri reste collée au libellé : elle qualifie la colonne nommée juste à côté,
+            pas le bord du tableau. Repoussée à l'autre extrémité d'une colonne large, elle oblige
+            l'œil à faire l'aller-retour pour savoir à quoi elle se rapporte.
 
-            Le retrait droit ne subsiste que là où il sert : à gauche il tient l'icône éloignée du
-            bord, et sur une colonne redimensionnable il dégage la poignée. Ailleurs il éloignerait
-            l'en-tête du bord sur lequel les cellules s'alignent. */}
-        <div className={`flex items-center ${HEADER_JUSTIFY[alignment]} ${alignment === "left" || resizableColumns ? "pr-2" : ""}`}>
-          <div className="flex items-center gap-1">
-            {draggable ? <GripVerticalIcon className="size-4 text-gray-400 cursor-grab dark:text-gray-300 shrink-0" /> : null}
-            <span className="truncate">{column.label}</span>
-          </div>
-          <div className="ml-1 shrink-0">{getSortIcon(column)}</div>
+            Le bloc entier se range du côté des cellules : sur une colonne de nombres poussés à
+            droite, un en-tête resté à gauche flotte au-dessus du vide. Le retrait droit ne
+            subsiste que sur une colonne redimensionnable, où il dégage la poignée. */}
+        <div className={`flex items-center gap-1 ${HEADER_JUSTIFY[alignment]} ${resizableColumns ? "pr-2" : ""}`}>
+          {draggable ? <GripVerticalIcon className="size-4 text-gray-400 cursor-grab dark:text-gray-300 shrink-0" /> : null}
+          <span className="truncate">{column.label}</span>
+          {sortIcon !== null ? <span className="shrink-0">{sortIcon}</span> : null}
         </div>
         {resizableColumns ? (
           <div
