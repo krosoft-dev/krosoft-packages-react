@@ -119,16 +119,19 @@ export function TableHeader<T>({
           handleDrop(e, column.key);
         }}
       >
-        {/* Le libellé se range du même côté que ses cellules et vient s'aligner au même bord :
-            sur une colonne de nombres poussés à droite, un en-tête resté à gauche flotte au-dessus
-            du vide. L'icône de tri passe alors devant le libellé pour ne pas décaler ce bord. */}
-        <div className={`flex items-center ${HEADER_JUSTIFY[alignment]} ${alignment === "left" ? "pr-2" : ""}`}>
-          {alignment === "right" ? <div className="mr-1 shrink-0">{getSortIcon(column)}</div> : null}
+        {/* Le libellé se range du même côté que ses cellules : sur une colonne de nombres poussés
+            à droite, un en-tête resté à gauche flotte au-dessus du vide. L'icône de tri suit
+            toujours le libellé.
+
+            Le retrait droit ne subsiste que là où il sert : à gauche il tient l'icône éloignée du
+            bord, et sur une colonne redimensionnable il dégage la poignée. Ailleurs il éloignerait
+            l'en-tête du bord sur lequel les cellules s'alignent. */}
+        <div className={`flex items-center ${HEADER_JUSTIFY[alignment]} ${alignment === "left" || resizableColumns ? "pr-2" : ""}`}>
           <div className="flex items-center gap-1">
             {draggable ? <GripVerticalIcon className="size-4 text-gray-400 cursor-grab dark:text-gray-300 shrink-0" /> : null}
             <span className="truncate">{column.label}</span>
           </div>
-          {alignment === "right" ? null : <div className="ml-1 shrink-0">{getSortIcon(column)}</div>}
+          <div className="ml-1 shrink-0">{getSortIcon(column)}</div>
         </div>
         {resizableColumns ? (
           <div

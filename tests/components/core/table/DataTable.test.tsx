@@ -82,17 +82,21 @@ describe("DataTable — alignement des colonnes", () => {
     expect(bodyCells(container, "name").every(cell => cell.className.includes("text-left"))).toBe(true);
   });
 
-  it("place l'icône de tri devant le libellé à droite, pour que le libellé reste au bord", () => {
+  it("garde l'icône de tri à droite du libellé, même sur une colonne alignée à droite", () => {
     const container = renderTable({ columns: [{ key: "name", label: "Name", align: "right", sortable: true }] });
 
     const header = headerCell(container, "name");
     const contenu = header.querySelector("div");
-    // Le libellé doit être le dernier élément : c'est lui qui vient s'aligner sur le bord des
-    // cellules, et une icône posée après le décalerait de sa largeur.
-    expect(contenu?.lastElementChild?.textContent).toBe("Name");
-    expect(contenu?.firstElementChild?.querySelector("svg")).toBeTruthy();
+    expect(contenu?.firstElementChild?.textContent).toBe("Name");
+    expect(contenu?.lastElementChild?.querySelector("svg")).toBeTruthy();
     // Pas de retrait à droite : il éloignerait l'en-tête du bord sur lequel les cellules s'alignent.
     expect(contenu?.className).not.toContain("pr-2");
+  });
+
+  it("rétablit le retrait droit sur une colonne redimensionnable, pour dégager la poignée", () => {
+    const container = renderTable({ columns: [{ key: "name", label: "Name", align: "right", sortable: true }], resizableColumns: true });
+
+    expect(headerCell(container, "name").querySelector("div")?.className).toContain("pr-2");
   });
 
   it("centre l'en-tête d'une colonne centrée", () => {
