@@ -74,6 +74,14 @@ describe("DatePicker", () => {
     expect(weekdays(container)).toEqual(["lu", "ma", "me", "je", "ve", "sa", "di"]);
   });
 
+  it("ouvre le calendrier sur le mois de la date sélectionnée", () => {
+    const { container } = render(<DatePicker date={JUNE_2024} onDateChange={() => undefined} placeholder="Date" />);
+
+    fireEvent.click(screen.getByRole("button"));
+
+    expect(container.querySelector("[role='grid']")?.getAttribute("aria-label")).toBe("juin 2024");
+  });
+
   it("suit la langue de l'application", async () => {
     const instance = await createInstance("en");
     registerKrosoftLocales(instance);
