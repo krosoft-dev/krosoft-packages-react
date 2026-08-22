@@ -4,6 +4,7 @@ export * from "./dialogs";
 export * from "./filters";
 export * from "./forms";
 export * from "./inputs";
+export * from "./language";
 export * from "./layouts";
 export * from "./navbar";
 export * from "./states";
