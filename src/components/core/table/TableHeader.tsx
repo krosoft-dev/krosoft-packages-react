@@ -130,7 +130,9 @@ export function TableHeader<T>({
         <div className={`flex items-center gap-1 ${HEADER_JUSTIFY[alignment]} ${resizableColumns ? "pr-2" : ""}`}>
           {draggable ? <GripVerticalIcon className="size-4 text-gray-400 cursor-grab dark:text-gray-300 shrink-0" /> : null}
           <span className="truncate">{column.label}</span>
-          {sortIcon !== null ? <span className="shrink-0">{sortIcon}</span> : null}
+          {/* Marge en plus de la gouttière : l'icône reste rattachée au libellé sans lui coller,
+              alors que la poignée de glisser-déposer, elle, gagne à rester serrée contre lui. */}
+          {sortIcon !== null ? <span className="ml-1 shrink-0">{sortIcon}</span> : null}
         </div>
         {resizableColumns ? (
           <div
