@@ -32,7 +32,8 @@
     "placeholder": "Sélectionner...",
     "create": "Créer « {{search}} »",
     "section": "Sélectionner une section",
-    "theme": "Sélectionner un thème"
+    "theme": "Sélectionner un thème",
+    "language": "Sélectionner une langue"
   },
   "date": {
     "pickDate": "Sélectionner une date",
@@ -63,6 +64,11 @@
   "sidebar": {
     "menu": "Menu de navigation",
     "description": "Navigation principale de l'application"
+  },
+  "language": {
+    "description": "Choisissez la langue de l'interface",
+    "current": "Langue actuelle : {{language}}",
+    "switchTo": "Passer en {{language}}"
   },
   "theme": {
     "updatedTitle": "Thème mis à jour",
