@@ -1,8 +1,0 @@
-variables:
-  # déploiement
-  deploy_host: design.krosoft.fr
-  deploy_path: /
-
-  # application
-  # /health est servi par le nginx du template docker partagé.
-  check_url: "https://design.krosoft.fr/health"
