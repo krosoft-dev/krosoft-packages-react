@@ -1,5 +1,11 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { create } from "storybook/theming/create";
-import { version } from "../package.json";
+import { version as repoVersion } from "../package.json";
+
+// La version réellement publiée sur npm, injectée dans le `<head>` du manager et de
+// la preview par `main.ts` — le manager n'est pas construit par Vite, il ne voit pas
+// ses `define`. Repli sur la version du dépôt, figée à 0.0.1.
+const version = (window as Window & { __KROSOFT_VERSION__?: string }).__KROSOFT_VERSION__ ?? repoVersion;
 
 // Thème sombre partagé par l'UI de Storybook (barre latérale, toolbar, panneaux)
 // et par les pages Docs. Les couleurs reprennent les tokens `--sidebar-*` et

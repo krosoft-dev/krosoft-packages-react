@@ -1,3 +1,6 @@
 # Le design system est public mais n'a pas vocation à être référencé.
+# Servi depuis un sous-chemin GitHub Pages, ce fichier est ignoré des crawlers (seul
+# le robots.txt du domaine compte) : le vrai garde-fou est le `<meta name="robots">`
+# de `manager-head.html` et `preview-head.html`.
 User-agent: *
 Disallow: /
