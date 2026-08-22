@@ -69,6 +69,21 @@ describe("NotificationsBell", () => {
     expect(onRemove).toHaveBeenCalledWith(items[0]);
   });
 
+  it("applique les classes d'entrée, la surcharge des non-lues remplaçant la mise en avant par défaut", () => {
+    renderBell({ open: true, itemClassName: "px-6", unreadItemClassName: "bg-gold/5" });
+
+    // Le panneau Radix est rendu dans un portail : on remonte depuis le texte, pas depuis le conteneur.
+    const unread = screen.getByText("Colis expédié").closest("li");
+    const read = screen.getByText("Colis à récupérer").closest("li");
+
+    expect(unread?.className).toContain("bg-gold/5");
+    expect(unread?.className).not.toContain("bg-accent/40");
+    expect(unread?.className).toContain("px-6");
+    // Entrée lue : pas de mise en avant, mais les classes communes s'appliquent.
+    expect(read?.className).not.toContain("bg-gold/5");
+    expect(read?.className).toContain("px-6");
+  });
+
   it("affiche l'état vide et l'état de chargement", () => {
     const { rerender } = renderBell({ items: [], open: true });
     expect(screen.getByText("Aucune notification.")).toBeTruthy();

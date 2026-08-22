@@ -61,6 +61,16 @@ export const CustomBadge: Story = {
   args: { items, badgeClassName: "bg-amber-500 text-amber-950" },
 };
 
+/** Les entrées suivent aussi la charte : `unreadItemClassName` remplace la mise en avant par défaut. */
+export const CustomItems: Story = {
+  args: {
+    items: withIcons,
+    open: true,
+    badgeClassName: "bg-amber-500 text-amber-950",
+    unreadItemClassName: "bg-amber-500/10",
+  },
+};
+
 /**
  * Cas réel : la liste vit dans l'application, le composant n'affiche que ce qu'on lui donne.
  * Le clic marque comme lu, « tout marquer comme lu » vide le compteur, la corbeille retire l'entrée.
