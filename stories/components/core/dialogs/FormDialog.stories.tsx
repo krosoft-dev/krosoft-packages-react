@@ -18,7 +18,6 @@ const meta: Meta<typeof FormDialog> = {
       },
     },
   },
-  tags: ["autodocs"],
 };
 
 export default meta;

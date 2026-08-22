@@ -95,9 +95,7 @@ export const Interactive: Story = {
     return (
       <div className="flex flex-col gap-4">
         <ImageInput value={preview} onChange={handleChange} />
-        <p className="text-sm text-muted-foreground">
-          {preview ? "Image sélectionnée — cliquer sur ✕ pour supprimer" : "Aucune image sélectionnée"}
-        </p>
+        <p className="text-sm text-muted-foreground">{preview ? "Image sélectionnée — cliquer sur ✕ pour supprimer" : "Aucune image sélectionnée"}</p>
       </div>
     );
   },

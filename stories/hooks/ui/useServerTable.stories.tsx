@@ -118,7 +118,6 @@ const meta: Meta<typeof UseServerTableDemo> = {
   parameters: {
     layout: "centered",
   },
-  tags: ["autodocs"],
 };
 
 export default meta;

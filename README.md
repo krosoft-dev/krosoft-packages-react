@@ -4,6 +4,39 @@
 
 Krosoft shared React package.
 
+Storybook : **https://design.krosoft.fr**
+
+## Libellés du package
+
+Les composants portent leurs propres libellés — « Annuler », « Aucun résultat », placeholders de recherche, messages d'erreur de formulaire. Ils vivent dans `src/locales/{fr,en}.json`, sous le namespace i18next `krosoft`, séparé de celui de l'application pour qu'aucune clé ne se marche dessus.
+
+Une application qui utilise i18next enregistre ces traductions une fois, après son `init` :
+
+```ts
+import i18n from "i18next";
+import { registerKrosoftLocales } from "@krosoft/react/i18n";
+
+registerKrosoftLocales(i18n);
+```
+
+Les libellés suivent alors la langue de l'application, changement à chaud compris.
+
+**Rien à faire pour les applications existantes.** Sans cet appel — ou sans i18next du tout — les composants retombent sur le français embarqué : le rendu est exactement celui d'avant.
+
+### Surcharger un libellé
+
+`registerKrosoftLocales` n'écrase pas ce qui existe déjà. Une application peut donc imposer sa propre formulation, avant ou après l'enregistrement :
+
+```ts
+import { KROSOFT_NAMESPACE } from "@krosoft/react/i18n";
+
+i18n.addResourceBundle("fr", KROSOFT_NAMESPACE, { states: { noData: "Rien à afficher" } }, true, true);
+```
+
+Passer `{ overwrite: true }` fait l'inverse : les valeurs du package reprennent la main.
+
+Les props de libellé restent prioritaires sur tout le reste : `<ChartCard emptyLabel="…" />` l'emporte sur la traduction, comme avant.
+
 ## Preset Tailwind
 
 Le preset partagé apporte le `darkMode`, le `container`, les couleurs shadcn (`--primary`, `--background`, `--border`, `--sidebar-*`…), les couleurs krosoft (`--k-success`, `--k-topbar-*`…), les radius, les keyframes accordéon et le plugin `tailwindcss-animate`. Un projet consommateur qui déclarait tout ça dans son propre `tailwind.config` peut supprimer ces lignes et ne garder que ce qui lui est propre.
@@ -88,4 +121,3 @@ applyTokenPreset(radiusPresets, "round"); // pose les variables sur <html>
 | `tokensToStyle`    | Les mêmes variables en `style` React, pour un sous-arbre   |
 
 C'est aussi ce qui rend la suite extensible : une nouvelle famille de tokens (densité, élévation…) ne demande ni attribut dédié ni preset CSS, seulement un objet à côté de `radiusPresets` et ses variables dans `:root`.
- 

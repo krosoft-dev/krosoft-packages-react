@@ -1,9 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import {
-  HoverCard,
-  HoverCardTrigger,
-  HoverCardContent,
-} from "@/components/ui/hover-card";
+import { HoverCard, HoverCardTrigger, HoverCardContent } from "@/components/ui/hover-card";
 import { Button } from "@/components/ui/button";
 
 const meta: Meta<typeof HoverCard> = {
@@ -24,9 +20,7 @@ export const Default: Story = {
       <HoverCardContent>
         <div className="space-y-2">
           <h4 className="text-sm font-semibold">@shadcn</h4>
-          <p className="text-sm">
-            A collection of beautiful and accessible React components built with Radix UI and Tailwind CSS.
-          </p>
+          <p className="text-sm">A collection of beautiful and accessible React components built with Radix UI and Tailwind CSS.</p>
         </div>
       </HoverCardContent>
     </HoverCard>

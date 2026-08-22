@@ -5,7 +5,6 @@ import { TableFilter, FilterSection } from "@/components/core/filters";
 const meta: Meta<typeof TableFilter> = {
   title: "Core/Filters/TableFilter",
   component: TableFilter,
-  tags: ["autodocs"],
   parameters: {
     docs: {
       description: {

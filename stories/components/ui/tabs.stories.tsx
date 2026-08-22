@@ -13,7 +13,7 @@ export default meta;
 type Story = StoryObj<typeof Tabs>;
 
 export const Default: Story = {
-  render: (args) => (
+  render: args => (
     <Tabs {...args}>
       <TabsList>
         <TabsTrigger value="compte">Compte</TabsTrigger>
@@ -30,12 +30,14 @@ export const Default: Story = {
 };
 
 export const WithDisabled: Story = {
-  render: (args) => (
+  render: args => (
     <Tabs {...args}>
       <TabsList>
         <TabsTrigger value="compte">Compte</TabsTrigger>
         <TabsTrigger value="notifications">Notifications</TabsTrigger>
-        <TabsTrigger value="avance" disabled>Avancé</TabsTrigger>
+        <TabsTrigger value="avance" disabled>
+          Avancé
+        </TabsTrigger>
       </TabsList>
       <TabsContent value="compte" className="p-4 border rounded-md mt-2 text-sm text-muted-foreground">
         Paramètres du compte.
@@ -48,16 +50,16 @@ export const WithDisabled: Story = {
 };
 
 export const ManyTabs: Story = {
-  render: (args) => (
+  render: args => (
     <Tabs {...args} defaultValue="general">
       <TabsList>
-        {["Général", "Profil", "Sécurité", "Notifications", "Facturation"].map((label) => (
+        {["Général", "Profil", "Sécurité", "Notifications", "Facturation"].map(label => (
           <TabsTrigger key={label} value={label.toLowerCase()}>
             {label}
           </TabsTrigger>
         ))}
       </TabsList>
-      {["Général", "Profil", "Sécurité", "Notifications", "Facturation"].map((label) => (
+      {["Général", "Profil", "Sécurité", "Notifications", "Facturation"].map(label => (
         <TabsContent key={label} value={label.toLowerCase()} className="p-4 border rounded-md mt-2 text-sm text-muted-foreground">
           Contenu — {label}
         </TabsContent>

@@ -58,4 +58,3 @@ export const WithError: Story = {
     error: "Impossible de charger les statistiques",
   },
 };
-

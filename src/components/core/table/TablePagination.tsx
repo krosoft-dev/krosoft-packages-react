@@ -1,3 +1,4 @@
+import { useKrosoftTranslation } from "@/i18n";
 import React from "react";
 import { Button } from "../../ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../ui/select";
@@ -60,6 +61,7 @@ export function TablePagination({
   pageSizeOptions,
   totalPages,
 }: TablePaginationProps): React.JSX.Element {
+  const { t } = useKrosoftTranslation();
   const paginationRange = getPaginationRange(currentPage, totalPages);
 
   return (
@@ -79,7 +81,7 @@ export function TablePagination({
                 setCurrentPage(prev => Math.max(1, prev - 1));
               }}
               disabled={currentPage === 1}
-              aria-label="Page précédente"
+              aria-label={t("table.previousPage")}
             >
               <ChevronLeftIcon className="size-4" />
             </Button>
@@ -113,7 +115,7 @@ export function TablePagination({
                 setCurrentPage(prev => Math.min(totalPages, prev + 1));
               }}
               disabled={currentPage === totalPages}
-              aria-label="Page suivante"
+              aria-label={t("table.nextPage")}
             >
               <ChevronRightIcon className="size-4" />
             </Button>

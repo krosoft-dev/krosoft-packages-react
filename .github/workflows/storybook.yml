@@ -1,0 +1,14 @@
+name: Storybook
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  storybook:
+    uses: krosoft-dev/Krosoft.DevOps.GitHub/.github/workflows/npm-build.yml@main
+    with:
+      build-script: storybook:build
+      run-tests: false
