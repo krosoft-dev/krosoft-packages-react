@@ -17,15 +17,7 @@ export interface AppPageHeaderProps {
   className?: string;
 }
 
-export function AppPageHeader({
-  icon: Icon,
-  titleKey,
-  descriptionKey,
-  actions,
-  onBack,
-  renderPreActions,
-  className,
-}: AppPageHeaderProps): React.JSX.Element {
+export function AppPageHeader({ icon: Icon, titleKey, descriptionKey, actions, onBack, renderPreActions, className }: AppPageHeaderProps): React.JSX.Element {
   const { t } = useTranslation();
 
   useDocumentTitle(t(titleKey));
