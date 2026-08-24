@@ -3,6 +3,32 @@ import { UseDataTableProps } from "@/types/UseDataTableProps";
 import { UseDataTableResult } from "@/types/UseDataTableResult";
 import { ColumnDef } from "@/types/ColumnDef";
 
+const DEFAULT_COLUMN_WIDTH = 100;
+
+const isColumnVisibleByDefault = <T>(column: ColumnDef<T>): boolean => column.defaultVisible !== false;
+
+const applyColumnOrder = <T>(order: string[], columns: ColumnDef<T>[]): ColumnDef<T>[] => {
+  const columnByKey = new Map(columns.map(column => [column.key, column]));
+  const resultKeys = order.filter(key => columnByKey.has(key));
+  const placed = new Set(resultKeys);
+
+  columns.forEach((column, index) => {
+    if (placed.has(column.key)) return;
+    let insertAt = 0;
+    for (let previous = index - 1; previous >= 0; previous--) {
+      const anchor = resultKeys.indexOf(columns[previous].key);
+      if (anchor !== -1) {
+        insertAt = anchor + 1;
+        break;
+      }
+    }
+    resultKeys.splice(insertAt, 0, column.key);
+    placed.add(column.key);
+  });
+
+  return resultKeys.map(key => columnByKey.get(key)).filter((column): column is ColumnDef<T> => column !== undefined);
+};
+
 export function useDataTable<T>({
   data,
   columns,
@@ -27,10 +53,9 @@ export function useDataTable<T>({
   const sortDirection = controlledSortDirection ?? localSortDirection;
 
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
-
-  const [visibleColumns, setVisibleColumns] = useState<Set<string>>(new Set(columns.filter(col => col.defaultVisible !== false).map(col => col.key)));
-  const [columnOrder, setColumnOrder] = useState<string[]>(columns.map(col => col.key));
-  const [columnWidths, setColumnWidths] = useState<Record<string, number>>(columns.reduce((acc, col) => ({ ...acc, [col.key]: col.minWidth ?? 100 }), {}));
+  const [visibilityOverrides, setVisibilityOverrides] = useState<Record<string, boolean>>({});
+  const [widthOverrides, setWidthOverrides] = useState<Record<string, number>>({});
+  const [columnOrderOverride, setColumnOrderOverride] = useState<string[] | null>(null);
 
   const [localCurrentPage, setLocalCurrentPage] = useState<number>(1);
   const currentPage = controlledCurrentPage ?? localCurrentPage;
@@ -49,12 +74,27 @@ export function useDataTable<T>({
   const hasBulkActions = bulkActions !== undefined && bulkActions.length > 0;
 
   const orderedColumns = useMemo(() => {
-    return columnOrder.map(key => columns.find(col => col.key === key)).filter((col): col is ColumnDef<T> => col !== undefined);
-  }, [columnOrder, columns]);
+    return columnOrderOverride === null ? columns : applyColumnOrder(columnOrderOverride, columns);
+  }, [columnOrderOverride, columns]);
+
+  const visibleColumns = useMemo(() => {
+    const visible = new Set<string>();
+    for (const column of columns) {
+      const isVisible = visibilityOverrides[column.key] ?? isColumnVisibleByDefault(column);
+      if (isVisible) {
+        visible.add(column.key);
+      }
+    }
+    return visible;
+  }, [columns, visibilityOverrides]);
 
   const visibleColumnsArray = useMemo(() => {
     return orderedColumns.filter(col => visibleColumns.has(col.key));
   }, [orderedColumns, visibleColumns]);
+
+  const columnWidths = useMemo(() => {
+    return columns.reduce<Record<string, number>>((acc, col) => ({ ...acc, [col.key]: widthOverrides[col.key] ?? col.minWidth ?? DEFAULT_COLUMN_WIDTH }), {});
+  }, [columns, widthOverrides]);
 
   const colSpanCount = visibleColumnsArray.length + (hasBulkActions ? 1 : 0) + (hasActions || columnVisibility ? 1 : 0);
 
@@ -131,7 +171,7 @@ export function useDataTable<T>({
     if (currentResizingColumn === null) return;
     const diff = e.clientX - startX.current;
     const newWidth = Math.max(80, startWidth.current + diff);
-    setColumnWidths(prev => ({
+    setWidthOverrides(prev => ({
       ...prev,
       [currentResizingColumn]: newWidth,
     }));
@@ -176,13 +216,14 @@ export function useDataTable<T>({
     e.preventDefault();
     if (draggedColumn.current === null || draggedColumn.current === targetColumnKey) return;
 
-    const newOrder = [...columnOrder];
+    const newOrder = orderedColumns.map(col => col.key);
     const draggedIndex = newOrder.indexOf(draggedColumn.current);
     const targetIndex = newOrder.indexOf(targetColumnKey);
+    if (draggedIndex === -1 || targetIndex === -1) return;
 
     newOrder.splice(draggedIndex, 1);
     newOrder.splice(targetIndex, 0, draggedColumn.current);
-    setColumnOrder(newOrder);
+    setColumnOrderOverride(newOrder);
 
     draggedColumn.current = null;
     dragOverColumn.current = null;
@@ -224,13 +265,10 @@ export function useDataTable<T>({
   }, [sortedData, startIndex, endIndex, totalRows]);
 
   const toggleColumnVisibility = (columnKey: string): void => {
-    const newVisibleColumns = new Set(visibleColumns);
-    if (newVisibleColumns.has(columnKey)) {
-      newVisibleColumns.delete(columnKey);
-    } else {
-      newVisibleColumns.add(columnKey);
-    }
-    setVisibleColumns(newVisibleColumns);
+    const column = columns.find(col => col.key === columnKey);
+    if (column === undefined) return;
+    const currentlyVisible = visibilityOverrides[columnKey] ?? isColumnVisibleByDefault(column);
+    setVisibilityOverrides(prev => ({ ...prev, [columnKey]: !currentlyVisible }));
   };
 
   const toggleRowSelection = (id: string): void => {

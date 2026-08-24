@@ -327,3 +327,59 @@ describe("DataTable — colonnes figées", () => {
     expect(headerCell(container, SELECTION_COLUMN_KEY).getAttribute("data-fixed-side")).toBeNull();
   });
 });
+
+describe("DataTable — colonnes qui changent après le montage", () => {
+  const baseColumns: ColumnDef<Row>[] = [
+    { key: "name", label: "Name" },
+    { key: "email", label: "Email" },
+  ];
+
+  it("affiche une colonne ajoutée après coup, à sa place dans la liste", () => {
+    const { container, rerender } = render(<DataTable data={rows} columns={baseColumns} getRowId={(row: Row) => row.id} />);
+
+    expect(container.querySelector('thead th[data-column-key="role"]')).toBeNull();
+
+    // La colonne « role » arrive en position 1 (après « name »), typiquement au chargement asynchrone
+    // d'une donnée qui conditionne son affichage.
+    const withRole: ColumnDef<Row>[] = [
+      { key: "name", label: "Name" },
+      { key: "role", label: "Role" },
+      { key: "email", label: "Email" },
+    ];
+    rerender(<DataTable data={rows} columns={withRole} getRowId={(row: Row) => row.id} />);
+
+    expect(headerCell(container, "role").textContent).toContain("Role");
+    expect(bodyCells(container, "role").map(cell => cell.textContent)).toEqual(["admin", "user"]);
+    // Insérée à sa place, pas reléguée en fin de tableau.
+    const order = Array.from(container.querySelectorAll("thead th")).map(th => th.getAttribute("data-column-key"));
+    expect(order).toEqual(["name", "role", "email"]);
+  });
+
+  it("retire une colonne disparue de la liste", () => {
+    const withRole: ColumnDef<Row>[] = [...baseColumns, { key: "role", label: "Role" }];
+    const { container, rerender } = render(<DataTable data={rows} columns={withRole} getRowId={(row: Row) => row.id} />);
+
+    expect(headerCell(container, "role").textContent).toContain("Role");
+
+    rerender(<DataTable data={rows} columns={baseColumns} getRowId={(row: Row) => row.id} />);
+
+    expect(container.querySelector('thead th[data-column-key="role"]')).toBeNull();
+  });
+
+  it("préserve le choix de visibilité des colonnes déjà connues quand une nouvelle apparaît", () => {
+    const hideableColumns: ColumnDef<Row>[] = [
+      { key: "name", label: "Name" },
+      { key: "email", label: "Email", defaultVisible: false },
+    ];
+    const { container, rerender } = render(<DataTable data={rows} columns={hideableColumns} getRowId={(row: Row) => row.id} />);
+
+    // « email » démarre masquée (defaultVisible: false).
+    expect(container.querySelector('thead th[data-column-key="email"]')).toBeNull();
+
+    rerender(<DataTable data={rows} columns={[...hideableColumns, { key: "role", label: "Role" }]} getRowId={(row: Row) => row.id} />);
+
+    // La nouvelle colonne s'affiche, la masquée le reste.
+    expect(headerCell(container, "role").textContent).toContain("Role");
+    expect(container.querySelector('thead th[data-column-key="email"]')).toBeNull();
+  });
+});
