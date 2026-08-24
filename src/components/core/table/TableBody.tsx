@@ -154,14 +154,14 @@ export function TableBody<T>({
             })}
             {hasActions ? (
               <td
-                className={`p-1 text-center align-middle whitespace-nowrap ${actionsFixed.className}`}
+                className={`p-1 text-right align-middle whitespace-nowrap ${actionsFixed.className}`}
                 style={{ minWidth: "32px", ...actionsFixed.style }}
                 onClick={e => {
                   e.stopPropagation();
                 }}
               >
                 {actions !== undefined && actions.length > 0 ? (
-                  <div className="flex items-center justify-center">
+                  <div className="flex items-center justify-end">
                     <TableActions actions={actions} row={row} />
                   </div>
                 ) : null}

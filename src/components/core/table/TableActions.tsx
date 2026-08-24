@@ -20,7 +20,7 @@ export function TableActions<T>({ actions, row }: TableActionsProps<T>): React.J
   const overflowActions = visibleActions.filter(action => action.overflow === true);
 
   return (
-    <div className="flex items-center justify-center gap-1">
+    <div className="flex items-center justify-end gap-1">
       {primaryActions.map((action, i) => {
         const Icon = action.icon;
         return (
