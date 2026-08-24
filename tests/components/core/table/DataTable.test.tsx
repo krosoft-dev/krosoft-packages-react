@@ -124,6 +124,16 @@ describe("DataTable — alignement des colonnes", () => {
     expect(header.className).toContain("text-center");
     expect(header.querySelector("div")?.className).toContain("justify-center");
   });
+
+  it("colle les actions au bord droit de leur colonne", () => {
+    const container = renderTable({ actions: [{ label: "Run", onClick: () => {} }] });
+
+    const cells = bodyCells(container, ACTIONS_COLUMN_KEY);
+    expect(cells.every(cell => cell.className.includes("text-right"))).toBe(true);
+    // Le conteneur flex doit pousser les boutons contre le bord sur lequel l'œil cale la colonne.
+    expect(cells.every(cell => cell.querySelector("div")?.className.includes("justify-end") === true)).toBe(true);
+    expect(headerCell(container, ACTIONS_COLUMN_KEY).className).toContain("text-right");
+  });
 });
 
 describe("DataTable — colonnes figées", () => {
