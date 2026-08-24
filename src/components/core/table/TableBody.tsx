@@ -121,7 +121,7 @@ export function TableBody<T>({
             {hasBulkActions ? (
               <td
                 className={`p-1 text-center align-middle ${selectionFixed.className}`}
-                style={{ width: "32px", minWidth: "32px", maxWidth: "32px", ...selectionFixed.style }}
+                style={{ width: "48px", minWidth: "48px", maxWidth: "48px", ...selectionFixed.style }}
                 onClick={e => {
                   e.stopPropagation();
                 }}
