@@ -91,7 +91,7 @@ export function TableHeader<T>({
         data-column-key={column.key}
         data-fixed-side={column.fixed}
         className={[
-          `px-2 ${dense ? "py-1" : "py-3"} text-sm font-medium text-gray-900 dark:text-gray-100 group`,
+          `px-2 ${dense ? "py-2" : "py-4"} text-sm font-medium text-gray-900 dark:text-gray-100 group`,
           getAlignmentClass(alignment),
           fixed.className,
           bordered ? "border-r border-gray-200 dark:border-gray-800" : "",
