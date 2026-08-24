@@ -15,6 +15,8 @@ export interface DataTableProps<T> {
   columns: ColumnDef<T>[];
   getRowId: (row: T) => string; // Fonction obligatoire pour identifier chaque ligne de façon unique
   onRowClick?: (row: T, event: React.MouseEvent<HTMLTableRowElement>) => void;
+  onRowNavigate?: (row: T) => string; // Retourne l'URL de destination de la ligne au clic (prioritaire sur onRowClick)
+  navigate?: (url: string) => void; // Callback de navigation fourni par l'application (ex. le navigate de react-router)
   actions?: RowAction<T>[]; // Actions personnalisées pour le menu
   bulkActions?: BulkAction[]; // Actions rapides pour la sélection multiple
   draggableColumns?: boolean; // Permet d'activer/désactiver le drag and drop des colonnes
@@ -47,6 +49,8 @@ export function DataTable<T>({
   columns,
   getRowId,
   onRowClick,
+  onRowNavigate,
+  navigate,
   actions,
   bulkActions,
   draggableColumns = false,
@@ -171,6 +175,8 @@ export function DataTable<T>({
               paginatedData={paginatedData}
               getRowId={getRowId}
               onRowClick={onRowClick}
+              onRowNavigate={onRowNavigate}
+              navigate={navigate}
               hasBulkActions={hasBulkActions}
               selectedRows={selectedRows}
               toggleRowSelection={toggleRowSelection}

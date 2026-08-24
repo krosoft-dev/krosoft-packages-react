@@ -17,6 +17,8 @@ export interface TableBodyProps<T> {
   paginatedData: T[];
   getRowId: (row: T) => string;
   onRowClick?: (row: T, event: React.MouseEvent<HTMLTableRowElement>) => void;
+  onRowNavigate?: (row: T) => string; // Retourne l'URL de destination de la ligne au clic (prioritaire sur onRowClick)
+  navigate?: (url: string) => void; // Callback de navigation fourni par l'application (ex. le navigate de react-router)
   hasBulkActions: boolean;
   selectedRows: string[];
   toggleRowSelection: (id: string) => void;
@@ -40,6 +42,8 @@ export function TableBody<T>({
   paginatedData,
   getRowId,
   onRowClick,
+  onRowNavigate,
+  navigate,
   hasBulkActions,
   selectedRows,
   toggleRowSelection,
@@ -108,6 +112,24 @@ export function TableBody<T>({
   const selectionFixed = getFixedCellProps(fixedColumns[SELECTION_COLUMN_KEY], "body");
   const actionsFixed = getFixedCellProps(fixedColumns[ACTIONS_COLUMN_KEY], "body");
 
+  const isRowClickable = onRowNavigate !== undefined || onRowClick !== undefined;
+
+  // La navigation prime sur onRowClick : Ctrl/Cmd + clic reproduit le comportement natif
+  // des liens en ouvrant l'URL dans un nouvel onglet, sinon la navigation est déléguée
+  // au callback navigate fourni par l'application (ex. le navigate de react-router).
+  const handleRowClick = (row: T, event: React.MouseEvent<HTMLTableRowElement>): void => {
+    if (onRowNavigate !== undefined) {
+      const url = onRowNavigate(row);
+      if (event.ctrlKey || event.metaKey) {
+        window.open(url, "_blank");
+      } else {
+        navigate?.(url);
+      }
+    } else {
+      onRowClick?.(row, event);
+    }
+  };
+
   return (
     <tbody className="divide-y divide-gray-200 dark:divide-gray-800">
       {paginatedData.map(row => {
@@ -115,8 +137,10 @@ export function TableBody<T>({
         return (
           <tr
             key={rowId}
-            className={`group hover:bg-muted/50 dark:hover:bg-gray-900/50 transition-colors ${onRowClick !== undefined ? "cursor-pointer" : ""}`}
-            onClick={e => onRowClick?.(row, e)}
+            className={`group hover:bg-muted/50 dark:hover:bg-gray-900/50 transition-colors ${isRowClickable ? "cursor-pointer" : ""}`}
+            onClick={e => {
+              handleRowClick(row, e);
+            }}
           >
             {hasBulkActions ? (
               <td

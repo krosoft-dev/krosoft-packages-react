@@ -1,4 +1,4 @@
-import { cleanup, render } from "@testing-library/react";
+import { cleanup, fireEvent, render } from "@testing-library/react";
 import * as React from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { DataTable } from "../../../../src/components/core/table/DataTable";
@@ -166,6 +166,69 @@ describe("DataTable — mode dense", () => {
       expect(headerCell(container, key).className).toContain("p-1");
       expect(bodyCells(container, key).every(cell => cell.className.includes("p-1"))).toBe(true);
     }
+  });
+});
+
+describe("DataTable — navigation au clic", () => {
+  const firstRow = (container: HTMLElement): HTMLTableRowElement => {
+    const row = container.querySelector<HTMLTableRowElement>("tbody tr");
+    if (row === null) throw new Error("Aucune ligne trouvée dans le tableau");
+    return row;
+  };
+
+  it("appelle navigate avec l'URL calculée au clic sur une ligne", () => {
+    const navigate = vi.fn();
+    const container = renderTable({ onRowNavigate: (row: Row) => `/users/${row.id}`, navigate });
+
+    fireEvent.click(firstRow(container));
+
+    expect(navigate).toHaveBeenCalledExactlyOnceWith("/users/1");
+  });
+
+  it("ouvre l'URL dans un nouvel onglet au Ctrl+clic ou Cmd+clic, sans passer par navigate", () => {
+    const navigate = vi.fn();
+    const open = vi.spyOn(window, "open").mockImplementation(() => null);
+    const container = renderTable({ onRowNavigate: (row: Row) => `/users/${row.id}`, navigate });
+
+    fireEvent.click(firstRow(container), { ctrlKey: true });
+    fireEvent.click(firstRow(container), { metaKey: true });
+
+    expect(open).toHaveBeenCalledTimes(2);
+    expect(open).toHaveBeenCalledWith("/users/1", "_blank");
+    expect(navigate).not.toHaveBeenCalled();
+  });
+
+  it("donne la priorité à onRowNavigate sur onRowClick", () => {
+    const navigate = vi.fn();
+    const onRowClick = vi.fn();
+    const container = renderTable({ onRowNavigate: (row: Row) => `/users/${row.id}`, navigate, onRowClick });
+
+    fireEvent.click(firstRow(container));
+
+    expect(navigate).toHaveBeenCalledExactlyOnceWith("/users/1");
+    expect(onRowClick).not.toHaveBeenCalled();
+  });
+
+  it("affiche le curseur pointeur sur les lignes quand onRowNavigate est fourni", () => {
+    const container = renderTable({ onRowNavigate: (row: Row) => `/users/${row.id}` });
+
+    expect(firstRow(container).className).toContain("cursor-pointer");
+  });
+
+  it("ne déclenche pas la navigation au clic sur la case de sélection ou la colonne d'actions", () => {
+    const navigate = vi.fn();
+    const container = renderTable({
+      onRowNavigate: (row: Row) => `/users/${row.id}`,
+      navigate,
+      bulkActions: [{ label: "Supprimer", onClick: () => undefined }],
+      actions: [{ label: "Modifier", onClick: () => undefined }],
+    });
+
+    for (const key of [SELECTION_COLUMN_KEY, ACTIONS_COLUMN_KEY]) {
+      fireEvent.click(bodyCells(container, key)[0]);
+    }
+
+    expect(navigate).not.toHaveBeenCalled();
   });
 });
 
