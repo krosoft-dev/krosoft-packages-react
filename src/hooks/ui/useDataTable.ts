@@ -7,10 +7,6 @@ const DEFAULT_COLUMN_WIDTH = 100;
 
 const isColumnVisibleByDefault = <T>(column: ColumnDef<T>): boolean => column.defaultVisible !== false;
 
-// Applique l'ordre choisi par l'utilisateur (glisser-déposer) à la liste courante de colonnes :
-// on garde son ordre pour les colonnes toujours présentes, on retire celles qui ont disparu et on
-// insère les nouvelles à leur place d'origine (juste après leur voisine de gauche). L'ordre n'est
-// donc jamais un instantané figé de `columns` : il se recalcule des props à chaque rendu.
 const applyColumnOrder = <T>(order: string[], columns: ColumnDef<T>[]): ColumnDef<T>[] => {
   const columnByKey = new Map(columns.map(column => [column.key, column]));
   const resultKeys = order.filter(key => columnByKey.has(key));
@@ -57,11 +53,6 @@ export function useDataTable<T>({
   const sortDirection = controlledSortDirection ?? localSortDirection;
 
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
-
-  // On ne stocke que les décisions de l'utilisateur (deltas), pas la liste des colonnes : la source
-  // de vérité reste la prop `columns`. Ainsi une colonne ajoutée après le montage (chargée en
-  // asynchrone, conditionnée à une permission…) apparaît d'elle-même, et une colonne retirée
-  // disparaît, sans réconciliation d'état.
   const [visibilityOverrides, setVisibilityOverrides] = useState<Record<string, boolean>>({});
   const [widthOverrides, setWidthOverrides] = useState<Record<string, number>>({});
   const [columnOrderOverride, setColumnOrderOverride] = useState<string[] | null>(null);
@@ -82,8 +73,6 @@ export function useDataTable<T>({
   const hasActions = actions !== undefined && actions.length > 0;
   const hasBulkActions = bulkActions !== undefined && bulkActions.length > 0;
 
-  // Colonnes dérivées des props à chaque rendu : l'ordre applique le choix de l'utilisateur s'il a
-  // réorganisé, sinon suit l'ordre des props tel quel.
   const orderedColumns = useMemo(() => {
     return columnOrderOverride === null ? columns : applyColumnOrder(columnOrderOverride, columns);
   }, [columnOrderOverride, columns]);
