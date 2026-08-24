@@ -25,6 +25,7 @@ export interface TableHeaderProps<T> {
   hasActions: boolean;
   settingsNode?: React.ReactNode;
   bordered?: boolean;
+  dense?: boolean;
   fixedColumns?: Record<string, FixedColumnOffset>;
   fixedSelection?: boolean;
   fixedActions?: boolean;
@@ -55,6 +56,7 @@ export function TableHeader<T>({
   hasActions,
   settingsNode,
   bordered = false,
+  dense = false,
   fixedColumns = {},
   fixedSelection = false,
   fixedActions = false,
@@ -89,7 +91,9 @@ export function TableHeader<T>({
         data-column-key={column.key}
         data-fixed-side={column.fixed}
         className={[
-          "px-2 py-2 text-sm font-medium text-gray-900 dark:text-gray-100 group",
+          // En mode dense, seul le padding vertical se resserre : les cellules de sélection et
+          // d'actions sont déjà en p-1, la hauteur des lignes suit donc celle des colonnes de données.
+          `px-2 ${dense ? "py-1" : "py-2"} text-sm font-medium text-gray-900 dark:text-gray-100 group`,
           getAlignmentClass(alignment),
           fixed.className,
           bordered ? "border-r border-gray-200 dark:border-gray-800" : "",
