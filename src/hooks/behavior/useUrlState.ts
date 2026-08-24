@@ -1,7 +1,7 @@
 import { format, parse } from "date-fns";
 import { useCallback } from "react";
-import { DateRange } from "react-day-picker";
 import { useSearchParams } from "react-router-dom";
+import { DateRangeValue } from "@/types/DateRangeValue";
 
 /** Format des dates en URL : compact et lisible. */
 export const URL_DATE_FORMAT = "yyyy-MM-dd";
@@ -75,7 +75,7 @@ export function useUrlNumberState(key: string, defaultValue: number): [number, (
 }
 
 /** Analyse une plage de dates au format `from_to` (chaque borne en `yyyy-MM-dd`). */
-export const parseDateRange = (value: string): DateRange | undefined => {
+export const parseDateRange = (value: string): DateRangeValue | undefined => {
   if (!value) {
     return undefined;
   }
@@ -91,7 +91,7 @@ export const parseDateRange = (value: string): DateRange | undefined => {
 };
 
 /** Sérialise une plage de dates en `from_to` (borne haute omise si absente). */
-export const serializeDateRange = (range: DateRange | undefined): string => {
+export const serializeDateRange = (range: DateRangeValue | undefined): string => {
   if (!range?.from) {
     return "";
   }
@@ -104,6 +104,6 @@ export const serializeDateRange = (range: DateRange | undefined): string => {
 /**
  * Hook for date range URL state (from_to, dates formatted as yyyy-MM-dd).
  */
-export function useUrlDateRangeState(key: string): [DateRange | undefined, (value: DateRange | undefined) => void] {
-  return useUrlState<DateRange | undefined>(key, undefined, parseDateRange, serializeDateRange);
+export function useUrlDateRangeState(key: string): [DateRangeValue | undefined, (value: DateRangeValue | undefined) => void] {
+  return useUrlState<DateRangeValue | undefined>(key, undefined, parseDateRange, serializeDateRange);
 }
