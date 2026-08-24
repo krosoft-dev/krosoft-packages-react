@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { DateRangePicker } from "@/components/core/inputs/DateRangePicker";
-import type { DateRange } from "react-day-picker";
+import type { DateRangeValue } from "@/types/DateRangeValue";
 
 const meta: Meta<typeof DateRangePicker> = {
   title: "Core/Inputs/DateRangePicker",
@@ -14,7 +14,7 @@ type Story = StoryObj<typeof DateRangePicker>;
 
 export const Default: Story = {
   args: {
-    onChange: (range?: DateRange) => {
+    onChange: (range?: DateRangeValue) => {
       console.log("range:", range);
     },
   },
@@ -26,7 +26,7 @@ export const WithValue: Story = {
       from: new Date(2024, 0, 15),
       to: new Date(2024, 0, 28),
     },
-    onChange: (range?: DateRange) => {
+    onChange: (range?: DateRangeValue) => {
       console.log("range:", range);
     },
   },
@@ -38,7 +38,7 @@ export const WithSingleDate: Story = {
       from: new Date(),
       to: new Date(),
     },
-    onChange: (range?: DateRange) => {
+    onChange: (range?: DateRangeValue) => {
       console.log("range:", range);
     },
   },
@@ -47,7 +47,7 @@ export const WithSingleDate: Story = {
 export const CustomPlaceholder: Story = {
   args: {
     placeholder: "Choisir une plage de dates...",
-    onChange: (range?: DateRange) => {
+    onChange: (range?: DateRangeValue) => {
       console.log("range:", range);
     },
   },
@@ -55,7 +55,7 @@ export const CustomPlaceholder: Story = {
 
 export const Interactive: Story = {
   render: () => {
-    const [range, setRange] = useState<DateRange | undefined>();
+    const [range, setRange] = useState<DateRangeValue | undefined>();
     return (
       <div className="flex flex-col gap-4">
         <DateRangePicker value={range} onChange={setRange} />

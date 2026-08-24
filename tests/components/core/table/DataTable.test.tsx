@@ -124,6 +124,49 @@ describe("DataTable — alignement des colonnes", () => {
     expect(header.className).toContain("text-center");
     expect(header.querySelector("div")?.className).toContain("justify-center");
   });
+
+  it("colle les actions au bord droit de leur colonne", () => {
+    const container = renderTable({ actions: [{ label: "Run", onClick: () => {} }] });
+
+    const cells = bodyCells(container, ACTIONS_COLUMN_KEY);
+    expect(cells.every(cell => cell.className.includes("text-right"))).toBe(true);
+    // Le conteneur flex doit pousser les boutons contre le bord sur lequel l'œil cale la colonne.
+    expect(cells.every(cell => cell.querySelector("div")?.className.includes("justify-end") === true)).toBe(true);
+    expect(headerCell(container, ACTIONS_COLUMN_KEY).className).toContain("text-right");
+  });
+});
+
+describe("DataTable — mode dense", () => {
+  it("resserre le padding vertical des en-têtes et des cellules en mode dense", () => {
+    const container = renderTable({ dense: true });
+
+    const header = headerCell(container, "email");
+    expect(header.className).toContain("py-2");
+    expect(header.className).not.toContain("py-4");
+    expect(bodyCells(container, "email").every(cell => cell.className.includes("py-2"))).toBe(true);
+    expect(bodyCells(container, "email").every(cell => !cell.className.includes("py-4"))).toBe(true);
+  });
+
+  it("garde le padding vertical par défaut hors mode dense", () => {
+    const container = renderTable();
+
+    expect(headerCell(container, "email").className).toContain("py-4");
+    expect(bodyCells(container, "email").every(cell => cell.className.includes("py-4"))).toBe(true);
+  });
+
+  it("laisse les cellules de sélection et d'actions déjà compactes suivre la hauteur des lignes", () => {
+    const container = renderTable({
+      dense: true,
+      bulkActions: [{ label: "Supprimer", onClick: () => undefined }],
+      actions: [{ label: "Modifier", onClick: () => undefined }],
+    });
+
+    // Elles restent en p-1 : la hauteur des lignes est dictée par les colonnes de données.
+    for (const key of [SELECTION_COLUMN_KEY, ACTIONS_COLUMN_KEY]) {
+      expect(headerCell(container, key).className).toContain("p-1");
+      expect(bodyCells(container, key).every(cell => cell.className.includes("p-1"))).toBe(true);
+    }
+  });
 });
 
 describe("DataTable — colonnes figées", () => {

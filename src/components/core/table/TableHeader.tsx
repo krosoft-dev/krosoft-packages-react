@@ -25,6 +25,7 @@ export interface TableHeaderProps<T> {
   hasActions: boolean;
   settingsNode?: React.ReactNode;
   bordered?: boolean;
+  dense?: boolean;
   fixedColumns?: Record<string, FixedColumnOffset>;
   fixedSelection?: boolean;
   fixedActions?: boolean;
@@ -55,6 +56,7 @@ export function TableHeader<T>({
   hasActions,
   settingsNode,
   bordered = false,
+  dense = false,
   fixedColumns = {},
   fixedSelection = false,
   fixedActions = false,
@@ -89,7 +91,7 @@ export function TableHeader<T>({
         data-column-key={column.key}
         data-fixed-side={column.fixed}
         className={[
-          "px-2 py-2 text-sm font-medium text-gray-900 dark:text-gray-100 group",
+          `px-2 ${dense ? "py-2" : "py-4"} text-sm font-medium text-gray-900 dark:text-gray-100 group`,
           getAlignmentClass(alignment),
           fixed.className,
           bordered ? "border-r border-gray-200 dark:border-gray-800" : "",
@@ -156,8 +158,8 @@ export function TableHeader<T>({
           <th
             data-column-key={SELECTION_COLUMN_KEY}
             data-fixed-side={fixedSelection ? "left" : undefined}
-            className={`p-1 flex-shrink-0 text-center align-middle ${selectionFixed.className}`}
-            style={{ width: "32px", minWidth: "32px", maxWidth: "32px", ...selectionFixed.style }}
+            className={`p-1 text-center align-middle ${selectionFixed.className}`}
+            style={{ width: "48px", minWidth: "48px", maxWidth: "48px", ...selectionFixed.style }}
           >
             <div className="flex items-center justify-center">
               <Checkbox checked={checkboxChecked} onCheckedChange={toggleSelectAll} />
@@ -169,7 +171,7 @@ export function TableHeader<T>({
           <th
             data-column-key={ACTIONS_COLUMN_KEY}
             data-fixed-side={fixedActions ? "right" : undefined}
-            className={`p-1 text-center align-middle ${actionsFixed.className}`}
+            className={`p-1 text-right align-middle ${actionsFixed.className}`}
             style={{ minWidth: "32px", ...actionsFixed.style }}
           >
             {settingsNode}

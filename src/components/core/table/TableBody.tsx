@@ -26,6 +26,7 @@ export interface TableBodyProps<T> {
   actions?: RowAction<T>[];
   columns: ColumnDef<T>[];
   bordered?: boolean;
+  dense?: boolean;
   resizableColumns?: boolean;
   // Décalages mesurés sur l'en-tête : le corps ne décide pas de ce qui est figé, il suit.
   fixedColumns?: Record<string, FixedColumnOffset>;
@@ -48,6 +49,7 @@ export function TableBody<T>({
   actions,
   columns,
   bordered = false,
+  dense = false,
   resizableColumns = false,
   fixedColumns = {},
 }: TableBodyProps<T>): React.JSX.Element {
@@ -119,7 +121,7 @@ export function TableBody<T>({
             {hasBulkActions ? (
               <td
                 className={`p-1 text-center align-middle ${selectionFixed.className}`}
-                style={{ width: "32px", minWidth: "32px", maxWidth: "32px", ...selectionFixed.style }}
+                style={{ width: "48px", minWidth: "48px", maxWidth: "48px", ...selectionFixed.style }}
                 onClick={e => {
                   e.stopPropagation();
                 }}
@@ -142,7 +144,7 @@ export function TableBody<T>({
               return (
                 <td
                   key={column.key}
-                  className={`px-2 py-2 ${getAlignmentClass(getColumnAlignment(column))} ${fixed.className} ${bordered && !isLast ? "border-r border-gray-100 dark:border-gray-800" : ""} ${column.className ?? ""}`}
+                  className={`px-2 ${dense ? "py-2" : "py-4"} ${getAlignmentClass(getColumnAlignment(column))} ${fixed.className} ${bordered && !isLast ? "border-r border-gray-100 dark:border-gray-800" : ""} ${column.className ?? ""}`}
                   style={{
                     ...(resizableColumns ? { width: columnWidths[column.key] } : { minWidth: columnWidths[column.key] }),
                     ...fixed.style,
@@ -154,14 +156,14 @@ export function TableBody<T>({
             })}
             {hasActions ? (
               <td
-                className={`p-1 text-center align-middle whitespace-nowrap ${actionsFixed.className}`}
+                className={`p-1 text-right align-middle whitespace-nowrap ${actionsFixed.className}`}
                 style={{ minWidth: "32px", ...actionsFixed.style }}
                 onClick={e => {
                   e.stopPropagation();
                 }}
               >
                 {actions !== undefined && actions.length > 0 ? (
-                  <div className="flex items-center justify-center">
+                  <div className="flex items-center justify-end">
                     <TableActions actions={actions} row={row} />
                   </div>
                 ) : null}

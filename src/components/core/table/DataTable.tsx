@@ -24,6 +24,7 @@ export interface DataTableProps<T> {
   error?: string | null; // Message d'erreur affiché si le chargement des données a échoué
   noDataMessage?: string; // Message affiché lorsque le tableau est vide
   bordered?: boolean; // Permet d'afficher les bordures des cellules (colonnes)
+  dense?: boolean; // Réduit la hauteur des lignes pour un affichage compact
   fixedActions?: boolean; // Fige la colonne des actions (et du réglage des colonnes) sur le bord droit
   defaultPageSize?: number; // Nombre par défaut de lignes par page
   pageSizeOptions?: number[]; // Options pour le nombre de lignes par page
@@ -54,6 +55,7 @@ export function DataTable<T>({
   isLoading = false,
   error = null,
   bordered = false,
+  dense = false,
   fixedActions = false,
   noDataMessage,
   defaultPageSize = DEFAULT_PAGE_SIZE,
@@ -149,6 +151,7 @@ export function DataTable<T>({
               handleMouseDown={handleMouseDown}
               hasActions={hasActions}
               bordered={bordered}
+              dense={dense}
               fixedColumns={fixedColumns}
               fixedSelection={fixedSelection}
               fixedActions={fixedActions}
@@ -160,6 +163,7 @@ export function DataTable<T>({
             />
             <TableBody
               bordered={bordered}
+              dense={dense}
               isLoading={isLoading}
               error={error}
               colSpanCount={colSpanCount}

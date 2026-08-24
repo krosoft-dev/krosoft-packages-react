@@ -42,11 +42,8 @@ export interface SidebarProps {
   groups: SidebarGroup[];
   currentPath: string;
   onItemClick: (path: string) => void;
-
   slots?: SidebarSlots;
-
   search?: SidebarSearch;
-
   dense?: boolean;
   loading?: boolean;
 }
