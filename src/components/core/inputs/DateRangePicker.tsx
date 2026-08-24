@@ -3,27 +3,31 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/helpers/tailwind.helper";
+import { DateRangeValue } from "@/types/DateRangeValue";
 import { format } from "date-fns";
 import { CalendarIcon, XIcon } from "lucide-react";
 import * as React from "react";
 import type { DateRange } from "react-day-picker";
 
 interface DateRangePickerProps {
-  value?: DateRange;
-  onChange: (range?: DateRange) => void;
+  value?: DateRangeValue;
+  onChange: (range?: DateRangeValue) => void;
   placeholder?: string;
   className?: string;
 }
+
+/** `react-day-picker` reste un détail interne : on convertit vers son `DateRange` pour le calendrier. */
+const toCalendarRange = (range?: DateRangeValue): DateRange | undefined => (range ? { from: range.from, to: range.to } : undefined);
 
 export const DateRangePicker = ({ value, onChange, placeholder, className }: DateRangePickerProps) => {
   const { t } = useKrosoftTranslation();
   const locale = useDateFnsLocale();
   const [open, setOpen] = React.useState(false);
-  const [tempRange, setTempRange] = React.useState<DateRange | undefined>(value);
+  const [tempRange, setTempRange] = React.useState<DateRange | undefined>(toCalendarRange(value));
 
   React.useEffect(() => {
     if (open) {
-      setTempRange(value);
+      setTempRange(toCalendarRange(value));
     }
   }, [open, value]);
 
@@ -39,7 +43,7 @@ export const DateRangePicker = ({ value, onChange, placeholder, className }: Dat
   };
 
   const handleCancel = () => {
-    setTempRange(value);
+    setTempRange(toCalendarRange(value));
     setOpen(false);
   };
 
@@ -47,7 +51,7 @@ export const DateRangePicker = ({ value, onChange, placeholder, className }: Dat
     setTempRange(undefined);
   };
 
-  const formatRange = (range?: DateRange) => {
+  const formatRange = (range?: DateRangeValue) => {
     if (!range?.from) return placeholder ?? t("date.pickPeriod");
 
     if (!range.to || range.from.getTime() === range.to.getTime()) {

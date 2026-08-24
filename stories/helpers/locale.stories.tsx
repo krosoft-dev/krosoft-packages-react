@@ -4,7 +4,7 @@ import { createInstance, type i18n as I18n } from "i18next";
 import { I18nextProvider, initReactI18next, useTranslation } from "react-i18next";
 import { HardDrive, TrendingUp } from "lucide-react";
 import { formatFullDateTime, formatNumber, formatShortDate, formatShortDateTime, formatSize, getLocale, resetLocale, setLocale } from "@krosoft/core/helpers";
-import type { DateRange } from "react-day-picker";
+import type { DateRangeValue } from "@/types/DateRangeValue";
 import { KpiCard } from "@/components/core/cards/KpiCard";
 import { DatePicker } from "@/components/core/inputs/DatePicker";
 import { DateRangePicker } from "@/components/core/inputs/DateRangePicker";
@@ -221,7 +221,7 @@ const CalendarDemo = (): React.ReactElement => {
   const { t, i18n } = useTranslation();
   const locale = useDateFnsLocale();
   const [date, setDate] = useState<Date | undefined>(new Date(SAMPLE_DATE));
-  const [range, setRange] = useState<DateRange | undefined>({ from: new Date("2026-03-02T00:00:00.000Z"), to: new Date("2026-03-20T00:00:00.000Z") });
+  const [range, setRange] = useState<DateRangeValue | undefined>({ from: new Date("2026-03-02T00:00:00.000Z"), to: new Date("2026-03-20T00:00:00.000Z") });
 
   return (
     <div className="flex flex-col gap-6 p-4 max-w-3xl">
