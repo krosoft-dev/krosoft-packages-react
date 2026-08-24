@@ -91,9 +91,7 @@ export function TableHeader<T>({
         data-column-key={column.key}
         data-fixed-side={column.fixed}
         className={[
-          // En mode dense, seul le padding vertical se resserre : les cellules de sélection et
-          // d'actions sont déjà en p-1, la hauteur des lignes suit donc celle des colonnes de données.
-          `px-2 ${dense ? "py-1" : "py-2"} text-sm font-medium text-gray-900 dark:text-gray-100 group`,
+          `px-2 ${dense ? "py-1" : "py-3"} text-sm font-medium text-gray-900 dark:text-gray-100 group`,
           getAlignmentClass(alignment),
           fixed.className,
           bordered ? "border-r border-gray-200 dark:border-gray-800" : "",

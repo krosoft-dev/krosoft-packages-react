@@ -144,9 +144,7 @@ export function TableBody<T>({
               return (
                 <td
                   key={column.key}
-                  // En mode dense, seul le padding vertical se resserre : les cellules de sélection et
-                  // d'actions sont déjà en p-1, la hauteur des lignes suit donc celle des colonnes de données.
-                  className={`px-2 ${dense ? "py-1" : "py-2"} ${getAlignmentClass(getColumnAlignment(column))} ${fixed.className} ${bordered && !isLast ? "border-r border-gray-100 dark:border-gray-800" : ""} ${column.className ?? ""}`}
+                  className={`px-2 ${dense ? "py-1" : "py-3"} ${getAlignmentClass(getColumnAlignment(column))} ${fixed.className} ${bordered && !isLast ? "border-r border-gray-100 dark:border-gray-800" : ""} ${column.className ?? ""}`}
                   style={{
                     ...(resizableColumns ? { width: columnWidths[column.key] } : { minWidth: columnWidths[column.key] }),
                     ...fixed.style,
