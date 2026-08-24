@@ -1,14 +1,14 @@
-import { useKrosoftTranslation } from "@/i18n";
 import { Checkbox } from "@/components/ui";
 import type { FixedColumnOffset } from "@/hooks/ui/useFixedColumns";
+import { useKrosoftTranslation } from "@/i18n";
+import { ColumnDef, RowAction } from "@/types";
 import { AlertTriangleIcon, Loader2Icon } from "lucide-react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { TableActions } from "./TableActions";
 import { getAlignmentClass, getColumnAlignment } from "./columnAlignment";
 import { ACTIONS_COLUMN_KEY, getFixedCellProps, SELECTION_COLUMN_KEY } from "./fixedColumns";
-import { ColumnDef, RowAction } from "@/types";
-export type { BulkAction, ColumnDef, RowAction } from "../../../types";
+export type { BulkAction, ColumnDef, RowAction } from "@/types";
 
 export interface TableBodyProps<T> {
   isLoading: boolean;
@@ -161,13 +161,14 @@ export function TableBody<T>({
             ) : null}
             {visibleColumnsArray.map((column, index) => {
               const isLast = index === visibleColumnsArray.length - 1;
-              // La cellule reprend exactement le décalage mesuré sur son en-tête : les deux
-              // s'accrochent au bord au même pixel, sans décrochage pendant le défilement.
               const fixed = getFixedCellProps(fixedColumns[column.key], "body");
+              const isLeftEdge = index === 0 && !hasBulkActions;
+              const isRightEdge = isLast && !hasActions;
+              const paddingX = `${isLeftEdge ? "pl-4" : "pl-2"} ${isRightEdge ? "pr-4" : "pr-2"}`;
               return (
                 <td
                   key={column.key}
-                  className={`px-2 ${dense ? "py-2" : "py-4"} ${getAlignmentClass(getColumnAlignment(column))} ${fixed.className} ${bordered && !isLast ? "border-r border-gray-100 dark:border-gray-800" : ""} ${column.className ?? ""}`}
+                  className={`${paddingX} ${dense ? "py-2" : "py-4"} ${getAlignmentClass(getColumnAlignment(column))} ${fixed.className} ${bordered && !isLast ? "border-r border-gray-100 dark:border-gray-800" : ""} ${column.className ?? ""}`}
                   style={{
                     ...(resizableColumns ? { width: columnWidths[column.key] } : { minWidth: columnWidths[column.key] }),
                     ...fixed.style,

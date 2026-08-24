@@ -76,7 +76,7 @@ export function TableHeader<T>({
     return <ArrowUpDownIcon className="size-3.5 text-muted-foreground/50 group-hover:text-muted-foreground transition-colors" />;
   };
 
-  const renderColumnHeader = (column: ColumnDef<T>, isDraggable?: boolean): React.ReactNode => {
+  const renderColumnHeader = (column: ColumnDef<T>, index: number, isDraggable?: boolean): React.ReactNode => {
     // Déplacer une colonne figée la ferait passer d'un bord à l'autre ou au milieu de la pile :
     // le glisser-déposer est réservé aux colonnes qui défilent.
     const draggable = isDraggable !== false && column.fixed === undefined;
@@ -85,13 +85,17 @@ export function TableHeader<T>({
     const alignment = getColumnAlignment(column);
     const sortIcon = getSortIcon(column);
 
+    const isLeftEdge = index === 0 && !hasBulkActions;
+    const isRightEdge = index === visibleColumnsArray.length - 1 && !(hasActions || settingsNode !== undefined);
+    const paddingX = `${isLeftEdge ? "pl-4" : "pl-2"} ${isRightEdge ? "pr-4" : "pr-2"}`;
+
     return (
       <th
         key={column.key}
         data-column-key={column.key}
         data-fixed-side={column.fixed}
         className={[
-          `px-2 ${dense ? "py-2" : "py-4"} text-sm font-medium text-gray-900 dark:text-gray-100 group`,
+          `${paddingX} ${dense ? "py-2" : "py-4"} text-sm font-medium text-gray-900 dark:text-gray-100 group`,
           getAlignmentClass(alignment),
           fixed.className,
           bordered ? "border-r border-gray-200 dark:border-gray-800" : "",
@@ -166,7 +170,7 @@ export function TableHeader<T>({
             </div>
           </th>
         ) : null}
-        {visibleColumnsArray.map(column => renderColumnHeader(column, draggableColumns))}
+        {visibleColumnsArray.map((column, index) => renderColumnHeader(column, index, draggableColumns))}
         {hasActions || settingsNode !== undefined ? (
           <th
             data-column-key={ACTIONS_COLUMN_KEY}
