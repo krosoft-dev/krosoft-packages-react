@@ -150,8 +150,8 @@ describe("DataTable — mode dense", () => {
   it("garde le padding vertical par défaut hors mode dense", () => {
     const container = renderTable();
 
-    expect(headerCell(container, "email").className).toContain("py-2");
-    expect(bodyCells(container, "email").every(cell => cell.className.includes("py-2"))).toBe(true);
+    expect(headerCell(container, "email").className).toContain("py-3");
+    expect(bodyCells(container, "email").every(cell => cell.className.includes("py-3"))).toBe(true);
   });
 
   it("laisse les cellules de sélection et d'actions déjà compactes suivre la hauteur des lignes", () => {
