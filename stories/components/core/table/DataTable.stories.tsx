@@ -7,13 +7,12 @@ import { PencilIcon, TrashIcon } from "lucide-react";
 const meta: Meta<typeof DataTable> = {
   title: "Core/Table/DataTable",
   component: DataTable,
-  tags: ["autodocs"],
   parameters: {
     layout: "padded",
     docs: {
       description: {
         component:
-          "Le composant `DataTable` permet d'afficher des données sous forme de tableau avec des fonctionnalités avancées (tri, sélection, menu d'actions).\n\n### Fonctionnalités\n\n- **Tri** : Activez le tri colonne par colonne avec `sortable: true` dans `ColumnDef`. Un icône `↕` apparaît sur les colonnes triables ; `↑`/`↓` indique la colonne et le sens actifs.\n- **Réorganisation des colonnes** : Glissez et déposez l'icône de poignée dans l'en-tête.\n- **Désactivation du glisser-déposer** : Vous pouvez figer toutes les colonnes en passant `draggableColumns={false}` au composant.\n- **Redimensionnement des colonnes** : Survoler le bord droit de l'en-tête d'une colonne pour la redimensionner. Vous pouvez désactiver cette option en passant `resizableColumns={false}` au composant.",
+          "Le composant `DataTable` permet d'afficher des données sous forme de tableau avec des fonctionnalités avancées (tri, sélection, menu d'actions).\n\n### Fonctionnalités\n\n- **Tri** : Activez le tri colonne par colonne avec `sortable: true` dans `ColumnDef`. Un icône `↕` apparaît sur les colonnes triables ; `↑`/`↓` indique la colonne et le sens actifs.\n- **Réorganisation des colonnes** : Glissez et déposez l'icône de poignée dans l'en-tête.\n- **Désactivation du glisser-déposer** : Vous pouvez figer toutes les colonnes en passant `draggableColumns={false}` au composant.\n- **Largeur des colonnes** : par défaut (`resizableColumns` non activé), `minWidth` sur un `ColumnDef` n'est qu'un plancher — la colonne s'élargit naturellement selon le contenu. Avec `resizableColumns={true}`, `minWidth` devient la largeur figée de départ et une poignée sur le bord droit de l'en-tête permet de la redimensionner manuellement.\n- **Style de colonne** : `className` sur un `ColumnDef` s'applique à l'en-tête et à chaque cellule de la colonne.\n- **Alignement** : `align: \"left\" | \"center\" | \"right\"` range les cellules **et** leur en-tête du même côté. Il est déduit automatiquement quand `className` porte déjà `text-right` ou `text-center`.\n- **Colonnes figées** : `fixed: \"left\" | \"right\"` sur un `ColumnDef` accroche la colonne à un bord ; l'en-tête est figé avec elle, au même pixel. `fixedActions` fige de la même façon la colonne des actions. Une colonne figée n'est pas déplaçable au glisser-déposer.\n- **Actions de ligne** : les entrées de `actions` s'affichent en ligne par défaut ; `overflow: true` les déplace dans le menu kebab. `visible(row)` masque une action au cas par cas, `disabled(row)` la désactive sans la masquer, `variant` contrôle son style de bouton.",
       },
     },
   },
@@ -174,7 +173,53 @@ export const NonResizable: Story = {
   },
 };
 
+const dataWithLongEmail: UserData[] = [
+  { ...mockData[0], email: "john.doe.avec.une.adresse.email.tres.longue.pour.la.demo@exemple-entreprise.com" },
+  ...mockData.slice(1),
+];
+
+export const FlexibleColumnWidths: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Sans `resizableColumns` (comportement par défaut), `minWidth` sur un `ColumnDef` n'est qu'un plancher : la colonne s'élargit naturellement si le contenu le nécessite (ici l'email de John Doe dépasse largement les 200px de `minWidth`).",
+      },
+    },
+  },
+  args: {
+    data: dataWithLongEmail,
+    columns,
+    getRowId: (row: UserData) => row.id,
+  },
+};
+
+export const WithResizableColumns: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Avec `resizableColumns: true`, `minWidth` redevient la largeur de départ figée de la colonne : le contenu qui dépasse est tronqué, et l'utilisateur peut redimensionner manuellement via la poignée sur le bord droit de l'en-tête.",
+      },
+    },
+  },
+  args: {
+    data: dataWithLongEmail,
+    columns,
+    getRowId: (row: UserData) => row.id,
+    resizableColumns: true,
+  },
+};
+
 export const WithActions: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Par défaut (`overflow` non défini), les actions s'affichent en ligne. `variant` contrôle le style du bouton (ex: `destructive` pour Supprimer).",
+      },
+    },
+  },
   args: {
     data: mockData,
     columns,
@@ -190,7 +235,83 @@ export const WithActions: Story = {
       {
         label: "Supprimer",
         icon: TrashIcon,
+        variant: "destructive",
+        onClick: (row: UserData): void => {
+          console.warn(`Delete row: ${row.name}`);
+        },
+      },
+    ],
+  },
+};
+
+export const WithOverflowActions: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Les actions marquées `overflow: true` sont regroupées dans le menu kebab plutôt qu'affichées en ligne. Ici seule **Modifier** reste visible directement, **Dupliquer** et **Supprimer** passent dans le menu.",
+      },
+    },
+  },
+  args: {
+    data: mockData,
+    columns,
+    getRowId: (row: UserData) => row.id,
+    actions: [
+      {
+        label: "Modifier",
+        icon: PencilIcon,
+        onClick: (row: UserData): void => {
+          console.warn(`Edit row: ${row.name}`);
+        },
+      },
+      {
+        label: "Dupliquer",
+        onClick: (row: UserData): void => {
+          console.warn(`Duplicate row: ${row.name}`);
+        },
+        overflow: true,
+      },
+      {
+        label: "Supprimer",
+        icon: TrashIcon,
         className: "text-destructive focus:bg-destructive/10 focus:text-destructive",
+        onClick: (row: UserData): void => {
+          console.warn(`Delete row: ${row.name}`);
+        },
+        overflow: true,
+      },
+    ],
+  },
+};
+
+export const WithConditionalActions: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "`visible` masque l'action au cas par cas (ici **Supprimer** n'apparaît que pour le statut `inactive`), `disabled` la désactive sans la masquer (ici **Modifier** est désactivée pour `admin`).",
+      },
+    },
+  },
+  args: {
+    data: mockData,
+    columns,
+    getRowId: (row: UserData) => row.id,
+    actions: [
+      {
+        label: "Modifier",
+        icon: PencilIcon,
+        disabled: (row: UserData) => row.role === "admin",
+        onClick: (row: UserData): void => {
+          console.warn(`Edit row: ${row.name}`);
+        },
+      },
+      {
+        label: "Supprimer",
+        icon: TrashIcon,
+        variant: "destructive",
+        visible: (row: UserData) => row.status === "inactive",
         onClick: (row: UserData): void => {
           console.warn(`Delete row: ${row.name}`);
         },
@@ -250,6 +371,15 @@ export const Loading: Story = {
   },
 };
 
+export const WithError: Story = {
+  args: {
+    data: [],
+    columns,
+    getRowId: (row: UserData) => row.id,
+    error: "Impossible de charger les données. Veuillez réessayer.",
+  },
+};
+
 export const CustomPageSize: Story = {
   args: {
     data: mockData50,
@@ -261,9 +391,17 @@ export const CustomPageSize: Story = {
 };
 
 export const FullFeatured: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Combine toutes les fonctionnalités : tri, sélection avec actions groupées, colonne stylée (`className`), et actions de ligne mêlant inline/overflow/variant/visible/disabled.",
+      },
+    },
+  },
   args: {
     data: mockData,
-    columns,
+    columns: columns.map(col => (col.key === "lastLogin" ? { ...col, className: "text-right text-muted-foreground" } : col)),
     getRowId: (row: UserData) => row.id,
     onRowClick: (row: UserData) => {
       console.warn(`Clicked on row: ${row.name}`);
@@ -272,6 +410,7 @@ export const FullFeatured: Story = {
       {
         label: "Modifier",
         icon: PencilIcon,
+        disabled: (row: UserData) => row.role === "admin",
         onClick: (row: UserData): void => {
           console.warn(`Edit row: ${row.name}`);
         },
@@ -279,7 +418,9 @@ export const FullFeatured: Story = {
       {
         label: "Supprimer",
         icon: TrashIcon,
-        className: "text-destructive focus:bg-destructive/10 focus:text-destructive",
+        variant: "destructive",
+        visible: (row: UserData) => row.status === "inactive",
+        overflow: true,
         onClick: (row: UserData): void => {
           console.warn(`Delete row: ${row.name}`);
         },
@@ -318,6 +459,97 @@ export const WithoutColumnVisibility: Story = {
     columns,
     getRowId: (row: UserData) => row.id,
     columnVisibility: false,
+  },
+};
+
+const wideColumns: ColumnDef<UserData>[] = [
+  { ...columns[0], fixed: "left" },
+  ...columns.slice(1),
+  { key: "team", label: "Team", minWidth: 160, renderCell: row => `Team ${row.id}` },
+  { key: "manager", label: "Manager", minWidth: 180, renderCell: row => `Manager ${row.id}` },
+  { key: "location", label: "Location", minWidth: 180, renderCell: () => "Paris, France" },
+  { key: "phone", label: "Phone", minWidth: 160, renderCell: () => "+33 1 23 45 67 89" },
+];
+
+export const WithFixedColumns: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Le tableau déborde en largeur : **Name** est figée à gauche (`fixed: "left"`) et la colonne des actions à droite (`fixedActions`). Faites défiler horizontalement — les en-têtes restent accrochés en même temps que leurs cellules, et la case de sélection est figée avec la première colonne.',
+      },
+    },
+  },
+  args: {
+    data: mockData,
+    columns: wideColumns,
+    getRowId: (row: UserData) => row.id,
+    fixedActions: true,
+    columnVisibility: true,
+    bulkActions: [
+      {
+        label: "Supprimer",
+        icon: TrashIcon,
+        variant: "destructive" as const,
+        onClick: (selectedIds: string[], clearSelection: () => void): void => {
+          console.warn(`Deleting users with IDs: ${selectedIds.join(", ")}`);
+          clearSelection();
+        },
+      },
+    ],
+    actions: [
+      {
+        label: "Modifier",
+        icon: PencilIcon,
+        onClick: (row: UserData): void => {
+          console.warn("Edit", row.id);
+        },
+      },
+      {
+        label: "Supprimer",
+        icon: TrashIcon,
+        overflow: true,
+        onClick: (row: UserData): void => {
+          console.warn("Delete", row.id);
+        },
+      },
+    ],
+  },
+};
+
+export const WithColumnClassName: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "`className` sur un `ColumnDef` s'applique à l'en-tête et à chaque cellule de la colonne (ici **Last Login** est aligné à droite). L'en-tête suit l'alignement des cellules : le libellé et l'icône de tri se regroupent au bord droit.",
+      },
+    },
+  },
+  args: {
+    data: mockData,
+    columns: columns.map(col => (col.key === "lastLogin" ? { ...col, className: "text-right text-muted-foreground" } : col)),
+    getRowId: (row: UserData) => row.id,
+  },
+};
+
+export const WithAlignedColumns: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "`align` range les cellules et leur en-tête du même côté : **Role** est centrée, **Last Login** est alignée à droite. Sans cela le libellé resterait à gauche, au-dessus du vide laissé par des valeurs poussées à droite.",
+      },
+    },
+  },
+  args: {
+    data: mockData,
+    columns: columns.map(col => {
+      if (col.key === "lastLogin") return { ...col, align: "right" as const };
+      if (col.key === "role") return { ...col, align: "center" as const };
+      return col;
+    }),
+    getRowId: (row: UserData) => row.id,
   },
 };
 

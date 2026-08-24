@@ -1,3 +1,4 @@
+import { useKrosoftTranslation } from "@/i18n";
 import type { FilterSection } from "@/types/FilterSection";
 import React, { useMemo } from "react";
 import { SearchInput } from "../inputs/SearchInput";
@@ -26,13 +27,14 @@ export interface TableFilterProps<T extends Record<string, unknown> = Record<str
 export function TableFilter<T extends Record<string, unknown> = Record<string, unknown>>({
   searchQuery,
   onSearchChange,
-  searchPlaceholder = "Rechercher...",
+  searchPlaceholder,
   filters,
   onFiltersChange,
   sections,
   advancedButtonText = "Filtres",
-  sheetTitle = "Filtres avancés",
+  sheetTitle,
 }: TableFilterProps<T>): React.ReactElement {
+  const { t } = useKrosoftTranslation();
   const handleToggleQuickFilter = (key: keyof T, optionValue: string): void => {
     const current = filters[key];
     const currentArray = Array.isArray(current) ? (current as string[]) : [];
@@ -136,7 +138,7 @@ export function TableFilter<T extends Record<string, unknown> = Record<string, u
               onClear={() => {
                 onSearchChange("");
               }}
-              placeholder={searchPlaceholder}
+              placeholder={searchPlaceholder ?? t("search.placeholder")}
             />
           ) : null}
 
@@ -160,12 +162,12 @@ export function TableFilter<T extends Record<string, unknown> = Record<string, u
               searchPlaceholder={q.searchPlaceholder}
             />
           ))}
-
-          {/* Déclencheur filtres avancés */}
-          {sections.length > 0 && (
-            <AdvancedFilters sections={sections} filters={filters} onFiltersChange={onFiltersChange} buttonText={advancedButtonText} sheetTitle={sheetTitle} />
-          )}
         </div>
+
+        {/* Déclencheur filtres avancés (aligné en bout de ligne) */}
+        {sections.length > 0 && (
+          <AdvancedFilters sections={sections} filters={filters} onFiltersChange={onFiltersChange} buttonText={advancedButtonText} sheetTitle={sheetTitle} />
+        )}
       </div>
 
       {/* Affichage des filtres actifs */}

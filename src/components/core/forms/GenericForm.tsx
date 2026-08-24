@@ -1,3 +1,4 @@
+import { useKrosoftTranslation } from "@/i18n";
 import { ImageInput } from "@/components/core/inputs/ImageInput";
 import { AppSubTitle } from "@/components/core/layouts/AppSubTitle";
 import { MultiSelect } from "@/components/core/inputs/MultiSelect";
@@ -97,6 +98,7 @@ export const GenericForm = <T,>({
   defaultCols = 4,
 }: GenericFormProps<T>): React.ReactElement | null => {
   const { t } = useTranslation();
+  const { t: tKrosoft } = useKrosoftTranslation();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [imagePreview, setImagePreview] = useState<Record<string, string>>({});
@@ -187,8 +189,8 @@ export const GenericForm = <T,>({
     const hasErrors = Object.keys(form.formState.errors).length > 0;
     if (hasErrors) {
       toast({
-        title: "Erreur de validation",
-        description: "Veuillez vérifier les champs du formulaire",
+        title: tKrosoft("form.validationTitle"),
+        description: tKrosoft("form.validationMessage"),
         variant: "destructive",
       });
       return;
@@ -200,8 +202,8 @@ export const GenericForm = <T,>({
     } catch (err) {
       console.error("Error during form submission:", err);
       toast({
-        title: "Erreur",
-        description: "Une erreur est survenue lors de l'enregistrement",
+        title: tKrosoft("states.errorTitle"),
+        description: tKrosoft("form.submitError"),
         variant: "destructive",
       });
     } finally {
@@ -221,7 +223,7 @@ export const GenericForm = <T,>({
 
     return (
       <div className="mt-2 relative">
-        <div className="relative w-full h-40 bg-gray-100 rounded-md overflow-hidden">
+        <div className="relative w-full h-40 bg-gray-100 rounded-surface overflow-hidden">
           <img
             src={url}
             alt="Preview"
@@ -508,11 +510,11 @@ export const GenericForm = <T,>({
           <div className="flex justify-end gap-3 mt-6 border-t pt-4">
             {onCancel && (
               <Button type="button" variant="outline" onClick={onCancel} disabled={isSubmitting || isLoading}>
-                {t("Annuler", "Annuler")}
+                {tKrosoft("actions.cancel")}
               </Button>
             )}
             <Button variant="default" type="submit" disabled={isSubmitting || (isLoading ?? false) || form.formState.isSubmitting}>
-              {isSubmitting || isLoading ? t("Enregistrement...", "Enregistrement...") : t("Enregistrer", "Enregistrer")}
+              {isSubmitting || isLoading ? tKrosoft("actions.saving") : tKrosoft("actions.save")}
             </Button>
           </div>
         )}

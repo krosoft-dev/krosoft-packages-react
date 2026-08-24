@@ -1,3 +1,4 @@
+import { useKrosoftTranslation } from "@/i18n";
 import { ConfirmDialogConfig } from "@/types/ConfirmDialogConfig";
 import { TrashIcon } from "lucide-react";
 import { useConfirmationDialog } from "./useConfirmationDialog";
@@ -10,17 +11,12 @@ interface UseConfirmDeleteDialogProps {
   onReset?: () => void;
 }
 
-export const useConfirmDeleteDialog = ({
-  titleKey,
-  descriptionKey,
-  confirmKey = "Supprimer",
-  onConfirm,
-  onReset,
-}: UseConfirmDeleteDialogProps): ConfirmDialogConfig => {
+export const useConfirmDeleteDialog = ({ titleKey, descriptionKey, confirmKey, onConfirm, onReset }: UseConfirmDeleteDialogProps): ConfirmDialogConfig => {
+  const { t } = useKrosoftTranslation();
   const config = useConfirmationDialog({
     titleKey,
     descriptionKey,
-    confirmKey,
+    confirmKey: confirmKey ?? t("actions.delete"),
     onConfirm,
     onReset,
   });
@@ -30,6 +26,6 @@ export const useConfirmDeleteDialog = ({
     loadingKey: "Suppression...",
     icon: TrashIcon,
     titleClassName: "flex items-center gap-2 text-destructive",
-    headerClassName: "bg-gradient-to-r from-slate-900 to-purple-700 rounded-t-lg shrink-0",
+    headerClassName: "bg-gradient-to-r from-slate-900 to-purple-700 rounded-t-surface shrink-0",
   };
 };

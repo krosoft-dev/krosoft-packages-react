@@ -24,11 +24,17 @@ const NOMBREUSES_OPTIONS = [
   { value: "grenoble", label: "Grenoble" },
 ];
 
+const STATUTS = [
+  { value: "nouveau", label: "Nouveau", color: "#3b82f6" },
+  { value: "disponible", label: "Disponible", color: "#22c55e" },
+  { value: "indisponible", label: "Indisponible", color: "#ef4444" },
+];
+
 const meta: Meta<typeof MultiSelect> = {
   title: "Core/Inputs/MultiSelect",
   component: MultiSelect,
   decorators: [
-    (Story) => (
+    Story => (
       <div className="w-72 pb-72">
         <Story />
       </div>
@@ -92,9 +98,46 @@ export const WithClearIcon: Story = {
           }}
           placeholder="Sélectionner des villes"
         />
-        <p className="text-xs text-muted-foreground">
-          {selected.length === 0 ? "Sélection vidée via le ×" : `Sélectionnés : ${selected.join(", ")}`}
-        </p>
+        <p className="text-xs text-muted-foreground">{selected.length === 0 ? "Sélection vidée via le ×" : `Sélectionnés : ${selected.join(", ")}`}</p>
+      </div>
+    );
+  },
+};
+
+export const WithMaxCount: Story = {
+  args: {
+    options: NOMBREUSES_OPTIONS,
+    selected: ["paris", "lyon", "marseille", "bordeaux", "nice"],
+    maxCount: 2,
+  },
+};
+
+export const WithColors: Story = {
+  args: {
+    options: STATUTS,
+    selected: ["disponible"],
+    placeholder: "Sélectionner des statuts",
+  },
+};
+
+export const WithColorsInteractive: Story = {
+  render: () => {
+    const [selected, setSelected] = useState<string[]>([]);
+    const toggle = (val: string): void => {
+      setSelected(prev => (prev.includes(val) ? prev.filter(v => v !== val) : [...prev, val]));
+    };
+    return (
+      <div className="w-72 pb-72 space-y-2">
+        <MultiSelect
+          options={STATUTS}
+          selected={selected}
+          onToggle={toggle}
+          onClear={() => {
+            setSelected([]);
+          }}
+          placeholder="Sélectionner des statuts"
+        />
+        <p className="text-xs text-muted-foreground">{selected.length === 0 ? "Aucune sélection" : `Sélectionnés : ${selected.join(", ")}`}</p>
       </div>
     );
   },
@@ -120,9 +163,7 @@ export const Interactive: Story = {
           searchPlaceholder="Rechercher une ville..."
           placeholder="Sélectionner des villes"
         />
-        <p className="text-xs text-muted-foreground">
-          {selected.length === 0 ? "Aucune sélection" : `Sélectionnés : ${selected.join(", ")}`}
-        </p>
+        <p className="text-xs text-muted-foreground">{selected.length === 0 ? "Aucune sélection" : `Sélectionnés : ${selected.join(", ")}`}</p>
       </div>
     );
   },

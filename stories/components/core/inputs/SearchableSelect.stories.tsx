@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
+import { AppDialog } from "@/components/core/dialogs";
 import { SearchableSelect } from "@/components/core/inputs/SearchableSelect";
+import { Button } from "@/components/ui";
 
 const PAYS = [
   { value: "fr", label: "France" },
@@ -15,11 +17,24 @@ const PAYS = [
   { value: "gb", label: "Royaume-Uni" },
 ];
 
+const STATUTS = [
+  { value: "nouveau", label: "Nouveau", color: "#3b82f6" },
+  { value: "disponible", label: "Disponible", color: "#22c55e" },
+  { value: "indisponible", label: "Indisponible", color: "#ef4444" },
+];
+
+const TENANTS = [
+  { value: "1", label: "Demo TDS", description: "Démonstrations" },
+  { value: "2", label: "Boulanger", description: "Retail" },
+  { value: "3", label: "NLMK Belgium Holdings", description: "Industrie" },
+  { value: "4", label: "Sage Template", description: "Modèles" },
+];
+
 const meta: Meta<typeof SearchableSelect> = {
   title: "Core/Inputs/SearchableSelect",
   component: SearchableSelect,
   decorators: [
-    (Story) => (
+    Story => (
       <div className="w-64 pb-72">
         <Story />
       </div>
@@ -56,13 +71,7 @@ export const WithClear: Story = {
     const [value, setValue] = useState<string | undefined>("fr");
     return (
       <div className="w-64 pb-72 space-y-2">
-        <SearchableSelect
-          options={PAYS}
-          value={value}
-          onChange={setValue}
-          onClear={() => setValue(undefined)}
-          placeholder="Sélectionner un pays"
-        />
+        <SearchableSelect options={PAYS} value={value} onChange={setValue} onClear={() => setValue(undefined)} placeholder="Sélectionner un pays" />
         <p className="text-xs text-muted-foreground">
           {value !== undefined ? `Sélectionné : ${PAYS.find(p => p.value === value)?.label}` : "Aucune sélection"}
         </p>
@@ -106,6 +115,28 @@ export const DisabledWithValue: Story = {
   },
 };
 
+export const WithColors: Story = {
+  args: {
+    options: STATUTS,
+    value: "disponible",
+    placeholder: "Sélectionner un statut",
+  },
+};
+
+export const WithColorsInteractive: Story = {
+  render: () => {
+    const [value, setValue] = useState<string | undefined>(undefined);
+    return (
+      <div className="w-64 pb-72 space-y-2">
+        <SearchableSelect options={STATUTS} value={value} onChange={setValue} onClear={() => setValue(undefined)} placeholder="Sélectionner un statut" />
+        <p className="text-xs text-muted-foreground">
+          {value !== undefined ? `Sélectionné : ${STATUTS.find(s => s.value === value)?.label}` : "Aucune sélection"}
+        </p>
+      </div>
+    );
+  },
+};
+
 export const Interactive: Story = {
   render: () => {
     const [value, setValue] = useState<string | undefined>(undefined);
@@ -115,6 +146,94 @@ export const Interactive: Story = {
         <p className="text-xs text-muted-foreground">
           {value !== undefined ? `Sélectionné : ${PAYS.find(p => p.value === value)?.label}` : "Aucune sélection"}
         </p>
+      </div>
+    );
+  },
+};
+
+export const WithDescriptions: Story = {
+  args: {
+    options: TENANTS,
+    value: "1",
+    placeholder: "Sélectionner un tenant",
+    searchPlaceholder: "Rechercher un tenant...",
+    emptyLabel: "Aucun tenant trouvé.",
+  },
+};
+
+export const Creatable: Story = {
+  render: () => {
+    const [groupes, setGroupes] = useState([
+      { value: "agents", label: "Agents" },
+      { value: "flux", label: "Flux" },
+      { value: "tenants", label: "Tenants" },
+    ]);
+    const [value, setValue] = useState<string | undefined>(undefined);
+    return (
+      <div className="w-64 pb-72 space-y-2">
+        <SearchableSelect
+          options={groupes}
+          value={value}
+          onChange={setValue}
+          onClear={() => {
+            setValue(undefined);
+          }}
+          onCreate={label => {
+            setGroupes(prev => [...prev, { value: label, label }]);
+            setValue(label);
+          }}
+          placeholder="Agents, Flux, Tenants..."
+          searchPlaceholder="Rechercher ou créer..."
+          emptyLabel="Aucun groupe."
+        />
+        <p className="text-xs text-muted-foreground">Taper un libellé absent de la liste propose de le créer.</p>
+      </div>
+    );
+  },
+};
+
+// Le panneau est porté dans un portail : il déborde de la boîte de dialogue au lieu d'être
+// rogné par sa zone scrollable, contrairement à un panneau positionné en absolu.
+export const InDialog: Story = {
+  render: () => {
+    const [isOpen, setIsOpen] = useState(false);
+    const [value, setValue] = useState<string | undefined>(undefined);
+    return (
+      <div className="w-64">
+        <Button
+          onClick={() => {
+            setIsOpen(true);
+          }}
+        >
+          Ouvrir la boîte de dialogue
+        </Button>
+        <AppDialog
+          open={isOpen}
+          onOpenChange={() => {
+            setIsOpen(false);
+          }}
+          config={{
+            title: "Rattacher à un tenant",
+            description: "Le panneau de recherche doit s'afficher en entier, par-dessus la boîte de dialogue.",
+            actions: [
+              {
+                label: "Fermer",
+                variant: "outline",
+                onClick: () => {
+                  setIsOpen(false);
+                },
+              },
+            ],
+          }}
+        >
+          <SearchableSelect
+            options={TENANTS}
+            value={value}
+            onChange={setValue}
+            placeholder="Sélectionner un tenant"
+            searchPlaceholder="Rechercher un tenant..."
+          />
+        </AppDialog>
       </div>
     );
   },

@@ -26,3 +26,22 @@ export const Default: Story = {
     </>
   ),
 };
+
+export const WithActionAndClose: Story = {
+  render: () => (
+    <>
+      <Toaster />
+      <Button
+        onClick={() =>
+          toast("Une nouvelle version est disponible.", {
+            duration: Infinity,
+            closeButton: true,
+            action: { label: "Actualiser", onClick: () => {} },
+          })
+        }
+      >
+        Action + fermeture
+      </Button>
+    </>
+  ),
+};

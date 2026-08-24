@@ -4,3 +4,4 @@ export { DatePicker } from "./DatePicker";
 export { DateRangePicker } from "./DateRangePicker";
 export { MultiSelect } from "./MultiSelect";
 export { SearchableSelect } from "./SearchableSelect";
+export type { SearchableSelectOption } from "./SearchableSelect";

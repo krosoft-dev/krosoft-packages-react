@@ -7,7 +7,6 @@ import { Building2, Shield, Zap } from "lucide-react";
 const meta: Meta<typeof SidebarHeader> = {
   title: "Core/Navbar/SidebarHeader",
   component: SidebarHeader,
-  tags: ["autodocs"],
   parameters: {
     layout: "centered",
   },

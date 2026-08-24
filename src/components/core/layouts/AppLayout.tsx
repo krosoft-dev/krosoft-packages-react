@@ -25,7 +25,7 @@ export interface AppLayoutProps {
   icon?: React.ElementType;
   titleKey?: string;
   descriptionKey?: string;
-  backTo?: string | null;
+  onBack?: (() => void) | null;
   hideTitle?: boolean;
   className?: string;
 
@@ -54,7 +54,7 @@ function AppLayoutInner({
   icon,
   titleKey,
   descriptionKey,
-  backTo,
+  onBack,
   hideTitle = false,
   appTitle,
   children,
@@ -64,8 +64,8 @@ function AppLayoutInner({
 
   // Page context state
   const [actions, setActions] = React.useState<AppAction[]>([]);
-  const [currentTitleKey, setCurrentTitleKey] = React.useState<string>(titleKey || "");
-  const [currentDescriptionKey, setCurrentDescriptionKey] = React.useState<string>(descriptionKey || "");
+  const [currentTitleKey, setCurrentTitleKey] = React.useState<string>(titleKey ?? "");
+  const [currentDescriptionKey, setCurrentDescriptionKey] = React.useState<string>(descriptionKey ?? "");
   const [renderPreActions, setRenderPreActions] = React.useState<() => React.JSX.Element>(
     () =>
       function EmptyPreActions(): React.JSX.Element {
@@ -74,8 +74,8 @@ function AppLayoutInner({
   );
 
   React.useLayoutEffect(() => {
-    setCurrentTitleKey(titleKey || "");
-    setCurrentDescriptionKey(descriptionKey || "");
+    setCurrentTitleKey(titleKey ?? "");
+    setCurrentDescriptionKey(descriptionKey ?? "");
     setActions([]);
     setRenderPreActions(
       () =>
@@ -85,10 +85,18 @@ function AppLayoutInner({
     );
   }, [currentPath, titleKey, descriptionKey]);
 
-  const registerActions = React.useCallback((a: AppAction[]) => setActions(a), []);
-  const registerTitleKey = React.useCallback((k: string) => setCurrentTitleKey(k), []);
-  const registerDescriptionKey = React.useCallback((k: string) => setCurrentDescriptionKey(k), []);
-  const registerRenderPreActions = React.useCallback((fn: () => React.JSX.Element) => setRenderPreActions(() => fn), []);
+  const registerActions = React.useCallback((a: AppAction[]): void => {
+    setActions(a);
+  }, []);
+  const registerTitleKey = React.useCallback((k: string): void => {
+    setCurrentTitleKey(k);
+  }, []);
+  const registerDescriptionKey = React.useCallback((k: string): void => {
+    setCurrentDescriptionKey(k);
+  }, []);
+  const registerRenderPreActions = React.useCallback((fn: () => React.JSX.Element): void => {
+    setRenderPreActions(() => fn);
+  }, []);
 
   return (
     <div className="flex h-screen w-full bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-950 font-sans">
@@ -115,7 +123,7 @@ function AppLayoutInner({
                   titleKey={currentTitleKey}
                   descriptionKey={currentDescriptionKey}
                   actions={actions}
-                  backTo={backTo}
+                  onBack={onBack}
                   renderPreActions={renderPreActions}
                   appTitle={appTitle}
                   className={className}

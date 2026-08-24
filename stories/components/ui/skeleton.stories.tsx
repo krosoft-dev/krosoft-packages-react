@@ -5,7 +5,6 @@ import * as React from "react";
 const meta: Meta<typeof Skeleton> = {
   title: "UI/Skeleton",
   component: Skeleton,
-  tags: ["autodocs"],
 };
 
 export default meta;

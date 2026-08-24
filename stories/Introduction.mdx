@@ -1,0 +1,77 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+import { buildInfo, shortCommit, formattedBuildDate } from "./constants/buildInfo";
+
+<Meta title="Introduction" />
+
+# Krosoft Design System
+
+Les composants React partagés entre les applications krosoft, publiés dans le package npm
+[`@krosoft/react`](https://www.npmjs.com/package/@krosoft/react). Le code source vit sur
+[github.com/krosoft-dev/krosoft-packages-react](https://github.com/krosoft-dev/krosoft-packages-react).
+
+Chaque composant a sa page dans la barre latérale : **UI** pour les briques de base (boutons, champs,
+dialogues…), **Core** pour les composants composés (tables, filtres, cartes KPI, navigation), **Hooks**
+pour les comportements réutilisables, **Démos** pour des écrans complets assemblés avec le reste.
+
+## Installation
+
+```sh
+npm install @krosoft/react
+```
+
+Le preset Tailwind apporte le `darkMode`, les couleurs shadcn et krosoft, les radius et les animations :
+
+```ts
+import krosoftPreset, { krosoftContent } from "@krosoft/react/tailwind";
+
+export default {
+  presets: [krosoftPreset],
+  content: [...krosoftContent, "./src/**/*.{ts,tsx}"],
+};
+```
+
+`krosoftContent` n'est pas optionnel : Tailwind n'additionne pas les `content`, et sans le spread aucune
+classe des composants du package n'est générée.
+
+## Essayer les thèmes et les tokens
+
+La barre d'outils, en haut de chaque story, pilote ce que verrait une application consommatrice :
+
+- le sélecteur de **thème** applique les classes de thème sur `<html>` ;
+- le sélecteur de **Radius** applique un preset de tokens (`square`, `soft`, `round`) sur tous les
+  composants à la fois — la story `Démos/Radius` les compare côte à côte.
+
+## Écrire une story
+
+Les conventions du repo, pour que la barre latérale reste lisible :
+
+- un fichier `*.stories.tsx` par composant, rangé sous `stories/` en miroir de `src/` ;
+- un `title` préfixé par `UI/`, `Core/<famille>/`, `Hooks/<famille>/` ou `Démos/` ;
+- l'onglet **Docs** est activé globalement (`tags: ["autodocs"]` dans `.storybook/preview.ts`) — inutile
+  de le répéter dans chaque fichier ;
+- des données de démonstration fictives uniquement (`@example.com`) : ce site est public.
+
+## Ce build
+
+<table>
+  <tbody>
+    <tr>
+      <td>Version publiée sur npm</td>
+      <td>
+        <code>{buildInfo.version}</code>
+      </td>
+    </tr>
+    <tr>
+      <td>Commit déployé</td>
+      <td>
+        <code>{shortCommit}</code>
+      </td>
+    </tr>
+    <tr>
+      <td>Build</td>
+      <td>{formattedBuildDate}</td>
+    </tr>
+  </tbody>
+</table>
+
+Le site suit la branche `main` et est redéployé à chaque merge.

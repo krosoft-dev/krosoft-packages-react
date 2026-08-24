@@ -46,6 +46,10 @@ export const SidebarNavItem = ({
   const active = isActive || (!collapsed && isAnyChildActive);
 
   const handleClick = (e: React.MouseEvent): void => {
+    if (e.ctrlKey || e.metaKey || e.button === 1) {
+      return;
+    }
+
     e.preventDefault();
     if (subItems && subItems.length > 0) {
       if (!collapsed) {
@@ -65,8 +69,8 @@ export const SidebarNavItem = ({
       href={path ?? "#"}
       onClick={handleClick}
       className={cn(
-        "flex items-center cursor-pointer transition-all duration-200 group",
-        dense ? "gap-2.5 rounded-lg mb-0.5" : "gap-3 rounded-xl mb-1",
+        "flex items-center cursor-pointer transition-all duration-200 group rounded-control",
+        dense ? "gap-2.5  mb-0.5" : "gap-3  mb-1",
         collapsed ? collapsedClasses : expandedClasses,
         active ? activeClasses : "hover:bg-sidebar-accent text-sidebar-foreground hover:text-sidebar-accent-foreground",
       )}
@@ -92,7 +96,7 @@ export const SidebarNavItem = ({
           <TooltipContent
             side="right"
             sideOffset={6}
-            className="rounded-xl z-[99999] flex gap-2 bg-sidebar text-sidebar-foreground border border-sidebar-border py-2 text-sm shadow-lg"
+            className="rounded-surface z-[99999] flex gap-2 bg-sidebar text-sidebar-foreground border border-sidebar-border py-2 text-sm shadow-lg"
           >
             <div className="flex flex-col gap-2">
               <div className="flex items-center gap-2">
@@ -120,11 +124,14 @@ export const SidebarNavItem = ({
                 key={idx}
                 href={subItem.path}
                 onClick={e => {
+                  if (e.ctrlKey || e.metaKey || e.button === 1) {
+                    return;
+                  }
                   e.preventDefault();
                   onItemClick(subItem.path);
                 }}
                 className={cn(
-                  "flex items-center justify-between rounded-xl text-sm transition-all duration-200",
+                  "flex items-center justify-between rounded-control text-sm transition-all duration-200",
                   dense ? "px-3 py-1" : "px-4 py-2",
                   isSubActive
                     ? "bg-sidebar-accent/50 text-sidebar-primary font-semibold"
@@ -143,4 +150,3 @@ export const SidebarNavItem = ({
     </>
   );
 };
-

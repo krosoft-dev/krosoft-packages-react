@@ -5,7 +5,6 @@ import * as React from "react";
 const meta: Meta<typeof Separator> = {
   title: "UI/Separator",
   component: Separator,
-  tags: ["autodocs"],
 };
 
 export default meta;

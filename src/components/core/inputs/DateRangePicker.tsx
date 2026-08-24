@@ -1,9 +1,9 @@
+import { useDateFnsLocale, useKrosoftTranslation } from "@/i18n";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/helpers/tailwind.helper";
 import { format } from "date-fns";
-import { fr } from "date-fns/locale";
 import { CalendarIcon, XIcon } from "lucide-react";
 import * as React from "react";
 import type { DateRange } from "react-day-picker";
@@ -15,7 +15,9 @@ interface DateRangePickerProps {
   className?: string;
 }
 
-export const DateRangePicker = ({ value, onChange, placeholder = "Selectionner une periode", className }: DateRangePickerProps) => {
+export const DateRangePicker = ({ value, onChange, placeholder, className }: DateRangePickerProps) => {
+  const { t } = useKrosoftTranslation();
+  const locale = useDateFnsLocale();
   const [open, setOpen] = React.useState(false);
   const [tempRange, setTempRange] = React.useState<DateRange | undefined>(value);
 
@@ -46,13 +48,13 @@ export const DateRangePicker = ({ value, onChange, placeholder = "Selectionner u
   };
 
   const formatRange = (range?: DateRange) => {
-    if (!range?.from) return placeholder;
+    if (!range?.from) return placeholder ?? t("date.pickPeriod");
 
     if (!range.to || range.from.getTime() === range.to.getTime()) {
-      return format(range.from, "dd MMM yyyy", { locale: fr });
+      return format(range.from, "dd MMM yyyy", { locale });
     }
 
-    return `${format(range.from, "dd MMM yyyy", { locale: fr })} - ${format(range.to, "dd MMM yyyy", { locale: fr })}`;
+    return `${format(range.from, "dd MMM yyyy", { locale })} - ${format(range.to, "dd MMM yyyy", { locale })}`;
   };
 
   return (
@@ -67,7 +69,7 @@ export const DateRangePicker = ({ value, onChange, placeholder = "Selectionner u
                 type="button"
                 variant="ghost"
                 size="icon"
-                aria-label="Effacer la periode selectionnee"
+                aria-label={t("date.clearPeriod")}
                 className="ml-auto h-5 w-5 opacity-50 hover:opacity-100"
                 onClick={handleClear}
               >
@@ -83,19 +85,19 @@ export const DateRangePicker = ({ value, onChange, placeholder = "Selectionner u
             selected={tempRange}
             onSelect={setTempRange}
             numberOfMonths={2}
-            weekStartsOn={1}
+            locale={locale}
             className="pointer-events-auto p-3"
           />
           <div className="flex items-center justify-between border-t border-border px-3 py-2">
             <Button variant="ghost" size="sm" onClick={handleClearInside}>
-              Effacer
+              {t("actions.clear")}
             </Button>
             <div className="flex gap-2">
               <Button variant="ghost" size="sm" onClick={handleCancel}>
-                Annuler
+                {t("actions.cancel")}
               </Button>
               <Button size="sm" onClick={handleApply}>
-                Appliquer
+                {t("actions.apply")}
               </Button>
             </div>
           </div>

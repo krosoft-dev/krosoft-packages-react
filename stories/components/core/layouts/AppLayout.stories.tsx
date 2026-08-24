@@ -1,12 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { Bell, LayoutDashboard, Moon, Settings, Shield, Sun, Users, Plus } from "lucide-react";
+import { Bell, LayoutDashboard, Moon, Settings, Shield, Sun, Users } from "lucide-react";
 import * as React from "react";
 import { MemoryRouter } from "react-router-dom";
-import { AppLayout } from "@/components/core/layouts/AppLayout";
+import { AppLayout, type AppLayoutProps } from "@/components/core/layouts/AppLayout";
 import { SidebarHeader } from "@/components/core/navbar";
 import { Button } from "@/components/ui/button";
 
-const withRouter = (Story: React.ComponentType) => (
+const withRouter = (Story: React.ComponentType): React.JSX.Element => (
   <MemoryRouter>
     <Story />
   </MemoryRouter>
@@ -82,10 +82,10 @@ const meta: Meta<typeof AppLayout> = {
 export default meta;
 type Story = StoryObj<typeof AppLayout>;
 
-const InteractiveAppLayout = (args: any) => {
+const InteractiveAppLayout = (args: Partial<AppLayoutProps>): React.JSX.Element => {
   const [currentPath, setCurrentPath] = React.useState("/dashboard");
 
-  const getPageConfig = (path: string) => {
+  const getPageConfig = (path: string): { titleKey: string; descriptionKey: string; icon?: React.ElementType } => {
     switch (path) {
       case "/dashboard":
         return {
@@ -128,9 +128,9 @@ const InteractiveAppLayout = (args: any) => {
       userMenuNode={<FakeUserMenu />}
     >
       <div className="p-6 border border-border rounded-xl bg-card shadow-sm space-y-4">
-        <h2 className="text-xl font-bold text-foreground">Contenu de l'onglet {pageConfig.titleKey}</h2>
+        <h2 className="text-xl font-bold text-foreground">Contenu de l&apos;onglet {pageConfig.titleKey}</h2>
         <p className="text-muted-foreground text-sm">
-          Ceci est un exemple d'intégration de contenu pour la route : <code className="bg-muted px-1.5 py-0.5 rounded text-primary">{currentPath}</code>.
+          Ceci est un exemple d&apos;intégration de contenu pour la route : <code className="bg-muted px-1.5 py-0.5 rounded text-primary">{currentPath}</code>.
         </p>
         <div className="h-64 border border-dashed rounded-lg flex items-center justify-center text-muted-foreground bg-muted/20">
           Zone de contenu principale

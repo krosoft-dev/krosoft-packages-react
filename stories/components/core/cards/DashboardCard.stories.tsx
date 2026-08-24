@@ -39,7 +39,7 @@ export const WithRichContent: Story = {
     titleKey: "dashboard.stats",
     icon: BarChart3,
   },
-  render: (args) => (
+  render: args => (
     <DashboardCard {...args}>
       <div className="space-y-2">
         <div className="flex justify-between">

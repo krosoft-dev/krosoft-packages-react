@@ -1,0 +1,84 @@
+{
+  "actions": {
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "saving": "Enregistrement...",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "clear": "Effacer",
+    "apply": "Appliquer"
+  },
+  "states": {
+    "loading": "Chargement...",
+    "error": "Une erreur est survenue.",
+    "errorPrefix": "Erreur :",
+    "errorTitle": "Erreur",
+    "noResult": "Aucun résultat",
+    "noResultDot": "Aucun résultat.",
+    "noData": "Aucune donnée disponible",
+    "underConstruction": "Section en cours de développement",
+    "comingSoon": "Cette fonctionnalité sera bientôt disponible"
+  },
+  "search": {
+    "trigger": "Rechercher",
+    "placeholder": "Rechercher...",
+    "globalTitle": "Recherche globale",
+    "globalDescription": "Rechercher une page ou une donnée dans l'application.",
+    "commandTitle": "Palette de commandes",
+    "commandDescription": "Rechercher une commande à exécuter.",
+    "loading": "Recherche..."
+  },
+  "notifications": {
+    "trigger": "Notifications",
+    "title": "Notifications",
+    "empty": "Aucune notification.",
+    "markAllAsRead": "Tout marquer comme lu",
+    "remove": "Supprimer la notification"
+  },
+  "select": {
+    "placeholder": "Sélectionner...",
+    "create": "Créer « {{search}} »",
+    "section": "Sélectionner une section",
+    "theme": "Sélectionner un thème",
+    "language": "Sélectionner une langue"
+  },
+  "date": {
+    "pickDate": "Sélectionner une date",
+    "pickPeriod": "Sélectionner une période",
+    "clearPeriod": "Effacer la période sélectionnée"
+  },
+  "filters": {
+    "advanced": "Filtres avancés",
+    "more": "Plus de filtres",
+    "yes": "Oui",
+    "no": "Non"
+  },
+  "form": {
+    "validationTitle": "Erreur de validation",
+    "validationMessage": "Veuillez vérifier les champs du formulaire",
+    "submitError": "Une erreur est survenue lors de l'enregistrement"
+  },
+  "image": {
+    "empty": "Aucune image",
+    "upload": "Cliquer pour uploader",
+    "invalidType": "Seuls les fichiers {{types}} sont acceptés",
+    "tooLarge": "Le fichier ne doit pas dépasser {{size}}MB"
+  },
+  "table": {
+    "previousPage": "Page précédente",
+    "nextPage": "Page suivante"
+  },
+  "sidebar": {
+    "menu": "Menu de navigation",
+    "description": "Navigation principale de l'application"
+  },
+  "language": {
+    "description": "Choisissez la langue de l'interface",
+    "current": "Langue actuelle : {{language}}",
+    "switchTo": "Passer en {{language}}"
+  },
+  "theme": {
+    "updatedTitle": "Thème mis à jour",
+    "updatedMessage": "Le thème a été changé vers {{theme}}."
+  }
+}

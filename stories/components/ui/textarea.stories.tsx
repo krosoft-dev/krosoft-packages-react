@@ -33,11 +33,7 @@ export const WithValue: Story = {
   render: () => (
     <div className="space-y-2">
       <Label htmlFor="message-value">Message</Label>
-      <Textarea
-        id="message-value"
-        placeholder="Type your message here."
-        defaultValue="This is a textarea with some default content."
-      />
+      <Textarea id="message-value" placeholder="Type your message here." defaultValue="This is a textarea with some default content." />
     </div>
   ),
 };

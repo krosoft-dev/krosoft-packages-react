@@ -1,3 +1,4 @@
+import { useKrosoftTranslation } from "@/i18n";
 import * as React from "react";
 import { SearchIcon } from "lucide-react";
 import { TooltipProvider } from "../../ui/tooltip";
@@ -51,7 +52,8 @@ export interface SidebarProps {
 }
 
 export const Sidebar = ({ groups, currentPath, onItemClick, slots, search, dense = false, loading = false }: SidebarProps): React.ReactElement => {
-  const { enabled: searchable = false, placeholder: searchPlaceholder = "Rechercher..." } = search ?? {};
+  const { t } = useKrosoftTranslation();
+  const { enabled: searchable = false, placeholder: searchPlaceholder } = search ?? {};
   const { header: headerNode, footer: footerNode } = slots ?? {};
   const { collapsed, isMobile, setCollapsed } = useSidebar();
   const [query, setQuery] = React.useState("");
@@ -97,7 +99,7 @@ export const Sidebar = ({ groups, currentPath, onItemClick, slots, search, dense
               onChange={event => {
                 setQuery(event.target.value);
               }}
-              placeholder={searchPlaceholder}
+              placeholder={searchPlaceholder ?? t("search.placeholder")}
               className={cn(
                 "bg-sidebar-accent/40 border-sidebar-border pl-9 text-sidebar-foreground placeholder:text-sidebar-muted",
                 dense ? "h-8 text-sm" : "h-9",
@@ -108,11 +110,11 @@ export const Sidebar = ({ groups, currentPath, onItemClick, slots, search, dense
       )}
 
       {/* Navigation Groups */}
-      <div className={cn("flex-1 overflow-y-auto px-2 scrollbar-modern", dense ? "py-2" : "py-4")}>
+      <div className={cn("flex-1 overflow-y-auto scrollbar-modern", isCollapsed ? "px-0" : "px-2", dense ? "py-2" : "py-4")}>
         {loading
           ? Array.from({ length: 5 }).map((_, idx) => (
               <div key={idx} className={cn("flex items-center gap-3", dense ? "mb-1 h-9" : "mb-2 h-12", isCollapsed ? "justify-center px-3" : "px-4")}>
-                <Skeleton className="size-5 flex-shrink-0 rounded-md" />
+                <Skeleton className="size-5 flex-shrink-0 rounded-control" />
                 {!isCollapsed && <Skeleton className="h-4 flex-1" />}
               </div>
             ))
@@ -144,8 +146,8 @@ export const Sidebar = ({ groups, currentPath, onItemClick, slots, search, dense
         }}
       >
         <SheetContent side="left" className="w-[16rem] p-0 bg-sidebar border-r border-sidebar-border overflow-hidden [&>button]:text-sidebar-foreground">
-          <SheetTitle className="sr-only">Menu de navigation</SheetTitle>
-          <SheetDescription className="sr-only">Navigation principale de l&apos;application</SheetDescription>
+          <SheetTitle className="sr-only">{t("sidebar.menu")}</SheetTitle>
+          <SheetDescription className="sr-only">{t("sidebar.description")}</SheetDescription>
           {sidebarContent}
         </SheetContent>
       </Sheet>
@@ -162,7 +164,7 @@ export const Sidebar = ({ groups, currentPath, onItemClick, slots, search, dense
         )}
         style={{
           ["--navbar-width" as string]: "16rem",
-          ["--navbar-width-icon" as string]: "5rem",
+          ["--navbar-width-icon" as string]: "4rem",
         }}
       >
         {sidebarContent}

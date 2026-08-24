@@ -1,3 +1,7 @@
+export { GlobalSearch } from "./GlobalSearch";
+export type { GlobalSearchProps, GlobalSearchItem, GlobalSearchGroup } from "./GlobalSearch";
+export { NotificationsBell } from "./NotificationsBell";
+export type { NotificationsBellProps, NotificationItem } from "./NotificationsBell";
 export { Sidebar } from "./Sidebar";
 export type { SidebarProps, SidebarItem, SidebarGroup, SidebarSubItem, SidebarSlots, SidebarSearch } from "./Sidebar";
 export { SidebarHeader } from "./SidebarHeader";

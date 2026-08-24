@@ -57,9 +57,7 @@ describe("useDocumentTitle", () => {
   });
 
   it("restaure le titre précédent lors du démontage", () => {
-    const { unmount } = renderHook(() =>
-      useDocumentTitle("pages.home", undefined, "MonApp"),
-    );
+    const { unmount } = renderHook(() => useDocumentTitle("pages.home", undefined, "MonApp"));
 
     expect(document.title).toBe("Accueil | MonApp");
 
@@ -69,10 +67,7 @@ describe("useDocumentTitle", () => {
   });
 
   it("met à jour le titre quand titleKey change", () => {
-    const { rerender } = renderHook(
-      ({ titleKey }) => useDocumentTitle(titleKey, undefined, "MonApp"),
-      { initialProps: { titleKey: "pages.home" } },
-    );
+    const { rerender } = renderHook(({ titleKey }) => useDocumentTitle(titleKey, undefined, "MonApp"), { initialProps: { titleKey: "pages.home" } });
 
     expect(document.title).toBe("Accueil | MonApp");
 
@@ -82,10 +77,9 @@ describe("useDocumentTitle", () => {
   });
 
   it("met à jour le titre quand suffix change", () => {
-    const { rerender } = renderHook(
-      ({ suffix }) => useDocumentTitle("pages.home", suffix, "MonApp"),
-      { initialProps: { suffix: undefined as string | undefined } },
-    );
+    const { rerender } = renderHook(({ suffix }) => useDocumentTitle("pages.home", suffix, "MonApp"), {
+      initialProps: { suffix: undefined as string | undefined },
+    });
 
     expect(document.title).toBe("Accueil | MonApp");
 
@@ -95,10 +89,7 @@ describe("useDocumentTitle", () => {
   });
 
   it("met à jour le titre quand appTitle change", () => {
-    const { rerender } = renderHook(
-      ({ appTitle }) => useDocumentTitle("pages.home", undefined, appTitle),
-      { initialProps: { appTitle: "MonApp" } },
-    );
+    const { rerender } = renderHook(({ appTitle }) => useDocumentTitle("pages.home", undefined, appTitle), { initialProps: { appTitle: "MonApp" } });
 
     expect(document.title).toBe("Accueil | MonApp");
 
@@ -108,9 +99,7 @@ describe("useDocumentTitle", () => {
   });
 
   it("retourne la clé quand aucune traduction n'est trouvée", () => {
-    renderHook(() =>
-      useDocumentTitle("pages.inconnue", undefined, "MonApp"),
-    );
+    renderHook(() => useDocumentTitle("pages.inconnue", undefined, "MonApp"));
 
     expect(document.title).toBe("pages.inconnue | MonApp");
   });

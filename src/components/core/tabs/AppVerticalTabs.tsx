@@ -2,6 +2,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import type { TabConfig } from "@/types/TabConfig";
 import { ConstructionIcon } from "lucide-react";
+import { useKrosoftTranslation } from "@/i18n";
 import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 
@@ -12,8 +13,12 @@ export interface AppVerticalTabsProps<T = unknown> {
 
 export const AppVerticalTabs = ({ tabs, item }: AppVerticalTabsProps): React.JSX.Element => {
   const { t } = useTranslation();
+  const { t: tKrosoft } = useKrosoftTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
-  const activeTab = searchParams.get("tab") || tabs[0]?.value;
+  // L'onglet de l'URL peut ne pas exister dans la liste : lien obsolète, ou onglet retiré selon
+  // les droits de l'utilisateur. On retombe alors sur le premier onglet plutôt que de n'afficher aucun contenu.
+  const requestedTab = searchParams.get("tab");
+  const activeTab = tabs.find(tab => tab.value === requestedTab)?.value ?? tabs[0]?.value;
 
   const handleTabChange = (value: string) => {
     const newSearchParams = new URLSearchParams();
@@ -33,8 +38,8 @@ export const AppVerticalTabs = ({ tabs, item }: AppVerticalTabsProps): React.JSX
         <div className="flex items-center justify-center h-64 text-gray-500">
           <div className="text-center">
             <ConstructionIcon className="h-12 w-12 mx-auto mb-4 text-amber-500" />
-            <p className="text-lg font-medium">Section en cours de développement</p>
-            <p className="text-sm text-gray-400">Cette fonctionnalité sera bientôt disponible</p>
+            <p className="text-lg font-medium">{tKrosoft("states.underConstruction")}</p>
+            <p className="text-sm text-gray-400">{tKrosoft("states.comingSoon")}</p>
           </div>
         </div>
       </div>
@@ -49,7 +54,7 @@ export const AppVerticalTabs = ({ tabs, item }: AppVerticalTabsProps): React.JSX
             {tabs.map((tab, index) => (
               <div
                 key={index}
-                className={`px-2 py-2 rounded-2xl text-sm transition-colors flex items-center gap-2 ${
+                className={`px-2 py-2 rounded-control text-sm transition-colors flex items-center gap-2 ${
                   tab.disabled
                     ? "text-gray-400 cursor-not-allowed opacity-50"
                     : activeTab === tab.value
@@ -71,7 +76,7 @@ export const AppVerticalTabs = ({ tabs, item }: AppVerticalTabsProps): React.JSX
       <div className="md:hidden w-full border-b pb-4 mb-4">
         <Select value={activeTab} onValueChange={handleTabChange}>
           <SelectTrigger className="w-full">
-            <SelectValue placeholder="Sélectionner une section" />
+            <SelectValue placeholder={tKrosoft("select.section")} />
           </SelectTrigger>
           <SelectContent>
             {tabs.map((tab, index) => (

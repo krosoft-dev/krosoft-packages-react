@@ -116,7 +116,6 @@ const meta: Meta<typeof UseDataTableDemo> = {
   parameters: {
     layout: "centered",
   },
-  tags: ["autodocs"],
   argTypes: {
     defaultPageSize: {
       control: { type: "number", min: 1, max: 10 },

@@ -1,5 +1,6 @@
+import { useKrosoftTranslation } from "@/i18n";
 import React, { useState, useMemo, useRef, useEffect } from "react";
-import { Checkbox } from "@/components/ui";
+import { Checkbox, controlTriggerClass } from "@/components/ui";
 import { ChevronDownIcon, SearchIcon, XIcon } from "lucide-react";
 import { cn } from "@/helpers/tailwind.helper";
 import type { SelectOption } from "@krosoft/core/types";
@@ -14,6 +15,8 @@ interface MultiSelectProps {
   searchable?: boolean;
   searchPlaceholder?: string;
   disabled?: boolean;
+  /** Nombre de libellés affichés dans le trigger, le reste est résumé par un compteur `+N`. */
+  maxCount?: number;
 }
 
 export const MultiSelect = ({
@@ -22,11 +25,13 @@ export const MultiSelect = ({
   onToggle,
   onClear,
   onSelectAll,
-  placeholder = "Sélectionner...",
+  placeholder,
   searchable = false,
-  searchPlaceholder = "Rechercher...",
+  searchPlaceholder,
   disabled = false,
+  maxCount,
 }: MultiSelectProps): React.ReactElement => {
+  const { t } = useKrosoftTranslation();
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -41,6 +46,13 @@ export const MultiSelect = ({
     if (filteredOptions.length === 0) return false;
     return filteredOptions.every(opt => selected.includes(opt.value));
   }, [filteredOptions, selected]);
+
+  // Au-delà de `maxCount`, les libellés restants sont résumés par un compteur gardé hors
+  // de la zone tronquée : sinon des libellés longs mangent tout le trigger et on ne voit
+  // plus combien de valeurs sont réellement sélectionnées.
+  const selectedLabels = useMemo(() => selected.map(s => options.find(o => o.value === s)?.label ?? s), [options, selected]);
+  const visibleLabels = maxCount !== undefined && maxCount > 0 ? selectedLabels.slice(0, maxCount) : selectedLabels;
+  const hiddenCount = selectedLabels.length - visibleLabels.length;
 
   // Focus l'input quand le dropdown s'ouvre
   useEffect(() => {
@@ -108,14 +120,11 @@ export const MultiSelect = ({
         type="button"
         disabled={disabled}
         onClick={handleToggle}
-        className={cn(
-          "flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
-          open && "ring-2 ring-ring ring-offset-2",
-          selected.length === 0 && "text-muted-foreground",
-        )}
+        className={cn(controlTriggerClass, "w-full", open && "ring-2 ring-ring ring-offset-2", selected.length === 0 && "text-muted-foreground")}
       >
-        <span className="truncate">{selected.length === 0 ? placeholder : selected.map(s => options.find(o => o.value === s)?.label ?? s).join(", ")}</span>
+        <span className="truncate">{selected.length === 0 ? (placeholder ?? t("select.placeholder")) : visibleLabels.join(", ")}</span>
         <div className="flex shrink-0 items-center gap-1">
+          {hiddenCount > 0 && <span className="rounded-control bg-muted px-1.5 py-0.5 text-xs font-medium text-foreground">+{hiddenCount}</span>}
           {selected.length > 0 && !disabled && (
             <span
               role="button"
@@ -138,15 +147,15 @@ export const MultiSelect = ({
       </button>
 
       {open ? (
-        <div className="absolute left-0 right-0 top-[calc(100%+4px)] z-[100] rounded-md border bg-popover text-popover-foreground shadow-md animate-in fade-in-0 zoom-in-95 slide-in-from-top-2">
+        <div className="absolute left-0 right-0 top-[calc(100%+4px)] z-[100] rounded-surface border bg-popover text-popover-foreground shadow-md animate-in fade-in-0 zoom-in-95 slide-in-from-top-2">
           {searchable ? (
             <div className="border-b border-border p-2">
               <div className="relative">
                 <SearchIcon className="absolute left-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
                 <input
                   ref={inputRef}
-                  className="w-full rounded-md bg-muted/50 py-1.5 pl-7 pr-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-1 focus:ring-ring"
-                  placeholder={searchPlaceholder}
+                  className="w-full rounded-control bg-muted/50 py-1.5 pl-7 pr-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-1 focus:ring-ring"
+                  placeholder={searchPlaceholder ?? t("search.placeholder")}
                   value={query}
                   onChange={e => {
                     setQuery(e.target.value);
@@ -162,7 +171,7 @@ export const MultiSelect = ({
                 Tout sélectionner
               </label>
             )}
-            {filteredOptions.length === 0 && <p className="px-2 py-3 text-center text-xs text-muted-foreground">Aucun résultat</p>}
+            {filteredOptions.length === 0 && <p className="px-2 py-3 text-center text-xs text-muted-foreground">{t("states.noResult")}</p>}
             {filteredOptions.map(opt => (
               <label key={opt.value} className="flex items-center gap-2.5 rounded-md px-2 py-2 text-sm hover:bg-muted cursor-pointer transition-colors">
                 <Checkbox
@@ -171,6 +180,7 @@ export const MultiSelect = ({
                     onToggle(opt.value);
                   }}
                 />
+                {opt.color && <span className="size-2.5 shrink-0 rounded-full" style={{ backgroundColor: opt.color }} />}
                 {opt.label}
               </label>
             ))}
