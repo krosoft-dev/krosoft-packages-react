@@ -31,10 +31,10 @@ afterEach(() => {
   cleanup();
 });
 
-const renderSelector = (variant: "select" | "mini", id?: string): void => {
+const renderSelector = (variant: "select" | "mini", id?: string, className?: string): void => {
   render(
     <ThemeProvider attribute="class" defaultTheme="light" themes={["light", "dark"]}>
-      <ThemeSelector themeOptions={THEME_OPTIONS} variant={variant} id={id} />
+      <ThemeSelector themeOptions={THEME_OPTIONS} variant={variant} id={id} className={className} />
     </ThemeProvider>,
   );
 };
@@ -56,5 +56,17 @@ describe("ThemeSelector", () => {
     renderSelector("select");
 
     expect(screen.getByRole("combobox").id).toBe("");
+  });
+
+  it("reporte className sur le bouton de la variante mini, pour l'accorder à sa surface", () => {
+    renderSelector("mini", undefined, "text-topbar-foreground");
+
+    expect(screen.getByRole("button").classList.contains("text-topbar-foreground")).toBe(true);
+  });
+
+  it("ne pose aucune couleur de surface sur le bouton de la variante mini par défaut", () => {
+    renderSelector("mini");
+
+    expect(screen.getByRole("button").className).not.toMatch(/sidebar/);
   });
 });

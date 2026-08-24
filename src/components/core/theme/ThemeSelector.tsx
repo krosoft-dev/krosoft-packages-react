@@ -10,9 +10,11 @@ interface ThemeSelectorProps {
   variant?: "select" | "mini";
   /** Posé sur le déclencheur, pour qu'un `<Label htmlFor>` de l'application puisse s'y associer. */
   id?: string;
+  /** Classes du bouton de la variante `mini`, pour l'accorder à la surface qui l'accueille. */
+  className?: string;
 }
 
-export function ThemeSelector({ themeOptions, variant = "select", id }: ThemeSelectorProps): React.JSX.Element {
+export function ThemeSelector({ themeOptions, variant = "select", id, className }: ThemeSelectorProps): React.JSX.Element {
   const { t } = useKrosoftTranslation();
   const { theme, handleThemeChange, currentThemeOption, nextThemeOption, cycleTheme } = useTheme(themeOptions);
 
@@ -23,13 +25,7 @@ export function ThemeSelector({ themeOptions, variant = "select", id }: ThemeSel
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button
-              id={id}
-              variant="ghost"
-              size="icon"
-              onClick={cycleTheme}
-              className="text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-            >
+            <Button id={id} variant="ghost" size="icon" onClick={cycleTheme} className={className}>
               {CurrentIcon && <CurrentIcon className="size-4" />}
               <span className="sr-only">Thème actuel : {currentThemeOption?.label}</span>
             </Button>
