@@ -216,7 +216,6 @@ export function useDataTable<T>({
     e.preventDefault();
     if (draggedColumn.current === null || draggedColumn.current === targetColumnKey) return;
 
-    // On repart de l'ordre effectif courant (dérivé des props) pour poser le nouvel ordre choisi.
     const newOrder = orderedColumns.map(col => col.key);
     const draggedIndex = newOrder.indexOf(draggedColumn.current);
     const targetIndex = newOrder.indexOf(targetColumnKey);
