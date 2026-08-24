@@ -1,5 +1,7 @@
+import { useKrosoftTranslation } from "@/i18n";
 import * as React from "react";
 import { useTranslation } from "react-i18next";
+import { useNotifications } from "./useNotifications";
 
 export interface LanguageOption {
   /** Code i18next de la langue (« fr », « en »). */
@@ -29,6 +31,8 @@ export interface UseLanguageResult {
  */
 export function useLanguage(languageOptions: readonly LanguageOption[]): UseLanguageResult {
   const { i18n } = useTranslation();
+  const { t } = useKrosoftTranslation();
+  const { showSuccess } = useNotifications();
 
   const language = i18n.language ?? "";
   const baseLanguage = language.split("-")[0];
@@ -40,6 +44,9 @@ export function useLanguage(languageOptions: readonly LanguageOption[]): UseLang
 
   const changeLanguage = (newLanguage: string): void => {
     void i18n.changeLanguage(newLanguage);
+    const baseNewLanguage = newLanguage.split("-")[0];
+    const option = languageOptions.find(o => o.value === newLanguage) ?? languageOptions.find(o => o.value === baseNewLanguage);
+    showSuccess(t("language.updatedTitle"), t("language.updatedMessage", { language: option?.label ?? newLanguage }));
   };
 
   const cycleLanguage = (): void => {

@@ -75,7 +75,9 @@
   "language": {
     "description": "Choisissez la langue de l'interface",
     "current": "Langue actuelle : {{language}}",
-    "switchTo": "Passer en {{language}}"
+    "switchTo": "Passer en {{language}}",
+    "updatedTitle": "Langue mise à jour",
+    "updatedMessage": "La langue a été changée vers {{language}}."
   },
   "theme": {
     "updatedTitle": "Thème mis à jour",
