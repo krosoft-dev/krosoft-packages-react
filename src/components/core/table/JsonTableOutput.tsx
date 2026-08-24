@@ -1,28 +1,11 @@
 import { Label, SimpleTable, SimpleTableBody, SimpleTableCell, SimpleTableHead, SimpleTableHeader, SimpleTableRow, Switch } from "@/components/ui";
-import { tryParseJson } from "@krosoft/core/helpers";
+import { formatJsonValue, isRecord, tryParseJson } from "@krosoft/core/helpers";
 import React, { useState } from "react";
 
 interface JsonTableOutputProps {
   header?: string;
   output: string;
 }
-
-const isRecord = (value: unknown): value is Record<string, unknown> => typeof value === "object" && value !== null;
-
-const formatValue = (value: unknown): string => {
-  if (value === null || value === undefined) {
-    return "";
-  }
-  if (typeof value === "string") {
-    return value;
-  }
-  if (typeof value === "number" || typeof value === "boolean") {
-    return String(value);
-  }
-  // Objets et tableaux : la donnée vient de `JSON.parse`, aucune autre valeur
-  // (fonction, symbol…) ne peut apparaître ici.
-  return JSON.stringify(value, null, 2);
-};
 
 export const JsonTableOutput = ({ header, output }: JsonTableOutputProps): React.JSX.Element | null => {
   const [showTable, setShowTable] = useState(true);
@@ -80,7 +63,7 @@ export const JsonTableOutput = ({ header, output }: JsonTableOutputProps): React
               <SimpleTableRow key={index}>
                 {keys.map(key => (
                   <SimpleTableCell key={key} className="text-sm whitespace-pre-wrap">
-                    {formatValue(row[key])}
+                    {formatJsonValue(row[key])}
                   </SimpleTableCell>
                 ))}
               </SimpleTableRow>
@@ -106,7 +89,7 @@ export const JsonTableOutput = ({ header, output }: JsonTableOutputProps): React
             {entries.map(([key, value]) => (
               <SimpleTableRow key={key}>
                 <SimpleTableCell className="font-medium text-sm">{key}</SimpleTableCell>
-                <SimpleTableCell className="text-sm whitespace-pre-wrap">{formatValue(value)}</SimpleTableCell>
+                <SimpleTableCell className="text-sm whitespace-pre-wrap">{formatJsonValue(value)}</SimpleTableCell>
               </SimpleTableRow>
             ))}
           </SimpleTableBody>
