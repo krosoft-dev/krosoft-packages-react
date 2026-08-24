@@ -18,7 +18,6 @@ export interface TableBodyProps<T> {
   getRowId: (row: T) => string;
   onRowClick?: (row: T, event: React.MouseEvent<HTMLTableRowElement>) => void;
   onRowNavigate?: (row: T) => string; // Retourne l'URL de destination de la ligne au clic (prioritaire sur onRowClick)
-  navigate?: (url: string) => void; // Callback de navigation fourni par l'application (ex. le navigate de react-router)
   hasBulkActions: boolean;
   selectedRows: string[];
   toggleRowSelection: (id: string) => void;
@@ -43,7 +42,6 @@ export function TableBody<T>({
   getRowId,
   onRowClick,
   onRowNavigate,
-  navigate,
   hasBulkActions,
   selectedRows,
   toggleRowSelection,
@@ -115,16 +113,11 @@ export function TableBody<T>({
   const isRowClickable = onRowNavigate !== undefined || onRowClick !== undefined;
 
   // La navigation prime sur onRowClick : Ctrl/Cmd + clic reproduit le comportement natif
-  // des liens en ouvrant l'URL dans un nouvel onglet, sinon la navigation est déléguée
-  // au callback navigate fourni par l'application (ex. le navigate de react-router).
+  // des liens en ouvrant l'URL dans un nouvel onglet, sinon elle s'ouvre dans l'onglet courant.
   const handleRowClick = (row: T, event: React.MouseEvent<HTMLTableRowElement>): void => {
     if (onRowNavigate !== undefined) {
       const url = onRowNavigate(row);
-      if (event.ctrlKey || event.metaKey) {
-        window.open(url, "_blank");
-      } else {
-        navigate?.(url);
-      }
+      window.open(url, event.ctrlKey || event.metaKey ? "_blank" : "_self");
     } else {
       onRowClick?.(row, event);
     }
