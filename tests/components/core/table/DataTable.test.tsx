@@ -1,9 +1,16 @@
-import { cleanup, render } from "@testing-library/react";
+import { cleanup, fireEvent, render } from "@testing-library/react";
 import * as React from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { DataTable } from "../../../../src/components/core/table/DataTable";
 import { ACTIONS_COLUMN_KEY, SELECTION_COLUMN_KEY } from "../../../../src/components/core/table/fixedColumns";
 import type { ColumnDef } from "../../../../src/types/ColumnDef";
+
+// Le DataTable navigue via useNavigate : le mock évite d'envelopper chaque test dans un Router.
+const { navigateMock } = vi.hoisted(() => ({ navigateMock: vi.fn() }));
+vi.mock("react-router-dom", async importOriginal => ({
+  ...(await importOriginal<typeof import("react-router-dom")>()),
+  useNavigate: () => navigateMock,
+}));
 
 type Row = { id: string; name: string; email: string; role: string };
 
@@ -45,6 +52,7 @@ const stubColumnWidths = (widths: Record<string, number>): void => {
 afterEach(() => {
   cleanup();
   vi.restoreAllMocks();
+  navigateMock.mockClear();
 });
 
 describe("DataTable — alignement des colonnes", () => {
@@ -166,6 +174,65 @@ describe("DataTable — mode dense", () => {
       expect(headerCell(container, key).className).toContain("p-1");
       expect(bodyCells(container, key).every(cell => cell.className.includes("p-1"))).toBe(true);
     }
+  });
+});
+
+describe("DataTable — navigation au clic", () => {
+  const firstRow = (container: HTMLElement): HTMLTableRowElement => {
+    const row = container.querySelector<HTMLTableRowElement>("tbody tr");
+    if (row === null) throw new Error("Aucune ligne trouvée dans le tableau");
+    return row;
+  };
+
+  it("navigue via le router avec l'URL calculée au clic sur une ligne", () => {
+    const container = renderTable({ onRowNavigate: (row: Row) => `/users/${row.id}` });
+
+    fireEvent.click(firstRow(container));
+
+    expect(navigateMock).toHaveBeenCalledExactlyOnceWith("/users/1");
+  });
+
+  it("ouvre l'URL dans un nouvel onglet au Ctrl+clic ou Cmd+clic, sans passer par le router", () => {
+    const open = vi.spyOn(window, "open").mockImplementation(() => null);
+    const container = renderTable({ onRowNavigate: (row: Row) => `/users/${row.id}` });
+
+    fireEvent.click(firstRow(container), { ctrlKey: true });
+    fireEvent.click(firstRow(container), { metaKey: true });
+
+    expect(open).toHaveBeenCalledTimes(2);
+    expect(open).toHaveBeenNthCalledWith(1, "/users/1", "_blank");
+    expect(open).toHaveBeenNthCalledWith(2, "/users/1", "_blank");
+    expect(navigateMock).not.toHaveBeenCalled();
+  });
+
+  it("donne la priorité à onRowNavigate sur onRowClick", () => {
+    const onRowClick = vi.fn();
+    const container = renderTable({ onRowNavigate: (row: Row) => `/users/${row.id}`, onRowClick });
+
+    fireEvent.click(firstRow(container));
+
+    expect(navigateMock).toHaveBeenCalledExactlyOnceWith("/users/1");
+    expect(onRowClick).not.toHaveBeenCalled();
+  });
+
+  it("affiche le curseur pointeur sur les lignes quand onRowNavigate est fourni", () => {
+    const container = renderTable({ onRowNavigate: (row: Row) => `/users/${row.id}` });
+
+    expect(firstRow(container).className).toContain("cursor-pointer");
+  });
+
+  it("ne déclenche pas la navigation au clic sur la case de sélection ou la colonne d'actions", () => {
+    const container = renderTable({
+      onRowNavigate: (row: Row) => `/users/${row.id}`,
+      bulkActions: [{ label: "Supprimer", onClick: () => undefined }],
+      actions: [{ label: "Modifier", onClick: () => undefined }],
+    });
+
+    for (const key of [SELECTION_COLUMN_KEY, ACTIONS_COLUMN_KEY]) {
+      fireEvent.click(bodyCells(container, key)[0]);
+    }
+
+    expect(navigateMock).not.toHaveBeenCalled();
   });
 });
 
