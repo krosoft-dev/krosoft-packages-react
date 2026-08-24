@@ -11,9 +11,11 @@ interface LanguageSelectorProps {
   variant?: "select" | "mini";
   /** Posé sur le déclencheur, pour qu'un `<Label htmlFor>` de l'application puisse s'y associer. */
   id?: string;
+  /** Classes du bouton de la variante `mini`, pour l'accorder à la surface qui l'accueille. */
+  className?: string;
 }
 
-export function LanguageSelector({ languageOptions, variant = "select", id }: LanguageSelectorProps): React.JSX.Element {
+export function LanguageSelector({ languageOptions, variant = "select", id, className }: LanguageSelectorProps): React.JSX.Element {
   const { t } = useKrosoftTranslation();
   const { currentLanguageOption, nextLanguageOption, changeLanguage, cycleLanguage } = useLanguage(languageOptions);
 
@@ -24,13 +26,7 @@ export function LanguageSelector({ languageOptions, variant = "select", id }: La
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button
-              id={id}
-              variant="ghost"
-              size="icon"
-              onClick={cycleLanguage}
-              className="text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
-            >
+            <Button id={id} variant="ghost" size="icon" onClick={cycleLanguage} className={className}>
               <CurrentIcon className="size-4" />
               <span className="sr-only">{t("language.current", { language: currentLanguageOption?.label ?? "" })}</span>
             </Button>

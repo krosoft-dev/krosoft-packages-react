@@ -25,12 +25,12 @@ const createInstance = async (language: string): Promise<I18nInstance> => {
   return instance;
 };
 
-const renderSelector = async (language: string, variant: "select" | "mini" = "select", id?: string): Promise<I18nInstance> => {
+const renderSelector = async (language: string, variant: "select" | "mini" = "select", id?: string, className?: string): Promise<I18nInstance> => {
   const instance = await createInstance(language);
 
   render(
     <I18nextProvider i18n={instance}>
-      <LanguageSelector languageOptions={LANGUAGE_OPTIONS} variant={variant} id={id} />
+      <LanguageSelector languageOptions={LANGUAGE_OPTIONS} variant={variant} id={id} className={className} />
     </I18nextProvider>,
   );
 
@@ -62,6 +62,18 @@ describe("LanguageSelector", () => {
     await renderSelector("fr", "mini", "language");
 
     expect(screen.getByRole("button").id).toBe("language");
+  });
+
+  it("reporte className sur le bouton de la variante mini, pour l'accorder à sa surface", async () => {
+    await renderSelector("fr", "mini", undefined, "text-topbar-foreground");
+
+    expect(screen.getByRole("button").classList.contains("text-topbar-foreground")).toBe(true);
+  });
+
+  it("ne pose aucune couleur de surface sur le bouton de la variante mini par défaut", async () => {
+    await renderSelector("fr", "mini");
+
+    expect(screen.getByRole("button").className).not.toMatch(/sidebar/);
   });
 
   it("bascule sur la langue suivante depuis le bouton mini", async () => {
