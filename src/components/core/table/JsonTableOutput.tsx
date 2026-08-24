@@ -7,20 +7,30 @@ interface JsonTableOutputProps {
   output: string;
 }
 
-export const JsonTableOutput = ({ header, output }: JsonTableOutputProps) => {
+const isRecord = (value: unknown): value is Record<string, unknown> => typeof value === "object" && value !== null;
+
+const formatValue = (value: unknown): string => {
+  if (value === null || value === undefined) {
+    return "";
+  }
+  if (typeof value === "string") {
+    return value;
+  }
+  if (typeof value === "number" || typeof value === "boolean") {
+    return String(value);
+  }
+  // Objets et tableaux : la donnée vient de `JSON.parse`, aucune autre valeur
+  // (fonction, symbol…) ne peut apparaître ici.
+  return JSON.stringify(value, null, 2);
+};
+
+export const JsonTableOutput = ({ header, output }: JsonTableOutputProps): React.JSX.Element | null => {
   const [showTable, setShowTable] = useState(true);
 
   const jsonData = tryParseJson(output);
   const isValidJson = jsonData !== null;
 
-  const formatValue = (value: unknown) => {
-    if (typeof value === "object" && value !== null) {
-      return JSON.stringify(value, null, 2);
-    }
-    return String(value ?? "");
-  };
-
-  const renderHeader = () => (
+  const renderHeader = (): React.JSX.Element => (
     <div className="flex items-center justify-between mb-2">
       <span className="font-medium text-sm">{header}</span>
       <div className="flex items-center gap-2">
@@ -32,26 +42,27 @@ export const JsonTableOutput = ({ header, output }: JsonTableOutputProps) => {
     </div>
   );
 
-  const TableWrapper = ({ children }: { children: React.ReactNode }) => (
+  const TableWrapper = ({ children }: { children: React.ReactNode }): React.JSX.Element => (
     <div className="border rounded min-w-0 w-full">
       <SimpleTable>{children}</SimpleTable>
     </div>
   );
 
-  const RawOutput = () => (
+  const RawOutput = (): React.JSX.Element => (
     <pre className="text-xs bg-muted p-4 rounded overflow-x-auto whitespace-pre-wrap">
       {isValidJson && !showTable ? JSON.stringify(jsonData, null, 2) : output}
     </pre>
   );
 
-  const renderContent = () => {
+  const renderContent = (): React.JSX.Element => {
     if (!isValidJson || !showTable) {
       return <RawOutput />;
     }
 
     // Tableau d'objets
-    if (Array.isArray(jsonData) && jsonData.length > 0 && typeof jsonData[0] === "object") {
-      const keys = Object.keys(jsonData[0]);
+    if (Array.isArray(jsonData) && jsonData.length > 0 && isRecord(jsonData[0])) {
+      const rows = jsonData as Record<string, unknown>[];
+      const keys = Object.keys(rows[0]);
 
       return (
         <TableWrapper>
@@ -65,7 +76,7 @@ export const JsonTableOutput = ({ header, output }: JsonTableOutputProps) => {
             </SimpleTableRow>
           </SimpleTableHeader>
           <SimpleTableBody>
-            {jsonData.map((row, index) => (
+            {rows.map((row, index) => (
               <SimpleTableRow key={index}>
                 {keys.map(key => (
                   <SimpleTableCell key={key} className="text-sm whitespace-pre-wrap">
@@ -80,7 +91,7 @@ export const JsonTableOutput = ({ header, output }: JsonTableOutputProps) => {
     }
 
     // Objet simple
-    if (typeof jsonData === "object" && jsonData !== null) {
+    if (isRecord(jsonData)) {
       const entries = Object.entries(jsonData);
 
       return (

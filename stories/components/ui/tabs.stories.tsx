@@ -49,6 +49,23 @@ export const WithDisabled: Story = {
   ),
 };
 
+export const Solid: Story = {
+  render: args => (
+    <Tabs {...args}>
+      <TabsList variant="solid">
+        <TabsTrigger value="compte">Compte</TabsTrigger>
+        <TabsTrigger value="mot-de-passe">Mot de passe</TabsTrigger>
+      </TabsList>
+      <TabsContent value="compte" className="p-4 border rounded-md mt-2 text-sm text-muted-foreground">
+        Paramètres du compte.
+      </TabsContent>
+      <TabsContent value="mot-de-passe" className="p-4 border rounded-md mt-2 text-sm text-muted-foreground">
+        Modifiez votre mot de passe ici.
+      </TabsContent>
+    </Tabs>
+  ),
+};
+
 export const ManyTabs: Story = {
   render: args => (
     <Tabs {...args} defaultValue="general">
