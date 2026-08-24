@@ -27,7 +27,7 @@ interface KpiCardsProps {
 }
 
 export const KpiCards = ({ stats, columns = DEFAULT_COLUMNS, isLoading, error }: KpiCardsProps): React.JSX.Element => (
-  <div className={cn("grid gap-6 md:grid-cols-2", GRID_COLUMNS_CLASSES[columns] ?? GRID_COLUMNS_CLASSES[DEFAULT_COLUMNS])}>
+  <div className={cn("grid gap-4 md:grid-cols-2", GRID_COLUMNS_CLASSES[columns] ?? GRID_COLUMNS_CLASSES[DEFAULT_COLUMNS])}>
     {stats.map(stat => (
       <KpiCard
         key={stat.titleKey}
