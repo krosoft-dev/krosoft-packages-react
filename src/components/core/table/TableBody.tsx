@@ -3,6 +3,7 @@ import { Checkbox } from "@/components/ui";
 import type { FixedColumnOffset } from "@/hooks/ui/useFixedColumns";
 import { AlertTriangleIcon, Loader2Icon } from "lucide-react";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { TableActions } from "./TableActions";
 import { getAlignmentClass, getColumnAlignment } from "./columnAlignment";
 import { ACTIONS_COLUMN_KEY, getFixedCellProps, SELECTION_COLUMN_KEY } from "./fixedColumns";
@@ -56,6 +57,7 @@ export function TableBody<T>({
   fixedColumns = {},
 }: TableBodyProps<T>): React.JSX.Element {
   const { t } = useKrosoftTranslation();
+  const navigate = useNavigate();
   const renderCellValue = (row: T, columnKey: string): React.ReactNode => {
     const columnDef = columns.find(col => col.key === columnKey);
     if (columnDef?.renderCell !== undefined) {
@@ -113,11 +115,15 @@ export function TableBody<T>({
   const isRowClickable = onRowNavigate !== undefined || onRowClick !== undefined;
 
   // La navigation prime sur onRowClick : Ctrl/Cmd + clic reproduit le comportement natif
-  // des liens en ouvrant l'URL dans un nouvel onglet, sinon elle s'ouvre dans l'onglet courant.
+  // des liens en ouvrant l'URL dans un nouvel onglet, sinon le router prend le relais.
   const handleRowClick = (row: T, event: React.MouseEvent<HTMLTableRowElement>): void => {
     if (onRowNavigate !== undefined) {
       const url = onRowNavigate(row);
-      window.open(url, event.ctrlKey || event.metaKey ? "_blank" : "_self");
+      if (event.ctrlKey || event.metaKey) {
+        window.open(url, "_blank");
+      } else {
+        void navigate(url);
+      }
     } else {
       onRowClick?.(row, event);
     }

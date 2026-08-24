@@ -3,16 +3,24 @@ import { DataTable, ColumnDef } from "@/components/core/table/DataTable";
 import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { PencilIcon, TrashIcon } from "lucide-react";
+import { MemoryRouter } from "react-router-dom";
+
+const withRouter = (Story: React.ComponentType): React.JSX.Element => (
+  <MemoryRouter>
+    <Story />
+  </MemoryRouter>
+);
 
 const meta: Meta<typeof DataTable> = {
   title: "Core/Table/DataTable",
   component: DataTable,
+  decorators: [withRouter],
   parameters: {
     layout: "padded",
     docs: {
       description: {
         component:
-          "Le composant `DataTable` permet d'afficher des données sous forme de tableau avec des fonctionnalités avancées (tri, sélection, menu d'actions).\n\n### Fonctionnalités\n\n- **Tri** : Activez le tri colonne par colonne avec `sortable: true` dans `ColumnDef`. Un icône `↕` apparaît sur les colonnes triables ; `↑`/`↓` indique la colonne et le sens actifs.\n- **Réorganisation des colonnes** : Glissez et déposez l'icône de poignée dans l'en-tête.\n- **Désactivation du glisser-déposer** : Vous pouvez figer toutes les colonnes en passant `draggableColumns={false}` au composant.\n- **Largeur des colonnes** : par défaut (`resizableColumns` non activé), `minWidth` sur un `ColumnDef` n'est qu'un plancher — la colonne s'élargit naturellement selon le contenu. Avec `resizableColumns={true}`, `minWidth` devient la largeur figée de départ et une poignée sur le bord droit de l'en-tête permet de la redimensionner manuellement.\n- **Style de colonne** : `className` sur un `ColumnDef` s'applique à l'en-tête et à chaque cellule de la colonne.\n- **Alignement** : `align: \"left\" | \"center\" | \"right\"` range les cellules **et** leur en-tête du même côté. Il est déduit automatiquement quand `className` porte déjà `text-right` ou `text-center`.\n- **Mode compact** : `dense` réduit le padding vertical des cellules (en-têtes et corps) pour un affichage compact.\n- **Navigation au clic** : `onRowNavigate` retourne l'URL de destination d'une ligne ; un clic l'ouvre dans l'onglet courant, Ctrl/Cmd + clic dans un nouvel onglet. Il est prioritaire sur `onRowClick`.\n- **Colonnes figées** : `fixed: \"left\" | \"right\"` sur un `ColumnDef` accroche la colonne à un bord ; l'en-tête est figé avec elle, au même pixel. `fixedActions` fige de la même façon la colonne des actions. Une colonne figée n'est pas déplaçable au glisser-déposer.\n- **Actions de ligne** : les entrées de `actions` s'affichent en ligne par défaut ; `overflow: true` les déplace dans le menu kebab. `visible(row)` masque une action au cas par cas, `disabled(row)` la désactive sans la masquer, `variant` contrôle son style de bouton.",
+          "Le composant `DataTable` permet d'afficher des données sous forme de tableau avec des fonctionnalités avancées (tri, sélection, menu d'actions).\n\n### Fonctionnalités\n\n- **Tri** : Activez le tri colonne par colonne avec `sortable: true` dans `ColumnDef`. Un icône `↕` apparaît sur les colonnes triables ; `↑`/`↓` indique la colonne et le sens actifs.\n- **Réorganisation des colonnes** : Glissez et déposez l'icône de poignée dans l'en-tête.\n- **Désactivation du glisser-déposer** : Vous pouvez figer toutes les colonnes en passant `draggableColumns={false}` au composant.\n- **Largeur des colonnes** : par défaut (`resizableColumns` non activé), `minWidth` sur un `ColumnDef` n'est qu'un plancher — la colonne s'élargit naturellement selon le contenu. Avec `resizableColumns={true}`, `minWidth` devient la largeur figée de départ et une poignée sur le bord droit de l'en-tête permet de la redimensionner manuellement.\n- **Style de colonne** : `className` sur un `ColumnDef` s'applique à l'en-tête et à chaque cellule de la colonne.\n- **Alignement** : `align: \"left\" | \"center\" | \"right\"` range les cellules **et** leur en-tête du même côté. Il est déduit automatiquement quand `className` porte déjà `text-right` ou `text-center`.\n- **Mode compact** : `dense` réduit le padding vertical des cellules (en-têtes et corps) pour un affichage compact.\n- **Navigation au clic** : `onRowNavigate` retourne l'URL de destination d'une ligne ; un clic navigue via le router (react-router), Ctrl/Cmd + clic ouvre l'URL dans un nouvel onglet. Il est prioritaire sur `onRowClick`.\n- **Colonnes figées** : `fixed: \"left\" | \"right\"` sur un `ColumnDef` accroche la colonne à un bord ; l'en-tête est figé avec elle, au même pixel. `fixedActions` fige de la même façon la colonne des actions. Une colonne figée n'est pas déplaçable au glisser-déposer.\n- **Actions de ligne** : les entrées de `actions` s'affichent en ligne par défaut ; `overflow: true` les déplace dans le menu kebab. `visible(row)` masque une action au cas par cas, `disabled(row)` la désactive sans la masquer, `variant` contrôle son style de bouton.",
       },
     },
   },
@@ -146,7 +154,7 @@ export const WithRowNavigate: Story = {
     docs: {
       description: {
         story:
-          "`onRowNavigate` calcule l'URL de destination de chaque ligne : un clic l'ouvre dans l'onglet courant, Ctrl/Cmd + clic dans un nouvel onglet via `window.open`. Il est prioritaire sur `onRowClick`.",
+          "`onRowNavigate` calcule l'URL de destination de chaque ligne : un clic navigue via le router (react-router), Ctrl/Cmd + clic ouvre l'URL dans un nouvel onglet via `window.open`. Il est prioritaire sur `onRowClick`.",
       },
     },
   },

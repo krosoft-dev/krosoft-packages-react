@@ -5,6 +5,13 @@ import { DataTable } from "../../../../src/components/core/table/DataTable";
 import { ACTIONS_COLUMN_KEY, SELECTION_COLUMN_KEY } from "../../../../src/components/core/table/fixedColumns";
 import type { ColumnDef } from "../../../../src/types/ColumnDef";
 
+// Le DataTable navigue via useNavigate : le mock évite d'envelopper chaque test dans un Router.
+const { navigateMock } = vi.hoisted(() => ({ navigateMock: vi.fn() }));
+vi.mock("react-router-dom", async importOriginal => ({
+  ...(await importOriginal<typeof import("react-router-dom")>()),
+  useNavigate: () => navigateMock,
+}));
+
 type Row = { id: string; name: string; email: string; role: string };
 
 const rows: Row[] = [
@@ -45,6 +52,7 @@ const stubColumnWidths = (widths: Record<string, number>): void => {
 afterEach(() => {
   cleanup();
   vi.restoreAllMocks();
+  navigateMock.mockClear();
 });
 
 describe("DataTable — alignement des colonnes", () => {
@@ -176,16 +184,15 @@ describe("DataTable — navigation au clic", () => {
     return row;
   };
 
-  it("ouvre l'URL calculée dans l'onglet courant au clic sur une ligne", () => {
-    const open = vi.spyOn(window, "open").mockImplementation(() => null);
+  it("navigue via le router avec l'URL calculée au clic sur une ligne", () => {
     const container = renderTable({ onRowNavigate: (row: Row) => `/users/${row.id}` });
 
     fireEvent.click(firstRow(container));
 
-    expect(open).toHaveBeenCalledExactlyOnceWith("/users/1", "_self");
+    expect(navigateMock).toHaveBeenCalledExactlyOnceWith("/users/1");
   });
 
-  it("ouvre l'URL dans un nouvel onglet au Ctrl+clic ou Cmd+clic", () => {
+  it("ouvre l'URL dans un nouvel onglet au Ctrl+clic ou Cmd+clic, sans passer par le router", () => {
     const open = vi.spyOn(window, "open").mockImplementation(() => null);
     const container = renderTable({ onRowNavigate: (row: Row) => `/users/${row.id}` });
 
@@ -195,16 +202,16 @@ describe("DataTable — navigation au clic", () => {
     expect(open).toHaveBeenCalledTimes(2);
     expect(open).toHaveBeenNthCalledWith(1, "/users/1", "_blank");
     expect(open).toHaveBeenNthCalledWith(2, "/users/1", "_blank");
+    expect(navigateMock).not.toHaveBeenCalled();
   });
 
   it("donne la priorité à onRowNavigate sur onRowClick", () => {
-    const open = vi.spyOn(window, "open").mockImplementation(() => null);
     const onRowClick = vi.fn();
     const container = renderTable({ onRowNavigate: (row: Row) => `/users/${row.id}`, onRowClick });
 
     fireEvent.click(firstRow(container));
 
-    expect(open).toHaveBeenCalledExactlyOnceWith("/users/1", "_self");
+    expect(navigateMock).toHaveBeenCalledExactlyOnceWith("/users/1");
     expect(onRowClick).not.toHaveBeenCalled();
   });
 
@@ -215,7 +222,6 @@ describe("DataTable — navigation au clic", () => {
   });
 
   it("ne déclenche pas la navigation au clic sur la case de sélection ou la colonne d'actions", () => {
-    const open = vi.spyOn(window, "open").mockImplementation(() => null);
     const container = renderTable({
       onRowNavigate: (row: Row) => `/users/${row.id}`,
       bulkActions: [{ label: "Supprimer", onClick: () => undefined }],
@@ -226,7 +232,7 @@ describe("DataTable — navigation au clic", () => {
       fireEvent.click(bodyCells(container, key)[0]);
     }
 
-    expect(open).not.toHaveBeenCalled();
+    expect(navigateMock).not.toHaveBeenCalled();
   });
 });
 
