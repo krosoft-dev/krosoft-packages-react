@@ -26,6 +26,7 @@ export interface TableBodyProps<T> {
   actions?: RowAction<T>[];
   columns: ColumnDef<T>[];
   bordered?: boolean;
+  dense?: boolean;
   resizableColumns?: boolean;
   // Décalages mesurés sur l'en-tête : le corps ne décide pas de ce qui est figé, il suit.
   fixedColumns?: Record<string, FixedColumnOffset>;
@@ -48,6 +49,7 @@ export function TableBody<T>({
   actions,
   columns,
   bordered = false,
+  dense = false,
   resizableColumns = false,
   fixedColumns = {},
 }: TableBodyProps<T>): React.JSX.Element {
@@ -142,7 +144,7 @@ export function TableBody<T>({
               return (
                 <td
                   key={column.key}
-                  className={`px-2 py-2 ${getAlignmentClass(getColumnAlignment(column))} ${fixed.className} ${bordered && !isLast ? "border-r border-gray-100 dark:border-gray-800" : ""} ${column.className ?? ""}`}
+                  className={`px-2 ${dense ? "py-1" : "py-3"} ${getAlignmentClass(getColumnAlignment(column))} ${fixed.className} ${bordered && !isLast ? "border-r border-gray-100 dark:border-gray-800" : ""} ${column.className ?? ""}`}
                   style={{
                     ...(resizableColumns ? { width: columnWidths[column.key] } : { minWidth: columnWidths[column.key] }),
                     ...fixed.style,

@@ -136,6 +136,39 @@ describe("DataTable — alignement des colonnes", () => {
   });
 });
 
+describe("DataTable — mode dense", () => {
+  it("resserre le padding vertical des en-têtes et des cellules en mode dense", () => {
+    const container = renderTable({ dense: true });
+
+    const header = headerCell(container, "email");
+    expect(header.className).toContain("py-1");
+    expect(header.className).not.toContain("py-2");
+    expect(bodyCells(container, "email").every(cell => cell.className.includes("py-1"))).toBe(true);
+    expect(bodyCells(container, "email").every(cell => !cell.className.includes("py-2"))).toBe(true);
+  });
+
+  it("garde le padding vertical par défaut hors mode dense", () => {
+    const container = renderTable();
+
+    expect(headerCell(container, "email").className).toContain("py-3");
+    expect(bodyCells(container, "email").every(cell => cell.className.includes("py-3"))).toBe(true);
+  });
+
+  it("laisse les cellules de sélection et d'actions déjà compactes suivre la hauteur des lignes", () => {
+    const container = renderTable({
+      dense: true,
+      bulkActions: [{ label: "Supprimer", onClick: () => undefined }],
+      actions: [{ label: "Modifier", onClick: () => undefined }],
+    });
+
+    // Elles restent en p-1 : la hauteur des lignes est dictée par les colonnes de données.
+    for (const key of [SELECTION_COLUMN_KEY, ACTIONS_COLUMN_KEY]) {
+      expect(headerCell(container, key).className).toContain("p-1");
+      expect(bodyCells(container, key).every(cell => cell.className.includes("p-1"))).toBe(true);
+    }
+  });
+});
+
 describe("DataTable — colonnes figées", () => {
   it("accroche l'en-tête au même bord et au même décalage que ses cellules", () => {
     const container = renderTable();
