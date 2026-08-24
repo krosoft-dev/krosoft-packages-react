@@ -47,6 +47,31 @@ export const TwoColumns: Story = {
   },
 };
 
+export const ThreeColumns: Story = {
+  args: {
+    columns: 3,
+    stats: [
+      { titleKey: "total.users", value: 1234, icon: Users, description: "+10% ce mois" },
+      { titleKey: "total.revenue", value: 45678, icon: TrendingUp, description: "+20.1% ce mois" },
+      { titleKey: "orders", value: 573, icon: ShoppingCart, description: "+12 depuis hier" },
+    ],
+  },
+};
+
+export const SixColumns: Story = {
+  args: {
+    columns: 6,
+    stats: [
+      { titleKey: "total.users", value: 1234, icon: Users, description: "+10% ce mois" },
+      { titleKey: "total.revenue", value: 45678, icon: TrendingUp, description: "+20.1% ce mois" },
+      { titleKey: "orders", value: 573, icon: ShoppingCart, description: "+12 depuis hier" },
+      { titleKey: "alerts", value: 7, icon: AlertCircle, description: "Nécessite une attention" },
+      { titleKey: "growth", value: 89, icon: TrendingUp, description: "+5% ce mois" },
+      { titleKey: "carts", value: 42, icon: ShoppingCart, description: "En attente" },
+    ],
+  },
+};
+
 export const Loading: Story = {
   args: {
     isLoading: true,
