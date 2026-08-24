@@ -158,8 +158,8 @@ export function TableHeader<T>({
           <th
             data-column-key={SELECTION_COLUMN_KEY}
             data-fixed-side={fixedSelection ? "left" : undefined}
-            className={`p-1 flex-shrink-0 text-center align-middle ${selectionFixed.className}`}
-            style={{ width: "32px", minWidth: "32px", maxWidth: "32px", ...selectionFixed.style }}
+            className={`p-1 text-center align-middle ${selectionFixed.className}`}
+            style={{ width: "48px", minWidth: "48px", maxWidth: "48px", ...selectionFixed.style }}
           >
             <div className="flex items-center justify-center">
               <Checkbox checked={checkboxChecked} onCheckedChange={toggleSelectAll} />
