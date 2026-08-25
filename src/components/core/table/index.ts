@@ -6,5 +6,3 @@ export * from "./TableHeader";
 export * from "./TableBody";
 export * from "./TableActions";
 export * from "./JsonTableOutput";
-export * from "./columnAlignment";
-export * from "./fixedColumns";

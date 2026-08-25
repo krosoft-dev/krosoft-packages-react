@@ -4,6 +4,8 @@ export * from "./ButtonVariantType";
 export * from "./ChartDatum";
 export * from "./ColumnDef";
 export * from "./ConfirmDialogConfig";
+export * from "./DataTableConfig";
+export * from "./DataTableMessages";
 export * from "./DateRangeValue";
 export * from "./FilterFieldConfig";
 export * from "./FilterSection";

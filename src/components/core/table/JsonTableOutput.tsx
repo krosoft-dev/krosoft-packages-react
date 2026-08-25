@@ -49,7 +49,7 @@ export const JsonTableOutput = ({ header, output }: JsonTableOutputProps): React
 
       return (
         <TableWrapper>
-          <SimpleTableHeader>
+          <SimpleTableHeader className="bg-muted/50">
             <SimpleTableRow>
               {keys.map(key => (
                 <SimpleTableHead key={key} className="font-medium">
@@ -79,7 +79,7 @@ export const JsonTableOutput = ({ header, output }: JsonTableOutputProps): React
 
       return (
         <TableWrapper>
-          <SimpleTableHeader>
+          <SimpleTableHeader className="bg-muted/50">
             <SimpleTableRow>
               <SimpleTableHead className="font-medium">Propriété</SimpleTableHead>
               <SimpleTableHead className="font-medium">Valeur</SimpleTableHead>

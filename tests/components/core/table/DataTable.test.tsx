@@ -2,7 +2,7 @@ import { cleanup, fireEvent, render } from "@testing-library/react";
 import * as React from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { DataTable } from "../../../../src/components/core/table/DataTable";
-import { ACTIONS_COLUMN_KEY, SELECTION_COLUMN_KEY } from "../../../../src/components/core/table/fixedColumns";
+import { ACTIONS_COLUMN_KEY, SELECTION_COLUMN_KEY } from "../../../../src/helpers/table.helper";
 import type { ColumnDef } from "../../../../src/types/ColumnDef";
 
 // Le DataTable navigue via useNavigate : le mock évite d'envelopper chaque test dans un Router.
@@ -120,7 +120,7 @@ describe("DataTable — alignement des colonnes", () => {
   });
 
   it("rétablit le retrait droit sur une colonne redimensionnable, pour dégager la poignée", () => {
-    const container = renderTable({ columns: [{ key: "name", label: "Name", align: "right", sortable: true }], resizableColumns: true });
+    const container = renderTable({ columns: [{ key: "name", label: "Name", align: "right", sortable: true }], config: { resizableColumns: true } });
 
     expect(headerCell(container, "name").querySelector("div")?.className).toContain("pr-2");
   });
@@ -146,7 +146,7 @@ describe("DataTable — alignement des colonnes", () => {
 
 describe("DataTable — mode dense", () => {
   it("resserre le padding vertical des en-têtes et des cellules en mode dense", () => {
-    const container = renderTable({ dense: true });
+    const container = renderTable({ config: { dense: true } });
 
     const header = headerCell(container, "email");
     expect(header.className).toContain("py-2");
@@ -164,7 +164,7 @@ describe("DataTable — mode dense", () => {
 
   it("laisse les cellules de sélection et d'actions déjà compactes suivre la hauteur des lignes", () => {
     const container = renderTable({
-      dense: true,
+      config: { dense: true },
       bulkActions: [{ label: "Supprimer", onClick: () => undefined }],
       actions: [{ label: "Modifier", onClick: () => undefined }],
     });
@@ -182,6 +182,34 @@ describe("DataTable — mode dense", () => {
       expect(headerCell(container, key).className).not.toContain("py-2");
       expect(bodyCells(container, key).every(cell => !cell.className.includes("py-2"))).toBe(true);
     }
+  });
+});
+
+describe("DataTable — messages d'état", () => {
+  it("affiche le libellé vide par défaut du package quand il n'y a aucune donnée", () => {
+    const container = renderTable({ data: [] });
+
+    expect(container.textContent).toContain("Aucun résultat");
+  });
+
+  it("affiche la clé i18n vide fournie via config.messages", () => {
+    const container = renderTable({ data: [], config: { messages: { emptyKey: "Aucun flux trouvé" } } });
+
+    expect(container.textContent).toContain("Aucun flux trouvé");
+    expect(container.textContent).not.toContain("Aucun résultat");
+  });
+
+  it("affiche le libellé de chargement par défaut du package", () => {
+    const container = renderTable({ isLoading: true });
+
+    expect(container.textContent).toContain("Chargement...");
+  });
+
+  it("affiche la clé i18n de chargement fournie via config.messages", () => {
+    const container = renderTable({ isLoading: true, config: { messages: { loadingKey: "Chargement des flux..." } } });
+
+    expect(container.textContent).toContain("Chargement des flux...");
+    expect(container.textContent).not.toContain("Chargement...");
   });
 });
 
@@ -273,7 +301,7 @@ describe("DataTable — colonnes figées", () => {
   });
 
   it("ne laisse pas déplacer une colonne figée au glisser-déposer", () => {
-    const container = renderTable({ draggableColumns: true });
+    const container = renderTable({ config: { draggableColumns: true } });
 
     expect(headerCell(container, "name").draggable).toBe(false);
     expect(headerCell(container, "email").draggable).toBe(true);
@@ -281,7 +309,7 @@ describe("DataTable — colonnes figées", () => {
 
   it("fige l'en-tête de la colonne des actions avec ses cellules quand fixedActions est actif", () => {
     const container = renderTable({
-      fixedActions: true,
+      config: { fixedActions: true },
       actions: [{ label: "Modifier", onClick: () => undefined }],
     });
 
@@ -311,7 +339,7 @@ describe("DataTable — colonnes figées", () => {
         { key: "email", label: "Email", fixed: "left" },
         { key: "role", label: "Role", fixed: "right" },
       ],
-      fixedActions: true,
+      config: { fixedActions: true },
       actions: [{ label: "Modifier", onClick: () => undefined }],
     });
 

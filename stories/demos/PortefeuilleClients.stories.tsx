@@ -246,7 +246,7 @@ const FiltersAppDemo = (): React.JSX.Element => {
         getRowId={row => row.id}
         defaultPageSize={10}
         pageSizeOptions={[5, 10, 25, 50]}
-        noDataMessage="Aucun client ne correspond aux filtres sélectionnés."
+        config={{ messages: { emptyKey: "Aucun client ne correspond aux filtres sélectionnés." } }}
       />
     </div>
   );
