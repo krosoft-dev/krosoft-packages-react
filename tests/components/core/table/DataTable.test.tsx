@@ -1,5 +1,7 @@
 import { cleanup, fireEvent, render } from "@testing-library/react";
+import { createInstance } from "i18next";
 import * as React from "react";
+import { I18nextProvider } from "react-i18next";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { DataTable } from "../../../../src/components/core/table/DataTable";
 import { ACTIONS_COLUMN_KEY, SELECTION_COLUMN_KEY } from "../../../../src/helpers/table.helper";
@@ -20,9 +22,9 @@ const rows: Row[] = [
 ];
 
 const columns: ColumnDef<Row>[] = [
-  { key: "name", label: "Name", fixed: "left" },
-  { key: "email", label: "Email" },
-  { key: "role", label: "Role", fixed: "right" },
+  { key: "name", headerKey: "Name", fixed: "left" },
+  { key: "email", headerKey: "Email" },
+  { key: "role", headerKey: "Role", fixed: "right" },
 ];
 
 const renderTable = (props: Partial<React.ComponentProps<typeof DataTable<Row>>> = {}): HTMLElement => {
@@ -57,9 +59,9 @@ afterEach(() => {
 
 describe("DataTable — alignement des colonnes", () => {
   const alignedColumns: ColumnDef<Row>[] = [
-    { key: "name", label: "Name" },
-    { key: "email", label: "Email", align: "right" },
-    { key: "role", label: "Role", className: "text-right" },
+    { key: "name", headerKey: "Name" },
+    { key: "email", headerKey: "Email", align: "right" },
+    { key: "role", headerKey: "Role", className: "text-right" },
   ];
 
   it("range le libellé du même côté que les cellules quand la colonne est alignée à droite", () => {
@@ -84,7 +86,7 @@ describe("DataTable — alignement des colonnes", () => {
   });
 
   it("colle l'icône de tri au libellé plutôt qu'au bord de la colonne", () => {
-    const container = renderTable({ columns: [{ key: "name", label: "Name", sortable: true }] });
+    const container = renderTable({ columns: [{ key: "name", headerKey: "Name", sortable: true }] });
 
     const contenu = headerCell(container, "name").querySelector("div");
     // Rien ne doit pousser l'icône à l'autre extrémité : elle qualifie le libellé, pas la colonne.
@@ -95,7 +97,7 @@ describe("DataTable — alignement des colonnes", () => {
   });
 
   it("n'ajoute aucun élément d'icône sur une colonne non triable", () => {
-    const container = renderTable({ columns: [{ key: "name", label: "Name" }] });
+    const container = renderTable({ columns: [{ key: "name", headerKey: "Name" }] });
 
     // Un conteneur d'icône vide ouvrirait une gouttière après le libellé.
     expect(headerCell(container, "name").querySelector("div")?.children.length).toBe(1);
@@ -109,7 +111,7 @@ describe("DataTable — alignement des colonnes", () => {
   });
 
   it("garde l'icône de tri à droite du libellé, même sur une colonne alignée à droite", () => {
-    const container = renderTable({ columns: [{ key: "name", label: "Name", align: "right", sortable: true }] });
+    const container = renderTable({ columns: [{ key: "name", headerKey: "Name", align: "right", sortable: true }] });
 
     const header = headerCell(container, "name");
     const contenu = header.querySelector("div");
@@ -120,13 +122,13 @@ describe("DataTable — alignement des colonnes", () => {
   });
 
   it("rétablit le retrait droit sur une colonne redimensionnable, pour dégager la poignée", () => {
-    const container = renderTable({ columns: [{ key: "name", label: "Name", align: "right", sortable: true }], config: { resizableColumns: true } });
+    const container = renderTable({ columns: [{ key: "name", headerKey: "Name", align: "right", sortable: true }], config: { resizableColumns: true } });
 
     expect(headerCell(container, "name").querySelector("div")?.className).toContain("pr-2");
   });
 
   it("centre l'en-tête d'une colonne centrée", () => {
-    const container = renderTable({ columns: [{ key: "name", label: "Name", align: "center" }] });
+    const container = renderTable({ columns: [{ key: "name", headerKey: "Name", align: "center" }] });
 
     const header = headerCell(container, "name");
     expect(header.className).toContain("text-center");
@@ -210,6 +212,31 @@ describe("DataTable — messages d'état", () => {
 
     expect(container.textContent).toContain("Chargement des flux...");
     expect(container.textContent).not.toContain("Chargement...");
+  });
+});
+
+describe("DataTable — en-têtes i18n", () => {
+  it("résout headerKey dans le namespace de l'application, et retombe sur la clé sans traduction", async () => {
+    // Instance locale passée par Provider : le test ne touche pas l'i18next global.
+    const i18nInstance = createInstance();
+    await i18nInstance.init({ lng: "fr", resources: { fr: { translation: { "columns.name": "Nom" } } } });
+
+    const { container } = render(
+      <I18nextProvider i18n={i18nInstance}>
+        <DataTable
+          data={rows}
+          columns={[
+            { key: "name", headerKey: "columns.name" },
+            { key: "email", headerKey: "Email" },
+          ]}
+          getRowId={(row: Row) => row.id}
+        />
+      </I18nextProvider>,
+    );
+
+    expect(headerCell(container, "name").textContent).toContain("Nom");
+    expect(headerCell(container, "name").textContent).not.toContain("columns.name");
+    expect(headerCell(container, "email").textContent).toContain("Email");
   });
 });
 
@@ -335,9 +362,9 @@ describe("DataTable — colonnes figées", () => {
 
     const container = renderTable({
       columns: [
-        { key: "name", label: "Name", fixed: "left" },
-        { key: "email", label: "Email", fixed: "left" },
-        { key: "role", label: "Role", fixed: "right" },
+        { key: "name", headerKey: "Name", fixed: "left" },
+        { key: "email", headerKey: "Email", fixed: "left" },
+        { key: "role", headerKey: "Role", fixed: "right" },
       ],
       config: { fixedActions: true },
       actions: [{ label: "Modifier", onClick: () => undefined }],
@@ -370,8 +397,8 @@ describe("DataTable — colonnes figées", () => {
 
 describe("DataTable — colonnes qui changent après le montage", () => {
   const baseColumns: ColumnDef<Row>[] = [
-    { key: "name", label: "Name" },
-    { key: "email", label: "Email" },
+    { key: "name", headerKey: "Name" },
+    { key: "email", headerKey: "Email" },
   ];
 
   it("affiche une colonne ajoutée après coup, à sa place dans la liste", () => {
@@ -382,9 +409,9 @@ describe("DataTable — colonnes qui changent après le montage", () => {
     // La colonne « role » arrive en position 1 (après « name »), typiquement au chargement asynchrone
     // d'une donnée qui conditionne son affichage.
     const withRole: ColumnDef<Row>[] = [
-      { key: "name", label: "Name" },
-      { key: "role", label: "Role" },
-      { key: "email", label: "Email" },
+      { key: "name", headerKey: "Name" },
+      { key: "role", headerKey: "Role" },
+      { key: "email", headerKey: "Email" },
     ];
     rerender(<DataTable data={rows} columns={withRole} getRowId={(row: Row) => row.id} />);
 
@@ -396,7 +423,7 @@ describe("DataTable — colonnes qui changent après le montage", () => {
   });
 
   it("retire une colonne disparue de la liste", () => {
-    const withRole: ColumnDef<Row>[] = [...baseColumns, { key: "role", label: "Role" }];
+    const withRole: ColumnDef<Row>[] = [...baseColumns, { key: "role", headerKey: "Role" }];
     const { container, rerender } = render(<DataTable data={rows} columns={withRole} getRowId={(row: Row) => row.id} />);
 
     expect(headerCell(container, "role").textContent).toContain("Role");
@@ -408,15 +435,15 @@ describe("DataTable — colonnes qui changent après le montage", () => {
 
   it("préserve le choix de visibilité des colonnes déjà connues quand une nouvelle apparaît", () => {
     const hideableColumns: ColumnDef<Row>[] = [
-      { key: "name", label: "Name" },
-      { key: "email", label: "Email", defaultVisible: false },
+      { key: "name", headerKey: "Name" },
+      { key: "email", headerKey: "Email", defaultVisible: false },
     ];
     const { container, rerender } = render(<DataTable data={rows} columns={hideableColumns} getRowId={(row: Row) => row.id} />);
 
     // « email » démarre masquée (defaultVisible: false).
     expect(container.querySelector('thead th[data-column-key="email"]')).toBeNull();
 
-    rerender(<DataTable data={rows} columns={[...hideableColumns, { key: "role", label: "Role" }]} getRowId={(row: Row) => row.id} />);
+    rerender(<DataTable data={rows} columns={[...hideableColumns, { key: "role", headerKey: "Role" }]} getRowId={(row: Row) => row.id} />);
 
     // La nouvelle colonne s'affiche, la masquée le reste.
     expect(headerCell(container, "role").textContent).toContain("Role");

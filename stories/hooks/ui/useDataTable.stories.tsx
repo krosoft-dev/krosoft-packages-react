@@ -22,9 +22,9 @@ const sampleData: User[] = [
 ];
 
 const columns: ColumnDef<User>[] = [
-  { key: "nom", label: "Nom", sortable: true, minWidth: 150 },
-  { key: "email", label: "Email", sortable: true, minWidth: 200 },
-  { key: "role", label: "Rôle", sortable: true, minWidth: 120 },
+  { key: "nom", headerKey: "Nom", sortable: true, minWidth: 150 },
+  { key: "email", headerKey: "Email", sortable: true, minWidth: 200 },
+  { key: "role", headerKey: "Rôle", sortable: true, minWidth: 120 },
 ];
 
 /**
@@ -69,7 +69,7 @@ const UseDataTableDemo = ({ defaultPageSize }: { defaultPageSize: number }): Rea
                 onClick={() => table.handleSort(col.key)}
               >
                 <span className="flex items-center gap-1">
-                  {col.label}
+                  {col.headerKey}
                   {table.sortColumn === col.key && <span className="text-xs">{table.sortDirection === "asc" ? "▲" : "▼"}</span>}
                 </span>
               </th>

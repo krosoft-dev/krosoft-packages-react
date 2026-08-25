@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { DataTable, ColumnDef } from "@/components/core/table/DataTable";
 import React from "react";
+import { createInstance } from "i18next";
+import { I18nextProvider } from "react-i18next";
 import { Badge } from "@/components/ui/badge";
 import { PencilIcon, TrashIcon } from "lucide-react";
 
@@ -12,7 +14,7 @@ const meta: Meta<typeof DataTable> = {
     docs: {
       description: {
         component:
-          "Le composant `DataTable` permet d'afficher des données sous forme de tableau avec des fonctionnalités avancées (tri, sélection, menu d'actions).\n\n### Fonctionnalités\n\n- **Tri** : Activez le tri colonne par colonne avec `sortable: true` dans `ColumnDef`. Un icône `↕` apparaît sur les colonnes triables ; `↑`/`↓` indique la colonne et le sens actifs.\n- **Réorganisation des colonnes** : Glissez et déposez l'icône de poignée dans l'en-tête.\n- **Désactivation du glisser-déposer** : Vous pouvez figer toutes les colonnes en passant `config={{ draggableColumns: false }}`.\n- **Largeur des colonnes** : par défaut (`config.resizableColumns` non activé), `minWidth` sur un `ColumnDef` n'est qu'un plancher — la colonne s'élargit naturellement selon le contenu. Avec `config={{ resizableColumns: true }}`, `minWidth` devient la largeur figée de départ et une poignée sur le bord droit de l'en-tête permet de la redimensionner manuellement.\n- **Style de colonne** : `className` sur un `ColumnDef` s'applique à l'en-tête et à chaque cellule de la colonne.\n- **Alignement** : `align: \"left\" | \"center\" | \"right\"` range les cellules **et** leur en-tête du même côté. Il est déduit automatiquement quand `className` porte déjà `text-right` ou `text-center`.\n- **Mode compact** : `config={{ dense: true }}` réduit le padding vertical des cellules (en-têtes et corps) pour un affichage compact.\n- **Navigation au clic** : `onRowNavigate` retourne l'URL de destination d'une ligne ; un clic navigue via le router (react-router), Ctrl/Cmd + clic ouvre l'URL dans un nouvel onglet. Il est prioritaire sur `onRowClick`.\n- **Colonnes figées** : `fixed: \"left\" | \"right\"` sur un `ColumnDef` accroche la colonne à un bord ; l'en-tête est figé avec elle, au même pixel. `config.fixedActions` fige de la même façon la colonne des actions. Une colonne figée n'est pas déplaçable au glisser-déposer.\n- **Actions de ligne** : les entrées de `actions` s'affichent en ligne par défaut ; `overflow: true` les déplace dans le menu kebab. `visible(row)` masque une action au cas par cas, `disabled(row)` la désactive sans la masquer, `variant` contrôle son style de bouton.",
+          "Le composant `DataTable` permet d'afficher des données sous forme de tableau avec des fonctionnalités avancées (tri, sélection, menu d'actions).\n\n### Fonctionnalités\n\n- **Tri** : Activez le tri colonne par colonne avec `sortable: true` dans `ColumnDef`. Un icône `↕` apparaît sur les colonnes triables ; `↑`/`↓` indique la colonne et le sens actifs.\n- **En-têtes i18n** : `headerKey` sur un `ColumnDef` est une clé i18n résolue dans le namespace de l'application (comme `labelKey`/`titleKey`). Sans traduction enregistrée — le cas de ce Storybook — la clé s'affiche telle quelle.\n- **Tri personnalisé** : `getSortValue` sur un `ColumnDef` fournit la valeur utilisée pour comparer les lignes, quand `row[key]` n'est pas directement triable (tableau, rendu formaté) ou que l'ordre naturel n'est pas celui attendu.\n- **Réorganisation des colonnes** : Glissez et déposez l'icône de poignée dans l'en-tête.\n- **Désactivation du glisser-déposer** : Vous pouvez figer toutes les colonnes en passant `config={{ draggableColumns: false }}`.\n- **Largeur des colonnes** : par défaut (`config.resizableColumns` non activé), `minWidth` sur un `ColumnDef` n'est qu'un plancher — la colonne s'élargit naturellement selon le contenu. Avec `config={{ resizableColumns: true }}`, `minWidth` devient la largeur figée de départ et une poignée sur le bord droit de l'en-tête permet de la redimensionner manuellement.\n- **Style de colonne** : `className` sur un `ColumnDef` s'applique à l'en-tête et à chaque cellule de la colonne.\n- **Alignement** : `align: \"left\" | \"center\" | \"right\"` range les cellules **et** leur en-tête du même côté. Il est déduit automatiquement quand `className` porte déjà `text-right` ou `text-center`.\n- **Mode compact** : `config={{ dense: true }}` réduit le padding vertical des cellules (en-têtes et corps) pour un affichage compact.\n- **Navigation au clic** : `onRowNavigate` retourne l'URL de destination d'une ligne ; un clic navigue via le router (react-router), Ctrl/Cmd + clic ouvre l'URL dans un nouvel onglet. Il est prioritaire sur `onRowClick`.\n- **Colonnes figées** : `fixed: \"left\" | \"right\"` sur un `ColumnDef` accroche la colonne à un bord ; l'en-tête est figé avec elle, au même pixel. `config.fixedActions` fige de la même façon la colonne des actions. Une colonne figée n'est pas déplaçable au glisser-déposer.\n- **Actions de ligne** : les entrées de `actions` s'affichent en ligne par défaut ; `overflow: true` les déplace dans le menu kebab. `visible(row)` masque une action au cas par cas, `disabled(row)` la désactive sans la masquer, `variant` contrôle son style de bouton.",
       },
     },
   },
@@ -89,31 +91,31 @@ const mockData50: UserData[] = Array.from({ length: 500 }, (_, index) => {
 const columns: ColumnDef<UserData>[] = [
   {
     key: "name",
-    label: "Name",
+    headerKey: "Name",
     minWidth: 150,
     sortable: true,
   },
   {
     key: "email",
-    label: "Email",
+    headerKey: "Email",
     minWidth: 200,
     sortable: true,
   },
   {
     key: "role",
-    label: "Role",
+    headerKey: "Role",
     minWidth: 100,
     renderCell: row => <span className="capitalize">{row.role}</span>,
   },
   {
     key: "status",
-    label: "Status",
+    headerKey: "Status",
     minWidth: 100,
     renderCell: row => <Badge variant={row.status === "active" ? "default" : "secondary"}>{row.status === "active" ? "Active" : "Inactive"}</Badge>,
   },
   {
     key: "lastLogin",
-    label: "Last Login",
+    headerKey: "Last Login",
     minWidth: 150,
     sortable: true,
     renderCell: row => new Date(row.lastLogin).toLocaleDateString(),
@@ -498,10 +500,10 @@ export const WithoutColumnVisibility: Story = {
 const wideColumns: ColumnDef<UserData>[] = [
   { ...columns[0], fixed: "left" },
   ...columns.slice(1),
-  { key: "team", label: "Team", minWidth: 160, renderCell: row => `Team ${row.id}` },
-  { key: "manager", label: "Manager", minWidth: 180, renderCell: row => `Manager ${row.id}` },
-  { key: "location", label: "Location", minWidth: 180, renderCell: () => "Paris, France" },
-  { key: "phone", label: "Phone", minWidth: 160, renderCell: () => "+33 1 23 45 67 89" },
+  { key: "team", headerKey: "Team", minWidth: 160, renderCell: row => `Team ${row.id}` },
+  { key: "manager", headerKey: "Manager", minWidth: 180, renderCell: row => `Manager ${row.id}` },
+  { key: "location", headerKey: "Location", minWidth: 180, renderCell: () => "Paris, France" },
+  { key: "phone", headerKey: "Phone", minWidth: 160, renderCell: () => "+33 1 23 45 67 89" },
 ];
 
 export const WithFixedColumns: Story = {
@@ -628,6 +630,139 @@ export const NoSortable: Story = {
     data: mockData,
     columns: columns.map(({ sortable: _sortable, ...col }) => col),
     getRowId: (row: UserData) => row.id,
+  },
+};
+
+// Instance i18next locale : passée via I18nextProvider, elle ne touche pas l'instance globale —
+// les autres stories restent sur le repli clé → libellé.
+const headersI18n = createInstance();
+void headersI18n.init({
+  lng: "fr",
+  resources: {
+    fr: {
+      translation: {
+        "users.columns.name": "Nom",
+        "users.columns.email": "Email",
+        "users.columns.role": "Rôle",
+        "users.columns.status": "Statut",
+        "users.columns.lastLogin": "Dernière connexion",
+      },
+    },
+    en: {
+      translation: {
+        "users.columns.name": "Name",
+        "users.columns.email": "Email",
+        "users.columns.role": "Role",
+        "users.columns.status": "Status",
+        "users.columns.lastLogin": "Last login",
+      },
+    },
+  },
+});
+
+const translatedColumns: ColumnDef<UserData>[] = columns.map(col => ({ ...col, headerKey: `users.columns.${col.key}` }));
+
+const TranslatedHeadersDemo = (): React.JSX.Element => {
+  const [language, setLanguage] = React.useState("fr");
+
+  const switchTo = (lang: string): void => {
+    void headersI18n.changeLanguage(lang);
+    setLanguage(lang);
+  };
+
+  return (
+    <I18nextProvider i18n={headersI18n}>
+      <div className="space-y-4">
+        <div className="flex gap-2">
+          {["fr", "en"].map(lang => (
+            <button
+              key={lang}
+              className={`px-3 py-1 rounded border text-sm ${language === lang ? "bg-primary text-primary-foreground" : "bg-background"}`}
+              onClick={() => switchTo(lang)}
+            >
+              {lang.toUpperCase()}
+            </button>
+          ))}
+        </div>
+        <DataTable data={mockData} columns={translatedColumns} getRowId={(row: UserData) => row.id} />
+      </div>
+    </I18nextProvider>
+  );
+};
+
+export const WithTranslatedHeaders: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "`headerKey` est passée à `t()` : quand l'application a enregistré des traductions, les en-têtes suivent sa langue (ici `users.columns.name` → « Nom »/« Name », via une instance i18next locale — basculez FR/EN). Le menu de visibilité des colonnes est traduit de la même façon. Les autres stories montrent le repli : sans traduction enregistrée, la clé s'affiche telle quelle.",
+      },
+    },
+  },
+  render: () => <TranslatedHeadersDemo />,
+};
+
+type ContactData = {
+  id: string;
+  name: string;
+  emails: string[];
+  priority: "low" | "medium" | "high";
+};
+
+const contacts: ContactData[] = [
+  { id: "1", name: "Alice Martin", emails: ["z.martin@perso.example.com", "alice.martin@example.com"], priority: "medium" },
+  { id: "2", name: "Bruno Lefevre", emails: ["bruno.lefevre@example.com"], priority: "high" },
+  { id: "3", name: "Chloé Dubois", emails: ["a.dubois@perso.example.com", "chloe.dubois@example.com"], priority: "low" },
+  { id: "4", name: "David Morel", emails: ["david.morel@example.com", "dmorel@perso.example.com"], priority: "high" },
+  { id: "5", name: "Emma Petit", emails: ["m.petit@perso.example.com"], priority: "medium" },
+];
+
+const PRIORITY_RANKS: Record<ContactData["priority"], number> = { low: 0, medium: 1, high: 2 };
+const PRIORITY_LABELS: Record<ContactData["priority"], string> = { low: "Faible", medium: "Moyenne", high: "Haute" };
+
+const contactColumns: ColumnDef<ContactData>[] = [
+  { key: "name", headerKey: "Nom", minWidth: 150, sortable: true },
+  {
+    key: "emails",
+    headerKey: "Emails",
+    minWidth: 280,
+    sortable: true,
+    // `row.emails` est un tableau : sans getSortValue, le tri n'aurait aucune valeur comparable.
+    getSortValue: row => row.emails[0],
+    renderCell: row => (
+      <div className="flex flex-wrap gap-1">
+        {row.emails.map(email => (
+          <Badge key={email} variant="outline">
+            {email}
+          </Badge>
+        ))}
+      </div>
+    ),
+  },
+  {
+    key: "priority",
+    headerKey: "Priorité",
+    minWidth: 110,
+    sortable: true,
+    // Tri par niveau : l'ordre alphabétique des libellés donnerait Faible < Haute < Moyenne.
+    getSortValue: row => PRIORITY_RANKS[row.priority],
+    renderCell: row => PRIORITY_LABELS[row.priority],
+  },
+];
+
+export const WithGetSortValue: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Par défaut, trier une colonne compare la valeur brute `row[column.key]`. `getSortValue` remplace cette valeur de comparaison, ligne par ligne. Deux cas où c'est indispensable : **Emails** contient un tableau — le tri se cale sur le premier email — et **Priorité** affiche un libellé dont l'ordre alphabétique (Faible < Haute < Moyenne) ne correspond pas à l'ordre métier — `getSortValue` renvoie un rang numérique à la place. Inutile quand `row[key]` est déjà la bonne valeur (string, nombre, date ISO), et sans effet en mode contrôlé (`onSortChange`), où le tri est délégué au parent.",
+      },
+    },
+  },
+  args: {
+    data: contacts,
+    columns: contactColumns,
+    getRowId: (row: ContactData) => row.id,
   },
 };
 

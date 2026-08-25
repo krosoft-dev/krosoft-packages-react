@@ -124,24 +124,24 @@ const SECTIONS: FilterSection[] = [
 ];
 
 const COLUMNS: ColumnDef<Client>[] = [
-  { key: "nom", label: "Nom", minWidth: 160, sortable: true },
-  { key: "email", label: "Email", minWidth: 200 },
+  { key: "nom", headerKey: "Nom", minWidth: 160, sortable: true },
+  { key: "email", headerKey: "Email", minWidth: 200 },
   {
     key: "statut",
-    label: "Statut",
+    headerKey: "Statut",
     minWidth: 120,
     renderCell: row => <Badge variant={STATUT_VARIANTS[row.statut]}>{STATUT_LABELS[row.statut]}</Badge>,
   },
-  { key: "ville", label: "Ville", minWidth: 120, renderCell: row => VILLE_LABELS[row.ville] ?? row.ville },
+  { key: "ville", headerKey: "Ville", minWidth: 120, renderCell: row => VILLE_LABELS[row.ville] ?? row.ville },
   {
     key: "secteur",
-    label: "Secteur",
+    headerKey: "Secteur",
     minWidth: 120,
     renderCell: row => <Badge variant="outline">{SECTEUR_LABELS[row.secteur]}</Badge>,
   },
   {
     key: "budget",
-    label: "Budget",
+    headerKey: "Budget",
     minWidth: 130,
     sortable: true,
     getSortValue: row => row.budget,
@@ -149,7 +149,7 @@ const COLUMNS: ColumnDef<Client>[] = [
   },
   {
     key: "dateCreation",
-    label: "Créé le",
+    headerKey: "Créé le",
     minWidth: 120,
     sortable: true,
     getSortValue: row => row.dateCreation,

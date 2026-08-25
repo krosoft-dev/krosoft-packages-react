@@ -2,6 +2,7 @@ import React from "react";
 import { Button } from "../../ui/button";
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "../../ui/dropdown-menu";
 import { SettingsIcon } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { ColumnDef } from "@/types/ColumnDef";
 
 export interface TableSettingsProps<T> {
@@ -11,6 +12,7 @@ export interface TableSettingsProps<T> {
 }
 
 export function TableSettings<T>({ columns, visibleColumns, toggleColumnVisibility }: TableSettingsProps<T>): React.JSX.Element {
+  const { t } = useTranslation();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -27,7 +29,7 @@ export function TableSettings<T>({ columns, visibleColumns, toggleColumnVisibili
               toggleColumnVisibility(column.key);
             }}
           >
-            {column.label}
+            {t(column.headerKey)}
           </DropdownMenuCheckboxItem>
         ))}
       </DropdownMenuContent>

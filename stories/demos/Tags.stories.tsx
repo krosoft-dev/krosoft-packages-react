@@ -123,7 +123,7 @@ const TagsPage = (): React.JSX.Element => {
   const columns: ColumnDef<Tag>[] = [
     {
       key: "nom",
-      label: "Tag",
+      headerKey: "Tag",
       minWidth: 220,
       sortable: true,
       renderCell: row => (
@@ -133,8 +133,8 @@ const TagsPage = (): React.JSX.Element => {
       ),
     },
     // `align: "right"` range les nombres ET leur en-tête du même côté.
-    { key: "documents", label: "Documents", minWidth: 130, sortable: true, align: "right" },
-    { key: "projets", label: "Projets", minWidth: 130, sortable: true, align: "right" },
+    { key: "documents", headerKey: "Documents", minWidth: 130, sortable: true, align: "right" },
+    { key: "projets", headerKey: "Projets", minWidth: 130, sortable: true, align: "right" },
   ];
 
   const actions: RowAction<Tag>[] = [

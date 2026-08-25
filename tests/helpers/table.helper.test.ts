@@ -3,7 +3,7 @@ import { ACTIONS_COLUMN_KEY, getAlignmentClass, getColumnAlignment, getFixedCell
 import type { ColumnDef } from "../../src/types";
 
 type Row = { id: string };
-const column = (over: Partial<ColumnDef<Row>> = {}): ColumnDef<Row> => ({ key: "k", label: "K", ...over });
+const column = (over: Partial<ColumnDef<Row>> = {}): ColumnDef<Row> => ({ key: "k", headerKey: "K", ...over });
 
 describe("getColumnAlignment", () => {
   it("donne la priorité à `align` explicite", () => {
