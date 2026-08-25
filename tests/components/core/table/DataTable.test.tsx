@@ -169,10 +169,18 @@ describe("DataTable — mode dense", () => {
       actions: [{ label: "Modifier", onClick: () => undefined }],
     });
 
-    // Elles restent en p-1 : la hauteur des lignes est dictée par les colonnes de données.
-    for (const key of [SELECTION_COLUMN_KEY, ACTIONS_COLUMN_KEY]) {
-      expect(headerCell(container, key).className).toContain("p-1");
-      expect(bodyCells(container, key).every(cell => cell.className.includes("p-1"))).toBe(true);
+    // Elles gardent leur padding compact propre (p-1 pour la sélection, py-1 pour les actions) :
+    // la hauteur des lignes est dictée par les colonnes de données, pas par ces cellules fixes.
+    const compactPadding: Record<string, string> = {
+      [SELECTION_COLUMN_KEY]: "p-1",
+      [ACTIONS_COLUMN_KEY]: "py-1",
+    };
+    for (const [key, padding] of Object.entries(compactPadding)) {
+      expect(headerCell(container, key).className).toContain(padding);
+      expect(bodyCells(container, key).every(cell => cell.className.includes(padding))).toBe(true);
+      // Elles ne prennent jamais le padding vertical des colonnes de données.
+      expect(headerCell(container, key).className).not.toContain("py-2");
+      expect(bodyCells(container, key).every(cell => !cell.className.includes("py-2"))).toBe(true);
     }
   });
 });
