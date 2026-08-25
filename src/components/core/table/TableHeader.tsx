@@ -175,7 +175,7 @@ export function TableHeader<T>({
           <th
             data-column-key={ACTIONS_COLUMN_KEY}
             data-fixed-side={fixedActions ? "right" : undefined}
-            className={`p-1 text-right align-middle ${actionsFixed.className}`}
+            className={`py-1 pl-1 pr-4 text-right align-middle ${actionsFixed.className}`}
             style={{ minWidth: "32px", ...actionsFixed.style }}
           >
             {settingsNode}

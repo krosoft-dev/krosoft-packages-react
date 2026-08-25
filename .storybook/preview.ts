@@ -1,10 +1,16 @@
 import type { Decorator, Preview } from "@storybook/react-vite";
 import { withThemeByClassName } from "@storybook/addon-themes";
+import React from "react";
+import { MemoryRouter } from "react-router-dom";
 import { krosoftDarkTheme } from "./theme";
 import "../src/styles/globals.css";
 import { applyTokenPreset } from "@/tokens";
 import { DEMO_THEME_OPTIONS } from "../stories/constants/themes";
 import { DEMO_TOKEN_FAMILIES } from "../stories/constants/tokens";
+
+// Un Router global : plusieurs composants publiés (DataTable, navigation…) appellent des hooks
+// react-router. Sans ce décorateur, toute story qui en rend un plante hors d'un <Router>.
+const withRouter: Decorator = Story => React.createElement(MemoryRouter, null, React.createElement(Story));
 
 // Construit depuis DEMO_THEME_OPTIONS — source de vérité unique pour les thèmes
 const themes = Object.fromEntries(DEMO_THEME_OPTIONS.filter(o => o.value !== "system").map(o => [o.label, o.value === "light" ? "" : o.value]));
@@ -53,7 +59,7 @@ const preview: Preview = {
     docs: { theme: krosoftDarkTheme },
     options: {
       // L'ordre de la barre latérale est une décision, pas l'alphabet.
-      storySort: { order: ["Introduction", "UI", "Core", "Hooks", "Démos"] },
+      storySort: { order: ["Introduction", "Design Tokens", "UI", "Core", "Hooks", "Démos"] },
     },
     controls: {
       matchers: {
@@ -65,6 +71,7 @@ const preview: Preview = {
   globalTypes: tokenGlobalTypes,
   initialGlobals: tokenInitialGlobals,
   decorators: [
+    withRouter,
     withTokens,
     withThemeByClassName({
       themes,

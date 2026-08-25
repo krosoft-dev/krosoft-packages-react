@@ -98,7 +98,7 @@ const Echantillon = ({ radius, description }: { radius: RadiusPreset; descriptio
 };
 
 const meta: Meta = {
-  title: "Démos/Radius",
+  title: "Design Tokens/Radius",
   parameters: {
     docs: {
       description: {

@@ -133,7 +133,7 @@ export const NotificationsBell = ({
           type="button"
           variant="ghost"
           size="icon"
-          className={cn("relative rounded-full", className)}
+          className={cn("relative rounded-control", className)}
           aria-label={count > 0 ? `${label} (${String(count)})` : label}
           title={label}
         >

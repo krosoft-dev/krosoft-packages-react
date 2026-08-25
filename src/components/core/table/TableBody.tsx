@@ -180,7 +180,7 @@ export function TableBody<T>({
             })}
             {hasActions ? (
               <td
-                className={`p-1 text-right align-middle whitespace-nowrap ${actionsFixed.className}`}
+                className={`py-1 pl-1 pr-4 text-right align-middle whitespace-nowrap ${actionsFixed.className}`}
                 style={{ minWidth: "32px", ...actionsFixed.style }}
                 onClick={e => {
                   e.stopPropagation();

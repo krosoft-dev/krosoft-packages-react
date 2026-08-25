@@ -1,15 +1,7 @@
 import type { TabConfig } from "@/types/TabConfig";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { FileText, Settings, Users } from "lucide-react";
-import * as React from "react";
-import { MemoryRouter } from "react-router-dom";
 import { AppTabs } from "@/components/core/tabs/AppTabs";
-
-const withRouter = (Story: React.ComponentType) => (
-  <MemoryRouter>
-    <Story />
-  </MemoryRouter>
-);
 
 const makeContent = (label: string) => (_id: string | null | undefined) => (
   <div className="p-4 rounded-lg border bg-muted/30 text-sm text-muted-foreground">
@@ -69,7 +61,6 @@ const tabsWithCount: TabConfig<SampleItem>[] = [
 const meta: Meta<typeof AppTabs> = {
   title: "Core/Tabs/AppTabs",
   component: AppTabs,
-  decorators: [withRouter],
   args: {
     tabs: basicTabs,
   },

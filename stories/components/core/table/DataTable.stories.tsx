@@ -3,18 +3,10 @@ import { DataTable, ColumnDef } from "@/components/core/table/DataTable";
 import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { PencilIcon, TrashIcon } from "lucide-react";
-import { MemoryRouter } from "react-router-dom";
-
-const withRouter = (Story: React.ComponentType): React.JSX.Element => (
-  <MemoryRouter>
-    <Story />
-  </MemoryRouter>
-);
 
 const meta: Meta<typeof DataTable> = {
   title: "Core/Table/DataTable",
   component: DataTable,
-  decorators: [withRouter],
   parameters: {
     layout: "padded",
     docs: {

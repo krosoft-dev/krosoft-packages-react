@@ -1,15 +1,7 @@
 import type { TabConfig } from "@/types/TabConfig";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { FileText, Settings, Users } from "lucide-react";
-import * as React from "react";
-import { MemoryRouter } from "react-router-dom";
 import { AppVerticalTabs } from "@/components/core/tabs/AppVerticalTabs";
-
-const withRouter = (Story: React.ComponentType) => (
-  <MemoryRouter>
-    <Story />
-  </MemoryRouter>
-);
 
 const makeContent = (label: string) => () => (
   <div className="p-4 rounded-lg border bg-muted/30 text-sm text-muted-foreground">
@@ -33,7 +25,6 @@ const tabsWithMissing: TabConfig[] = [
 const meta: Meta<typeof AppVerticalTabs> = {
   title: "Core/Tabs/AppVerticalTabs",
   component: AppVerticalTabs,
-  decorators: [withRouter],
   args: {
     tabs: basicTabs,
   },

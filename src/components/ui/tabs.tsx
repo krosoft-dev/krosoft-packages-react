@@ -11,8 +11,12 @@ const tabsListVariants = cva("text-muted-foreground [scrollbar-width:none] [&::-
     variant: {
       // Soulignement de l'onglet actif, barre pleine largeur (style par défaut historique).
       line: "inline-flex h-10 w-full items-center justify-start gap-6 overflow-x-auto overscroll-x-contain border-b border-border bg-transparent p-0",
-      // Segmenté « pilule » : conteneur arrondi sur fond atténué, onglet actif surélevé.
-      solid: "inline-flex h-10 w-fit items-center justify-center gap-1 rounded-md bg-muted p-1",
+      // Segmenté « pilule » : conteneur sur fond atténué, onglet actif surélevé. Radius piloté par le preset.
+      solid: "inline-flex h-10 w-fit items-center justify-center gap-1 rounded-control bg-muted p-1",
+      // Boutons alignés : conteneur transparent, onglet actif cerné d'une bordure (comme le bouton "outline").
+      outline: "inline-flex h-10 w-fit items-center justify-center gap-1 bg-transparent p-0",
+      // Minimal : aucun fond ni bordure, l'onglet actif se distingue par la couleur primaire (comme le bouton "ghost").
+      ghost: "inline-flex h-10 w-fit items-center justify-center gap-1 bg-transparent p-0",
     },
   },
   defaultVariants: {
@@ -21,12 +25,16 @@ const tabsListVariants = cva("text-muted-foreground [scrollbar-width:none] [&::-
 });
 
 const tabsTriggerVariants = cva(
-  "relative inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap text-sm font-medium text-muted-foreground ring-offset-background cursor-pointer transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:text-foreground [&_svg]:h-4 [&_svg]:w-4",
+  "relative inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap text-sm font-medium text-muted-foreground ring-offset-background cursor-pointer transition-colors data-[state=inactive]:hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:text-foreground [&_svg]:h-4 [&_svg]:w-4",
   {
     variants: {
       variant: {
         line: "rounded-none border-b-2 border-transparent bg-transparent px-1 pb-2.5 pt-2 -mb-px data-[state=active]:border-primary data-[state=active]:shadow-none",
-        solid: "rounded-sm px-3 py-1.5 data-[state=active]:bg-background data-[state=active]:shadow-sm",
+        solid: "rounded-control px-3 py-1.5 data-[state=active]:bg-background data-[state=active]:shadow-sm",
+        outline:
+          "rounded-control border border-transparent px-3 py-1.5 data-[state=inactive]:hover:bg-muted data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:font-medium data-[state=active]:shadow-none",
+        ghost:
+          "rounded-control px-3 py-1.5 data-[state=inactive]:hover:bg-accent data-[state=active]:text-primary data-[state=active]:font-medium data-[state=active]:shadow-none",
       },
     },
     defaultVariants: {
