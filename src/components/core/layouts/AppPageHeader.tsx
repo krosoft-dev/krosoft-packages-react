@@ -15,12 +15,13 @@ export interface AppPageHeaderProps {
   onBack?: (() => void) | null;
   renderPreActions?: () => React.JSX.Element;
   className?: string;
+  appTitle?: string;
 }
 
-export function AppPageHeader({ icon: Icon, titleKey, descriptionKey, actions, onBack, renderPreActions, className }: AppPageHeaderProps): React.JSX.Element {
+export function AppPageHeader({ icon: Icon, titleKey, descriptionKey, actions, onBack, renderPreActions, className, appTitle }: AppPageHeaderProps): React.JSX.Element {
   const { t } = useTranslation();
 
-  useDocumentTitle(t(titleKey));
+  useDocumentTitle(t(titleKey), undefined, appTitle);
 
   return (
     <div className="flex flex-row items-center justify-between gap-3 md:gap-4">

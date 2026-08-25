@@ -1,0 +1,139 @@
+import * as React from "react";
+import { Sidebar, Topbar } from "@/components/core/navbar";
+import type { SidebarGroup } from "@/components/core/navbar";
+import { SidebarProvider } from "@/providers";
+import { useSidebar } from "@/hooks";
+import { PageContext } from "@/contexts";
+import { AppPageHeader } from "./AppPageHeader";
+import { AppAction } from "@/types/AppAction";
+
+export interface AppLayoutProps {
+  // Navigation & Structure
+  groups: SidebarGroup[];
+  currentPath: string;
+  onItemClick: (path: string) => void;
+
+  // Custom nodes (Sidebar slots)
+  headerNode?: React.ReactNode;
+  footerNode?: React.ReactNode;
+
+  // Topbar custom nodes
+  actionsNode?: React.ReactNode;
+  userMenuNode?: React.ReactNode;
+
+  // Page Header options
+  icon?: React.ElementType;
+  titleKey?: string;
+  descriptionKey?: string;
+  onBack?: (() => void) | null;
+  hideTitle?: boolean;
+  className?: string;
+
+  // App Title for tab document title prefix
+  appTitle?: string;
+
+  children: React.ReactNode;
+}
+
+export function AppLayout(props: AppLayoutProps): React.JSX.Element {
+  return (
+    <SidebarProvider>
+      <AppLayoutInner {...props} />
+    </SidebarProvider>
+  );
+}
+
+function AppLayoutInner({
+  groups,
+  currentPath,
+  onItemClick,
+  headerNode,
+  footerNode,
+  actionsNode,
+  userMenuNode,
+  icon,
+  titleKey,
+  descriptionKey,
+  onBack,
+  hideTitle = false,
+  appTitle,
+  children,
+  className,
+}: AppLayoutProps): React.JSX.Element {
+  const { collapsed, isMobile, toggleSidebar } = useSidebar();
+
+  // Page context state
+  const [actions, setActions] = React.useState<AppAction[]>([]);
+  const [currentTitleKey, setCurrentTitleKey] = React.useState<string>(titleKey ?? "");
+  const [currentDescriptionKey, setCurrentDescriptionKey] = React.useState<string>(descriptionKey ?? "");
+  const [renderPreActions, setRenderPreActions] = React.useState<() => React.JSX.Element>(
+    () =>
+      function EmptyPreActions(): React.JSX.Element {
+        return <span />;
+      },
+  );
+
+  React.useLayoutEffect(() => {
+    setCurrentTitleKey(titleKey ?? "");
+    setCurrentDescriptionKey(descriptionKey ?? "");
+    setActions([]);
+    setRenderPreActions(
+      () =>
+        function EmptyPreActions(): React.JSX.Element {
+          return <span />;
+        },
+    );
+  }, [currentPath, titleKey, descriptionKey]);
+
+  const registerActions = React.useCallback((a: AppAction[]): void => {
+    setActions(a);
+  }, []);
+  const registerTitleKey = React.useCallback((k: string): void => {
+    setCurrentTitleKey(k);
+  }, []);
+  const registerDescriptionKey = React.useCallback((k: string): void => {
+    setCurrentDescriptionKey(k);
+  }, []);
+  const registerRenderPreActions = React.useCallback((fn: () => React.JSX.Element): void => {
+    setRenderPreActions(() => fn);
+  }, []);
+
+  return (
+    <div className="flex h-screen w-full bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-950 font-sans">
+      <Sidebar
+        groups={groups}
+        onItemClick={onItemClick}
+        currentPath={currentPath}
+        slots={{ header: headerNode, footer: footerNode }}
+      />
+      <div className="flex flex-col flex-1 min-w-0">
+        <Topbar
+          collapsed={collapsed}
+          isMobile={isMobile}
+          onToggleSidebar={toggleSidebar}
+          actionsNode={actionsNode}
+          userMenuNode={userMenuNode}
+        />
+        <PageContext.Provider value={{ registerActions, registerTitleKey, registerDescriptionKey, registerRenderPreActions }}>
+          <main className="flex-1 pt-24 px-4 md:px-8 overflow-y-auto">
+            <div className="space-y-6 pb-8">
+              {!hideTitle && currentTitleKey && (
+                <AppPageHeader
+                  icon={icon}
+                  titleKey={currentTitleKey}
+                  descriptionKey={currentDescriptionKey}
+                  actions={actions}
+                  onBack={onBack}
+                  renderPreActions={renderPreActions}
+                  appTitle={appTitle}
+                  className={className}
+                />
+              )}
+              {children}
+            </div>
+          </main>
+        </PageContext.Provider>
+      </div>
+    </div>
+  );
+}
