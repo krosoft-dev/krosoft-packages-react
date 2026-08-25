@@ -1,20 +1,19 @@
 import { Checkbox } from "@/components/ui";
 import type { FixedColumnOffset } from "@/hooks/ui/useFixedColumns";
 import { useKrosoftTranslation } from "@/i18n";
-import { ColumnDef, RowAction } from "@/types";
+import { ColumnDef, DataTableMessages, RowAction } from "@/types";
 import { AlertTriangleIcon, Loader2Icon } from "lucide-react";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { TableActions } from "./TableActions";
-import { getAlignmentClass, getColumnAlignment } from "./columnAlignment";
-import { ACTIONS_COLUMN_KEY, getFixedCellProps, SELECTION_COLUMN_KEY } from "./fixedColumns";
-export type { BulkAction, ColumnDef, RowAction } from "@/types";
+import { ACTIONS_COLUMN_KEY, getAlignmentClass, getColumnAlignment, getFixedCellProps, SELECTION_COLUMN_KEY } from "@/helpers/table.helper";
 
 export interface TableBodyProps<T> {
   isLoading: boolean;
   error?: string | null;
   colSpanCount: number;
-  noDataMessage?: string;
+  messages?: DataTableMessages;
   paginatedData: T[];
   getRowId: (row: T) => string;
   onRowClick?: (row: T, event: React.MouseEvent<HTMLTableRowElement>) => void;
@@ -38,7 +37,7 @@ export function TableBody<T>({
   isLoading,
   error,
   colSpanCount,
-  noDataMessage,
+  messages,
   paginatedData,
   getRowId,
   onRowClick,
@@ -57,6 +56,11 @@ export function TableBody<T>({
   fixedColumns = {},
 }: TableBodyProps<T>): React.JSX.Element {
   const { t } = useKrosoftTranslation();
+  // Les clés fournies par l'app sont résolues dans son namespace (comme labelKey/titleKey),
+  // tandis que `t` (namespace krosoft) porte les libellés par défaut du package.
+  const { t: tApp } = useTranslation();
+  const loadingText = messages?.loadingKey ? tApp(messages.loadingKey) : t("states.loading");
+  const emptyText = messages?.emptyKey ? tApp(messages.emptyKey) : t("states.noResult");
   const navigate = useNavigate();
   const renderCellValue = (row: T, columnKey: string): React.ReactNode => {
     const columnDef = columns.find(col => col.key === columnKey);
@@ -74,7 +78,7 @@ export function TableBody<T>({
           <td colSpan={colSpanCount} className="py-8 text-center">
             <div className="flex flex-col items-center justify-center gap-2 text-muted-foreground">
               <Loader2Icon className="h-6 w-6 animate-spin text-primary" />
-              <span className="text-sm">{t("states.loading")}</span>
+              <span className="text-sm">{loadingText}</span>
             </div>
           </td>
         </tr>
@@ -102,7 +106,7 @@ export function TableBody<T>({
       <tbody className="divide-y divide-border">
         <tr>
           <td colSpan={colSpanCount} className="py-8 text-center text-sm text-muted-foreground">
-            {noDataMessage ?? t("states.noResult")}
+            {emptyText}
           </td>
         </tr>
       </tbody>

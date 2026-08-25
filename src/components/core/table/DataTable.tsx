@@ -2,13 +2,12 @@ import { useDataTable } from "@/hooks/ui/useDataTable";
 import { useFixedColumns } from "@/hooks/ui/useFixedColumns";
 import React from "react";
 import { defaultPageSize as DEFAULT_PAGE_SIZE, pagesSizes as DEFAULT_PAGE_SIZE_OPTIONS } from "../../../constants/datatable";
-import type { BulkAction, ColumnDef, RowAction } from "../../../types";
 import { TableBody } from "./TableBody";
 import { TableBulkActions } from "./TableBulkActions";
 import { TableHeader } from "./TableHeader";
 import { TablePagination } from "./TablePagination";
 import { TableSettings } from "./TableSettings";
-export type { BulkAction, ColumnDef, RowAction } from "../../../types";
+import type { BulkAction, ColumnDef, DataTableConfig, RowAction } from "../../../types";
 
 export interface DataTableProps<T> {
   data: T[];
@@ -23,9 +22,8 @@ export interface DataTableProps<T> {
   columnVisibility?: boolean; // Permet d'activer/désactiver le bouton de visibilité des colonnes
   isLoading?: boolean; // Indique si les données sont en cours de chargement
   error?: string | null; // Message d'erreur affiché si le chargement des données a échoué
-  noDataMessage?: string; // Message affiché lorsque le tableau est vide
   bordered?: boolean; // Permet d'afficher les bordures des cellules (colonnes)
-  dense?: boolean; // Réduit la hauteur des lignes pour un affichage compact
+  config?: DataTableConfig<T>; // Options regroupées (dense…)
   fixedActions?: boolean; // Fige la colonne des actions (et du réglage des colonnes) sur le bord droit
   defaultPageSize?: number; // Nombre par défaut de lignes par page
   pageSizeOptions?: number[]; // Options pour le nombre de lignes par page
@@ -57,9 +55,8 @@ export function DataTable<T>({
   isLoading = false,
   error = null,
   bordered = false,
-  dense = false,
+  config,
   fixedActions = false,
-  noDataMessage,
   defaultPageSize = DEFAULT_PAGE_SIZE,
   pageSizeOptions = DEFAULT_PAGE_SIZE_OPTIONS,
   totalRows,
@@ -71,6 +68,8 @@ export function DataTable<T>({
   sortDirection: controlledSortDirection,
   onSortChange,
 }: DataTableProps<T>): React.JSX.Element {
+  const dense = config?.dense ?? false;
+
   const {
     sortColumn,
     sortDirection,
@@ -169,7 +168,7 @@ export function DataTable<T>({
               isLoading={isLoading}
               error={error}
               colSpanCount={colSpanCount}
-              noDataMessage={noDataMessage}
+              messages={config?.messages}
               paginatedData={paginatedData}
               getRowId={getRowId}
               onRowClick={onRowClick}

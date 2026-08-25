@@ -3,8 +3,7 @@ import { ColumnDef } from "@/types";
 import { ArrowDownIcon, ArrowUpDownIcon, ArrowUpIcon, GripVerticalIcon } from "lucide-react";
 import React from "react";
 import { Checkbox } from "../../ui/checkbox";
-import { getAlignmentClass, getColumnAlignment } from "./columnAlignment";
-import { ACTIONS_COLUMN_KEY, getFixedCellProps, SELECTION_COLUMN_KEY } from "./fixedColumns";
+import { ACTIONS_COLUMN_KEY, getAlignmentClass, getColumnAlignment, getFixedCellProps, SELECTION_COLUMN_KEY } from "@/helpers/table.helper";
 
 export interface TableHeaderProps<T> {
   hasBulkActions: boolean;
