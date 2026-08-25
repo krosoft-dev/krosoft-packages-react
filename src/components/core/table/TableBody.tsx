@@ -168,7 +168,7 @@ export function TableBody<T>({
               return (
                 <td
                   key={column.key}
-                  className={`${paddingX} ${dense ? "py-2" : "py-4"} ${getAlignmentClass(getColumnAlignment(column))} ${fixed.className} ${bordered && !isLast ? "border-r border-border" : ""} ${column.className ?? ""}`}
+                  className={`${paddingX} ${dense ? "py-2" : "py-4"} text-sm ${getAlignmentClass(getColumnAlignment(column))} ${fixed.className} ${bordered && !isLast ? "border-r border-border" : ""} ${column.className ?? ""}`}
                   style={{
                     ...(resizableColumns ? { width: columnWidths[column.key] } : { minWidth: columnWidths[column.key] }),
                     ...fixed.style,
