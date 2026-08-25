@@ -10,7 +10,7 @@ export interface TableBulkActionsProps {
 
 export function TableBulkActions({ selectedRows, setSelectedRows, bulkActions }: TableBulkActionsProps): React.JSX.Element {
   return (
-    <div className="bg-muted/60 dark:bg-gray-900/60 border border-border px-3 py-1.5 flex items-center justify-between rounded-surface">
+    <div className="bg-muted/60 border border-border px-3 py-1.5 flex items-center justify-between rounded-surface">
       <div className="flex items-center gap-4">
         <span className="text-sm font-medium text-primary ml-1">{selectedRows.length} sélectionné(s)</span>
         <div className="flex items-center gap-2">

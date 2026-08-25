@@ -6,8 +6,8 @@ export const SELECTION_COLUMN_KEY = "__selection__";
 export const ACTIONS_COLUMN_KEY = "__actions__";
 
 const edgeBorder: Record<"left" | "right", string> = {
-  left: "border-r border-gray-200 dark:border-gray-800",
-  right: "border-l border-gray-200 dark:border-gray-800",
+  left: "border-r border-border",
+  right: "border-l border-border",
 };
 
 export interface FixedCellProps {
@@ -32,11 +32,11 @@ export function getFixedCellProps(offset: FixedColumnOffset | undefined, variant
 
   return {
     className: [
-      "sticky bg-card dark:bg-gray-950",
+      "sticky bg-card",
       // L'en-tête doit passer au-dessus des cellules figées du corps quand elles se croisent.
       isHeader ? "z-20" : "z-10",
       "before:absolute before:inset-0 before:-z-10 before:pointer-events-none",
-      isHeader ? "before:bg-muted/50 dark:before:bg-gray-900/50" : "group-hover:before:bg-muted/50 dark:group-hover:before:bg-gray-900/50",
+      isHeader ? "before:bg-muted/50" : "group-hover:before:bg-muted/50",
       // Séparation posée du seul côté qui donne sur la zone qui défile.
       offset.isEdge ? edgeBorder[offset.side] : "",
     ]

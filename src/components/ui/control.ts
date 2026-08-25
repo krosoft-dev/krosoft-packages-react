@@ -20,5 +20,7 @@ export const controlBaseClass =
  */
 export const controlTriggerClass = cn(
   controlBaseClass,
-  "flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 [&>span]:line-clamp-1",
+  // Anneau de focus au clavier seulement (`focus-visible`) : après une sélection à la souris,
+  // Radix rend le focus au trigger, et `focus:` laisserait alors l'anneau coloré persister.
+  "flex items-center justify-between outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 [&>span]:line-clamp-1",
 );

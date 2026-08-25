@@ -65,7 +65,7 @@ export function TablePagination({
   const paginationRange = getPaginationRange(currentPage, totalPages);
 
   return (
-    <div className="px-4 py-2 border-t border-gray-200 dark:border-gray-800 flex flex-col sm:grid sm:grid-cols-3 items-center gap-2 bg-muted/50 dark:bg-gray-900/50">
+    <div className="px-4 py-2 border-t border-border flex flex-col sm:grid sm:grid-cols-3 items-center gap-2 bg-muted/50">
       <div className="text-sm text-muted-foreground justify-self-start">
         {totalItems === 0 ? "0" : `${String(startIndex + 1)} - ${String(endIndex)}`} sur {totalItems}
       </div>

@@ -95,10 +95,10 @@ export function TableHeader<T>({
         data-column-key={column.key}
         data-fixed-side={column.fixed}
         className={[
-          `${paddingX} ${dense ? "py-2" : "py-4"} text-sm font-medium text-gray-900 dark:text-gray-100 group`,
+          `${paddingX} ${dense ? "py-2" : "py-4"} text-sm font-medium text-foreground group`,
           getAlignmentClass(alignment),
           fixed.className,
-          bordered ? "border-r border-gray-200 dark:border-gray-800" : "",
+          bordered ? "border-r border-border" : "",
           isSortable ? "cursor-pointer select-none" : "",
           column.className ?? "",
         ]
@@ -134,7 +134,7 @@ export function TableHeader<T>({
             droite, un en-tête resté à gauche flotte au-dessus du vide. Le retrait droit ne
             subsiste que sur une colonne redimensionnable, où il dégage la poignée. */}
         <div className={`flex items-center gap-1 ${HEADER_JUSTIFY[alignment]} ${resizableColumns ? "pr-2" : ""}`}>
-          {draggable ? <GripVerticalIcon className="size-4 text-gray-400 cursor-grab dark:text-gray-300 shrink-0" /> : null}
+          {draggable ? <GripVerticalIcon className="size-4 text-muted-foreground cursor-grab shrink-0" /> : null}
           <span className="truncate">{column.label}</span>
           {/* Marge en plus de la gouttière : l'icône reste rattachée au libellé sans lui coller,
               alors que la poignée de glisser-déposer, elle, gagne à rester serrée contre lui. */}
@@ -156,7 +156,7 @@ export function TableHeader<T>({
   const actionsFixed = getFixedCellProps(fixedColumns[ACTIONS_COLUMN_KEY], "header");
 
   return (
-    <thead className="bg-muted/50 dark:bg-gray-900/50 border-b border-gray-200 dark:border-gray-800">
+    <thead className="bg-muted/50 border-b border-border">
       <tr>
         {hasBulkActions ? (
           <th

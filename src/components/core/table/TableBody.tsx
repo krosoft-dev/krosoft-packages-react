@@ -69,7 +69,7 @@ export function TableBody<T>({
 
   if (isLoading) {
     return (
-      <tbody className="divide-y divide-gray-200 dark:divide-gray-800">
+      <tbody className="divide-y divide-border">
         <tr>
           <td colSpan={colSpanCount} className="py-8 text-center">
             <div className="flex flex-col items-center justify-center gap-2 text-muted-foreground">
@@ -84,7 +84,7 @@ export function TableBody<T>({
 
   if (error) {
     return (
-      <tbody className="divide-y divide-gray-200 dark:divide-gray-800">
+      <tbody className="divide-y divide-border">
         <tr>
           <td colSpan={colSpanCount} className="py-8 text-center">
             <div className="flex flex-col items-center justify-center gap-2 text-destructive">
@@ -99,7 +99,7 @@ export function TableBody<T>({
 
   if (paginatedData.length === 0) {
     return (
-      <tbody className="divide-y divide-gray-200 dark:divide-gray-800">
+      <tbody className="divide-y divide-border">
         <tr>
           <td colSpan={colSpanCount} className="py-8 text-center text-sm text-muted-foreground">
             {noDataMessage ?? t("states.noResult")}
@@ -130,13 +130,13 @@ export function TableBody<T>({
   };
 
   return (
-    <tbody className="divide-y divide-gray-200 dark:divide-gray-800">
+    <tbody className="divide-y divide-border">
       {paginatedData.map(row => {
         const rowId = getRowId(row);
         return (
           <tr
             key={rowId}
-            className={`group hover:bg-muted/50 dark:hover:bg-gray-900/50 transition-colors ${isRowClickable ? "cursor-pointer" : ""}`}
+            className={`group hover:bg-muted/50 transition-colors ${isRowClickable ? "cursor-pointer" : ""}`}
             onClick={e => {
               handleRowClick(row, e);
             }}
@@ -168,7 +168,7 @@ export function TableBody<T>({
               return (
                 <td
                   key={column.key}
-                  className={`${paddingX} ${dense ? "py-2" : "py-4"} ${getAlignmentClass(getColumnAlignment(column))} ${fixed.className} ${bordered && !isLast ? "border-r border-gray-100 dark:border-gray-800" : ""} ${column.className ?? ""}`}
+                  className={`${paddingX} ${dense ? "py-2" : "py-4"} ${getAlignmentClass(getColumnAlignment(column))} ${fixed.className} ${bordered && !isLast ? "border-r border-border" : ""} ${column.className ?? ""}`}
                   style={{
                     ...(resizableColumns ? { width: columnWidths[column.key] } : { minWidth: columnWidths[column.key] }),
                     ...fixed.style,

@@ -132,7 +132,7 @@ export function DataTable<T>({
         <TableBulkActions selectedRows={selectedRows} setSelectedRows={setSelectedRows} bulkActions={bulkActions} />
       )}
 
-      <div className="w-full bg-card dark:bg-gray-950 rounded-surface border border-gray-200 dark:border-gray-800 overflow-hidden">
+      <div className="w-full bg-card rounded-surface border border-border overflow-hidden">
         <div className="overflow-x-auto">
           <table ref={tableRef} className="w-full">
             <TableHeader
