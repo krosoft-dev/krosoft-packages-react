@@ -17,14 +17,9 @@ export interface DataTableProps<T> {
   onRowNavigate?: (row: T) => string; // Retourne l'URL de destination de la ligne au clic (prioritaire sur onRowClick)
   actions?: RowAction<T>[]; // Actions personnalisées pour le menu
   bulkActions?: BulkAction[]; // Actions rapides pour la sélection multiple
-  draggableColumns?: boolean; // Permet d'activer/désactiver le drag and drop des colonnes
-  resizableColumns?: boolean; // Permet d'activer/désactiver le redimensionnement des colonnes
-  columnVisibility?: boolean; // Permet d'activer/désactiver le bouton de visibilité des colonnes
   isLoading?: boolean; // Indique si les données sont en cours de chargement
   error?: string | null; // Message d'erreur affiché si le chargement des données a échoué
-  bordered?: boolean; // Permet d'afficher les bordures des cellules (colonnes)
-  config?: DataTableConfig<T>; // Options regroupées (dense…)
-  fixedActions?: boolean; // Fige la colonne des actions (et du réglage des colonnes) sur le bord droit
+  config?: DataTableConfig<T>; // Options regroupées (dense, bordered, colonnes déplaçables/redimensionnables/visibilité, actions figées, messages…)
   defaultPageSize?: number; // Nombre par défaut de lignes par page
   pageSizeOptions?: number[]; // Options pour le nombre de lignes par page
 
@@ -49,14 +44,9 @@ export function DataTable<T>({
   onRowNavigate,
   actions,
   bulkActions,
-  draggableColumns = false,
-  resizableColumns = false,
-  columnVisibility = false,
   isLoading = false,
   error = null,
-  bordered = false,
   config,
-  fixedActions = false,
   defaultPageSize = DEFAULT_PAGE_SIZE,
   pageSizeOptions = DEFAULT_PAGE_SIZE_OPTIONS,
   totalRows,
@@ -69,6 +59,11 @@ export function DataTable<T>({
   onSortChange,
 }: DataTableProps<T>): React.JSX.Element {
   const dense = config?.dense ?? false;
+  const bordered = config?.bordered ?? false;
+  const draggableColumns = config?.draggableColumns ?? false;
+  const resizableColumns = config?.resizableColumns ?? false;
+  const columnVisibility = config?.columnVisibility ?? false;
+  const fixedActions = config?.fixedActions ?? false;
 
   const {
     sortColumn,

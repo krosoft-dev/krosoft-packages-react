@@ -120,7 +120,7 @@ describe("DataTable — alignement des colonnes", () => {
   });
 
   it("rétablit le retrait droit sur une colonne redimensionnable, pour dégager la poignée", () => {
-    const container = renderTable({ columns: [{ key: "name", label: "Name", align: "right", sortable: true }], resizableColumns: true });
+    const container = renderTable({ columns: [{ key: "name", label: "Name", align: "right", sortable: true }], config: { resizableColumns: true } });
 
     expect(headerCell(container, "name").querySelector("div")?.className).toContain("pr-2");
   });
@@ -301,7 +301,7 @@ describe("DataTable — colonnes figées", () => {
   });
 
   it("ne laisse pas déplacer une colonne figée au glisser-déposer", () => {
-    const container = renderTable({ draggableColumns: true });
+    const container = renderTable({ config: { draggableColumns: true } });
 
     expect(headerCell(container, "name").draggable).toBe(false);
     expect(headerCell(container, "email").draggable).toBe(true);
@@ -309,7 +309,7 @@ describe("DataTable — colonnes figées", () => {
 
   it("fige l'en-tête de la colonne des actions avec ses cellules quand fixedActions est actif", () => {
     const container = renderTable({
-      fixedActions: true,
+      config: { fixedActions: true },
       actions: [{ label: "Modifier", onClick: () => undefined }],
     });
 
@@ -339,7 +339,7 @@ describe("DataTable — colonnes figées", () => {
         { key: "email", label: "Email", fixed: "left" },
         { key: "role", label: "Role", fixed: "right" },
       ],
-      fixedActions: true,
+      config: { fixedActions: true },
       actions: [{ label: "Modifier", onClick: () => undefined }],
     });
 

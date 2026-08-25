@@ -12,6 +12,16 @@ import type { DataTableMessages } from "./DataTableMessages";
 export interface DataTableConfig<T> {
   /** Réduit la hauteur des lignes pour un affichage compact. */
   dense?: boolean;
+  /** Affiche les bordures entre colonnes. */
+  bordered?: boolean;
+  /** Active le glisser-déposer des colonnes. */
+  draggableColumns?: boolean;
+  /** Active le redimensionnement des colonnes. */
+  resizableColumns?: boolean;
+  /** Affiche le bouton de gestion de la visibilité des colonnes. */
+  columnVisibility?: boolean;
+  /** Fige la colonne des actions (et du réglage des colonnes) sur le bord droit. */
+  fixedActions?: boolean;
   /** Clés i18n des messages d'état (vide, chargement). */
   messages?: DataTableMessages;
 }

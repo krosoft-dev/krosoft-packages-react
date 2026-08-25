@@ -12,7 +12,7 @@ const meta: Meta<typeof DataTable> = {
     docs: {
       description: {
         component:
-          "Le composant `DataTable` permet d'afficher des données sous forme de tableau avec des fonctionnalités avancées (tri, sélection, menu d'actions).\n\n### Fonctionnalités\n\n- **Tri** : Activez le tri colonne par colonne avec `sortable: true` dans `ColumnDef`. Un icône `↕` apparaît sur les colonnes triables ; `↑`/`↓` indique la colonne et le sens actifs.\n- **Réorganisation des colonnes** : Glissez et déposez l'icône de poignée dans l'en-tête.\n- **Désactivation du glisser-déposer** : Vous pouvez figer toutes les colonnes en passant `draggableColumns={false}` au composant.\n- **Largeur des colonnes** : par défaut (`resizableColumns` non activé), `minWidth` sur un `ColumnDef` n'est qu'un plancher — la colonne s'élargit naturellement selon le contenu. Avec `resizableColumns={true}`, `minWidth` devient la largeur figée de départ et une poignée sur le bord droit de l'en-tête permet de la redimensionner manuellement.\n- **Style de colonne** : `className` sur un `ColumnDef` s'applique à l'en-tête et à chaque cellule de la colonne.\n- **Alignement** : `align: \"left\" | \"center\" | \"right\"` range les cellules **et** leur en-tête du même côté. Il est déduit automatiquement quand `className` porte déjà `text-right` ou `text-center`.\n- **Mode compact** : `config={{ dense: true }}` réduit le padding vertical des cellules (en-têtes et corps) pour un affichage compact.\n- **Navigation au clic** : `onRowNavigate` retourne l'URL de destination d'une ligne ; un clic navigue via le router (react-router), Ctrl/Cmd + clic ouvre l'URL dans un nouvel onglet. Il est prioritaire sur `onRowClick`.\n- **Colonnes figées** : `fixed: \"left\" | \"right\"` sur un `ColumnDef` accroche la colonne à un bord ; l'en-tête est figé avec elle, au même pixel. `fixedActions` fige de la même façon la colonne des actions. Une colonne figée n'est pas déplaçable au glisser-déposer.\n- **Actions de ligne** : les entrées de `actions` s'affichent en ligne par défaut ; `overflow: true` les déplace dans le menu kebab. `visible(row)` masque une action au cas par cas, `disabled(row)` la désactive sans la masquer, `variant` contrôle son style de bouton.",
+          "Le composant `DataTable` permet d'afficher des données sous forme de tableau avec des fonctionnalités avancées (tri, sélection, menu d'actions).\n\n### Fonctionnalités\n\n- **Tri** : Activez le tri colonne par colonne avec `sortable: true` dans `ColumnDef`. Un icône `↕` apparaît sur les colonnes triables ; `↑`/`↓` indique la colonne et le sens actifs.\n- **Réorganisation des colonnes** : Glissez et déposez l'icône de poignée dans l'en-tête.\n- **Désactivation du glisser-déposer** : Vous pouvez figer toutes les colonnes en passant `config={{ draggableColumns: false }}`.\n- **Largeur des colonnes** : par défaut (`config.resizableColumns` non activé), `minWidth` sur un `ColumnDef` n'est qu'un plancher — la colonne s'élargit naturellement selon le contenu. Avec `config={{ resizableColumns: true }}`, `minWidth` devient la largeur figée de départ et une poignée sur le bord droit de l'en-tête permet de la redimensionner manuellement.\n- **Style de colonne** : `className` sur un `ColumnDef` s'applique à l'en-tête et à chaque cellule de la colonne.\n- **Alignement** : `align: \"left\" | \"center\" | \"right\"` range les cellules **et** leur en-tête du même côté. Il est déduit automatiquement quand `className` porte déjà `text-right` ou `text-center`.\n- **Mode compact** : `config={{ dense: true }}` réduit le padding vertical des cellules (en-têtes et corps) pour un affichage compact.\n- **Navigation au clic** : `onRowNavigate` retourne l'URL de destination d'une ligne ; un clic navigue via le router (react-router), Ctrl/Cmd + clic ouvre l'URL dans un nouvel onglet. Il est prioritaire sur `onRowClick`.\n- **Colonnes figées** : `fixed: \"left\" | \"right\"` sur un `ColumnDef` accroche la colonne à un bord ; l'en-tête est figé avec elle, au même pixel. `config.fixedActions` fige de la même façon la colonne des actions. Une colonne figée n'est pas déplaçable au glisser-déposer.\n- **Actions de ligne** : les entrées de `actions` s'affichent en ligne par défaut ; `overflow: true` les déplace dans le menu kebab. `visible(row)` masque une action au cas par cas, `disabled(row)` la désactive sans la masquer, `variant` contrôle son style de bouton.",
       },
     },
   },
@@ -178,7 +178,7 @@ export const NonDraggable: Story = {
   parameters: {
     docs: {
       description: {
-        story: "Désactive le glisser-déposer et masque les icônes de poignée pour l'ensemble du tableau en définissant `draggableColumns: false`.",
+        story: "Désactive le glisser-déposer et masque les icônes de poignée pour l'ensemble du tableau en définissant `config={{ draggableColumns: false }}`.",
       },
     },
   },
@@ -186,7 +186,7 @@ export const NonDraggable: Story = {
     data: mockData,
     columns,
     getRowId: (row: UserData) => row.id,
-    draggableColumns: false,
+    config: { draggableColumns: false },
   },
 };
 
@@ -194,7 +194,7 @@ export const NonResizable: Story = {
   parameters: {
     docs: {
       description: {
-        story: "Désactive le redimensionnement des colonnes pour l'ensemble du tableau en définissant `resizableColumns: false`.",
+        story: "Désactive le redimensionnement des colonnes pour l'ensemble du tableau en définissant `config={{ resizableColumns: false }}`.",
       },
     },
   },
@@ -202,7 +202,7 @@ export const NonResizable: Story = {
     data: mockData,
     columns,
     getRowId: (row: UserData) => row.id,
-    resizableColumns: false,
+    config: { resizableColumns: false },
   },
 };
 
@@ -216,7 +216,7 @@ export const FlexibleColumnWidths: Story = {
     docs: {
       description: {
         story:
-          "Sans `resizableColumns` (comportement par défaut), `minWidth` sur un `ColumnDef` n'est qu'un plancher : la colonne s'élargit naturellement si le contenu le nécessite (ici l'email de John Doe dépasse largement les 200px de `minWidth`).",
+          "Sans `config.resizableColumns` (comportement par défaut), `minWidth` sur un `ColumnDef` n'est qu'un plancher : la colonne s'élargit naturellement si le contenu le nécessite (ici l'email de John Doe dépasse largement les 200px de `minWidth`).",
       },
     },
   },
@@ -232,7 +232,7 @@ export const WithResizableColumns: Story = {
     docs: {
       description: {
         story:
-          "Avec `resizableColumns: true`, `minWidth` redevient la largeur de départ figée de la colonne : le contenu qui dépasse est tronqué, et l'utilisateur peut redimensionner manuellement via la poignée sur le bord droit de l'en-tête.",
+          "Avec `config={{ resizableColumns: true }}`, `minWidth` redevient la largeur de départ figée de la colonne : le contenu qui dépasse est tronqué, et l'utilisateur peut redimensionner manuellement via la poignée sur le bord droit de l'en-tête.",
       },
     },
   },
@@ -240,7 +240,7 @@ export const WithResizableColumns: Story = {
     data: dataWithLongEmail,
     columns,
     getRowId: (row: UserData) => row.id,
-    resizableColumns: true,
+    config: { resizableColumns: true },
   },
 };
 
@@ -483,7 +483,7 @@ export const WithoutColumnVisibility: Story = {
   parameters: {
     docs: {
       description: {
-        story: "Le bouton de visibilité des colonnes est masqué via `columnVisibility={false}`.",
+        story: "Le bouton de visibilité des colonnes est masqué via `config={{ columnVisibility: false }}`.",
       },
     },
   },
@@ -491,7 +491,7 @@ export const WithoutColumnVisibility: Story = {
     data: mockData,
     columns,
     getRowId: (row: UserData) => row.id,
-    columnVisibility: false,
+    config: { columnVisibility: false },
   },
 };
 
@@ -509,7 +509,7 @@ export const WithFixedColumns: Story = {
     docs: {
       description: {
         story:
-          'Le tableau déborde en largeur : **Name** est figée à gauche (`fixed: "left"`) et la colonne des actions à droite (`fixedActions`). Faites défiler horizontalement — les en-têtes restent accrochés en même temps que leurs cellules, et la case de sélection est figée avec la première colonne.',
+          'Le tableau déborde en largeur : **Name** est figée à gauche (`fixed: "left"`) et la colonne des actions à droite (`config.fixedActions`). Faites défiler horizontalement — les en-têtes restent accrochés en même temps que leurs cellules, et la case de sélection est figée avec la première colonne.',
       },
     },
   },
@@ -517,8 +517,7 @@ export const WithFixedColumns: Story = {
     data: mockData,
     columns: wideColumns,
     getRowId: (row: UserData) => row.id,
-    fixedActions: true,
-    columnVisibility: true,
+    config: { fixedActions: true, columnVisibility: true },
     bulkActions: [
       {
         label: "Supprimer",
