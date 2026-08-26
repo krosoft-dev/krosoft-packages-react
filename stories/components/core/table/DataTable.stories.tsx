@@ -127,18 +127,19 @@ type Story = StoryObj<typeof DataTable>;
 export const Default: Story = {
   args: {
     data: mockData,
-    columns,
-    getRowId: (row: UserData) => row.id,
+    config: { columns, getRowId: (row: UserData) => row.id },
   },
 };
 
 export const WithRowClick: Story = {
   args: {
     data: mockData,
-    columns,
-    getRowId: (row: UserData) => row.id,
-    onRowClick: (row: UserData) => {
-      console.warn(`Clicked on row: ${row.name}`);
+    config: {
+      columns,
+      getRowId: (row: UserData) => row.id,
+      onRowClick: (row: UserData) => {
+        console.warn(`Clicked on row: ${row.name}`);
+      },
     },
   },
 };
@@ -154,9 +155,7 @@ export const WithRowNavigate: Story = {
   },
   args: {
     data: mockData,
-    columns,
-    getRowId: (row: UserData) => row.id,
-    onRowNavigate: (row: UserData) => `/users/${row.id}`,
+    config: { columns, getRowId: (row: UserData) => row.id, onRowNavigate: (row: UserData) => `/users/${row.id}` },
   },
 };
 
@@ -170,9 +169,7 @@ export const Dense: Story = {
   },
   args: {
     data: mockData,
-    columns,
-    getRowId: (row: UserData) => row.id,
-    config: { dense: true },
+    config: { columns, getRowId: (row: UserData) => row.id, dense: true },
   },
 };
 
@@ -186,9 +183,7 @@ export const NonDraggable: Story = {
   },
   args: {
     data: mockData,
-    columns,
-    getRowId: (row: UserData) => row.id,
-    config: { draggableColumns: false },
+    config: { columns, getRowId: (row: UserData) => row.id, draggableColumns: false },
   },
 };
 
@@ -202,9 +197,7 @@ export const NonResizable: Story = {
   },
   args: {
     data: mockData,
-    columns,
-    getRowId: (row: UserData) => row.id,
-    config: { resizableColumns: false },
+    config: { columns, getRowId: (row: UserData) => row.id, resizableColumns: false },
   },
 };
 
@@ -224,8 +217,7 @@ export const FlexibleColumnWidths: Story = {
   },
   args: {
     data: dataWithLongEmail,
-    columns,
-    getRowId: (row: UserData) => row.id,
+    config: { columns, getRowId: (row: UserData) => row.id },
   },
 };
 
@@ -240,9 +232,7 @@ export const WithResizableColumns: Story = {
   },
   args: {
     data: dataWithLongEmail,
-    columns,
-    getRowId: (row: UserData) => row.id,
-    config: { resizableColumns: true },
+    config: { columns, getRowId: (row: UserData) => row.id, resizableColumns: true },
   },
 };
 
@@ -257,8 +247,7 @@ export const WithActions: Story = {
   },
   args: {
     data: mockData,
-    columns,
-    getRowId: (row: UserData) => row.id,
+    config: { columns, getRowId: (row: UserData) => row.id },
     actions: [
       {
         label: "Modifier",
@@ -290,8 +279,7 @@ export const WithOverflowActions: Story = {
   },
   args: {
     data: mockData,
-    columns,
-    getRowId: (row: UserData) => row.id,
+    config: { columns, getRowId: (row: UserData) => row.id },
     actions: [
       {
         label: "Modifier",
@@ -331,8 +319,7 @@ export const WithConditionalActions: Story = {
   },
   args: {
     data: mockData,
-    columns,
-    getRowId: (row: UserData) => row.id,
+    config: { columns, getRowId: (row: UserData) => row.id },
     actions: [
       {
         label: "Modifier",
@@ -358,8 +345,7 @@ export const WithConditionalActions: Story = {
 export const WithBulkActions: Story = {
   args: {
     data: mockData,
-    columns,
-    getRowId: (row: UserData) => row.id,
+    config: { columns, getRowId: (row: UserData) => row.id },
     bulkActions: [
       {
         label: "Activate Selected",
@@ -383,25 +369,21 @@ export const WithBulkActions: Story = {
 export const WithNoData: Story = {
   args: {
     data: [],
-    columns,
-    getRowId: (row: UserData) => row.id,
+    config: { columns, getRowId: (row: UserData) => row.id },
   },
 };
 
 export const WithNoDataCustomMessage: Story = {
   args: {
     data: [],
-    columns,
-    getRowId: (row: UserData) => row.id,
-    config: { messages: { emptyKey: "Aucun utilisateur trouvé dans la base de données." } },
+    config: { columns, getRowId: (row: UserData) => row.id, messages: { emptyKey: "Aucun utilisateur trouvé dans la base de données." } },
   },
 };
 
 export const Loading: Story = {
   args: {
     data: [],
-    columns,
-    getRowId: (row: UserData) => row.id,
+    config: { columns, getRowId: (row: UserData) => row.id },
     isLoading: true,
   },
 };
@@ -409,8 +391,7 @@ export const Loading: Story = {
 export const WithError: Story = {
   args: {
     data: [],
-    columns,
-    getRowId: (row: UserData) => row.id,
+    config: { columns, getRowId: (row: UserData) => row.id },
     error: "Impossible de charger les données. Veuillez réessayer.",
   },
 };
@@ -418,8 +399,7 @@ export const WithError: Story = {
 export const CustomPageSize: Story = {
   args: {
     data: mockData50,
-    columns,
-    getRowId: (row: UserData) => row.id,
+    config: { columns, getRowId: (row: UserData) => row.id },
     defaultPageSize: 5,
     pageSizeOptions: [5, 10, 25, 50],
   },
@@ -436,10 +416,12 @@ export const FullFeatured: Story = {
   },
   args: {
     data: mockData,
-    columns: columns.map(col => (col.key === "lastLogin" ? { ...col, className: "text-right text-muted-foreground" } : col)),
-    getRowId: (row: UserData) => row.id,
-    onRowClick: (row: UserData) => {
-      console.warn(`Clicked on row: ${row.name}`);
+    config: {
+      columns: columns.map(col => (col.key === "lastLogin" ? { ...col, className: "text-right text-muted-foreground" } : col)),
+      getRowId: (row: UserData) => row.id,
+      onRowClick: (row: UserData) => {
+        console.warn(`Clicked on row: ${row.name}`);
+      },
     },
     actions: [
       {
@@ -491,9 +473,7 @@ export const WithoutColumnVisibility: Story = {
   },
   args: {
     data: mockData,
-    columns,
-    getRowId: (row: UserData) => row.id,
-    config: { columnVisibility: false },
+    config: { columns, getRowId: (row: UserData) => row.id, columnVisibility: false },
   },
 };
 
@@ -517,9 +497,7 @@ export const WithFixedColumns: Story = {
   },
   args: {
     data: mockData,
-    columns: wideColumns,
-    getRowId: (row: UserData) => row.id,
-    config: { fixedActions: true, columnVisibility: true },
+    config: { columns: wideColumns, getRowId: (row: UserData) => row.id, fixedActions: true, columnVisibility: true },
     bulkActions: [
       {
         label: "Supprimer",
@@ -562,8 +540,10 @@ export const WithColumnClassName: Story = {
   },
   args: {
     data: mockData,
-    columns: columns.map(col => (col.key === "lastLogin" ? { ...col, className: "text-right text-muted-foreground" } : col)),
-    getRowId: (row: UserData) => row.id,
+    config: {
+      columns: columns.map(col => (col.key === "lastLogin" ? { ...col, className: "text-right text-muted-foreground" } : col)),
+      getRowId: (row: UserData) => row.id,
+    },
   },
 };
 
@@ -578,12 +558,14 @@ export const WithAlignedColumns: Story = {
   },
   args: {
     data: mockData,
-    columns: columns.map(col => {
-      if (col.key === "lastLogin") return { ...col, align: "right" as const };
-      if (col.key === "role") return { ...col, align: "center" as const };
-      return col;
-    }),
-    getRowId: (row: UserData) => row.id,
+    config: {
+      columns: columns.map(col => {
+        if (col.key === "lastLogin") return { ...col, align: "right" as const };
+        if (col.key === "role") return { ...col, align: "center" as const };
+        return col;
+      }),
+      getRowId: (row: UserData) => row.id,
+    },
   },
 };
 
@@ -598,8 +580,7 @@ export const WithSortableColumns: Story = {
   },
   args: {
     data: mockData,
-    columns,
-    getRowId: (row: UserData) => row.id,
+    config: { columns, getRowId: (row: UserData) => row.id },
   },
 };
 
@@ -613,8 +594,7 @@ export const AllSortable: Story = {
   },
   args: {
     data: mockData,
-    columns: columns.map(col => ({ ...col, sortable: true })),
-    getRowId: (row: UserData) => row.id,
+    config: { columns: columns.map(col => ({ ...col, sortable: true })), getRowId: (row: UserData) => row.id },
   },
 };
 
@@ -628,8 +608,7 @@ export const NoSortable: Story = {
   },
   args: {
     data: mockData,
-    columns: columns.map(({ sortable: _sortable, ...col }) => col),
-    getRowId: (row: UserData) => row.id,
+    config: { columns: columns.map(({ sortable: _sortable, ...col }) => col), getRowId: (row: UserData) => row.id },
   },
 };
 
@@ -678,13 +657,15 @@ const TranslatedHeadersDemo = (): React.JSX.Element => {
             <button
               key={lang}
               className={`px-3 py-1 rounded border text-sm ${language === lang ? "bg-primary text-primary-foreground" : "bg-background"}`}
-              onClick={() => switchTo(lang)}
+              onClick={() => {
+                switchTo(lang);
+              }}
             >
               {lang.toUpperCase()}
             </button>
           ))}
         </div>
-        <DataTable data={mockData} columns={translatedColumns} getRowId={(row: UserData) => row.id} />
+        <DataTable data={mockData} config={{ columns: translatedColumns, getRowId: (row: UserData) => row.id }} />
       </div>
     </I18nextProvider>
   );
@@ -761,8 +742,7 @@ export const WithGetSortValue: Story = {
   },
   args: {
     data: contacts,
-    columns: contactColumns,
-    getRowId: (row: ContactData) => row.id,
+    config: { columns: contactColumns, getRowId: (row: ContactData) => row.id },
   },
 };
 
@@ -776,8 +756,7 @@ export const FiftyRows: Story = {
   },
   args: {
     data: mockData50.slice(0, 50),
-    columns,
-    getRowId: (row: UserData) => row.id,
+    config: { columns, getRowId: (row: UserData) => row.id },
   },
 };
 
@@ -830,8 +809,7 @@ const ServerSideDataTableWrapper = (): React.JSX.Element => {
       </div>
       <DataTable
         data={data}
-        columns={columns}
-        getRowId={(row: UserData) => row.id}
+        config={{ columns, getRowId: (row: UserData) => row.id }}
         isLoading={isLoading}
         totalRows={mockData50.length}
         currentPage={currentPage}

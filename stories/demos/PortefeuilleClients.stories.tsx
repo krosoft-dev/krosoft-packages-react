@@ -242,11 +242,9 @@ const FiltersAppDemo = (): React.JSX.Element => {
 
       <DataTable
         data={resultats}
-        columns={COLUMNS}
-        getRowId={row => row.id}
         defaultPageSize={10}
         pageSizeOptions={[5, 10, 25, 50]}
-        config={{ messages: { emptyKey: "Aucun client ne correspond aux filtres sélectionnés." } }}
+        config={{ columns: COLUMNS, getRowId: row => row.id, messages: { emptyKey: "Aucun client ne correspond aux filtres sélectionnés." } }}
       />
     </div>
   );

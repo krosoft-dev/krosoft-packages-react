@@ -1,3 +1,5 @@
+import React from "react";
+import type { ColumnDef } from "./ColumnDef";
 import type { DataTableMessages } from "./DataTableMessages";
 
 /**
@@ -5,11 +7,15 @@ import type { DataTableMessages } from "./DataTableMessages";
  *
  * Destinée à accueillir progressivement les réglages aujourd'hui passés à plat en props
  * (bordered, colonnes figées…).
- *
- * Le paramètre générique `T` est conservé dès maintenant : les prochains réglages
- * (rendu de ligne conditionnel, etc.) dépendront du type de la donnée.
  */
 export interface DataTableConfig<T> {
+  /** Définition des colonnes du tableau. */
+  columns: ColumnDef<T>[];
+  /** Identifie chaque ligne de façon unique. */
+  getRowId: (row: T) => string;
+  onRowClick?: (row: T, event: React.MouseEvent<HTMLTableRowElement>) => void;
+  /** Retourne l'URL de destination de la ligne au clic (prioritaire sur onRowClick). */
+  onRowNavigate?: (row: T) => string;
   /** Réduit la hauteur des lignes pour un affichage compact. */
   dense?: boolean;
   /** Affiche les bordures entre colonnes. */

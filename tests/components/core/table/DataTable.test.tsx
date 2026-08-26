@@ -6,6 +6,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { DataTable } from "../../../../src/components/core/table/DataTable";
 import { ACTIONS_COLUMN_KEY, SELECTION_COLUMN_KEY } from "../../../../src/helpers/table.helper";
 import type { ColumnDef } from "../../../../src/types/ColumnDef";
+import type { DataTableConfig } from "../../../../src/types/DataTableConfig";
 
 // Le DataTable navigue via useNavigate : le mock évite d'envelopper chaque test dans un Router.
 const { navigateMock } = vi.hoisted(() => ({ navigateMock: vi.fn() }));
@@ -27,8 +28,10 @@ const columns: ColumnDef<Row>[] = [
   { key: "role", headerKey: "Role", fixed: "right" },
 ];
 
-const renderTable = (props: Partial<React.ComponentProps<typeof DataTable<Row>>> = {}): HTMLElement => {
-  const { container } = render(<DataTable data={rows} columns={columns} getRowId={(row: Row) => row.id} {...props} />);
+type TableOverrides = Partial<Omit<React.ComponentProps<typeof DataTable<Row>>, "config">> & { config?: Partial<DataTableConfig<Row>> };
+
+const renderTable = ({ config, ...props }: TableOverrides = {}): HTMLElement => {
+  const { container } = render(<DataTable data={rows} config={{ columns, getRowId: (row: Row) => row.id, ...config }} {...props} />);
   return container;
 };
 
@@ -65,7 +68,7 @@ describe("DataTable — alignement des colonnes", () => {
   ];
 
   it("range le libellé du même côté que les cellules quand la colonne est alignée à droite", () => {
-    const container = renderTable({ columns: alignedColumns });
+    const container = renderTable({ config: { columns: alignedColumns } });
 
     for (const key of ["email", "role"]) {
       const header = headerCell(container, key);
@@ -78,7 +81,7 @@ describe("DataTable — alignement des colonnes", () => {
   });
 
   it("laisse l'en-tête par défaut aux colonnes alignées à gauche", () => {
-    const container = renderTable({ columns: alignedColumns });
+    const container = renderTable({ config: { columns: alignedColumns } });
 
     const header = headerCell(container, "name");
     expect(header.className).toContain("text-left");
@@ -86,7 +89,7 @@ describe("DataTable — alignement des colonnes", () => {
   });
 
   it("colle l'icône de tri au libellé plutôt qu'au bord de la colonne", () => {
-    const container = renderTable({ columns: [{ key: "name", headerKey: "Name", sortable: true }] });
+    const container = renderTable({ config: { columns: [{ key: "name", headerKey: "Name", sortable: true }] } });
 
     const contenu = headerCell(container, "name").querySelector("div");
     // Rien ne doit pousser l'icône à l'autre extrémité : elle qualifie le libellé, pas la colonne.
@@ -97,21 +100,21 @@ describe("DataTable — alignement des colonnes", () => {
   });
 
   it("n'ajoute aucun élément d'icône sur une colonne non triable", () => {
-    const container = renderTable({ columns: [{ key: "name", headerKey: "Name" }] });
+    const container = renderTable({ config: { columns: [{ key: "name", headerKey: "Name" }] } });
 
     // Un conteneur d'icône vide ouvrirait une gouttière après le libellé.
     expect(headerCell(container, "name").querySelector("div")?.children.length).toBe(1);
   });
 
   it("aligne les cellules quand l'alignement vient de align", () => {
-    const container = renderTable({ columns: alignedColumns });
+    const container = renderTable({ config: { columns: alignedColumns } });
 
     expect(bodyCells(container, "email").every(cell => cell.className.includes("text-right"))).toBe(true);
     expect(bodyCells(container, "name").every(cell => cell.className.includes("text-left"))).toBe(true);
   });
 
   it("garde l'icône de tri à droite du libellé, même sur une colonne alignée à droite", () => {
-    const container = renderTable({ columns: [{ key: "name", headerKey: "Name", align: "right", sortable: true }] });
+    const container = renderTable({ config: { columns: [{ key: "name", headerKey: "Name", align: "right", sortable: true }] } });
 
     const header = headerCell(container, "name");
     const contenu = header.querySelector("div");
@@ -122,13 +125,13 @@ describe("DataTable — alignement des colonnes", () => {
   });
 
   it("rétablit le retrait droit sur une colonne redimensionnable, pour dégager la poignée", () => {
-    const container = renderTable({ columns: [{ key: "name", headerKey: "Name", align: "right", sortable: true }], config: { resizableColumns: true } });
+    const container = renderTable({ config: { columns: [{ key: "name", headerKey: "Name", align: "right", sortable: true }], resizableColumns: true } });
 
     expect(headerCell(container, "name").querySelector("div")?.className).toContain("pr-2");
   });
 
   it("centre l'en-tête d'une colonne centrée", () => {
-    const container = renderTable({ columns: [{ key: "name", headerKey: "Name", align: "center" }] });
+    const container = renderTable({ config: { columns: [{ key: "name", headerKey: "Name", align: "center" }] } });
 
     const header = headerCell(container, "name");
     expect(header.className).toContain("text-center");
@@ -225,11 +228,13 @@ describe("DataTable — en-têtes i18n", () => {
       <I18nextProvider i18n={i18nInstance}>
         <DataTable
           data={rows}
-          columns={[
-            { key: "name", headerKey: "columns.name" },
-            { key: "email", headerKey: "Email" },
-          ]}
-          getRowId={(row: Row) => row.id}
+          config={{
+            columns: [
+              { key: "name", headerKey: "columns.name" },
+              { key: "email", headerKey: "Email" },
+            ],
+            getRowId: (row: Row) => row.id,
+          }}
         />
       </I18nextProvider>,
     );
@@ -248,7 +253,7 @@ describe("DataTable — navigation au clic", () => {
   };
 
   it("navigue via le router avec l'URL calculée au clic sur une ligne", () => {
-    const container = renderTable({ onRowNavigate: (row: Row) => `/users/${row.id}` });
+    const container = renderTable({ config: { onRowNavigate: (row: Row) => `/users/${row.id}` } });
 
     fireEvent.click(firstRow(container));
 
@@ -257,7 +262,7 @@ describe("DataTable — navigation au clic", () => {
 
   it("ouvre l'URL dans un nouvel onglet au Ctrl+clic ou Cmd+clic, sans passer par le router", () => {
     const open = vi.spyOn(window, "open").mockImplementation(() => null);
-    const container = renderTable({ onRowNavigate: (row: Row) => `/users/${row.id}` });
+    const container = renderTable({ config: { onRowNavigate: (row: Row) => `/users/${row.id}` } });
 
     fireEvent.click(firstRow(container), { ctrlKey: true });
     fireEvent.click(firstRow(container), { metaKey: true });
@@ -270,7 +275,7 @@ describe("DataTable — navigation au clic", () => {
 
   it("donne la priorité à onRowNavigate sur onRowClick", () => {
     const onRowClick = vi.fn();
-    const container = renderTable({ onRowNavigate: (row: Row) => `/users/${row.id}`, onRowClick });
+    const container = renderTable({ config: { onRowNavigate: (row: Row) => `/users/${row.id}`, onRowClick } });
 
     fireEvent.click(firstRow(container));
 
@@ -279,14 +284,14 @@ describe("DataTable — navigation au clic", () => {
   });
 
   it("affiche le curseur pointeur sur les lignes quand onRowNavigate est fourni", () => {
-    const container = renderTable({ onRowNavigate: (row: Row) => `/users/${row.id}` });
+    const container = renderTable({ config: { onRowNavigate: (row: Row) => `/users/${row.id}` } });
 
     expect(firstRow(container).className).toContain("cursor-pointer");
   });
 
   it("ne déclenche pas la navigation au clic sur la case de sélection ou la colonne d'actions", () => {
     const container = renderTable({
-      onRowNavigate: (row: Row) => `/users/${row.id}`,
+      config: { onRowNavigate: (row: Row) => `/users/${row.id}` },
       bulkActions: [{ label: "Supprimer", onClick: () => undefined }],
       actions: [{ label: "Modifier", onClick: () => undefined }],
     });
@@ -361,12 +366,14 @@ describe("DataTable — colonnes figées", () => {
     stubColumnWidths({ name: 150, email: 200, role: 100, [ACTIONS_COLUMN_KEY]: 40 });
 
     const container = renderTable({
-      columns: [
-        { key: "name", headerKey: "Name", fixed: "left" },
-        { key: "email", headerKey: "Email", fixed: "left" },
-        { key: "role", headerKey: "Role", fixed: "right" },
-      ],
-      config: { fixedActions: true },
+      config: {
+        columns: [
+          { key: "name", headerKey: "Name", fixed: "left" },
+          { key: "email", headerKey: "Email", fixed: "left" },
+          { key: "role", headerKey: "Role", fixed: "right" },
+        ],
+        fixedActions: true,
+      },
       actions: [{ label: "Modifier", onClick: () => undefined }],
     });
 
@@ -385,8 +392,7 @@ describe("DataTable — colonnes figées", () => {
     const { container } = render(
       <DataTable
         data={rows}
-        columns={columns.map(column => (column.fixed === "left" ? { ...column, fixed: undefined } : column))}
-        getRowId={(row: Row) => row.id}
+        config={{ columns: columns.map(column => (column.fixed === "left" ? { ...column, fixed: undefined } : column)), getRowId: (row: Row) => row.id }}
         bulkActions={[{ label: "Supprimer", onClick: () => undefined }]}
       />,
     );
@@ -402,7 +408,7 @@ describe("DataTable — colonnes qui changent après le montage", () => {
   ];
 
   it("affiche une colonne ajoutée après coup, à sa place dans la liste", () => {
-    const { container, rerender } = render(<DataTable data={rows} columns={baseColumns} getRowId={(row: Row) => row.id} />);
+    const { container, rerender } = render(<DataTable data={rows} config={{ columns: baseColumns, getRowId: (row: Row) => row.id }} />);
 
     expect(container.querySelector('thead th[data-column-key="role"]')).toBeNull();
 
@@ -413,7 +419,7 @@ describe("DataTable — colonnes qui changent après le montage", () => {
       { key: "role", headerKey: "Role" },
       { key: "email", headerKey: "Email" },
     ];
-    rerender(<DataTable data={rows} columns={withRole} getRowId={(row: Row) => row.id} />);
+    rerender(<DataTable data={rows} config={{ columns: withRole, getRowId: (row: Row) => row.id }} />);
 
     expect(headerCell(container, "role").textContent).toContain("Role");
     expect(bodyCells(container, "role").map(cell => cell.textContent)).toEqual(["admin", "user"]);
@@ -424,11 +430,11 @@ describe("DataTable — colonnes qui changent après le montage", () => {
 
   it("retire une colonne disparue de la liste", () => {
     const withRole: ColumnDef<Row>[] = [...baseColumns, { key: "role", headerKey: "Role" }];
-    const { container, rerender } = render(<DataTable data={rows} columns={withRole} getRowId={(row: Row) => row.id} />);
+    const { container, rerender } = render(<DataTable data={rows} config={{ columns: withRole, getRowId: (row: Row) => row.id }} />);
 
     expect(headerCell(container, "role").textContent).toContain("Role");
 
-    rerender(<DataTable data={rows} columns={baseColumns} getRowId={(row: Row) => row.id} />);
+    rerender(<DataTable data={rows} config={{ columns: baseColumns, getRowId: (row: Row) => row.id }} />);
 
     expect(container.querySelector('thead th[data-column-key="role"]')).toBeNull();
   });
@@ -438,12 +444,12 @@ describe("DataTable — colonnes qui changent après le montage", () => {
       { key: "name", headerKey: "Name" },
       { key: "email", headerKey: "Email", defaultVisible: false },
     ];
-    const { container, rerender } = render(<DataTable data={rows} columns={hideableColumns} getRowId={(row: Row) => row.id} />);
+    const { container, rerender } = render(<DataTable data={rows} config={{ columns: hideableColumns, getRowId: (row: Row) => row.id }} />);
 
     // « email » démarre masquée (defaultVisible: false).
     expect(container.querySelector('thead th[data-column-key="email"]')).toBeNull();
 
-    rerender(<DataTable data={rows} columns={[...hideableColumns, { key: "role", headerKey: "Role" }]} getRowId={(row: Row) => row.id} />);
+    rerender(<DataTable data={rows} config={{ columns: [...hideableColumns, { key: "role", headerKey: "Role" }], getRowId: (row: Row) => row.id }} />);
 
     // La nouvelle colonne s'affiche, la masquée le reste.
     expect(headerCell(container, "role").textContent).toContain("Role");
