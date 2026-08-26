@@ -1,5 +1,5 @@
 import { cn } from "@/helpers/tailwind.helper";
-import { useTranslation } from "react-i18next";
+import { useKrosoftTranslation } from "@/i18n";
 
 export interface AppTitleProps {
   titleKey: string;
@@ -8,7 +8,7 @@ export interface AppTitleProps {
 }
 
 export function AppTitle({ titleKey, descriptionKey, isSubTitle }: AppTitleProps): React.JSX.Element {
-  const { t } = useTranslation();
+  const { t } = useKrosoftTranslation();
 
   return (
     <div className="flex min-w-0 flex-col gap-1">

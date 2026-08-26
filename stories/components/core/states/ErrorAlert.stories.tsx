@@ -15,7 +15,7 @@ type Story = StoryObj<typeof ErrorAlert>;
 export const Simple: Story = {
   args: {
     error: {
-      code: "NOT_FOUND",
+      code: 404,
       message: "La ressource demandée est introuvable.",
       errors: [],
     },
@@ -25,7 +25,7 @@ export const Simple: Story = {
 export const WithValidationErrors: Story = {
   args: {
     error: {
-      code: "VALIDATION_ERROR",
+      code: 400,
       message: "Les données soumises sont invalides.",
       errors: ["Le champ 'Nom' est obligatoire.", "L'adresse e-mail est invalide.", "Le mot de passe doit contenir au moins 8 caractères."],
     },

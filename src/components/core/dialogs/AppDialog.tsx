@@ -1,7 +1,7 @@
 import { Alert, AlertDescription, Button } from "@/components/ui";
 import { AlertCircleIcon } from "lucide-react";
 import React from "react";
-import { useTranslation } from "react-i18next";
+import { useKrosoftTranslation } from "@/i18n";
 import { Progress } from "../../ui/progress";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../../ui/dialog";
 
@@ -34,7 +34,7 @@ interface AppDialogProps {
 }
 
 export function AppDialog({ open, onOpenChange, config, isLoading, error, children }: AppDialogProps): React.ReactElement {
-  const { t } = useTranslation();
+  const { t } = useKrosoftTranslation();
   const { title, description, icon: Icon, maxWidth = "sm:max-w-xl", actions } = config;
 
   return (

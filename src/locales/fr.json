@@ -66,7 +66,9 @@
   },
   "table": {
     "previousPage": "Page précédente",
-    "nextPage": "Page suivante"
+    "nextPage": "Page suivante",
+    "selectedCount": "{{count}} sélectionné(s)",
+    "clearSelection": "Désélectionner"
   },
   "sidebar": {
     "menu": "Menu de navigation",

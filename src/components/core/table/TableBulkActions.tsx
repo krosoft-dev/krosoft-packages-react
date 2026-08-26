@@ -1,5 +1,6 @@
 import React from "react";
 import { Button } from "../../ui/button";
+import { useKrosoftTranslation } from "@/i18n";
 import { BulkAction } from "@/types/BulkAction";
 
 export interface TableBulkActionsProps {
@@ -9,10 +10,11 @@ export interface TableBulkActionsProps {
 }
 
 export function TableBulkActions({ selectedRows, setSelectedRows, bulkActions }: TableBulkActionsProps): React.JSX.Element {
+  const { t } = useKrosoftTranslation();
   return (
     <div className="bg-muted/60 border border-border px-3 py-1.5 flex items-center justify-between rounded-surface">
       <div className="flex items-center gap-4">
-        <span className="text-sm font-medium text-primary ml-1">{selectedRows.length} sélectionné(s)</span>
+        <span className="text-sm font-medium text-primary ml-1">{t("table.selectedCount", { count: selectedRows.length })}</span>
         <div className="flex items-center gap-2">
           {bulkActions.map((action, i) => {
             const Icon = action.icon;
@@ -33,7 +35,7 @@ export function TableBulkActions({ selectedRows, setSelectedRows, bulkActions }:
                     <Icon className="h-3.5 w-3.5" />
                   </span>
                 )}
-                {action.label}
+                {t(action.labelKey)}
               </Button>
             );
           })}
@@ -47,7 +49,7 @@ export function TableBulkActions({ selectedRows, setSelectedRows, bulkActions }:
         }}
         className="text-xs text-muted-foreground hover:text-foreground h-7 px-2"
       >
-        Désélectionner
+        {t("table.clearSelection")}
       </Button>
     </div>
   );

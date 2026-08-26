@@ -2,7 +2,7 @@ import type { FixedColumnOffset } from "@/hooks/ui/useFixedColumns";
 import { ColumnDef } from "@/types";
 import { ArrowDownIcon, ArrowUpDownIcon, ArrowUpIcon, GripVerticalIcon } from "lucide-react";
 import React from "react";
-import { useTranslation } from "react-i18next";
+import { useKrosoftTranslation } from "@/i18n";
 import { Checkbox } from "../../ui/checkbox";
 import { ACTIONS_COLUMN_KEY, getAlignmentClass, getColumnAlignment, getFixedCellProps, SELECTION_COLUMN_KEY } from "@/helpers/table.helper";
 
@@ -61,7 +61,7 @@ export function TableHeader<T>({
   fixedSelection = false,
   fixedActions = false,
 }: TableHeaderProps<T>): React.JSX.Element {
-  const { t } = useTranslation();
+  const { t } = useKrosoftTranslation();
   let checkboxChecked: boolean | "indeterminate" = false;
   if (selectedRows.length === totalItems && totalItems > 0) {
     checkboxChecked = true;

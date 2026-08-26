@@ -7,17 +7,13 @@ import { TableBulkActions } from "./TableBulkActions";
 import { TableHeader } from "./TableHeader";
 import { TablePagination } from "./TablePagination";
 import { TableSettings } from "./TableSettings";
-import type { BulkAction, DataTableConfig, RowAction } from "../../../types";
+import type { DataTableConfig } from "../../../types";
 
 export interface DataTableProps<T> {
   data: T[];
-  actions?: RowAction<T>[]; // Actions personnalisées pour le menu
-  bulkActions?: BulkAction[]; // Actions rapides pour la sélection multiple
   isLoading?: boolean; // Indique si les données sont en cours de chargement
   error?: string | null; // Message d'erreur affiché si le chargement des données a échoué
-  config: DataTableConfig<T>; // Colonnes, identification/navigation des lignes et options regroupées (dense, bordered, visibilité, messages…)
-  defaultPageSize?: number; // Nombre par défaut de lignes par page
-  pageSizeOptions?: number[]; // Options pour le nombre de lignes par page
+  config: DataTableConfig<T>; // Colonnes, identification/navigation des lignes, actions, pagination et options regroupées
 
   // Server-side pagination
   totalRows?: number;
@@ -34,13 +30,9 @@ export interface DataTableProps<T> {
 
 export function DataTable<T>({
   data,
-  actions,
-  bulkActions,
   isLoading = false,
   error = null,
   config,
-  defaultPageSize = DEFAULT_PAGE_SIZE,
-  pageSizeOptions = DEFAULT_PAGE_SIZE_OPTIONS,
   totalRows,
   currentPage,
   pageSize: controlledPageSize,
@@ -50,7 +42,9 @@ export function DataTable<T>({
   sortDirection: controlledSortDirection,
   onSortChange,
 }: DataTableProps<T>): React.JSX.Element {
-  const { columns, getRowId, onRowClick, onRowNavigate } = config;
+  const { columns, getRowId, onRowClick, onRowNavigate, actions, bulkActions } = config;
+  const defaultPageSize = config.defaultPageSize ?? DEFAULT_PAGE_SIZE;
+  const pageSizeOptions = config.pageSizeOptions ?? DEFAULT_PAGE_SIZE_OPTIONS;
   const dense = config.dense ?? false;
   const bordered = config.bordered ?? false;
   const draggableColumns = config.draggableColumns ?? false;

@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { DataTable, ColumnDef } from "@/components/core/table/DataTable";
+import { DataTable } from "@/components/core/table/DataTable";
+import type { ColumnDef } from "@/types";
 import React from "react";
 import { createInstance } from "i18next";
 import { I18nextProvider } from "react-i18next";
@@ -14,7 +15,7 @@ const meta: Meta<typeof DataTable> = {
     docs: {
       description: {
         component:
-          "Le composant `DataTable` permet d'afficher des données sous forme de tableau avec des fonctionnalités avancées (tri, sélection, menu d'actions).\n\n### Fonctionnalités\n\n- **Tri** : Activez le tri colonne par colonne avec `sortable: true` dans `ColumnDef`. Un icône `↕` apparaît sur les colonnes triables ; `↑`/`↓` indique la colonne et le sens actifs.\n- **En-têtes i18n** : `headerKey` sur un `ColumnDef` est une clé i18n résolue dans le namespace de l'application (comme `labelKey`/`titleKey`). Sans traduction enregistrée — le cas de ce Storybook — la clé s'affiche telle quelle.\n- **Tri personnalisé** : `getSortValue` sur un `ColumnDef` fournit la valeur utilisée pour comparer les lignes, quand `row[key]` n'est pas directement triable (tableau, rendu formaté) ou que l'ordre naturel n'est pas celui attendu.\n- **Réorganisation des colonnes** : Glissez et déposez l'icône de poignée dans l'en-tête.\n- **Désactivation du glisser-déposer** : Vous pouvez figer toutes les colonnes en passant `config={{ draggableColumns: false }}`.\n- **Largeur des colonnes** : par défaut (`config.resizableColumns` non activé), `minWidth` sur un `ColumnDef` n'est qu'un plancher — la colonne s'élargit naturellement selon le contenu. Avec `config={{ resizableColumns: true }}`, `minWidth` devient la largeur figée de départ et une poignée sur le bord droit de l'en-tête permet de la redimensionner manuellement.\n- **Style de colonne** : `className` sur un `ColumnDef` s'applique à l'en-tête et à chaque cellule de la colonne.\n- **Alignement** : `align: \"left\" | \"center\" | \"right\"` range les cellules **et** leur en-tête du même côté. Il est déduit automatiquement quand `className` porte déjà `text-right` ou `text-center`.\n- **Mode compact** : `config={{ dense: true }}` réduit le padding vertical des cellules (en-têtes et corps) pour un affichage compact.\n- **Navigation au clic** : `onRowNavigate` retourne l'URL de destination d'une ligne ; un clic navigue via le router (react-router), Ctrl/Cmd + clic ouvre l'URL dans un nouvel onglet. Il est prioritaire sur `onRowClick`.\n- **Colonnes figées** : `fixed: \"left\" | \"right\"` sur un `ColumnDef` accroche la colonne à un bord ; l'en-tête est figé avec elle, au même pixel. `config.fixedActions` fige de la même façon la colonne des actions. Une colonne figée n'est pas déplaçable au glisser-déposer.\n- **Actions de ligne** : les entrées de `actions` s'affichent en ligne par défaut ; `overflow: true` les déplace dans le menu kebab. `visible(row)` masque une action au cas par cas, `disabled(row)` la désactive sans la masquer, `variant` contrôle son style de bouton.",
+          "Le composant `DataTable` permet d'afficher des données sous forme de tableau avec des fonctionnalités avancées (tri, sélection, menu d'actions).\n\n### Fonctionnalités\n\n- **Tri** : Activez le tri colonne par colonne avec `sortable: true` dans `ColumnDef`. Un icône `↕` apparaît sur les colonnes triables ; `↑`/`↓` indique la colonne et le sens actifs.\n- **En-têtes i18n** : `headerKey` sur un `ColumnDef` est une clé i18n résolue dans le namespace de l'application (comme `labelKey`/`titleKey`). Sans traduction enregistrée — le cas de ce Storybook — la clé s'affiche telle quelle.\n- **Tri personnalisé** : `getSortValue` sur un `ColumnDef` fournit la valeur utilisée pour comparer les lignes, quand `row[key]` n'est pas directement triable (tableau, rendu formaté) ou que l'ordre naturel n'est pas celui attendu.\n- **Réorganisation des colonnes** : Glissez et déposez l'icône de poignée dans l'en-tête.\n- **Désactivation du glisser-déposer** : Vous pouvez figer toutes les colonnes en passant `config={{ draggableColumns: false }}`.\n- **Largeur des colonnes** : par défaut (`config.resizableColumns` non activé), `minWidth` sur un `ColumnDef` n'est qu'un plancher — la colonne s'élargit naturellement selon le contenu. Avec `config={{ resizableColumns: true }}`, `minWidth` devient la largeur figée de départ et une poignée sur le bord droit de l'en-tête permet de la redimensionner manuellement.\n- **Style de colonne** : `className` sur un `ColumnDef` s'applique à l'en-tête et à chaque cellule de la colonne.\n- **Alignement** : `align: \"left\" | \"center\" | \"right\"` range les cellules **et** leur en-tête du même côté. Il est déduit automatiquement quand `className` porte déjà `text-right` ou `text-center`.\n- **Mode compact** : `config={{ dense: true }}` réduit le padding vertical des cellules (en-têtes et corps) pour un affichage compact.\n- **Navigation au clic** : `onRowNavigate` retourne l'URL de destination d'une ligne ; un clic navigue via le router (react-router), Ctrl/Cmd + clic ouvre l'URL dans un nouvel onglet. Il est prioritaire sur `onRowClick`.\n- **Colonnes figées** : `fixed: \"left\" | \"right\"` sur un `ColumnDef` accroche la colonne à un bord ; l'en-tête est figé avec elle, au même pixel. `config.fixedActions` fige de la même façon la colonne des actions. Une colonne figée n'est pas déplaçable au glisser-déposer.\n- **Actions de ligne** : les entrées de `config.actions` (libellé `labelKey`, clé i18n résolue comme `headerKey`) s'affichent en ligne par défaut ; `overflow: true` les déplace dans le menu kebab. `visible(row)` masque une action au cas par cas, `disabled(row)` la désactive sans la masquer, `variant` contrôle son style de bouton.",
       },
     },
   },
@@ -247,24 +248,27 @@ export const WithActions: Story = {
   },
   args: {
     data: mockData,
-    config: { columns, getRowId: (row: UserData) => row.id },
-    actions: [
-      {
-        label: "Modifier",
-        icon: PencilIcon,
-        onClick: (row: UserData): void => {
-          console.warn(`Edit row: ${row.name}`);
+    config: {
+      columns,
+      getRowId: (row: UserData) => row.id,
+      actions: [
+        {
+          labelKey: "Modifier",
+          icon: PencilIcon,
+          onClick: (row: UserData): void => {
+            console.warn(`Edit row: ${row.name}`);
+          },
         },
-      },
-      {
-        label: "Supprimer",
-        icon: TrashIcon,
-        variant: "destructive",
-        onClick: (row: UserData): void => {
-          console.warn(`Delete row: ${row.name}`);
+        {
+          labelKey: "Supprimer",
+          icon: TrashIcon,
+          variant: "destructive",
+          onClick: (row: UserData): void => {
+            console.warn(`Delete row: ${row.name}`);
+          },
         },
-      },
-    ],
+      ],
+    },
   },
 };
 
@@ -279,32 +283,35 @@ export const WithOverflowActions: Story = {
   },
   args: {
     data: mockData,
-    config: { columns, getRowId: (row: UserData) => row.id },
-    actions: [
-      {
-        label: "Modifier",
-        icon: PencilIcon,
-        onClick: (row: UserData): void => {
-          console.warn(`Edit row: ${row.name}`);
+    config: {
+      columns,
+      getRowId: (row: UserData) => row.id,
+      actions: [
+        {
+          labelKey: "Modifier",
+          icon: PencilIcon,
+          onClick: (row: UserData): void => {
+            console.warn(`Edit row: ${row.name}`);
+          },
         },
-      },
-      {
-        label: "Dupliquer",
-        onClick: (row: UserData): void => {
-          console.warn(`Duplicate row: ${row.name}`);
+        {
+          labelKey: "Dupliquer",
+          onClick: (row: UserData): void => {
+            console.warn(`Duplicate row: ${row.name}`);
+          },
+          overflow: true,
         },
-        overflow: true,
-      },
-      {
-        label: "Supprimer",
-        icon: TrashIcon,
-        className: "text-destructive focus:bg-destructive/10 focus:text-destructive",
-        onClick: (row: UserData): void => {
-          console.warn(`Delete row: ${row.name}`);
+        {
+          labelKey: "Supprimer",
+          icon: TrashIcon,
+          className: "text-destructive focus:bg-destructive/10 focus:text-destructive",
+          onClick: (row: UserData): void => {
+            console.warn(`Delete row: ${row.name}`);
+          },
+          overflow: true,
         },
-        overflow: true,
-      },
-    ],
+      ],
+    },
   },
 };
 
@@ -319,50 +326,56 @@ export const WithConditionalActions: Story = {
   },
   args: {
     data: mockData,
-    config: { columns, getRowId: (row: UserData) => row.id },
-    actions: [
-      {
-        label: "Modifier",
-        icon: PencilIcon,
-        disabled: (row: UserData) => row.role === "admin",
-        onClick: (row: UserData): void => {
-          console.warn(`Edit row: ${row.name}`);
+    config: {
+      columns,
+      getRowId: (row: UserData) => row.id,
+      actions: [
+        {
+          labelKey: "Modifier",
+          icon: PencilIcon,
+          disabled: (row: UserData) => row.role === "admin",
+          onClick: (row: UserData): void => {
+            console.warn(`Edit row: ${row.name}`);
+          },
         },
-      },
-      {
-        label: "Supprimer",
-        icon: TrashIcon,
-        variant: "destructive",
-        visible: (row: UserData) => row.status === "inactive",
-        onClick: (row: UserData): void => {
-          console.warn(`Delete row: ${row.name}`);
+        {
+          labelKey: "Supprimer",
+          icon: TrashIcon,
+          variant: "destructive",
+          visible: (row: UserData) => row.status === "inactive",
+          onClick: (row: UserData): void => {
+            console.warn(`Delete row: ${row.name}`);
+          },
         },
-      },
-    ],
+      ],
+    },
   },
 };
 
 export const WithBulkActions: Story = {
   args: {
     data: mockData,
-    config: { columns, getRowId: (row: UserData) => row.id },
-    bulkActions: [
-      {
-        label: "Activate Selected",
-        onClick: (selectedIds: string[], clearSelection: () => void): void => {
-          console.warn(`Activating users with IDs: ${selectedIds.join(", ")}`);
-          clearSelection();
+    config: {
+      columns,
+      getRowId: (row: UserData) => row.id,
+      bulkActions: [
+        {
+          labelKey: "Activate Selected",
+          onClick: (selectedIds: string[], clearSelection: () => void): void => {
+            console.warn(`Activating users with IDs: ${selectedIds.join(", ")}`);
+            clearSelection();
+          },
         },
-      },
-      {
-        label: "Delete Selected",
-        variant: "destructive",
-        onClick: (selectedIds: string[], clearSelection: () => void): void => {
-          console.warn(`Deleting users with IDs: ${selectedIds.join(", ")}`);
-          clearSelection();
+        {
+          labelKey: "Delete Selected",
+          variant: "destructive",
+          onClick: (selectedIds: string[], clearSelection: () => void): void => {
+            console.warn(`Deleting users with IDs: ${selectedIds.join(", ")}`);
+            clearSelection();
+          },
         },
-      },
-    ],
+      ],
+    },
   },
 };
 
@@ -399,9 +412,7 @@ export const WithError: Story = {
 export const CustomPageSize: Story = {
   args: {
     data: mockData50,
-    config: { columns, getRowId: (row: UserData) => row.id },
-    defaultPageSize: 5,
-    pageSizeOptions: [5, 10, 25, 50],
+    config: { columns, getRowId: (row: UserData) => row.id, defaultPageSize: 5, pageSizeOptions: [5, 10, 25, 50] },
   },
 };
 
@@ -422,44 +433,44 @@ export const FullFeatured: Story = {
       onRowClick: (row: UserData) => {
         console.warn(`Clicked on row: ${row.name}`);
       },
+      actions: [
+        {
+          labelKey: "Modifier",
+          icon: PencilIcon,
+          disabled: (row: UserData) => row.role === "admin",
+          onClick: (row: UserData): void => {
+            console.warn(`Edit row: ${row.name}`);
+          },
+        },
+        {
+          labelKey: "Supprimer",
+          icon: TrashIcon,
+          variant: "destructive",
+          visible: (row: UserData) => row.status === "inactive",
+          overflow: true,
+          onClick: (row: UserData): void => {
+            console.warn(`Delete row: ${row.name}`);
+          },
+        },
+      ],
+      bulkActions: [
+        {
+          labelKey: "Export Selected",
+          onClick: (selectedIds: string[], clearSelection: () => void): void => {
+            console.warn(`Exporting users with IDs: ${selectedIds.join(", ")}`);
+            clearSelection();
+          },
+        },
+        {
+          labelKey: "Delete Selected",
+          variant: "destructive",
+          onClick: (selectedIds: string[], clearSelection: () => void): void => {
+            console.warn(`Deleting users with IDs: ${selectedIds.join(", ")}`);
+            clearSelection();
+          },
+        },
+      ],
     },
-    actions: [
-      {
-        label: "Modifier",
-        icon: PencilIcon,
-        disabled: (row: UserData) => row.role === "admin",
-        onClick: (row: UserData): void => {
-          console.warn(`Edit row: ${row.name}`);
-        },
-      },
-      {
-        label: "Supprimer",
-        icon: TrashIcon,
-        variant: "destructive",
-        visible: (row: UserData) => row.status === "inactive",
-        overflow: true,
-        onClick: (row: UserData): void => {
-          console.warn(`Delete row: ${row.name}`);
-        },
-      },
-    ],
-    bulkActions: [
-      {
-        label: "Export Selected",
-        onClick: (selectedIds: string[], clearSelection: () => void): void => {
-          console.warn(`Exporting users with IDs: ${selectedIds.join(", ")}`);
-          clearSelection();
-        },
-      },
-      {
-        label: "Delete Selected",
-        variant: "destructive",
-        onClick: (selectedIds: string[], clearSelection: () => void): void => {
-          console.warn(`Deleting users with IDs: ${selectedIds.join(", ")}`);
-          clearSelection();
-        },
-      },
-    ],
   },
 };
 
@@ -497,35 +508,40 @@ export const WithFixedColumns: Story = {
   },
   args: {
     data: mockData,
-    config: { columns: wideColumns, getRowId: (row: UserData) => row.id, fixedActions: true, columnVisibility: true },
-    bulkActions: [
-      {
-        label: "Supprimer",
-        icon: TrashIcon,
-        variant: "destructive" as const,
-        onClick: (selectedIds: string[], clearSelection: () => void): void => {
-          console.warn(`Deleting users with IDs: ${selectedIds.join(", ")}`);
-          clearSelection();
+    config: {
+      columns: wideColumns,
+      getRowId: (row: UserData) => row.id,
+      fixedActions: true,
+      columnVisibility: true,
+      bulkActions: [
+        {
+          labelKey: "Supprimer",
+          icon: TrashIcon,
+          variant: "destructive" as const,
+          onClick: (selectedIds: string[], clearSelection: () => void): void => {
+            console.warn(`Deleting users with IDs: ${selectedIds.join(", ")}`);
+            clearSelection();
+          },
         },
-      },
-    ],
-    actions: [
-      {
-        label: "Modifier",
-        icon: PencilIcon,
-        onClick: (row: UserData): void => {
-          console.warn("Edit", row.id);
+      ],
+      actions: [
+        {
+          labelKey: "Modifier",
+          icon: PencilIcon,
+          onClick: (row: UserData): void => {
+            console.warn("Edit", row.id);
+          },
         },
-      },
-      {
-        label: "Supprimer",
-        icon: TrashIcon,
-        overflow: true,
-        onClick: (row: UserData): void => {
-          console.warn("Delete", row.id);
+        {
+          labelKey: "Supprimer",
+          icon: TrashIcon,
+          overflow: true,
+          onClick: (row: UserData): void => {
+            console.warn("Delete", row.id);
+          },
         },
-      },
-    ],
+      ],
+    },
   },
 };
 
@@ -809,13 +825,11 @@ const ServerSideDataTableWrapper = (): React.JSX.Element => {
       </div>
       <DataTable
         data={data}
-        config={{ columns, getRowId: (row: UserData) => row.id }}
+        config={{ columns, getRowId: (row: UserData) => row.id, defaultPageSize: pageSize, pageSizeOptions: [5, 10, 20, 50] }}
         isLoading={isLoading}
         totalRows={mockData50.length}
         currentPage={currentPage}
         onPageChange={setCurrentPage}
-        defaultPageSize={pageSize}
-        pageSizeOptions={[5, 10, 20, 50]}
         onPageSizeChange={size => {
           setPageSize(size);
           setCurrentPage(1);

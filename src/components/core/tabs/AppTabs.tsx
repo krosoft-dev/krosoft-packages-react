@@ -1,7 +1,7 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { TabConfig } from "@/types/TabConfig";
 import { useEffect, useRef } from "react";
-import { useTranslation } from "react-i18next";
+import { useKrosoftTranslation } from "@/i18n";
 import { useSearchParams } from "react-router-dom";
 import { cn } from "@/helpers/tailwind.helper";
 
@@ -13,7 +13,7 @@ export interface AppTabsProps<T = unknown> {
 }
 
 export function AppTabs({ tabs, itemId, item, fit }: AppTabsProps): React.JSX.Element {
-  const { t } = useTranslation();
+  const { t } = useKrosoftTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
   // L'onglet de l'URL peut ne pas exister dans la liste : lien obsolète, ou onglet retiré selon
   // les droits de l'utilisateur. On retombe alors sur le premier onglet plutôt que de n'afficher aucun contenu.

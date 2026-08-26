@@ -48,8 +48,8 @@ const defaultSchema: FormSchema<UserProfile> = {
   useCards: false,
   sections: [
     {
-      title: "Informations personnelles",
-      icon: <User className="size-5 text-indigo-500" />,
+      titleKey: "Informations personnelles",
+      icon: User,
       fields: [
         { key: "firstName", labelKey: "Prénom", type: "text", layout: { cols: 2 } },
         { key: "lastName", labelKey: "Nom", type: "text", layout: { cols: 2 } },
@@ -57,8 +57,8 @@ const defaultSchema: FormSchema<UserProfile> = {
       ],
     },
     {
-      title: "Accès & Rôle",
-      icon: <Shield className="size-5 text-rose-500" />,
+      titleKey: "Accès & Rôle",
+      icon: Shield,
       fields: [
         { key: "role", labelKey: "Rôle", type: "text", layout: { cols: 2 } },
         { key: "status", labelKey: "Statut", type: "text", layout: { cols: 2 } },
@@ -151,8 +151,8 @@ const customRenderSchema: FormSchema<UserProfile> = {
   sections: [
     ...defaultSchema.sections,
     {
-      title: "Activité",
-      icon: <Clock className="size-5 text-emerald-500" />,
+      titleKey: "Activité",
+      icon: Clock,
       fields: [
         {
           key: "empty",

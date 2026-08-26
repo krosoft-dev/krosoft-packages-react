@@ -1,8 +1,8 @@
 import { useEffect } from "react";
-import { useTranslation } from "react-i18next";
+import { useKrosoftTranslation } from "@/i18n";
 
 export const useDocumentTitle = (titleKey: string, suffix?: string, appTitle?: string): void => {
-  const { t } = useTranslation();
+  const { t } = useKrosoftTranslation();
   useEffect(() => {
     const translatedTitle = t(titleKey);
     const previousTitle = document.title;

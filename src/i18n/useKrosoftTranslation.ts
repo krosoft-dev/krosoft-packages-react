@@ -18,24 +18,32 @@ const interpolate = (text: string, values?: InterpolationValues): string =>
   values === undefined ? text : text.replace(/\{\{(\w+)\}\}/g, (match, name: string) => (name in values ? String(values[name]) : match));
 
 /**
- * Traduction des libellés propres au package.
+ * Traduction unifiée du package : un seul `t`, que la clé vienne de
+ * l'application (`headerKey`, `labelKey`, `emptyKey`…) ou du package lui-même.
  *
- * Deux modes, sans configuration à choisir :
- * - l'application a appelé `registerKrosoftLocales` : les libellés suivent sa
- *   langue et ses éventuelles surcharges ;
- * - elle ne l'a pas fait, ou n'utilise pas i18next : on retombe sur le français
- *   embarqué, ce qui préserve le comportement des applications existantes.
+ * Résolution, dans l'ordre :
+ * 1. le namespace de l'application — une clé qu'elle a enregistrée (ou une
+ *    surcharge d'un libellé du package) gagne toujours ;
+ * 2. le namespace `krosoft`, si l'application a appelé `registerKrosoftLocales` :
+ *    les libellés du package suivent alors sa langue ;
+ * 3. le français embarqué du package ;
+ * 4. la clé elle-même — le repli i18next habituel.
  */
 export const useKrosoftTranslation = (): { t: (key: string, values?: InterpolationValues) => string } => {
-  const { t, i18n, ready } = useTranslation(KROSOFT_NAMESPACE, { useSuspense: false });
+  const { t: tKrosoft, i18n, ready } = useTranslation(KROSOFT_NAMESPACE, { useSuspense: false });
+  const { t: tApp } = useTranslation(undefined, { useSuspense: false });
 
   const translate = (key: string, values?: InterpolationValues): string => {
     // `exists` suit la résolution d'i18next — région puis langue de base puis
     // `fallbackLng`. Comparer `i18n.language` au pied de la lettre ratait les
     // langues régionalisées : une langue détectée depuis le navigateur vaut
     // « en-GB », alors que le bundle est enregistré sous « en ».
+    if (ready && i18n.exists(key)) {
+      return tApp(key, values ?? {});
+    }
+
     if (ready && i18n.exists(key, { ns: KROSOFT_NAMESPACE })) {
-      return t(key, values ?? {});
+      return tKrosoft(key, values ?? {});
     }
 
     return interpolate(readBundled(key) ?? key, values);

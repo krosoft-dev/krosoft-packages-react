@@ -4,9 +4,9 @@ import React, { useMemo, useState } from "react";
 import FormDialog from "@/components/core/dialogs/FormDialog";
 import { SearchInput } from "@/components/core/inputs/SearchInput";
 import { AppPageHeader } from "@/components/core/layouts/AppPageHeader";
-import { ColumnDef, DataTable, RowAction } from "@/components/core/table/DataTable";
+import { DataTable } from "@/components/core/table/DataTable";
 import { Badge } from "@/components/ui/badge";
-import type { FormSchema } from "@/types";
+import type { ColumnDef, FormSchema, RowAction } from "@/types";
 
 // --- Modèle de données -------------------------------------------------------
 
@@ -138,9 +138,9 @@ const TagsPage = (): React.JSX.Element => {
   ];
 
   const actions: RowAction<Tag>[] = [
-    { label: "Renommer", icon: PencilIcon, overflow: true, onClick: ouvrirRenommage },
+    { labelKey: "Renommer", icon: PencilIcon, overflow: true, onClick: ouvrirRenommage },
     {
-      label: "Supprimer",
+      labelKey: "Supprimer",
       icon: Trash2Icon,
       overflow: true,
       className: "text-destructive focus:bg-destructive/10 focus:text-destructive",
@@ -161,7 +161,7 @@ const TagsPage = (): React.JSX.Element => {
 
       <SearchInput searchQuery={recherche} placeholder="Rechercher un tag..." onSearch={setRecherche} />
 
-      <DataTable data={tagsFiltres} actions={actions} defaultPageSize={10} config={{ columns, getRowId: row => row.id, columnVisibility: true }} />
+      <DataTable data={tagsFiltres} config={{ columns, getRowId: row => row.id, actions, columnVisibility: true, defaultPageSize: 10 }} />
 
       <FormDialog<Tag>
         open={open}

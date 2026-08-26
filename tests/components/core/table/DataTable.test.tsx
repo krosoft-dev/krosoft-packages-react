@@ -139,7 +139,7 @@ describe("DataTable — alignement des colonnes", () => {
   });
 
   it("colle les actions au bord droit de leur colonne", () => {
-    const container = renderTable({ actions: [{ label: "Run", onClick: () => {} }] });
+    const container = renderTable({ config: { actions: [{ labelKey: "Run", onClick: () => {} }] } });
 
     const cells = bodyCells(container, ACTIONS_COLUMN_KEY);
     expect(cells.every(cell => cell.className.includes("text-right"))).toBe(true);
@@ -169,9 +169,11 @@ describe("DataTable — mode dense", () => {
 
   it("laisse les cellules de sélection et d'actions déjà compactes suivre la hauteur des lignes", () => {
     const container = renderTable({
-      config: { dense: true },
-      bulkActions: [{ label: "Supprimer", onClick: () => undefined }],
-      actions: [{ label: "Modifier", onClick: () => undefined }],
+      config: {
+        dense: true,
+        bulkActions: [{ labelKey: "Supprimer", onClick: () => undefined }],
+        actions: [{ labelKey: "Modifier", onClick: () => undefined }],
+      },
     });
 
     // Elles gardent leur padding compact propre (p-1 pour la sélection, py-1 pour les actions) :
@@ -218,7 +220,49 @@ describe("DataTable — messages d'état", () => {
   });
 });
 
-describe("DataTable — en-têtes i18n", () => {
+describe("DataTable — i18n", () => {
+  it("résout labelKey des actions de ligne dans le namespace de l'application", async () => {
+    // Instance locale passée par Provider : le test ne touche pas l'i18next global.
+    const i18nInstance = createInstance();
+    await i18nInstance.init({ lng: "fr", resources: { fr: { translation: { "actions.edit": "Modifier" } } } });
+
+    const { container } = render(
+      <I18nextProvider i18n={i18nInstance}>
+        <DataTable data={rows} config={{ columns, getRowId: (row: Row) => row.id, actions: [{ labelKey: "actions.edit", onClick: () => undefined }] }} />
+      </I18nextProvider>,
+    );
+
+    const actionsCell = bodyCells(container, ACTIONS_COLUMN_KEY)[0];
+    expect(actionsCell.textContent).toContain("Modifier");
+    expect(actionsCell.textContent).not.toContain("actions.edit");
+  });
+
+  it("résout labelKey des actions groupées dans le namespace de l'application", async () => {
+    // Instance locale passée par Provider : le test ne touche pas l'i18next global.
+    const i18nInstance = createInstance();
+    await i18nInstance.init({ lng: "fr", resources: { fr: { translation: { "actions.deleteAll": "Tout supprimer" } } } });
+
+    const { container } = render(
+      <I18nextProvider i18n={i18nInstance}>
+        <DataTable
+          data={rows}
+          config={{ columns, getRowId: (row: Row) => row.id, bulkActions: [{ labelKey: "actions.deleteAll", onClick: () => undefined }] }}
+        />
+      </I18nextProvider>,
+    );
+
+    // Le bandeau n'apparaît qu'avec une sélection active.
+    const checkbox = bodyCells(container, SELECTION_COLUMN_KEY)[0].querySelector('[role="checkbox"]');
+    if (checkbox === null) throw new Error("Case de sélection introuvable");
+    fireEvent.click(checkbox);
+
+    expect(container.textContent).toContain("Tout supprimer");
+    expect(container.textContent).not.toContain("actions.deleteAll");
+    // Les libellés propres au bandeau viennent du package (repli français embarqué ici).
+    expect(container.textContent).toContain("1 sélectionné(s)");
+    expect(container.textContent).toContain("Désélectionner");
+  });
+
   it("résout headerKey dans le namespace de l'application, et retombe sur la clé sans traduction", async () => {
     // Instance locale passée par Provider : le test ne touche pas l'i18next global.
     const i18nInstance = createInstance();
@@ -291,9 +335,11 @@ describe("DataTable — navigation au clic", () => {
 
   it("ne déclenche pas la navigation au clic sur la case de sélection ou la colonne d'actions", () => {
     const container = renderTable({
-      config: { onRowNavigate: (row: Row) => `/users/${row.id}` },
-      bulkActions: [{ label: "Supprimer", onClick: () => undefined }],
-      actions: [{ label: "Modifier", onClick: () => undefined }],
+      config: {
+        onRowNavigate: (row: Row) => `/users/${row.id}`,
+        bulkActions: [{ labelKey: "Supprimer", onClick: () => undefined }],
+        actions: [{ labelKey: "Modifier", onClick: () => undefined }],
+      },
     });
 
     for (const key of [SELECTION_COLUMN_KEY, ACTIONS_COLUMN_KEY]) {
@@ -341,8 +387,7 @@ describe("DataTable — colonnes figées", () => {
 
   it("fige l'en-tête de la colonne des actions avec ses cellules quand fixedActions est actif", () => {
     const container = renderTable({
-      config: { fixedActions: true },
-      actions: [{ label: "Modifier", onClick: () => undefined }],
+      config: { fixedActions: true, actions: [{ labelKey: "Modifier", onClick: () => undefined }] },
     });
 
     const header = headerCell(container, ACTIONS_COLUMN_KEY);
@@ -353,7 +398,7 @@ describe("DataTable — colonnes figées", () => {
 
   it("fige la case de sélection avec la première colonne figée à gauche", () => {
     const container = renderTable({
-      bulkActions: [{ label: "Supprimer", onClick: () => undefined }],
+      config: { bulkActions: [{ labelKey: "Supprimer", onClick: () => undefined }] },
     });
 
     const header = headerCell(container, SELECTION_COLUMN_KEY);
@@ -373,8 +418,8 @@ describe("DataTable — colonnes figées", () => {
           { key: "role", headerKey: "Role", fixed: "right" },
         ],
         fixedActions: true,
+        actions: [{ labelKey: "Modifier", onClick: () => undefined }],
       },
-      actions: [{ label: "Modifier", onClick: () => undefined }],
     });
 
     // À gauche, la deuxième colonne figée démarre après la largeur de la première.
@@ -392,8 +437,11 @@ describe("DataTable — colonnes figées", () => {
     const { container } = render(
       <DataTable
         data={rows}
-        config={{ columns: columns.map(column => (column.fixed === "left" ? { ...column, fixed: undefined } : column)), getRowId: (row: Row) => row.id }}
-        bulkActions={[{ label: "Supprimer", onClick: () => undefined }]}
+        config={{
+          columns: columns.map(column => (column.fixed === "left" ? { ...column, fixed: undefined } : column)),
+          getRowId: (row: Row) => row.id,
+          bulkActions: [{ labelKey: "Supprimer", onClick: () => undefined }],
+        }}
       />,
     );
 

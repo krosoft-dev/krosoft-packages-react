@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { TableFilter, FilterSection } from "@/components/core/filters";
+import { TableFilter } from "@/components/core/filters";
+import type { FilterSection } from "@/types";
 
 const meta: Meta<typeof TableFilter> = {
   title: "Core/Filters/TableFilter",
@@ -83,7 +84,7 @@ interface UserFilters extends Record<string, unknown> {
 
 const TableFilterStoryWrapper = (): React.ReactElement => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [appliedFilters, setAppliedFilters] = useState<Record<string, unknown>>({
+  const [appliedFilters, setAppliedFilters] = useState<UserFilters>({
     role: [],
     name: "",
     status: "",

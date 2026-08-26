@@ -3,9 +3,9 @@ import { PlusIcon, UserIcon, UsersIcon } from "lucide-react";
 import React, { useState } from "react";
 import FormDialog from "@/components/core/dialogs/FormDialog";
 import { AppPageHeader } from "@/components/core/layouts/AppPageHeader";
-import { ColumnDef, DataTable } from "@/components/core/table/DataTable";
+import { DataTable } from "@/components/core/table/DataTable";
 import { Badge } from "@/components/ui/badge";
-import type { FormSchema } from "@/types";
+import type { ColumnDef, FormSchema } from "@/types";
 
 // --- Modèle de données -------------------------------------------------------
 
@@ -217,7 +217,7 @@ const GestionClientsPage = (): React.JSX.Element => {
         actions={[{ labelKey: "Nouveau client", icon: PlusIcon, onClick: ouvrirCreation }]}
       />
 
-      <DataTable data={clients} defaultPageSize={10} config={{ columns, getRowId: row => row.id, onRowClick: ouvrirFiche, columnVisibility: false }} />
+      <DataTable data={clients} config={{ columns, getRowId: row => row.id, onRowClick: ouvrirFiche, columnVisibility: false, defaultPageSize: 10 }} />
 
       <FormDialog<Client>
         open={open}

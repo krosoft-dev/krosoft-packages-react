@@ -4,7 +4,6 @@ import { useKrosoftTranslation } from "@/i18n";
 import { ColumnDef, DataTableMessages, RowAction } from "@/types";
 import { AlertTriangleIcon, Loader2Icon } from "lucide-react";
 import React from "react";
-import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { TableActions } from "./TableActions";
 import { ACTIONS_COLUMN_KEY, getAlignmentClass, getColumnAlignment, getFixedCellProps, SELECTION_COLUMN_KEY } from "@/helpers/table.helper";
@@ -56,11 +55,8 @@ export function TableBody<T>({
   fixedColumns = {},
 }: TableBodyProps<T>): React.JSX.Element {
   const { t } = useKrosoftTranslation();
-  // Les clés fournies par l'app sont résolues dans son namespace (comme labelKey/titleKey),
-  // tandis que `t` (namespace krosoft) porte les libellés par défaut du package.
-  const { t: tApp } = useTranslation();
-  const loadingText = messages?.loadingKey ? tApp(messages.loadingKey) : t("states.loading");
-  const emptyText = messages?.emptyKey ? tApp(messages.emptyKey) : t("states.noResult");
+  const loadingText = t(messages?.loadingKey ?? "states.loading");
+  const emptyText = t(messages?.emptyKey ?? "states.noResult");
   const navigate = useNavigate();
   const renderCellValue = (row: T, columnKey: string): React.ReactNode => {
     const columnDef = columns.find(col => col.key === columnKey);

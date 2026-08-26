@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import * as React from "react";
+import type { DateRange } from "react-day-picker";
 import { Calendar } from "@/components/ui/calendar";
 
 const meta: Meta<typeof Calendar> = {
@@ -22,7 +23,7 @@ export const WithSelected: Story = {
 
 export const Range: Story = {
   render: () => {
-    const [range, setRange] = React.useState<{ from: Date; to?: Date } | undefined>({
+    const [range, setRange] = React.useState<DateRange | undefined>({
       from: new Date(),
       to: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
     });

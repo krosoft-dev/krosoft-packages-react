@@ -6,14 +6,14 @@ import { Download, Mail, Trash2 } from "lucide-react";
 
 const ACTIONS_DEFAULT: BulkAction[] = [
   {
-    label: "Exporter",
+    labelKey: "Exporter",
     icon: Download,
     onClick: (_ids, clear) => {
       clear();
     },
   },
   {
-    label: "Envoyer un email",
+    labelKey: "Envoyer un email",
     icon: Mail,
     onClick: (_ids, clear) => {
       clear();
@@ -24,7 +24,7 @@ const ACTIONS_DEFAULT: BulkAction[] = [
 const ACTIONS_WITH_DESTRUCTIVE: BulkAction[] = [
   ...ACTIONS_DEFAULT,
   {
-    label: "Supprimer",
+    labelKey: "Supprimer",
     icon: Trash2,
     variant: "destructive",
     onClick: (_ids, clear) => {
@@ -81,13 +81,13 @@ export const NoIcon: Story = {
     const [selected, setSelected] = useState(["1", "2"]);
     const actions: BulkAction[] = [
       {
-        label: "Archiver",
+        labelKey: "Archiver",
         onClick: (_ids, clear) => {
           clear();
         },
       },
       {
-        label: "Dupliquer",
+        labelKey: "Dupliquer",
         onClick: (_ids, clear) => {
           clear();
         },
@@ -104,7 +104,7 @@ export const Interactive: Story = {
 
     const actions: BulkAction[] = [
       {
-        label: "Exporter",
+        labelKey: "Exporter",
         icon: Download,
         onClick: (ids, clear) => {
           setLog(prev => [`Export : ${ids.join(", ")}`, ...prev]);
@@ -112,7 +112,7 @@ export const Interactive: Story = {
         },
       },
       {
-        label: "Envoyer un email",
+        labelKey: "Envoyer un email",
         icon: Mail,
         onClick: (ids, clear) => {
           setLog(prev => [`Email : ${ids.join(", ")}`, ...prev]);
@@ -120,7 +120,7 @@ export const Interactive: Story = {
         },
       },
       {
-        label: "Supprimer",
+        labelKey: "Supprimer",
         icon: Trash2,
         variant: "destructive",
         onClick: (ids, clear) => {

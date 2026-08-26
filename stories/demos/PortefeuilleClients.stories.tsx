@@ -4,9 +4,9 @@ import React, { useMemo, useState } from "react";
 import { KpiCards } from "@/components/core/cards/KpiCards";
 import { TableFilter } from "@/components/core/filters/TableFilter";
 import { AppPageHeader } from "@/components/core/layouts/AppPageHeader";
-import { ColumnDef, DataTable } from "@/components/core/table/DataTable";
+import { DataTable } from "@/components/core/table/DataTable";
 import { Badge } from "@/components/ui/badge";
-import type { FilterSection } from "@/types/FilterSection";
+import type { ColumnDef, FilterSection } from "@/types";
 
 // --- Modèle de données de démonstration -------------------------------------
 
@@ -242,9 +242,13 @@ const FiltersAppDemo = (): React.JSX.Element => {
 
       <DataTable
         data={resultats}
-        defaultPageSize={10}
-        pageSizeOptions={[5, 10, 25, 50]}
-        config={{ columns: COLUMNS, getRowId: row => row.id, messages: { emptyKey: "Aucun client ne correspond aux filtres sélectionnés." } }}
+        config={{
+          columns: COLUMNS,
+          getRowId: row => row.id,
+          defaultPageSize: 10,
+          pageSizeOptions: [5, 10, 25, 50],
+          messages: { emptyKey: "Aucun client ne correspond aux filtres sélectionnés." },
+        }}
       />
     </div>
   );

@@ -11,7 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { ConfirmDialogConfig } from "@/types/ConfirmDialogConfig";
 import { ErrorHttp } from "@krosoft/core/types";
-import { useTranslation } from "react-i18next";
+import { useKrosoftTranslation } from "@/i18n";
 
 interface ConfirmationDialogProps {
   isLoading: boolean;
@@ -21,7 +21,7 @@ interface ConfirmationDialogProps {
 }
 
 export function ConfirmationDialog({ isLoading, error, config, destructive = false }: ConfirmationDialogProps) {
-  const { t } = useTranslation();
+  const { t } = useKrosoftTranslation();
 
   if (!config) return null;
 
