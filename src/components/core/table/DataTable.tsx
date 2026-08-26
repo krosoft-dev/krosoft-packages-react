@@ -1,7 +1,7 @@
 import { useDataTable } from "@/hooks/ui/useDataTable";
 import { useFixedColumns } from "@/hooks/ui/useFixedColumns";
 import React from "react";
-import { defaultPageSize as DEFAULT_PAGE_SIZE, pagesSizes as DEFAULT_PAGE_SIZE_OPTIONS } from "../../../constants/datatable";
+import { pageSizeDefault as DEFAULT_PAGE_SIZE, pagesSizes as DEFAULT_PAGE_SIZE_OPTIONS } from "../../../constants/datatable";
 import { TableBody } from "./TableBody";
 import { TableBulkActions } from "./TableBulkActions";
 import { TableHeader } from "./TableHeader";
@@ -19,7 +19,7 @@ export interface DataTableProps<T> {
 
 export function DataTable<T>({ data, isLoading = false, error = null, config, server }: DataTableProps<T>): React.JSX.Element {
   const { columns, rowKey, onRowClick, onRowNavigate, actions, bulkActions } = config;
-  const defaultPageSize = config.defaultPageSize ?? DEFAULT_PAGE_SIZE;
+  const pageSizeDefault = config.pageSizeDefault ?? DEFAULT_PAGE_SIZE;
   const pageSizeOptions = config.pageSizeOptions ?? DEFAULT_PAGE_SIZE_OPTIONS;
   const dense = config.dense ?? false;
   const bordered = config.bordered ?? false;
@@ -60,7 +60,7 @@ export function DataTable<T>({ data, isLoading = false, error = null, config, se
     data,
     columns,
     rowKey,
-    defaultPageSize,
+    pageSizeDefault,
     actions,
     bulkActions,
     columnVisibility,

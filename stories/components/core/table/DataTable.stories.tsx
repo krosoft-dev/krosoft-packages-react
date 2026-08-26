@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { DataTable } from "@/components/core/table/DataTable";
-import type { ColumnDef } from "@/types";
+import type { DataTableColumn } from "@/types";
 import React from "react";
 import { createInstance } from "i18next";
 import { I18nextProvider } from "react-i18next";
@@ -15,7 +15,7 @@ const meta: Meta<typeof DataTable> = {
     docs: {
       description: {
         component:
-          "Le composant `DataTable` permet d'afficher des données sous forme de tableau avec des fonctionnalités avancées (tri, sélection, menu d'actions).\n\n### Fonctionnalités\n\n- **Tri** : Activez le tri colonne par colonne avec `sortable: true` dans `ColumnDef`. Un icône `↕` apparaît sur les colonnes triables ; `↑`/`↓` indique la colonne et le sens actifs.\n- **En-têtes i18n** : `headerKey` sur un `ColumnDef` est une clé i18n résolue dans le namespace de l'application (comme `labelKey`/`titleKey`). Sans traduction enregistrée — le cas de ce Storybook — la clé s'affiche telle quelle.\n- **Tri personnalisé** : `getSortValue` sur un `ColumnDef` fournit la valeur utilisée pour comparer les lignes, quand `row[key]` n'est pas directement triable (tableau, rendu formaté) ou que l'ordre naturel n'est pas celui attendu.\n- **Réorganisation des colonnes** : Glissez et déposez l'icône de poignée dans l'en-tête.\n- **Désactivation du glisser-déposer** : Vous pouvez figer toutes les colonnes en passant `config={{ draggableColumns: false }}`.\n- **Largeur des colonnes** : par défaut (`config.resizableColumns` non activé), `minWidth` sur un `ColumnDef` n'est qu'un plancher — la colonne s'élargit naturellement selon le contenu. Avec `config={{ resizableColumns: true }}`, `minWidth` devient la largeur figée de départ et une poignée sur le bord droit de l'en-tête permet de la redimensionner manuellement.\n- **Style de colonne** : `className` sur un `ColumnDef` s'applique à l'en-tête et à chaque cellule de la colonne.\n- **Alignement** : `align: \"left\" | \"center\" | \"right\"` range les cellules **et** leur en-tête du même côté. Il est déduit automatiquement quand `className` porte déjà `text-right` ou `text-center`.\n- **Mode compact** : `config={{ dense: true }}` réduit le padding vertical des cellules (en-têtes et corps) pour un affichage compact.\n- **Navigation au clic** : `onRowNavigate` retourne l'URL de destination d'une ligne ; un clic navigue via le router (react-router), Ctrl/Cmd + clic ouvre l'URL dans un nouvel onglet. Il est prioritaire sur `onRowClick`.\n- **Colonnes figées** : `fixed: \"left\" | \"right\"` sur un `ColumnDef` accroche la colonne à un bord ; l'en-tête est figé avec elle, au même pixel. `config.fixedActions` fige de la même façon la colonne des actions. Une colonne figée n'est pas déplaçable au glisser-déposer.\n- **Actions de ligne** : les entrées de `config.actions` (libellé `labelKey`, clé i18n résolue comme `headerKey`) s'affichent en ligne par défaut ; `overflow: true` les déplace dans le menu kebab. `visible(row)` masque une action au cas par cas, `disabled(row)` la désactive sans la masquer, `variant` contrôle son style de bouton.",
+          "Le composant `DataTable` permet d'afficher des données sous forme de tableau avec des fonctionnalités avancées (tri, sélection, menu d'actions).\n\n### Fonctionnalités\n\n- **Tri** : Activez le tri colonne par colonne avec `sortable: true` dans `DataTableColumn`. Un icône `↕` apparaît sur les colonnes triables ; `↑`/`↓` indique la colonne et le sens actifs.\n- **En-têtes i18n** : `headerKey` sur un `DataTableColumn` est une clé i18n résolue dans le namespace de l'application (comme `labelKey`/`titleKey`). Sans traduction enregistrée — le cas de ce Storybook — la clé s'affiche telle quelle.\n- **Tri personnalisé** : `getSortValue` sur un `DataTableColumn` fournit la valeur utilisée pour comparer les lignes, quand `row[key]` n'est pas directement triable (tableau, rendu formaté) ou que l'ordre naturel n'est pas celui attendu.\n- **Réorganisation des colonnes** : Glissez et déposez l'icône de poignée dans l'en-tête.\n- **Désactivation du glisser-déposer** : Vous pouvez figer toutes les colonnes en passant `config={{ draggableColumns: false }}`.\n- **Largeur des colonnes** : par défaut (`config.resizableColumns` non activé), `minWidth` sur un `DataTableColumn` n'est qu'un plancher — la colonne s'élargit naturellement selon le contenu. Avec `config={{ resizableColumns: true }}`, `minWidth` devient la largeur figée de départ et une poignée sur le bord droit de l'en-tête permet de la redimensionner manuellement.\n- **Style de colonne** : `className` sur un `DataTableColumn` s'applique à l'en-tête et à chaque cellule de la colonne.\n- **Alignement** : `align: \"left\" | \"center\" | \"right\"` range les cellules **et** leur en-tête du même côté. Il est déduit automatiquement quand `className` porte déjà `text-right` ou `text-center`.\n- **Mode compact** : `config={{ dense: true }}` réduit le padding vertical des cellules (en-têtes et corps) pour un affichage compact.\n- **Navigation au clic** : `onRowNavigate` retourne l'URL de destination d'une ligne ; un clic navigue via le router (react-router), Ctrl/Cmd + clic ouvre l'URL dans un nouvel onglet. Il est prioritaire sur `onRowClick`.\n- **Colonnes figées** : `fixed: \"left\" | \"right\"` sur un `DataTableColumn` accroche la colonne à un bord ; l'en-tête est figé avec elle, au même pixel. `config.fixedActions` fige de la même façon la colonne des actions. Une colonne figée n'est pas déplaçable au glisser-déposer.\n- **Actions de ligne** : les entrées de `config.actions` (libellé `labelKey`, clé i18n résolue comme `headerKey`) s'affichent en ligne par défaut ; `overflow: true` les déplace dans le menu kebab. `visible(row)` masque une action au cas par cas, `disabled(row)` la désactive sans la masquer, `variant` contrôle son style de bouton.",
       },
     },
   },
@@ -89,7 +89,7 @@ const mockData50: UserData[] = Array.from({ length: 500 }, (_, index) => {
   };
 });
 
-const columns: ColumnDef<UserData>[] = [
+const columns: DataTableColumn<UserData>[] = [
   {
     key: "name",
     headerKey: "Name",
@@ -212,7 +212,7 @@ export const FlexibleColumnWidths: Story = {
     docs: {
       description: {
         story:
-          "Sans `config.resizableColumns` (comportement par défaut), `minWidth` sur un `ColumnDef` n'est qu'un plancher : la colonne s'élargit naturellement si le contenu le nécessite (ici l'email de John Doe dépasse largement les 200px de `minWidth`).",
+          "Sans `config.resizableColumns` (comportement par défaut), `minWidth` sur un `DataTableColumn` n'est qu'un plancher : la colonne s'élargit naturellement si le contenu le nécessite (ici l'email de John Doe dépasse largement les 200px de `minWidth`).",
       },
     },
   },
@@ -412,7 +412,7 @@ export const WithError: Story = {
 export const CustomPageSize: Story = {
   args: {
     data: mockData50,
-    config: { columns, rowKey: (row: UserData) => row.id, defaultPageSize: 5, pageSizeOptions: [5, 10, 25, 50] },
+    config: { columns, rowKey: (row: UserData) => row.id, pageSizeDefault: 5, pageSizeOptions: [5, 10, 25, 50] },
   },
 };
 
@@ -488,7 +488,7 @@ export const WithoutColumnVisibility: Story = {
   },
 };
 
-const wideColumns: ColumnDef<UserData>[] = [
+const wideColumns: DataTableColumn<UserData>[] = [
   { ...columns[0], fixed: "left" },
   ...columns.slice(1),
   { key: "team", headerKey: "Team", minWidth: 160, renderCell: row => `Team ${row.id}` },
@@ -550,7 +550,7 @@ export const WithColumnClassName: Story = {
     docs: {
       description: {
         story:
-          "`className` sur un `ColumnDef` s'applique à l'en-tête et à chaque cellule de la colonne (ici **Last Login** est aligné à droite). L'en-tête suit l'alignement des cellules : le libellé et l'icône de tri se regroupent au bord droit.",
+          "`className` sur un `DataTableColumn` s'applique à l'en-tête et à chaque cellule de la colonne (ici **Last Login** est aligné à droite). L'en-tête suit l'alignement des cellules : le libellé et l'icône de tri se regroupent au bord droit.",
       },
     },
   },
@@ -655,7 +655,7 @@ void headersI18n.init({
   },
 });
 
-const translatedColumns: ColumnDef<UserData>[] = columns.map(col => ({ ...col, headerKey: `users.columns.${col.key}` }));
+const translatedColumns: DataTableColumn<UserData>[] = columns.map(col => ({ ...col, headerKey: `users.columns.${col.key}` }));
 
 const TranslatedHeadersDemo = (): React.JSX.Element => {
   const [language, setLanguage] = React.useState("fr");
@@ -717,7 +717,7 @@ const contacts: ContactData[] = [
 const PRIORITY_RANKS: Record<ContactData["priority"], number> = { low: 0, medium: 1, high: 2 };
 const PRIORITY_LABELS: Record<ContactData["priority"], string> = { low: "Faible", medium: "Moyenne", high: "Haute" };
 
-const contactColumns: ColumnDef<ContactData>[] = [
+const contactColumns: DataTableColumn<ContactData>[] = [
   { key: "name", headerKey: "Nom", minWidth: 150, sortable: true },
   {
     key: "emails",

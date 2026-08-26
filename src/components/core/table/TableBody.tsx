@@ -1,7 +1,7 @@
 import { Checkbox } from "@/components/ui";
 import type { FixedColumnOffset } from "@/hooks/ui/useFixedColumns";
 import { useKrosoftTranslation } from "@/i18n";
-import { ColumnDef, DataTableMessages, RowAction } from "@/types";
+import { DataTableColumn, DataTableMessages, DataTableRowAction } from "@/types";
 import { AlertTriangleIcon, Loader2Icon } from "lucide-react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
@@ -20,11 +20,11 @@ export interface TableBodyProps<T> {
   hasBulkActions: boolean;
   selectedRows: string[];
   toggleRowSelection: (id: string) => void;
-  visibleColumnsArray: ColumnDef<T>[];
+  visibleColumnsArray: DataTableColumn<T>[];
   columnWidths: Record<string, number>;
   hasActions: boolean;
-  actions?: RowAction<T>[];
-  columns: ColumnDef<T>[];
+  actions?: DataTableRowAction<T>[];
+  columns: DataTableColumn<T>[];
   bordered?: boolean;
   dense?: boolean;
   resizableColumns?: boolean;

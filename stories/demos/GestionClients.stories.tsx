@@ -5,7 +5,7 @@ import FormDialog from "@/components/core/dialogs/FormDialog";
 import { AppPageHeader } from "@/components/core/layouts/AppPageHeader";
 import { DataTable } from "@/components/core/table/DataTable";
 import { Badge } from "@/components/ui/badge";
-import type { ColumnDef, FormSchema } from "@/types";
+import type { DataTableColumn, FormSchema } from "@/types";
 
 // --- Modèle de données -------------------------------------------------------
 
@@ -187,7 +187,7 @@ const GestionClientsPage = (): React.JSX.Element => {
     });
   };
 
-  const columns: ColumnDef<Client>[] = [
+  const columns: DataTableColumn<Client>[] = [
     { key: "nom", headerKey: "Raison sociale", minWidth: 180, sortable: true },
     { key: "email", headerKey: "E-mail", minWidth: 200 },
     {
@@ -217,7 +217,7 @@ const GestionClientsPage = (): React.JSX.Element => {
         actions={[{ labelKey: "Nouveau client", icon: PlusIcon, onClick: ouvrirCreation }]}
       />
 
-      <DataTable data={clients} config={{ columns, rowKey: row => row.id, onRowClick: ouvrirFiche, columnVisibility: false, defaultPageSize: 10 }} />
+      <DataTable data={clients} config={{ columns, rowKey: row => row.id, onRowClick: ouvrirFiche, columnVisibility: false, pageSizeDefault: 10 }} />
 
       <FormDialog<Client>
         open={open}

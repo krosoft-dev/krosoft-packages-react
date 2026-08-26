@@ -6,7 +6,7 @@ import { SearchInput } from "@/components/core/inputs/SearchInput";
 import { AppPageHeader } from "@/components/core/layouts/AppPageHeader";
 import { DataTable } from "@/components/core/table/DataTable";
 import { Badge } from "@/components/ui/badge";
-import type { ColumnDef, FormSchema, RowAction } from "@/types";
+import type { DataTableColumn, FormSchema, DataTableRowAction } from "@/types";
 
 // --- Modèle de données -------------------------------------------------------
 
@@ -120,7 +120,7 @@ const TagsPage = (): React.JSX.Element => {
     setOpen(false);
   };
 
-  const columns: ColumnDef<Tag>[] = [
+  const columns: DataTableColumn<Tag>[] = [
     {
       key: "nom",
       headerKey: "Tag",
@@ -137,7 +137,7 @@ const TagsPage = (): React.JSX.Element => {
     { key: "projets", headerKey: "Projets", minWidth: 130, sortable: true, align: "right" },
   ];
 
-  const actions: RowAction<Tag>[] = [
+  const actions: DataTableRowAction<Tag>[] = [
     { labelKey: "Renommer", icon: PencilIcon, overflow: true, onClick: ouvrirRenommage },
     {
       labelKey: "Supprimer",
@@ -161,7 +161,7 @@ const TagsPage = (): React.JSX.Element => {
 
       <SearchInput searchQuery={recherche} placeholder="Rechercher un tag..." onSearch={setRecherche} />
 
-      <DataTable data={tagsFiltres} config={{ columns, rowKey: row => row.id, actions, columnVisibility: true, defaultPageSize: 10 }} />
+      <DataTable data={tagsFiltres} config={{ columns, rowKey: row => row.id, actions, columnVisibility: true, pageSizeDefault: 10 }} />
 
       <FormDialog<Tag>
         open={open}

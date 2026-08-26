@@ -1,6 +1,6 @@
 import React from "react";
 
-export interface BulkAction {
+export interface DataTableBulkAction {
   // Clé i18n du libellé.
   labelKey: string;
   icon?: React.ElementType;

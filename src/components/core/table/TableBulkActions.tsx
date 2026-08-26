@@ -1,12 +1,12 @@
 import React from "react";
 import { Button } from "../../ui/button";
 import { useKrosoftTranslation } from "@/i18n";
-import { BulkAction } from "@/types/BulkAction";
+import { DataTableBulkAction } from "@/types/DataTableBulkAction";
 
 export interface TableBulkActionsProps {
   selectedRows: string[];
   setSelectedRows: React.Dispatch<React.SetStateAction<string[]>>;
-  bulkActions: BulkAction[];
+  bulkActions: DataTableBulkAction[];
 }
 
 export function TableBulkActions({ selectedRows, setSelectedRows, bulkActions }: TableBulkActionsProps): React.JSX.Element {

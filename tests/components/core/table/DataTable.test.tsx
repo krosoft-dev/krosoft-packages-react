@@ -5,7 +5,7 @@ import { I18nextProvider } from "react-i18next";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { DataTable } from "../../../../src/components/core/table/DataTable";
 import { ACTIONS_COLUMN_KEY, SELECTION_COLUMN_KEY } from "../../../../src/helpers/table.helper";
-import type { ColumnDef } from "../../../../src/types/ColumnDef";
+import type { DataTableColumn } from "../../../../src/types/DataTableColumn";
 import type { DataTableConfig } from "../../../../src/types/DataTableConfig";
 
 // Le DataTable navigue via useNavigate : le mock évite d'envelopper chaque test dans un Router.
@@ -22,7 +22,7 @@ const rows: Row[] = [
   { id: "2", name: "Jane Smith", email: "jane@example.com", role: "user" },
 ];
 
-const columns: ColumnDef<Row>[] = [
+const columns: DataTableColumn<Row>[] = [
   { key: "name", headerKey: "Name", fixed: "left" },
   { key: "email", headerKey: "Email" },
   { key: "role", headerKey: "Role", fixed: "right" },
@@ -61,7 +61,7 @@ afterEach(() => {
 });
 
 describe("DataTable — alignement des colonnes", () => {
-  const alignedColumns: ColumnDef<Row>[] = [
+  const alignedColumns: DataTableColumn<Row>[] = [
     { key: "name", headerKey: "Name" },
     { key: "email", headerKey: "Email", align: "right" },
     { key: "role", headerKey: "Role", className: "text-right" },
@@ -447,7 +447,7 @@ describe("DataTable — colonnes figées", () => {
 });
 
 describe("DataTable — colonnes qui changent après le montage", () => {
-  const baseColumns: ColumnDef<Row>[] = [
+  const baseColumns: DataTableColumn<Row>[] = [
     { key: "name", headerKey: "Name" },
     { key: "email", headerKey: "Email" },
   ];
@@ -459,7 +459,7 @@ describe("DataTable — colonnes qui changent après le montage", () => {
 
     // La colonne « role » arrive en position 1 (après « name »), typiquement au chargement asynchrone
     // d'une donnée qui conditionne son affichage.
-    const withRole: ColumnDef<Row>[] = [
+    const withRole: DataTableColumn<Row>[] = [
       { key: "name", headerKey: "Name" },
       { key: "role", headerKey: "Role" },
       { key: "email", headerKey: "Email" },
@@ -474,7 +474,7 @@ describe("DataTable — colonnes qui changent après le montage", () => {
   });
 
   it("retire une colonne disparue de la liste", () => {
-    const withRole: ColumnDef<Row>[] = [...baseColumns, { key: "role", headerKey: "Role" }];
+    const withRole: DataTableColumn<Row>[] = [...baseColumns, { key: "role", headerKey: "Role" }];
     const { container, rerender } = render(<DataTable data={rows} config={{ columns: withRole, rowKey: (row: Row) => row.id }} />);
 
     expect(headerCell(container, "role").textContent).toContain("Role");
@@ -485,7 +485,7 @@ describe("DataTable — colonnes qui changent après le montage", () => {
   });
 
   it("préserve le choix de visibilité des colonnes déjà connues quand une nouvelle apparaît", () => {
-    const hideableColumns: ColumnDef<Row>[] = [
+    const hideableColumns: DataTableColumn<Row>[] = [
       { key: "name", headerKey: "Name" },
       { key: "email", headerKey: "Email", defaultVisible: false },
     ];

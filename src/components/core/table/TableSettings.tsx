@@ -3,10 +3,10 @@ import { Button } from "../../ui/button";
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "../../ui/dropdown-menu";
 import { SettingsIcon } from "lucide-react";
 import { useKrosoftTranslation } from "@/i18n";
-import { ColumnDef } from "@/types/ColumnDef";
+import { DataTableColumn } from "@/types/DataTableColumn";
 
 export interface TableSettingsProps<T> {
-  columns: ColumnDef<T>[];
+  columns: DataTableColumn<T>[];
   visibleColumns: Set<string>;
   toggleColumnVisibility: (columnKey: string) => void;
 }

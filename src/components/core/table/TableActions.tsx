@@ -3,10 +3,10 @@ import { Button } from "../../ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../../ui/dropdown-menu";
 import { MoreVerticalIcon } from "lucide-react";
 import { useKrosoftTranslation } from "@/i18n";
-import { RowAction } from "@/types/RowAction";
+import { DataTableRowAction } from "@/types/DataTableRowAction";
 
 export interface TableActionsProps<T> {
-  actions: RowAction<T>[];
+  actions: DataTableRowAction<T>[];
   row: T;
 }
 

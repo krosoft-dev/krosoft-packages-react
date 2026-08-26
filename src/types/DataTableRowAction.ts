@@ -1,6 +1,6 @@
 import React from "react";
 
-export interface RowAction<T> {
+export interface DataTableRowAction<T> {
   // Clé i18n du libellé.
   labelKey: string;
   icon?: React.ElementType;

@@ -1,6 +1,6 @@
 import React from "react";
 
-export interface ColumnDef<T> {
+export interface DataTableColumn<T> {
   key: string;
   // Clé i18n de l'en-tête.
   headerKey: string;

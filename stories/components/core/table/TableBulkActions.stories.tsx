@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { TableBulkActions } from "@/components/core/table/TableBulkActions";
-import type { BulkAction } from "@/types/BulkAction";
+import type { DataTableBulkAction } from "@/types/DataTableBulkAction";
 import { Download, Mail, Trash2 } from "lucide-react";
 
-const ACTIONS_DEFAULT: BulkAction[] = [
+const ACTIONS_DEFAULT: DataTableBulkAction[] = [
   {
     labelKey: "Exporter",
     icon: Download,
@@ -21,7 +21,7 @@ const ACTIONS_DEFAULT: BulkAction[] = [
   },
 ];
 
-const ACTIONS_WITH_DESTRUCTIVE: BulkAction[] = [
+const ACTIONS_WITH_DESTRUCTIVE: DataTableBulkAction[] = [
   ...ACTIONS_DEFAULT,
   {
     labelKey: "Supprimer",
@@ -79,7 +79,7 @@ export const ManySelected: Story = {
 export const NoIcon: Story = {
   render: () => {
     const [selected, setSelected] = useState(["1", "2"]);
-    const actions: BulkAction[] = [
+    const actions: DataTableBulkAction[] = [
       {
         labelKey: "Archiver",
         onClick: (_ids, clear) => {
@@ -102,7 +102,7 @@ export const Interactive: Story = {
     const [selected, setSelected] = useState(["id-1", "id-2", "id-5", "id-8"]);
     const [log, setLog] = useState<string[]>([]);
 
-    const actions: BulkAction[] = [
+    const actions: DataTableBulkAction[] = [
       {
         labelKey: "Exporter",
         icon: Download,

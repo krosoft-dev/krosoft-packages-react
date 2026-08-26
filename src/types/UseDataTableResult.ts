@@ -1,5 +1,5 @@
 import React from "react";
-import { ColumnDef } from "./ColumnDef";
+import { DataTableColumn } from "./DataTableColumn";
 
 export interface UseDataTableResult<T> {
   sortColumn: string | null;
@@ -19,8 +19,8 @@ export interface UseDataTableResult<T> {
   tableRef: React.RefObject<HTMLTableElement | null>;
   hasActions: boolean;
   hasBulkActions: boolean;
-  orderedColumns: ColumnDef<T>[];
-  visibleColumnsArray: ColumnDef<T>[];
+  orderedColumns: DataTableColumn<T>[];
+  visibleColumnsArray: DataTableColumn<T>[];
   colSpanCount: number;
   paginatedData: T[];
   handleSort: (columnKey: string) => void;

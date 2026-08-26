@@ -6,7 +6,7 @@ import { TableFilter } from "@/components/core/filters/TableFilter";
 import { AppPageHeader } from "@/components/core/layouts/AppPageHeader";
 import { DataTable } from "@/components/core/table/DataTable";
 import { Badge } from "@/components/ui/badge";
-import type { ColumnDef, FilterSection } from "@/types";
+import type { DataTableColumn, FilterSection } from "@/types";
 
 // --- Modèle de données de démonstration -------------------------------------
 
@@ -123,7 +123,7 @@ const SECTIONS: FilterSection[] = [
   },
 ];
 
-const COLUMNS: ColumnDef<Client>[] = [
+const COLUMNS: DataTableColumn<Client>[] = [
   { key: "nom", headerKey: "Nom", minWidth: 160, sortable: true },
   { key: "email", headerKey: "Email", minWidth: 200 },
   {
@@ -245,7 +245,7 @@ const FiltersAppDemo = (): React.JSX.Element => {
         config={{
           columns: COLUMNS,
           rowKey: row => row.id,
-          defaultPageSize: 10,
+          pageSizeDefault: 10,
           pageSizeOptions: [5, 10, 25, 50],
           messages: { emptyKey: "Aucun client ne correspond aux filtres sélectionnés." },
         }}

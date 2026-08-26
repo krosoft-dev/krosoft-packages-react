@@ -1,7 +1,7 @@
 import React from "react";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useDataTable } from "@/hooks/ui/useDataTable";
-import type { ColumnDef } from "@/types/ColumnDef";
+import type { DataTableColumn } from "@/types/DataTableColumn";
 
 interface User {
   id: string;
@@ -21,7 +21,7 @@ const sampleData: User[] = [
   { id: "8", nom: "Leroy", email: "leroy@example.com", role: "Admin" },
 ];
 
-const columns: ColumnDef<User>[] = [
+const columns: DataTableColumn<User>[] = [
   { key: "nom", headerKey: "Nom", sortable: true, minWidth: 150 },
   { key: "email", headerKey: "Email", sortable: true, minWidth: 200 },
   { key: "role", headerKey: "Rôle", sortable: true, minWidth: 120 },
@@ -30,12 +30,12 @@ const columns: ColumnDef<User>[] = [
 /**
  * Demo component that shows the useDataTable hook managing table state.
  */
-const UseDataTableDemo = ({ defaultPageSize }: { defaultPageSize: number }): React.ReactElement => {
+const UseDataTableDemo = ({ pageSizeDefault }: { pageSizeDefault: number }): React.ReactElement => {
   const table = useDataTable<User>({
     data: sampleData,
     columns,
     rowKey: row => row.id,
-    defaultPageSize,
+    pageSizeDefault,
   });
 
   return (
@@ -117,7 +117,7 @@ const meta: Meta<typeof UseDataTableDemo> = {
     layout: "centered",
   },
   argTypes: {
-    defaultPageSize: {
+    pageSizeDefault: {
       control: { type: "number", min: 1, max: 10 },
       description: "Nombre de lignes par page",
     },
@@ -132,7 +132,7 @@ type Story = StoryObj<typeof UseDataTableDemo>;
  */
 export const Default: Story = {
   args: {
-    defaultPageSize: 3,
+    pageSizeDefault: 3,
   },
 };
 
@@ -141,6 +141,6 @@ export const Default: Story = {
  */
 export const SinglePage: Story = {
   args: {
-    defaultPageSize: 10,
+    pageSizeDefault: 10,
   },
 };

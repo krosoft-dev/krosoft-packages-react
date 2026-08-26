@@ -1,8 +1,8 @@
 import React from "react";
-import type { BulkAction } from "./BulkAction";
-import type { ColumnDef } from "./ColumnDef";
+import type { DataTableBulkAction } from "./DataTableBulkAction";
+import type { DataTableColumn } from "./DataTableColumn";
 import type { DataTableMessages } from "./DataTableMessages";
-import type { RowAction } from "./RowAction";
+import type { DataTableRowAction } from "./DataTableRowAction";
 
 /**
  * Options de comportement/présentation du `DataTable`, regroupées en un seul objet.
@@ -12,18 +12,18 @@ import type { RowAction } from "./RowAction";
  */
 export interface DataTableConfig<T> {
   /** Définition des colonnes du tableau. */
-  columns: ColumnDef<T>[];
+  columns: DataTableColumn<T>[];
   /** Retourne la clé unique de la ligne (key React, sélection). */
   rowKey: (row: T) => string;
   onRowClick?: (row: T, event: React.MouseEvent<HTMLTableRowElement>) => void;
   /** Retourne l'URL de destination de la ligne au clic (prioritaire sur onRowClick). */
   onRowNavigate?: (row: T) => string;
   /** Actions par ligne, affichées en ligne ou dans le menu kebab (`overflow`). */
-  actions?: RowAction<T>[];
+  actions?: DataTableRowAction<T>[];
   /** Actions rapides sur la sélection multiple. */
-  bulkActions?: BulkAction[];
+  bulkActions?: DataTableBulkAction[];
   /** Nombre de lignes par page au premier affichage. */
-  defaultPageSize?: number;
+  pageSizeDefault?: number;
   /** Options proposées pour le nombre de lignes par page. */
   pageSizeOptions?: number[];
   /** Réduit la hauteur des lignes pour un affichage compact. */

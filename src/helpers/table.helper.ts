@@ -1,5 +1,5 @@
 import type { FixedColumnOffset } from "@/hooks/ui/useFixedColumns";
-import type { ColumnDef } from "@/types";
+import type { DataTableColumn } from "@/types";
 import type React from "react";
 
 /* -------------------------------------------------------------------------- */
@@ -17,11 +17,11 @@ const ALIGNMENT_CLASSES: Record<ColumnAlignment, string> = {
 /**
  * Alignement horizontal d'une colonne, en-tête compris.
  *
- * `align` sur le `ColumnDef` fait autorité. À défaut, l'alignement est déduit de `className` :
+ * `align` sur le `DataTableColumn` fait autorité. À défaut, l'alignement est déduit de `className` :
  * poser `text-right` sur une colonne de nombres est le réflexe naturel, et l'en-tête doit suivre
  * ses cellules sans qu'on ait à le déclarer deux fois.
  */
-export function getColumnAlignment<T>(column: ColumnDef<T>): ColumnAlignment {
+export function getColumnAlignment<T>(column: DataTableColumn<T>): ColumnAlignment {
   if (column.align !== undefined) return column.align;
 
   const classes = (column.className ?? "").split(/\s+/);
@@ -39,7 +39,7 @@ export function getAlignmentClass(alignment: ColumnAlignment): string {
 /* Colonnes figées (sélection / actions)                                       */
 /* -------------------------------------------------------------------------- */
 
-/** Clés internes des deux colonnes qui n'ont pas de `ColumnDef` : la sélection et les actions. */
+/** Clés internes des deux colonnes qui n'ont pas de `DataTableColumn` : la sélection et les actions. */
 export const SELECTION_COLUMN_KEY = "__selection__";
 export const ACTIONS_COLUMN_KEY = "__actions__";
 

@@ -1,15 +1,15 @@
-import { BulkAction } from "./BulkAction";
-import { ColumnDef } from "./ColumnDef";
+import { DataTableBulkAction } from "./DataTableBulkAction";
+import { DataTableColumn } from "./DataTableColumn";
 import { DataTableServerState } from "./DataTableServerState";
-import { RowAction } from "./RowAction";
+import { DataTableRowAction } from "./DataTableRowAction";
 
 export interface UseDataTableProps<T> {
   data: T[];
-  columns: ColumnDef<T>[];
+  columns: DataTableColumn<T>[];
   rowKey: (row: T) => string;
-  defaultPageSize: number;
-  actions?: RowAction<T>[];
-  bulkActions?: BulkAction[];
+  pageSizeDefault: number;
+  actions?: DataTableRowAction<T>[];
+  bulkActions?: DataTableBulkAction[];
   columnVisibility?: boolean;
   server?: DataTableServerState;
 }

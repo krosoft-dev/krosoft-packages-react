@@ -1,5 +1,5 @@
 import type { FixedColumnOffset } from "@/hooks/ui/useFixedColumns";
-import { ColumnDef } from "@/types";
+import { DataTableColumn } from "@/types";
 import { ArrowDownIcon, ArrowUpDownIcon, ArrowUpIcon, GripVerticalIcon } from "lucide-react";
 import React from "react";
 import { useKrosoftTranslation } from "@/i18n";
@@ -11,7 +11,7 @@ export interface TableHeaderProps<T> {
   selectedRows: string[];
   totalItems: number;
   toggleSelectAll: () => void;
-  visibleColumnsArray: ColumnDef<T>[];
+  visibleColumnsArray: DataTableColumn<T>[];
   draggableColumns: boolean;
   resizableColumns: boolean;
   columnWidths: Record<string, number>;
@@ -69,7 +69,7 @@ export function TableHeader<T>({
     checkboxChecked = "indeterminate";
   }
 
-  const getSortIcon = (column: ColumnDef<T>): React.ReactNode => {
+  const getSortIcon = (column: DataTableColumn<T>): React.ReactNode => {
     if (column.sortable !== true) return null;
     if (sortColumn === column.key) {
       return sortDirection === "asc" ? <ArrowUpIcon className="size-3.5 text-foreground" /> : <ArrowDownIcon className="size-3.5 text-foreground" />;
@@ -77,7 +77,7 @@ export function TableHeader<T>({
     return <ArrowUpDownIcon className="size-3.5 text-muted-foreground/50 group-hover:text-muted-foreground transition-colors" />;
   };
 
-  const renderColumnHeader = (column: ColumnDef<T>, index: number, isDraggable?: boolean): React.ReactNode => {
+  const renderColumnHeader = (column: DataTableColumn<T>, index: number, isDraggable?: boolean): React.ReactNode => {
     // Déplacer une colonne figée la ferait passer d'un bord à l'autre ou au milieu de la pile :
     // le glisser-déposer est réservé aux colonnes qui défilent.
     const draggable = isDraggable !== false && column.fixed === undefined;
