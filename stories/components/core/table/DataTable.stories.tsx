@@ -128,7 +128,7 @@ type Story = StoryObj<typeof DataTable>;
 export const Default: Story = {
   args: {
     data: mockData,
-    config: { columns, getRowId: (row: UserData) => row.id },
+    config: { columns, rowKey: (row: UserData) => row.id },
   },
 };
 
@@ -137,7 +137,7 @@ export const WithRowClick: Story = {
     data: mockData,
     config: {
       columns,
-      getRowId: (row: UserData) => row.id,
+      rowKey: (row: UserData) => row.id,
       onRowClick: (row: UserData) => {
         console.warn(`Clicked on row: ${row.name}`);
       },
@@ -156,7 +156,7 @@ export const WithRowNavigate: Story = {
   },
   args: {
     data: mockData,
-    config: { columns, getRowId: (row: UserData) => row.id, onRowNavigate: (row: UserData) => `/users/${row.id}` },
+    config: { columns, rowKey: (row: UserData) => row.id, onRowNavigate: (row: UserData) => `/users/${row.id}` },
   },
 };
 
@@ -170,7 +170,7 @@ export const Dense: Story = {
   },
   args: {
     data: mockData,
-    config: { columns, getRowId: (row: UserData) => row.id, dense: true },
+    config: { columns, rowKey: (row: UserData) => row.id, dense: true },
   },
 };
 
@@ -184,7 +184,7 @@ export const NonDraggable: Story = {
   },
   args: {
     data: mockData,
-    config: { columns, getRowId: (row: UserData) => row.id, draggableColumns: false },
+    config: { columns, rowKey: (row: UserData) => row.id, draggableColumns: false },
   },
 };
 
@@ -198,7 +198,7 @@ export const NonResizable: Story = {
   },
   args: {
     data: mockData,
-    config: { columns, getRowId: (row: UserData) => row.id, resizableColumns: false },
+    config: { columns, rowKey: (row: UserData) => row.id, resizableColumns: false },
   },
 };
 
@@ -218,7 +218,7 @@ export const FlexibleColumnWidths: Story = {
   },
   args: {
     data: dataWithLongEmail,
-    config: { columns, getRowId: (row: UserData) => row.id },
+    config: { columns, rowKey: (row: UserData) => row.id },
   },
 };
 
@@ -233,7 +233,7 @@ export const WithResizableColumns: Story = {
   },
   args: {
     data: dataWithLongEmail,
-    config: { columns, getRowId: (row: UserData) => row.id, resizableColumns: true },
+    config: { columns, rowKey: (row: UserData) => row.id, resizableColumns: true },
   },
 };
 
@@ -250,7 +250,7 @@ export const WithActions: Story = {
     data: mockData,
     config: {
       columns,
-      getRowId: (row: UserData) => row.id,
+      rowKey: (row: UserData) => row.id,
       actions: [
         {
           labelKey: "Modifier",
@@ -285,7 +285,7 @@ export const WithOverflowActions: Story = {
     data: mockData,
     config: {
       columns,
-      getRowId: (row: UserData) => row.id,
+      rowKey: (row: UserData) => row.id,
       actions: [
         {
           labelKey: "Modifier",
@@ -328,7 +328,7 @@ export const WithConditionalActions: Story = {
     data: mockData,
     config: {
       columns,
-      getRowId: (row: UserData) => row.id,
+      rowKey: (row: UserData) => row.id,
       actions: [
         {
           labelKey: "Modifier",
@@ -357,7 +357,7 @@ export const WithBulkActions: Story = {
     data: mockData,
     config: {
       columns,
-      getRowId: (row: UserData) => row.id,
+      rowKey: (row: UserData) => row.id,
       bulkActions: [
         {
           labelKey: "Activate Selected",
@@ -382,21 +382,21 @@ export const WithBulkActions: Story = {
 export const WithNoData: Story = {
   args: {
     data: [],
-    config: { columns, getRowId: (row: UserData) => row.id },
+    config: { columns, rowKey: (row: UserData) => row.id },
   },
 };
 
 export const WithNoDataCustomMessage: Story = {
   args: {
     data: [],
-    config: { columns, getRowId: (row: UserData) => row.id, messages: { emptyKey: "Aucun utilisateur trouvé dans la base de données." } },
+    config: { columns, rowKey: (row: UserData) => row.id, messages: { emptyKey: "Aucun utilisateur trouvé dans la base de données." } },
   },
 };
 
 export const Loading: Story = {
   args: {
     data: [],
-    config: { columns, getRowId: (row: UserData) => row.id },
+    config: { columns, rowKey: (row: UserData) => row.id },
     isLoading: true,
   },
 };
@@ -404,7 +404,7 @@ export const Loading: Story = {
 export const WithError: Story = {
   args: {
     data: [],
-    config: { columns, getRowId: (row: UserData) => row.id },
+    config: { columns, rowKey: (row: UserData) => row.id },
     error: "Impossible de charger les données. Veuillez réessayer.",
   },
 };
@@ -412,7 +412,7 @@ export const WithError: Story = {
 export const CustomPageSize: Story = {
   args: {
     data: mockData50,
-    config: { columns, getRowId: (row: UserData) => row.id, defaultPageSize: 5, pageSizeOptions: [5, 10, 25, 50] },
+    config: { columns, rowKey: (row: UserData) => row.id, defaultPageSize: 5, pageSizeOptions: [5, 10, 25, 50] },
   },
 };
 
@@ -429,7 +429,7 @@ export const FullFeatured: Story = {
     data: mockData,
     config: {
       columns: columns.map(col => (col.key === "lastLogin" ? { ...col, className: "text-right text-muted-foreground" } : col)),
-      getRowId: (row: UserData) => row.id,
+      rowKey: (row: UserData) => row.id,
       onRowClick: (row: UserData) => {
         console.warn(`Clicked on row: ${row.name}`);
       },
@@ -484,7 +484,7 @@ export const WithoutColumnVisibility: Story = {
   },
   args: {
     data: mockData,
-    config: { columns, getRowId: (row: UserData) => row.id, columnVisibility: false },
+    config: { columns, rowKey: (row: UserData) => row.id, columnVisibility: false },
   },
 };
 
@@ -510,7 +510,7 @@ export const WithFixedColumns: Story = {
     data: mockData,
     config: {
       columns: wideColumns,
-      getRowId: (row: UserData) => row.id,
+      rowKey: (row: UserData) => row.id,
       fixedActions: true,
       columnVisibility: true,
       bulkActions: [
@@ -558,7 +558,7 @@ export const WithColumnClassName: Story = {
     data: mockData,
     config: {
       columns: columns.map(col => (col.key === "lastLogin" ? { ...col, className: "text-right text-muted-foreground" } : col)),
-      getRowId: (row: UserData) => row.id,
+      rowKey: (row: UserData) => row.id,
     },
   },
 };
@@ -580,7 +580,7 @@ export const WithAlignedColumns: Story = {
         if (col.key === "role") return { ...col, align: "center" as const };
         return col;
       }),
-      getRowId: (row: UserData) => row.id,
+      rowKey: (row: UserData) => row.id,
     },
   },
 };
@@ -596,7 +596,7 @@ export const WithSortableColumns: Story = {
   },
   args: {
     data: mockData,
-    config: { columns, getRowId: (row: UserData) => row.id },
+    config: { columns, rowKey: (row: UserData) => row.id },
   },
 };
 
@@ -610,7 +610,7 @@ export const AllSortable: Story = {
   },
   args: {
     data: mockData,
-    config: { columns: columns.map(col => ({ ...col, sortable: true })), getRowId: (row: UserData) => row.id },
+    config: { columns: columns.map(col => ({ ...col, sortable: true })), rowKey: (row: UserData) => row.id },
   },
 };
 
@@ -624,7 +624,7 @@ export const NoSortable: Story = {
   },
   args: {
     data: mockData,
-    config: { columns: columns.map(({ sortable: _sortable, ...col }) => col), getRowId: (row: UserData) => row.id },
+    config: { columns: columns.map(({ sortable: _sortable, ...col }) => col), rowKey: (row: UserData) => row.id },
   },
 };
 
@@ -681,7 +681,7 @@ const TranslatedHeadersDemo = (): React.JSX.Element => {
             </button>
           ))}
         </div>
-        <DataTable data={mockData} config={{ columns: translatedColumns, getRowId: (row: UserData) => row.id }} />
+        <DataTable data={mockData} config={{ columns: translatedColumns, rowKey: (row: UserData) => row.id }} />
       </div>
     </I18nextProvider>
   );
@@ -752,13 +752,13 @@ export const WithGetSortValue: Story = {
     docs: {
       description: {
         story:
-          "Par défaut, trier une colonne compare la valeur brute `row[column.key]`. `getSortValue` remplace cette valeur de comparaison, ligne par ligne. Deux cas où c'est indispensable : **Emails** contient un tableau — le tri se cale sur le premier email — et **Priorité** affiche un libellé dont l'ordre alphabétique (Faible < Haute < Moyenne) ne correspond pas à l'ordre métier — `getSortValue` renvoie un rang numérique à la place. Inutile quand `row[key]` est déjà la bonne valeur (string, nombre, date ISO), et sans effet en mode contrôlé (`onSortChange`), où le tri est délégué au parent.",
+          "Par défaut, trier une colonne compare la valeur brute `row[column.key]`. `getSortValue` remplace cette valeur de comparaison, ligne par ligne. Deux cas où c'est indispensable : **Emails** contient un tableau — le tri se cale sur le premier email — et **Priorité** affiche un libellé dont l'ordre alphabétique (Faible < Haute < Moyenne) ne correspond pas à l'ordre métier — `getSortValue` renvoie un rang numérique à la place. Inutile quand `row[key]` est déjà la bonne valeur (string, nombre, date ISO), et sans effet en mode contrôlé (`server.onSortChange`), où le tri est délégué au parent.",
       },
     },
   },
   args: {
     data: contacts,
-    config: { columns: contactColumns, getRowId: (row: ContactData) => row.id },
+    config: { columns: contactColumns, rowKey: (row: ContactData) => row.id },
   },
 };
 
@@ -772,7 +772,7 @@ export const FiftyRows: Story = {
   },
   args: {
     data: mockData50.slice(0, 50),
-    config: { columns, getRowId: (row: UserData) => row.id },
+    config: { columns, rowKey: (row: UserData) => row.id },
   },
 };
 
@@ -825,20 +825,23 @@ const ServerSideDataTableWrapper = (): React.JSX.Element => {
       </div>
       <DataTable
         data={data}
-        config={{ columns, getRowId: (row: UserData) => row.id, defaultPageSize: pageSize, pageSizeOptions: [5, 10, 20, 50] }}
+        config={{ columns, rowKey: (row: UserData) => row.id, pageSizeOptions: [5, 10, 20, 50] }}
         isLoading={isLoading}
-        totalRows={mockData50.length}
-        currentPage={currentPage}
-        onPageChange={setCurrentPage}
-        onPageSizeChange={size => {
-          setPageSize(size);
-          setCurrentPage(1);
-        }}
-        sortColumn={sortColumn}
-        sortDirection={sortDirection}
-        onSortChange={(col, dir) => {
-          setSortColumn(col);
-          setSortDirection(dir);
+        server={{
+          totalRows: mockData50.length,
+          currentPage,
+          pageSize,
+          onPageChange: setCurrentPage,
+          onPageSizeChange: size => {
+            setPageSize(size);
+            setCurrentPage(1);
+          },
+          sortColumn,
+          sortDirection,
+          onSortChange: (col, dir) => {
+            setSortColumn(col);
+            setSortDirection(dir);
+          },
         }}
       />
     </div>

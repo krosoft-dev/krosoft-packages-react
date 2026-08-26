@@ -14,7 +14,7 @@ export interface TableBodyProps<T> {
   colSpanCount: number;
   messages?: DataTableMessages;
   paginatedData: T[];
-  getRowId: (row: T) => string;
+  rowKey: (row: T) => string;
   onRowClick?: (row: T, event: React.MouseEvent<HTMLTableRowElement>) => void;
   onRowNavigate?: (row: T) => string; // Retourne l'URL de destination de la ligne au clic (prioritaire sur onRowClick)
   hasBulkActions: boolean;
@@ -38,7 +38,7 @@ export function TableBody<T>({
   colSpanCount,
   messages,
   paginatedData,
-  getRowId,
+  rowKey,
   onRowClick,
   onRowNavigate,
   hasBulkActions,
@@ -132,10 +132,10 @@ export function TableBody<T>({
   return (
     <tbody className="divide-y divide-border">
       {paginatedData.map(row => {
-        const rowId = getRowId(row);
+        const key = rowKey(row);
         return (
           <tr
-            key={rowId}
+            key={key}
             className={`group hover:bg-muted/50 transition-colors ${isRowClickable ? "cursor-pointer" : ""}`}
             onClick={e => {
               handleRowClick(row, e);
@@ -151,9 +151,9 @@ export function TableBody<T>({
               >
                 <div className="flex items-center justify-center">
                   <Checkbox
-                    checked={selectedRows.includes(rowId)}
+                    checked={selectedRows.includes(key)}
                     onCheckedChange={() => {
-                      toggleRowSelection(rowId);
+                      toggleRowSelection(key);
                     }}
                   />
                 </div>

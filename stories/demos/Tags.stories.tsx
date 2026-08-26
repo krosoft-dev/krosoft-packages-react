@@ -161,7 +161,7 @@ const TagsPage = (): React.JSX.Element => {
 
       <SearchInput searchQuery={recherche} placeholder="Rechercher un tag..." onSearch={setRecherche} />
 
-      <DataTable data={tagsFiltres} config={{ columns, getRowId: row => row.id, actions, columnVisibility: true, defaultPageSize: 10 }} />
+      <DataTable data={tagsFiltres} config={{ columns, rowKey: row => row.id, actions, columnVisibility: true, defaultPageSize: 10 }} />
 
       <FormDialog<Tag>
         open={open}

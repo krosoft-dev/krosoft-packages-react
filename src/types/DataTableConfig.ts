@@ -13,8 +13,8 @@ import type { RowAction } from "./RowAction";
 export interface DataTableConfig<T> {
   /** Définition des colonnes du tableau. */
   columns: ColumnDef<T>[];
-  /** Identifie chaque ligne de façon unique. */
-  getRowId: (row: T) => string;
+  /** Retourne la clé unique de la ligne (key React, sélection). */
+  rowKey: (row: T) => string;
   onRowClick?: (row: T, event: React.MouseEvent<HTMLTableRowElement>) => void;
   /** Retourne l'URL de destination de la ligne au clic (prioritaire sur onRowClick). */
   onRowNavigate?: (row: T) => string;

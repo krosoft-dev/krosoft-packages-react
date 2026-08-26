@@ -244,7 +244,7 @@ const FiltersAppDemo = (): React.JSX.Element => {
         data={resultats}
         config={{
           columns: COLUMNS,
-          getRowId: row => row.id,
+          rowKey: row => row.id,
           defaultPageSize: 10,
           pageSizeOptions: [5, 10, 25, 50],
           messages: { emptyKey: "Aucun client ne correspond aux filtres sélectionnés." },

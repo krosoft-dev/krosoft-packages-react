@@ -7,42 +7,18 @@ import { TableBulkActions } from "./TableBulkActions";
 import { TableHeader } from "./TableHeader";
 import { TablePagination } from "./TablePagination";
 import { TableSettings } from "./TableSettings";
-import type { DataTableConfig } from "../../../types";
+import type { DataTableConfig, DataTableServerState } from "../../../types";
 
 export interface DataTableProps<T> {
   data: T[];
   isLoading?: boolean; // Indique si les données sont en cours de chargement
   error?: string | null; // Message d'erreur affiché si le chargement des données a échoué
   config: DataTableConfig<T>; // Colonnes, identification/navigation des lignes, actions, pagination et options regroupées
-
-  // Server-side pagination
-  totalRows?: number;
-  currentPage?: number;
-  pageSize?: number;
-  onPageChange?: (page: number) => void;
-  onPageSizeChange?: (pageSize: number) => void;
-
-  // Server-side sorting
-  sortColumn?: string | null;
-  sortDirection?: "asc" | "desc";
-  onSortChange?: (column: string | null, direction: "asc" | "desc") => void;
+  server?: DataTableServerState; // État contrôlé server-side : sa présence active le mode server-side
 }
 
-export function DataTable<T>({
-  data,
-  isLoading = false,
-  error = null,
-  config,
-  totalRows,
-  currentPage,
-  pageSize: controlledPageSize,
-  onPageChange,
-  onPageSizeChange,
-  sortColumn: controlledSortColumn,
-  sortDirection: controlledSortDirection,
-  onSortChange,
-}: DataTableProps<T>): React.JSX.Element {
-  const { columns, getRowId, onRowClick, onRowNavigate, actions, bulkActions } = config;
+export function DataTable<T>({ data, isLoading = false, error = null, config, server }: DataTableProps<T>): React.JSX.Element {
+  const { columns, rowKey, onRowClick, onRowNavigate, actions, bulkActions } = config;
   const defaultPageSize = config.defaultPageSize ?? DEFAULT_PAGE_SIZE;
   const pageSizeOptions = config.pageSizeOptions ?? DEFAULT_PAGE_SIZE_OPTIONS;
   const dense = config.dense ?? false;
@@ -83,19 +59,12 @@ export function DataTable<T>({
   } = useDataTable({
     data,
     columns,
-    getRowId,
+    rowKey,
     defaultPageSize,
     actions,
     bulkActions,
     columnVisibility,
-    totalRows,
-    currentPage,
-    pageSize: controlledPageSize,
-    onPageChange,
-    onPageSizeChange,
-    sortColumn: controlledSortColumn,
-    sortDirection: controlledSortDirection,
-    onSortChange,
+    server,
   });
 
   // La case de sélection est toujours la première colonne : si une colonne est figée à gauche,
@@ -152,7 +121,7 @@ export function DataTable<T>({
               colSpanCount={colSpanCount}
               messages={config.messages}
               paginatedData={paginatedData}
-              getRowId={getRowId}
+              rowKey={rowKey}
               onRowClick={onRowClick}
               onRowNavigate={onRowNavigate}
               hasBulkActions={hasBulkActions}
@@ -170,7 +139,7 @@ export function DataTable<T>({
         </div>
 
         <TablePagination
-          totalItems={totalRows ?? data.length}
+          totalItems={server?.totalRows ?? data.length}
           startIndex={startIndex}
           endIndex={endIndex}
           pageSize={pageSize}

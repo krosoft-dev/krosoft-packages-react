@@ -31,7 +31,7 @@ const columns: ColumnDef<Row>[] = [
 type TableOverrides = Partial<Omit<React.ComponentProps<typeof DataTable<Row>>, "config">> & { config?: Partial<DataTableConfig<Row>> };
 
 const renderTable = ({ config, ...props }: TableOverrides = {}): HTMLElement => {
-  const { container } = render(<DataTable data={rows} config={{ columns, getRowId: (row: Row) => row.id, ...config }} {...props} />);
+  const { container } = render(<DataTable data={rows} config={{ columns, rowKey: (row: Row) => row.id, ...config }} {...props} />);
   return container;
 };
 
@@ -228,7 +228,7 @@ describe("DataTable — i18n", () => {
 
     const { container } = render(
       <I18nextProvider i18n={i18nInstance}>
-        <DataTable data={rows} config={{ columns, getRowId: (row: Row) => row.id, actions: [{ labelKey: "actions.edit", onClick: () => undefined }] }} />
+        <DataTable data={rows} config={{ columns, rowKey: (row: Row) => row.id, actions: [{ labelKey: "actions.edit", onClick: () => undefined }] }} />
       </I18nextProvider>,
     );
 
@@ -244,10 +244,7 @@ describe("DataTable — i18n", () => {
 
     const { container } = render(
       <I18nextProvider i18n={i18nInstance}>
-        <DataTable
-          data={rows}
-          config={{ columns, getRowId: (row: Row) => row.id, bulkActions: [{ labelKey: "actions.deleteAll", onClick: () => undefined }] }}
-        />
+        <DataTable data={rows} config={{ columns, rowKey: (row: Row) => row.id, bulkActions: [{ labelKey: "actions.deleteAll", onClick: () => undefined }] }} />
       </I18nextProvider>,
     );
 
@@ -277,7 +274,7 @@ describe("DataTable — i18n", () => {
               { key: "name", headerKey: "columns.name" },
               { key: "email", headerKey: "Email" },
             ],
-            getRowId: (row: Row) => row.id,
+            rowKey: (row: Row) => row.id,
           }}
         />
       </I18nextProvider>,
@@ -439,7 +436,7 @@ describe("DataTable — colonnes figées", () => {
         data={rows}
         config={{
           columns: columns.map(column => (column.fixed === "left" ? { ...column, fixed: undefined } : column)),
-          getRowId: (row: Row) => row.id,
+          rowKey: (row: Row) => row.id,
           bulkActions: [{ labelKey: "Supprimer", onClick: () => undefined }],
         }}
       />,
@@ -456,7 +453,7 @@ describe("DataTable — colonnes qui changent après le montage", () => {
   ];
 
   it("affiche une colonne ajoutée après coup, à sa place dans la liste", () => {
-    const { container, rerender } = render(<DataTable data={rows} config={{ columns: baseColumns, getRowId: (row: Row) => row.id }} />);
+    const { container, rerender } = render(<DataTable data={rows} config={{ columns: baseColumns, rowKey: (row: Row) => row.id }} />);
 
     expect(container.querySelector('thead th[data-column-key="role"]')).toBeNull();
 
@@ -467,7 +464,7 @@ describe("DataTable — colonnes qui changent après le montage", () => {
       { key: "role", headerKey: "Role" },
       { key: "email", headerKey: "Email" },
     ];
-    rerender(<DataTable data={rows} config={{ columns: withRole, getRowId: (row: Row) => row.id }} />);
+    rerender(<DataTable data={rows} config={{ columns: withRole, rowKey: (row: Row) => row.id }} />);
 
     expect(headerCell(container, "role").textContent).toContain("Role");
     expect(bodyCells(container, "role").map(cell => cell.textContent)).toEqual(["admin", "user"]);
@@ -478,11 +475,11 @@ describe("DataTable — colonnes qui changent après le montage", () => {
 
   it("retire une colonne disparue de la liste", () => {
     const withRole: ColumnDef<Row>[] = [...baseColumns, { key: "role", headerKey: "Role" }];
-    const { container, rerender } = render(<DataTable data={rows} config={{ columns: withRole, getRowId: (row: Row) => row.id }} />);
+    const { container, rerender } = render(<DataTable data={rows} config={{ columns: withRole, rowKey: (row: Row) => row.id }} />);
 
     expect(headerCell(container, "role").textContent).toContain("Role");
 
-    rerender(<DataTable data={rows} config={{ columns: baseColumns, getRowId: (row: Row) => row.id }} />);
+    rerender(<DataTable data={rows} config={{ columns: baseColumns, rowKey: (row: Row) => row.id }} />);
 
     expect(container.querySelector('thead th[data-column-key="role"]')).toBeNull();
   });
@@ -492,12 +489,12 @@ describe("DataTable — colonnes qui changent après le montage", () => {
       { key: "name", headerKey: "Name" },
       { key: "email", headerKey: "Email", defaultVisible: false },
     ];
-    const { container, rerender } = render(<DataTable data={rows} config={{ columns: hideableColumns, getRowId: (row: Row) => row.id }} />);
+    const { container, rerender } = render(<DataTable data={rows} config={{ columns: hideableColumns, rowKey: (row: Row) => row.id }} />);
 
     // « email » démarre masquée (defaultVisible: false).
     expect(container.querySelector('thead th[data-column-key="email"]')).toBeNull();
 
-    rerender(<DataTable data={rows} config={{ columns: [...hideableColumns, { key: "role", headerKey: "Role" }], getRowId: (row: Row) => row.id }} />);
+    rerender(<DataTable data={rows} config={{ columns: [...hideableColumns, { key: "role", headerKey: "Role" }], rowKey: (row: Row) => row.id }} />);
 
     // La nouvelle colonne s'affiche, la masquée le reste.
     expect(headerCell(container, "role").textContent).toContain("Role");

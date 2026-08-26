@@ -34,7 +34,7 @@ const UseDataTableDemo = ({ defaultPageSize }: { defaultPageSize: number }): Rea
   const table = useDataTable<User>({
     data: sampleData,
     columns,
-    getRowId: row => row.id,
+    rowKey: row => row.id,
     defaultPageSize,
   });
 

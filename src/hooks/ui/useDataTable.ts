@@ -32,20 +32,23 @@ const applyColumnOrder = <T>(order: string[], columns: ColumnDef<T>[]): ColumnDe
 export function useDataTable<T>({
   data,
   columns,
-  getRowId,
+  rowKey,
   defaultPageSize,
   actions,
   bulkActions,
   columnVisibility = true,
-  totalRows,
-  currentPage: controlledCurrentPage,
-  pageSize: controlledPageSize,
-  onPageChange,
-  onPageSizeChange,
-  sortColumn: controlledSortColumn,
-  sortDirection: controlledSortDirection,
-  onSortChange,
+  server,
 }: UseDataTableProps<T>): UseDataTableResult<T> {
+  const {
+    totalRows,
+    currentPage: controlledCurrentPage,
+    pageSize: controlledPageSize,
+    onPageChange,
+    onPageSizeChange,
+    sortColumn: controlledSortColumn,
+    sortDirection: controlledSortDirection,
+    onSortChange,
+  } = server ?? {};
   const [localSortColumn, setLocalSortColumn] = useState<string | null>(columns.find(col => col.sortable === true)?.key ?? null);
   const sortColumn = controlledSortColumn !== undefined ? controlledSortColumn : localSortColumn;
 
@@ -273,7 +276,7 @@ export function useDataTable<T>({
 
   const toggleRowSelection = (id: string): void => {
     if (selectedRows.includes(id)) {
-      setSelectedRows(selectedRows.filter(rowId => rowId !== id));
+      setSelectedRows(selectedRows.filter(key => key !== id));
     } else {
       setSelectedRows([...selectedRows, id]);
     }
@@ -283,7 +286,7 @@ export function useDataTable<T>({
     if (selectedRows.length === data.length) {
       setSelectedRows([]);
     } else {
-      setSelectedRows(data.map(item => getRowId(item)));
+      setSelectedRows(data.map(item => rowKey(item)));
     }
   };
 

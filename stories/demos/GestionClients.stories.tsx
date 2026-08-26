@@ -217,7 +217,7 @@ const GestionClientsPage = (): React.JSX.Element => {
         actions={[{ labelKey: "Nouveau client", icon: PlusIcon, onClick: ouvrirCreation }]}
       />
 
-      <DataTable data={clients} config={{ columns, getRowId: row => row.id, onRowClick: ouvrirFiche, columnVisibility: false, defaultPageSize: 10 }} />
+      <DataTable data={clients} config={{ columns, rowKey: row => row.id, onRowClick: ouvrirFiche, columnVisibility: false, defaultPageSize: 10 }} />
 
       <FormDialog<Client>
         open={open}
