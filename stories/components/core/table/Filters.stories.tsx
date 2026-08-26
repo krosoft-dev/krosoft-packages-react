@@ -94,17 +94,17 @@ const TableFilterStoryWrapper = (): React.ReactElement => {
 
   const sections: FilterSection<UserFilters>[] = [
     {
-      title: "Détails de l'utilisateur",
+      titleKey: "Détails de l'utilisateur",
       filters: [
         {
           key: "name",
-          label: "Nom complet",
+          labelKey: "Nom complet",
           type: "text" as const,
           placeholder: "Ex: Jean Dupont...",
         },
         {
           key: "role",
-          label: "Rôle",
+          labelKey: "Rôle",
           type: "multi-select" as const,
           isQuickFilter: true,
           searchable: true,
@@ -120,7 +120,7 @@ const TableFilterStoryWrapper = (): React.ReactElement => {
         },
         {
           key: "status",
-          label: "Statut",
+          labelKey: "Statut",
           type: "select" as const,
           searchable: true,
           searchPlaceholder: "Rechercher un statut...",
@@ -136,17 +136,17 @@ const TableFilterStoryWrapper = (): React.ReactElement => {
       ],
     },
     {
-      title: "Paramètres temporels et budget",
+      titleKey: "Paramètres temporels et budget",
       filters: [
         {
           key: "lastLogin",
-          label: "Dernière connexion",
+          labelKey: "Dernière connexion",
           type: "date" as const,
           placeholder: "Choisir une date",
         },
         {
           key: "budget",
-          label: "Budget Max",
+          labelKey: "Budget Max",
           type: "number" as const,
           placeholder: "Entrer le budget...",
           min: 0,

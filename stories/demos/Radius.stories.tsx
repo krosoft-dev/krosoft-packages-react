@@ -8,11 +8,11 @@ import type { FilterSection } from "@/types/FilterSection";
 
 const SECTIONS: FilterSection[] = [
   {
-    title: "Identité",
+    titleKey: "Identité",
     filters: [
       {
         key: "statut",
-        label: "Statut",
+        labelKey: "Statut",
         type: "multi-select",
         placeholder: "Tous les statuts",
         options: [
@@ -24,7 +24,7 @@ const SECTIONS: FilterSection[] = [
       },
       {
         key: "villes",
-        label: "Ville",
+        labelKey: "Ville",
         type: "multi-select",
         placeholder: "Toutes les villes",
         options: [
@@ -38,7 +38,7 @@ const SECTIONS: FilterSection[] = [
       },
       {
         key: "nom",
-        label: "Nom",
+        labelKey: "Nom",
         type: "text",
         placeholder: "Rechercher par nom...",
       },

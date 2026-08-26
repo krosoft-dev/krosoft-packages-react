@@ -81,11 +81,11 @@ const CLIENTS: Client[] = Array.from({ length: 48 }, (_, index) => {
 
 const SECTIONS: FilterSection[] = [
   {
-    title: "Qualification",
+    titleKey: "Qualification",
     filters: [
       {
         key: "statut",
-        label: "Statut",
+        labelKey: "Statut",
         type: "multi-select",
         placeholder: "Tous les statuts",
         options: STATUTS.map(s => ({ value: s, label: STATUT_LABELS[s] })),
@@ -93,7 +93,7 @@ const SECTIONS: FilterSection[] = [
       },
       {
         key: "villes",
-        label: "Ville",
+        labelKey: "Ville",
         type: "multi-select",
         placeholder: "Toutes les villes",
         options: VILLES.map(v => ({ value: v, label: VILLE_LABELS[v] })),
@@ -103,7 +103,7 @@ const SECTIONS: FilterSection[] = [
       },
       {
         key: "secteur",
-        label: "Secteur",
+        labelKey: "Secteur",
         type: "select",
         placeholder: "Tous les secteurs",
         options: SECTEURS.map(s => ({ value: s, label: SECTEUR_LABELS[s] })),
@@ -111,15 +111,15 @@ const SECTIONS: FilterSection[] = [
     ],
   },
   {
-    title: "Financier",
+    titleKey: "Financier",
     filters: [
-      { key: "budgetMin", label: "Budget minimum", type: "number", placeholder: "0", min: 0 },
-      { key: "budgetMax", label: "Budget maximum", type: "number", placeholder: "500 000" },
+      { key: "budgetMin", labelKey: "Budget minimum", type: "number", placeholder: "0", min: 0 },
+      { key: "budgetMax", labelKey: "Budget maximum", type: "number", placeholder: "500 000" },
     ],
   },
   {
-    title: "Dates",
-    filters: [{ key: "dateCreation", label: "Créé depuis le", type: "date", placeholder: "Sélectionner une date" }],
+    titleKey: "Dates",
+    filters: [{ key: "dateCreation", labelKey: "Créé depuis le", type: "date", placeholder: "Sélectionner une date" }],
   },
 ];
 

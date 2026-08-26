@@ -50,6 +50,12 @@
   "filters": {
     "advanced": "Advanced filters",
     "more": "More filters",
+    "active": "Active filters:",
+    "apply": "Search",
+    "clear": "Clear filters",
+    "clearAll": "Clear all",
+    "selectAll": "Select all",
+    "deselectAll": "Deselect all",
     "yes": "Yes",
     "no": "No"
   },
@@ -68,7 +74,9 @@
     "previousPage": "Previous page",
     "nextPage": "Next page",
     "selectedCount": "{{count}} selected",
-    "clearSelection": "Clear selection"
+    "clearSelection": "Clear selection",
+    "rangeOfTotal": "{{range}} of {{total}}",
+    "perPage": "{{count}} / page"
   },
   "sidebar": {
     "menu": "Navigation menu",

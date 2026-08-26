@@ -26,7 +26,7 @@ type Story = StoryObj<typeof FilterField>;
 export const TypeText: Story = {
   render: () => {
     const [value, setValue] = useState("");
-    const field: FilterFieldConfig = { key: "nom", label: "Nom", type: "text", placeholder: "Rechercher par nom..." };
+    const field: FilterFieldConfig = { key: "nom", labelKey: "Nom", type: "text", placeholder: "Rechercher par nom..." };
     return <FilterField field={field} value={value} onChange={v => setValue(v as string)} onToggleMultiSelect={() => {}} />;
   },
 };
@@ -34,7 +34,7 @@ export const TypeText: Story = {
 export const TypeNumber: Story = {
   render: () => {
     const [value, setValue] = useState("");
-    const field: FilterFieldConfig = { key: "budget", label: "Budget", type: "number", placeholder: "0", min: 0, max: 1000000 };
+    const field: FilterFieldConfig = { key: "budget", labelKey: "Budget", type: "number", placeholder: "0", min: 0, max: 1000000 };
     return <FilterField field={field} value={value} onChange={v => setValue(v as string)} onToggleMultiSelect={() => {}} />;
   },
 };
@@ -44,7 +44,7 @@ export const TypeSelect: Story = {
     const [value, setValue] = useState("");
     const field: FilterFieldConfig = {
       key: "statut",
-      label: "Statut",
+      labelKey: "Statut",
       type: "select",
       placeholder: "Tous les statuts",
       options: [
@@ -62,7 +62,7 @@ export const TypeSelectSearchable: Story = {
     const [value, setValue] = useState<string | undefined>(undefined);
     const field: FilterFieldConfig = {
       key: "pays",
-      label: "Pays",
+      labelKey: "Pays",
       type: "select",
       placeholder: "Sélectionner un pays",
       searchable: true,
@@ -83,7 +83,7 @@ export const TypeSelectSearchable: Story = {
 export const TypeDate: Story = {
   render: () => {
     const [value, setValue] = useState<Date | undefined>(undefined);
-    const field: FilterFieldConfig = { key: "dateCreation", label: "Date de création", type: "date", placeholder: "Sélectionner une date" };
+    const field: FilterFieldConfig = { key: "dateCreation", labelKey: "Date de création", type: "date", placeholder: "Sélectionner une date" };
     return <FilterField field={field} value={value} onChange={v => setValue(v as Date)} onToggleMultiSelect={() => {}} />;
   },
 };
@@ -91,7 +91,7 @@ export const TypeDate: Story = {
 export const TypeDateRange: Story = {
   render: () => {
     const [value, setValue] = useState<DateRange | undefined>(undefined);
-    const field: FilterFieldConfig = { key: "periode", label: "Période", type: "date-range", placeholder: "Sélectionner une période" };
+    const field: FilterFieldConfig = { key: "periode", labelKey: "Période", type: "date-range", placeholder: "Sélectionner une période" };
     return <FilterField field={field} value={value} onChange={v => setValue(v as DateRange)} onToggleMultiSelect={() => {}} />;
   },
 };
@@ -104,7 +104,7 @@ export const TypeMultiSelect: Story = {
     };
     const field: FilterFieldConfig = {
       key: "villes",
-      label: "Villes",
+      labelKey: "Villes",
       type: "multi-select",
       placeholder: "Toutes les villes",
       options: [
@@ -127,7 +127,7 @@ export const TypeMultiSelectSearchable: Story = {
     };
     const field: FilterFieldConfig = {
       key: "villes",
-      label: "Villes",
+      labelKey: "Villes",
       type: "multi-select",
       placeholder: "Toutes les villes",
       searchable: true,
@@ -168,7 +168,7 @@ export const AllTypes: Story = {
             label: "Texte",
             el: (
               <FilterField
-                field={{ key: "t", label: "Texte", type: "text", placeholder: "..." }}
+                field={{ key: "t", labelKey: "Texte", type: "text", placeholder: "..." }}
                 value={text}
                 onChange={v => setText(v as string)}
                 onToggleMultiSelect={() => {}}
@@ -179,7 +179,7 @@ export const AllTypes: Story = {
             label: "Nombre",
             el: (
               <FilterField
-                field={{ key: "n", label: "Nombre", type: "number", placeholder: "0" }}
+                field={{ key: "n", labelKey: "Nombre", type: "number", placeholder: "0" }}
                 value={number}
                 onChange={v => setNumber(v as string)}
                 onToggleMultiSelect={() => {}}
@@ -190,7 +190,7 @@ export const AllTypes: Story = {
             label: "Select",
             el: (
               <FilterField
-                field={{ key: "s", label: "Select", type: "select", placeholder: "Choisir", options: OPTIONS }}
+                field={{ key: "s", labelKey: "Select", type: "select", placeholder: "Choisir", options: OPTIONS }}
                 value={select}
                 onChange={v => setSelect(v as string)}
                 onToggleMultiSelect={() => {}}
@@ -201,7 +201,7 @@ export const AllTypes: Story = {
             label: "Date",
             el: (
               <FilterField
-                field={{ key: "d", label: "Date", type: "date", placeholder: "Sélectionner" }}
+                field={{ key: "d", labelKey: "Date", type: "date", placeholder: "Sélectionner" }}
                 value={date}
                 onChange={v => setDate(v as Date)}
                 onToggleMultiSelect={() => {}}
@@ -212,7 +212,7 @@ export const AllTypes: Story = {
             label: "Multi-select",
             el: (
               <FilterField
-                field={{ key: "m", label: "Multi", type: "multi-select", placeholder: "Choisir", options: OPTIONS }}
+                field={{ key: "m", labelKey: "Multi", type: "multi-select", placeholder: "Choisir", options: OPTIONS }}
                 value={multi}
                 onChange={v => setMulti(v as string[])}
                 onToggleMultiSelect={v => setMulti(prev => (prev.includes(v) ? prev.filter(x => x !== v) : [...prev, v]))}

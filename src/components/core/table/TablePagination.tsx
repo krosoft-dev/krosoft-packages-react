@@ -67,7 +67,10 @@ export function TablePagination({
   return (
     <div className="px-4 py-2 border-t border-border flex flex-col sm:grid sm:grid-cols-3 items-center gap-2 bg-muted/50">
       <div className="text-sm text-muted-foreground justify-self-start">
-        {totalItems === 0 ? "0" : `${String(startIndex + 1)} - ${String(endIndex)}`} sur {totalItems}
+        {t("table.rangeOfTotal", {
+          range: totalItems === 0 ? "0" : `${String(startIndex + 1)} - ${String(endIndex)}`,
+          total: totalItems,
+        })}
       </div>
 
       <div className="flex items-center justify-center gap-1">
@@ -137,7 +140,7 @@ export function TablePagination({
           <SelectContent>
             {pageSizeOptions.map(option => (
               <SelectItem key={option} value={String(option)}>
-                {option} / page
+                {t("table.perPage", { count: option })}
               </SelectItem>
             ))}
           </SelectContent>

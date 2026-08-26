@@ -11,7 +11,7 @@ export interface FilterOption {
 }
 
 export function SearchableFilterPill<T extends string>({
-  label,
+  labelKey,
   options,
   selected,
   onToggle,
@@ -20,7 +20,7 @@ export function SearchableFilterPill<T extends string>({
   searchable = false,
   searchPlaceholder,
 }: {
-  label: string;
+  labelKey: string;
   options: FilterOption[];
   selected: T[];
   onToggle: (value: T) => void;
@@ -88,7 +88,7 @@ export function SearchableFilterPill<T extends string>({
             isActive ? "border-primary bg-primary/10 text-primary font-medium" : "hover:bg-muted",
           )}
         >
-          {label}
+          {t(labelKey)}
           {selected.length > 0 && (
             <span className="flex h-4 min-w-[16px] items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-primary-foreground">
               {selected.length}
@@ -118,7 +118,7 @@ export function SearchableFilterPill<T extends string>({
           {filteredOptions.length > 0 && (
             <label className="flex items-center gap-2.5 rounded-md px-2 py-2 text-sm hover:bg-muted cursor-pointer transition-colors">
               <Checkbox checked={isAllSelected} onCheckedChange={handleToggleAll} />
-              Tout sélectionner
+              {t("filters.selectAll")}
             </label>
           )}
           {filteredOptions.length === 0 && <p className="px-2 py-3 text-center text-xs text-muted-foreground">{t("states.noResult")}</p>}
@@ -149,7 +149,7 @@ export function SearchableFilterPill<T extends string>({
               }}
               className="w-full rounded-md px-2 py-1.5 text-xs text-muted-foreground hover:text-foreground hover:bg-muted transition-colors text-center"
             >
-              Tout désélectionner
+              {t("filters.deselectAll")}
             </button>
           </div>
         )}

@@ -4,7 +4,7 @@ import { SearchableFilterPill, type FilterOption } from "@/components/core/filte
 
 // Wrapper pour résoudre le type générique avec Storybook
 type SearchableFilterPillStringProps = {
-  label: string;
+  labelKey: string;
   options: FilterOption[];
   selected: string[];
   onToggle: (value: string) => void;
@@ -52,7 +52,7 @@ const meta: Meta<typeof SearchableFilterPillString> = {
     ),
   ],
   args: {
-    label: "Statut",
+    labelKey: "Statut",
     options: STATUTS,
     selected: [],
     onToggle: () => {},
@@ -78,7 +78,7 @@ export const AllSelected: Story = {
 
 export const Searchable: Story = {
   args: {
-    label: "Ville",
+    labelKey: "Ville",
     options: VILLES,
     selected: ["paris"],
     searchable: true,
@@ -88,7 +88,7 @@ export const Searchable: Story = {
 
 export const WithColors: Story = {
   args: {
-    label: "Statut",
+    labelKey: "Statut",
     options: STATUTS_COLORES,
     selected: ["disponible"],
   },
@@ -100,7 +100,7 @@ export const WithColorsInteractive: Story = {
     return (
       <div className="pb-64 space-y-4">
         <SearchableFilterPill<string>
-          label="Statut"
+          labelKey="Statut"
           options={STATUTS_COLORES}
           selected={selected}
           onToggle={v => {
@@ -123,7 +123,7 @@ export const Interactive: Story = {
     return (
       <div className="pb-64 space-y-4">
         <SearchableFilterPill<string>
-          label="Statut"
+          labelKey="Statut"
           options={STATUTS}
           selected={selected}
           onToggle={v => {
@@ -148,7 +148,7 @@ export const MultiplePills: Story = {
       <div className="pb-64 space-y-4">
         <div className="flex flex-wrap gap-2">
           <SearchableFilterPill<string>
-            label="Statut"
+            labelKey="Statut"
             options={STATUTS}
             selected={statuts}
             onToggle={v => {
@@ -160,7 +160,7 @@ export const MultiplePills: Story = {
             onSelectAll={setStatuts}
           />
           <SearchableFilterPill<string>
-            label="Ville"
+            labelKey="Ville"
             options={VILLES}
             selected={villes}
             onToggle={v => {
