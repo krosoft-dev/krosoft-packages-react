@@ -2,14 +2,16 @@ import React from "react";
 import { Button } from "../../ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../../ui/dropdown-menu";
 import { MoreVerticalIcon } from "lucide-react";
-import { RowAction } from "@/types/RowAction";
+import { useKrosoftTranslation } from "@/i18n";
+import { DataTableRowAction } from "@/types/DataTableRowAction";
 
 export interface TableActionsProps<T> {
-  actions: RowAction<T>[];
+  actions: DataTableRowAction<T>[];
   row: T;
 }
 
 export function TableActions<T>({ actions, row }: TableActionsProps<T>): React.JSX.Element | null {
+  const { t } = useKrosoftTranslation();
   const visibleActions = actions.filter(action => action.visible === undefined || action.visible(row));
 
   if (visibleActions.length === 0) {
@@ -36,7 +38,7 @@ export function TableActions<T>({ actions, row }: TableActionsProps<T>): React.J
             }}
           >
             {Icon !== undefined && <Icon className="size-3.5" />}
-            {action.label}
+            {t(action.labelKey)}
           </Button>
         );
       })}
@@ -69,7 +71,7 @@ export function TableActions<T>({ actions, row }: TableActionsProps<T>): React.J
                       <Icon className="size-4" />
                     </span>
                   )}
-                  {action.label}
+                  {t(action.labelKey)}
                 </DropdownMenuItem>
               );
             })}

@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/helpers/tailwind.helper";
 import React from "react";
-import { useTranslation } from "react-i18next";
+import { useKrosoftTranslation } from "@/i18n";
 
 interface DashboardCardProps {
   titleKey: string;
@@ -11,7 +11,7 @@ interface DashboardCardProps {
 }
 
 export const DashboardCard = ({ titleKey, icon: Icon, className, children }: DashboardCardProps) => {
-  const { t } = useTranslation();
+  const { t } = useKrosoftTranslation();
   return (
     <Card className={cn("bg-gray-50 dark:bg-gray-950", className)}>
       <CardHeader>

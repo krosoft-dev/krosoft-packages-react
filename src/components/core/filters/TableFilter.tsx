@@ -31,7 +31,7 @@ export function TableFilter<T extends Record<string, unknown> = Record<string, u
   filters,
   onFiltersChange,
   sections,
-  advancedButtonText = "Filtres",
+  advancedButtonText,
   sheetTitle,
 }: TableFilterProps<T>): React.ReactElement {
   const { t } = useKrosoftTranslation();
@@ -84,13 +84,13 @@ export function TableFilter<T extends Record<string, unknown> = Record<string, u
 
   // Extraire dynamiquement les filtres rapides de l'ensemble des sections
   const quickFilters = useMemo(() => {
-    const list: { key: keyof T; label: string; options: FilterOption[]; searchable?: boolean; searchPlaceholder?: string }[] = [];
+    const list: { key: keyof T; labelKey: string; options: FilterOption[]; searchable?: boolean; searchPlaceholder?: string }[] = [];
     sections.forEach(sec => {
       sec.filters.forEach(f => {
         if (f.isQuickFilter === true) {
           list.push({
             key: f.key,
-            label: f.label,
+            labelKey: f.labelKey,
             options: f.options ?? [],
             searchable: f.searchable,
             searchPlaceholder: f.searchPlaceholder,
@@ -101,12 +101,12 @@ export function TableFilter<T extends Record<string, unknown> = Record<string, u
     return list;
   }, [sections]);
 
-  // Libellés résolus pour l'affichage des filtres actifs
-  const FilterLabels = useMemo(() => {
+  // Clés i18n des libellés pour l'affichage des filtres actifs
+  const filterLabelKeys = useMemo(() => {
     const labels: Record<string, string> = {};
     sections.forEach(sec => {
       sec.filters.forEach(f => {
-        labels[f.key as string] = f.badgeLabel ?? f.label;
+        labels[f.key as string] = f.badgeLabelKey ?? f.labelKey;
       });
     });
     return labels;
@@ -146,7 +146,7 @@ export function TableFilter<T extends Record<string, unknown> = Record<string, u
           {quickFilters.map(q => (
             <SearchableFilterPill
               key={q.key as string}
-              label={q.label}
+              labelKey={q.labelKey}
               options={q.options}
               selected={Array.isArray(filters[q.key]) ? (filters[q.key] as string[]) : []}
               onToggle={value => {
@@ -175,7 +175,7 @@ export function TableFilter<T extends Record<string, unknown> = Record<string, u
         filters={filters}
         onRemoveFilter={handleRemoveActiveFilter}
         onClearAll={handleClearAllFilters}
-        filterLabels={FilterLabels}
+        filterLabelKeys={filterLabelKeys}
         optionLabels={optionLabels}
       />
     </div>

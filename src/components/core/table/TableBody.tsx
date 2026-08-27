@@ -1,10 +1,9 @@
 import { Checkbox } from "@/components/ui";
 import type { FixedColumnOffset } from "@/hooks/ui/useFixedColumns";
 import { useKrosoftTranslation } from "@/i18n";
-import { ColumnDef, DataTableMessages, RowAction } from "@/types";
+import { DataTableColumn, DataTableMessages, DataTableRowAction } from "@/types";
 import { AlertTriangleIcon, Loader2Icon } from "lucide-react";
 import React from "react";
-import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { TableActions } from "./TableActions";
 import { ACTIONS_COLUMN_KEY, getAlignmentClass, getColumnAlignment, getFixedCellProps, SELECTION_COLUMN_KEY } from "@/helpers/table.helper";
@@ -15,17 +14,17 @@ export interface TableBodyProps<T> {
   colSpanCount: number;
   messages?: DataTableMessages;
   paginatedData: T[];
-  getRowId: (row: T) => string;
+  rowKey: (row: T) => string;
   onRowClick?: (row: T, event: React.MouseEvent<HTMLTableRowElement>) => void;
   onRowNavigate?: (row: T) => string; // Retourne l'URL de destination de la ligne au clic (prioritaire sur onRowClick)
   hasBulkActions: boolean;
   selectedRows: string[];
   toggleRowSelection: (id: string) => void;
-  visibleColumnsArray: ColumnDef<T>[];
+  visibleColumnsArray: DataTableColumn<T>[];
   columnWidths: Record<string, number>;
   hasActions: boolean;
-  actions?: RowAction<T>[];
-  columns: ColumnDef<T>[];
+  actions?: DataTableRowAction<T>[];
+  columns: DataTableColumn<T>[];
   bordered?: boolean;
   dense?: boolean;
   resizableColumns?: boolean;
@@ -39,7 +38,7 @@ export function TableBody<T>({
   colSpanCount,
   messages,
   paginatedData,
-  getRowId,
+  rowKey,
   onRowClick,
   onRowNavigate,
   hasBulkActions,
@@ -56,11 +55,8 @@ export function TableBody<T>({
   fixedColumns = {},
 }: TableBodyProps<T>): React.JSX.Element {
   const { t } = useKrosoftTranslation();
-  // Les clés fournies par l'app sont résolues dans son namespace (comme labelKey/titleKey),
-  // tandis que `t` (namespace krosoft) porte les libellés par défaut du package.
-  const { t: tApp } = useTranslation();
-  const loadingText = messages?.loadingKey ? tApp(messages.loadingKey) : t("states.loading");
-  const emptyText = messages?.emptyKey ? tApp(messages.emptyKey) : t("states.noResult");
+  const loadingText = t(messages?.loadingKey ?? "states.loading");
+  const emptyText = t(messages?.emptyKey ?? "states.noResult");
   const navigate = useNavigate();
   const renderCellValue = (row: T, columnKey: string): React.ReactNode => {
     const columnDef = columns.find(col => col.key === columnKey);
@@ -136,10 +132,10 @@ export function TableBody<T>({
   return (
     <tbody className="divide-y divide-border">
       {paginatedData.map(row => {
-        const rowId = getRowId(row);
+        const key = rowKey(row);
         return (
           <tr
-            key={rowId}
+            key={key}
             className={`group hover:bg-muted/50 transition-colors ${isRowClickable ? "cursor-pointer" : ""}`}
             onClick={e => {
               handleRowClick(row, e);
@@ -155,9 +151,9 @@ export function TableBody<T>({
               >
                 <div className="flex items-center justify-center">
                   <Checkbox
-                    checked={selectedRows.includes(rowId)}
+                    checked={selectedRows.includes(key)}
                     onCheckedChange={() => {
-                      toggleRowSelection(rowId);
+                      toggleRowSelection(key);
                     }}
                   />
                 </div>

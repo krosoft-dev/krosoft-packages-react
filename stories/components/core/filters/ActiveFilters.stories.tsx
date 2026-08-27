@@ -19,7 +19,7 @@ export const Default: Story = {
       statut: "actif",
       ville: "paris",
     },
-    filterLabels: {
+    filterLabelKeys: {
       statut: "Statut",
       ville: "Ville",
     },
@@ -36,7 +36,7 @@ export const WithArrayValues: Story = {
       statut: ["actif", "prospect"],
       typesBien: ["appartement", "maison"],
     },
-    filterLabels: {
+    filterLabelKeys: {
       statut: "Statut",
       typesBien: "Type de bien",
     },
@@ -55,7 +55,7 @@ export const WithSpecialFormatting: Story = {
       budgetMax: "500000",
       surfaceMin: "80",
     },
-    filterLabels: {
+    filterLabelKeys: {
       budgetMax: "Budget max",
       surfaceMin: "Surface min",
     },
@@ -68,7 +68,7 @@ export const WithDate: Story = {
       dateCreation: new Date("2024-06-15"),
       statut: "actif",
     },
-    filterLabels: {
+    filterLabelKeys: {
       dateCreation: "Date de création",
       statut: "Statut",
     },
@@ -87,7 +87,7 @@ export const ManyFilters: Story = {
       surfaceMin: "60",
       typesBien: ["appartement", "studio"],
     },
-    filterLabels: {
+    filterLabelKeys: {
       statut: "Statut",
       ville: "Ville",
       budgetMax: "Budget max",

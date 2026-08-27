@@ -1,6 +1,6 @@
 import { formatNumber } from "@krosoft/core/helpers";
 import React from "react";
-import { useTranslation } from "react-i18next";
+import { useKrosoftTranslation } from "@/i18n";
 import { cn } from "@/helpers/tailwind.helper";
 import { Card, CardContent, CardHeader, CardTitle } from "../../ui";
 import { Skeleton } from "../../ui";
@@ -30,7 +30,7 @@ export const KpiCard = ({
   isLoading,
   error,
 }: KpiCardProps): React.ReactElement => {
-  const { t } = useTranslation();
+  const { t } = useKrosoftTranslation();
 
   return (
     <Card className={cn(onClick !== undefined ? "hover:border-primary cursor-pointer" : "")} onClick={onClick}>

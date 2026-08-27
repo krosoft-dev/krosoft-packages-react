@@ -4,9 +4,9 @@ import React, { useMemo, useState } from "react";
 import { KpiCards } from "@/components/core/cards/KpiCards";
 import { TableFilter } from "@/components/core/filters/TableFilter";
 import { AppPageHeader } from "@/components/core/layouts/AppPageHeader";
-import { ColumnDef, DataTable } from "@/components/core/table/DataTable";
+import { DataTable } from "@/components/core/table/DataTable";
 import { Badge } from "@/components/ui/badge";
-import type { FilterSection } from "@/types/FilterSection";
+import type { DataTableColumn, FilterSection } from "@/types";
 
 // --- Modèle de données de démonstration -------------------------------------
 
@@ -81,11 +81,11 @@ const CLIENTS: Client[] = Array.from({ length: 48 }, (_, index) => {
 
 const SECTIONS: FilterSection[] = [
   {
-    title: "Qualification",
+    titleKey: "Qualification",
     filters: [
       {
         key: "statut",
-        label: "Statut",
+        labelKey: "Statut",
         type: "multi-select",
         placeholder: "Tous les statuts",
         options: STATUTS.map(s => ({ value: s, label: STATUT_LABELS[s] })),
@@ -93,7 +93,7 @@ const SECTIONS: FilterSection[] = [
       },
       {
         key: "villes",
-        label: "Ville",
+        labelKey: "Ville",
         type: "multi-select",
         placeholder: "Toutes les villes",
         options: VILLES.map(v => ({ value: v, label: VILLE_LABELS[v] })),
@@ -103,7 +103,7 @@ const SECTIONS: FilterSection[] = [
       },
       {
         key: "secteur",
-        label: "Secteur",
+        labelKey: "Secteur",
         type: "select",
         placeholder: "Tous les secteurs",
         options: SECTEURS.map(s => ({ value: s, label: SECTEUR_LABELS[s] })),
@@ -111,37 +111,37 @@ const SECTIONS: FilterSection[] = [
     ],
   },
   {
-    title: "Financier",
+    titleKey: "Financier",
     filters: [
-      { key: "budgetMin", label: "Budget minimum", type: "number", placeholder: "0", min: 0 },
-      { key: "budgetMax", label: "Budget maximum", type: "number", placeholder: "500 000" },
+      { key: "budgetMin", labelKey: "Budget minimum", type: "number", placeholder: "0", min: 0 },
+      { key: "budgetMax", labelKey: "Budget maximum", type: "number", placeholder: "500 000" },
     ],
   },
   {
-    title: "Dates",
-    filters: [{ key: "dateCreation", label: "Créé depuis le", type: "date", placeholder: "Sélectionner une date" }],
+    titleKey: "Dates",
+    filters: [{ key: "dateCreation", labelKey: "Créé depuis le", type: "date", placeholder: "Sélectionner une date" }],
   },
 ];
 
-const COLUMNS: ColumnDef<Client>[] = [
-  { key: "nom", label: "Nom", minWidth: 160, sortable: true },
-  { key: "email", label: "Email", minWidth: 200 },
+const COLUMNS: DataTableColumn<Client>[] = [
+  { key: "nom", headerKey: "Nom", minWidth: 160, sortable: true },
+  { key: "email", headerKey: "Email", minWidth: 200 },
   {
     key: "statut",
-    label: "Statut",
+    headerKey: "Statut",
     minWidth: 120,
     renderCell: row => <Badge variant={STATUT_VARIANTS[row.statut]}>{STATUT_LABELS[row.statut]}</Badge>,
   },
-  { key: "ville", label: "Ville", minWidth: 120, renderCell: row => VILLE_LABELS[row.ville] ?? row.ville },
+  { key: "ville", headerKey: "Ville", minWidth: 120, renderCell: row => VILLE_LABELS[row.ville] ?? row.ville },
   {
     key: "secteur",
-    label: "Secteur",
+    headerKey: "Secteur",
     minWidth: 120,
     renderCell: row => <Badge variant="outline">{SECTEUR_LABELS[row.secteur]}</Badge>,
   },
   {
     key: "budget",
-    label: "Budget",
+    headerKey: "Budget",
     minWidth: 130,
     sortable: true,
     getSortValue: row => row.budget,
@@ -149,7 +149,7 @@ const COLUMNS: ColumnDef<Client>[] = [
   },
   {
     key: "dateCreation",
-    label: "Créé le",
+    headerKey: "Créé le",
     minWidth: 120,
     sortable: true,
     getSortValue: row => row.dateCreation,
@@ -242,11 +242,13 @@ const FiltersAppDemo = (): React.JSX.Element => {
 
       <DataTable
         data={resultats}
-        columns={COLUMNS}
-        getRowId={row => row.id}
-        defaultPageSize={10}
-        pageSizeOptions={[5, 10, 25, 50]}
-        config={{ messages: { emptyKey: "Aucun client ne correspond aux filtres sélectionnés." } }}
+        config={{
+          columns: COLUMNS,
+          rowKey: row => row.id,
+          pageSizeDefault: 10,
+          pageSizeOptions: [5, 10, 25, 50],
+          messages: { emptyKey: "Aucun client ne correspond aux filtres sélectionnés." },
+        }}
       />
     </div>
   );

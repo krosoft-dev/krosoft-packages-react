@@ -1,7 +1,8 @@
 import type { FixedColumnOffset } from "@/hooks/ui/useFixedColumns";
-import { ColumnDef } from "@/types";
+import { DataTableColumn } from "@/types";
 import { ArrowDownIcon, ArrowUpDownIcon, ArrowUpIcon, GripVerticalIcon } from "lucide-react";
 import React from "react";
+import { useKrosoftTranslation } from "@/i18n";
 import { Checkbox } from "../../ui/checkbox";
 import { ACTIONS_COLUMN_KEY, getAlignmentClass, getColumnAlignment, getFixedCellProps, SELECTION_COLUMN_KEY } from "@/helpers/table.helper";
 
@@ -10,7 +11,7 @@ export interface TableHeaderProps<T> {
   selectedRows: string[];
   totalItems: number;
   toggleSelectAll: () => void;
-  visibleColumnsArray: ColumnDef<T>[];
+  visibleColumnsArray: DataTableColumn<T>[];
   draggableColumns: boolean;
   resizableColumns: boolean;
   columnWidths: Record<string, number>;
@@ -60,6 +61,7 @@ export function TableHeader<T>({
   fixedSelection = false,
   fixedActions = false,
 }: TableHeaderProps<T>): React.JSX.Element {
+  const { t } = useKrosoftTranslation();
   let checkboxChecked: boolean | "indeterminate" = false;
   if (selectedRows.length === totalItems && totalItems > 0) {
     checkboxChecked = true;
@@ -67,7 +69,7 @@ export function TableHeader<T>({
     checkboxChecked = "indeterminate";
   }
 
-  const getSortIcon = (column: ColumnDef<T>): React.ReactNode => {
+  const getSortIcon = (column: DataTableColumn<T>): React.ReactNode => {
     if (column.sortable !== true) return null;
     if (sortColumn === column.key) {
       return sortDirection === "asc" ? <ArrowUpIcon className="size-3.5 text-foreground" /> : <ArrowDownIcon className="size-3.5 text-foreground" />;
@@ -75,7 +77,7 @@ export function TableHeader<T>({
     return <ArrowUpDownIcon className="size-3.5 text-muted-foreground/50 group-hover:text-muted-foreground transition-colors" />;
   };
 
-  const renderColumnHeader = (column: ColumnDef<T>, index: number, isDraggable?: boolean): React.ReactNode => {
+  const renderColumnHeader = (column: DataTableColumn<T>, index: number, isDraggable?: boolean): React.ReactNode => {
     // Déplacer une colonne figée la ferait passer d'un bord à l'autre ou au milieu de la pile :
     // le glisser-déposer est réservé aux colonnes qui défilent.
     const draggable = isDraggable !== false && column.fixed === undefined;
@@ -125,18 +127,10 @@ export function TableHeader<T>({
           handleDrop(e, column.key);
         }}
       >
-        {/* L'icône de tri reste collée au libellé : elle qualifie la colonne nommée juste à côté,
-            pas le bord du tableau. Repoussée à l'autre extrémité d'une colonne large, elle oblige
-            l'œil à faire l'aller-retour pour savoir à quoi elle se rapporte.
-
-            Le bloc entier se range du côté des cellules : sur une colonne de nombres poussés à
-            droite, un en-tête resté à gauche flotte au-dessus du vide. Le retrait droit ne
-            subsiste que sur une colonne redimensionnable, où il dégage la poignée. */}
         <div className={`flex items-center gap-1 ${HEADER_JUSTIFY[alignment]} ${resizableColumns ? "pr-2" : ""}`}>
           {draggable ? <GripVerticalIcon className="size-4 text-muted-foreground cursor-grab shrink-0" /> : null}
-          <span className="truncate">{column.label}</span>
-          {/* Marge en plus de la gouttière : l'icône reste rattachée au libellé sans lui coller,
-              alors que la poignée de glisser-déposer, elle, gagne à rester serrée contre lui. */}
+          <span className="truncate">{t(column.headerKey)}</span>
+
           {sortIcon !== null ? <span className="ml-1 shrink-0">{sortIcon}</span> : null}
         </div>
         {resizableColumns ? (

@@ -27,7 +27,7 @@ const controls: { name: string; element: React.ReactElement }[] = [
   },
   { name: "MultiSelect", element: <MultiSelect options={options} selected={[]} onToggle={noop} onClear={noop} /> },
   { name: "SearchableSelect", element: <SearchableSelect options={options} value={undefined} onChange={noop} /> },
-  { name: "SearchableFilterPill", element: <SearchableFilterPill<string> label="Statut" options={options} selected={[]} onToggle={noop} /> },
+  { name: "SearchableFilterPill", element: <SearchableFilterPill<string> labelKey="Statut" options={options} selected={[]} onToggle={noop} /> },
   { name: "Button", element: <Button variant="outline">Filtres</Button> },
 ];
 

@@ -88,7 +88,7 @@ describe("NotificationsBell", () => {
     const { rerender } = renderBell({ items: [], open: true });
     expect(screen.getByText("Aucune notification.")).toBeTruthy();
 
-    rerender(<NotificationsBell items={items} open loading />);
+    rerender(<NotificationsBell items={items} open isLoading />);
     expect(screen.getByText("Chargement...")).toBeTruthy();
     expect(screen.queryByText("Colis expédié")).toBeNull();
   });

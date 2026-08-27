@@ -28,7 +28,6 @@ import { FormField, FormSchema, FormSection, HtmlFormField, ImageFormField, Numb
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState } from "react";
 import { useForm, ControllerRenderProps, SubmitHandler } from "react-hook-form";
-import { useTranslation } from "react-i18next";
 import { z } from "zod";
 import { useToast } from "@/hooks/ui/useToast";
 
@@ -97,8 +96,7 @@ export const GenericForm = <T,>({
   onRegisterSubmit,
   defaultCols = 4,
 }: GenericFormProps<T>): React.ReactElement | null => {
-  const { t } = useTranslation();
-  const { t: tKrosoft } = useKrosoftTranslation();
+  const { t } = useKrosoftTranslation();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [imagePreview, setImagePreview] = useState<Record<string, string>>({});
@@ -189,8 +187,8 @@ export const GenericForm = <T,>({
     const hasErrors = Object.keys(form.formState.errors).length > 0;
     if (hasErrors) {
       toast({
-        title: tKrosoft("form.validationTitle"),
-        description: tKrosoft("form.validationMessage"),
+        title: t("form.validationTitle"),
+        description: t("form.validationMessage"),
         variant: "destructive",
       });
       return;
@@ -202,8 +200,8 @@ export const GenericForm = <T,>({
     } catch (err) {
       console.error("Error during form submission:", err);
       toast({
-        title: tKrosoft("states.errorTitle"),
-        description: tKrosoft("form.submitError"),
+        title: t("states.errorTitle"),
+        description: t("form.submitError"),
         variant: "destructive",
       });
     } finally {
@@ -510,11 +508,11 @@ export const GenericForm = <T,>({
           <div className="flex justify-end gap-3 mt-6 border-t pt-4">
             {onCancel && (
               <Button type="button" variant="outline" onClick={onCancel} disabled={isSubmitting || isLoading}>
-                {tKrosoft("actions.cancel")}
+                {t("actions.cancel")}
               </Button>
             )}
             <Button variant="default" type="submit" disabled={isSubmitting || (isLoading ?? false) || form.formState.isSubmitting}>
-              {isSubmitting || isLoading ? tKrosoft("actions.saving") : tKrosoft("actions.save")}
+              {isSubmitting || isLoading ? t("actions.saving") : t("actions.save")}
             </Button>
           </div>
         )}

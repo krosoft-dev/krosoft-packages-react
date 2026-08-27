@@ -1,13 +1,13 @@
 import React, { useState, useMemo, useRef, useCallback, DragEvent } from "react";
 import { UseDataTableProps } from "@/types/UseDataTableProps";
 import { UseDataTableResult } from "@/types/UseDataTableResult";
-import { ColumnDef } from "@/types/ColumnDef";
+import { DataTableColumn } from "@/types/DataTableColumn";
 
 const DEFAULT_COLUMN_WIDTH = 100;
 
-const isColumnVisibleByDefault = <T>(column: ColumnDef<T>): boolean => column.defaultVisible !== false;
+const isColumnVisibleByDefault = <T>(column: DataTableColumn<T>): boolean => column.defaultVisible !== false;
 
-const applyColumnOrder = <T>(order: string[], columns: ColumnDef<T>[]): ColumnDef<T>[] => {
+const applyColumnOrder = <T>(order: string[], columns: DataTableColumn<T>[]): DataTableColumn<T>[] => {
   const columnByKey = new Map(columns.map(column => [column.key, column]));
   const resultKeys = order.filter(key => columnByKey.has(key));
   const placed = new Set(resultKeys);
@@ -26,26 +26,29 @@ const applyColumnOrder = <T>(order: string[], columns: ColumnDef<T>[]): ColumnDe
     placed.add(column.key);
   });
 
-  return resultKeys.map(key => columnByKey.get(key)).filter((column): column is ColumnDef<T> => column !== undefined);
+  return resultKeys.map(key => columnByKey.get(key)).filter((column): column is DataTableColumn<T> => column !== undefined);
 };
 
 export function useDataTable<T>({
   data,
   columns,
-  getRowId,
-  defaultPageSize,
+  rowKey,
+  pageSizeDefault,
   actions,
   bulkActions,
   columnVisibility = true,
-  totalRows,
-  currentPage: controlledCurrentPage,
-  pageSize: controlledPageSize,
-  onPageChange,
-  onPageSizeChange,
-  sortColumn: controlledSortColumn,
-  sortDirection: controlledSortDirection,
-  onSortChange,
+  server,
 }: UseDataTableProps<T>): UseDataTableResult<T> {
+  const {
+    totalRows,
+    currentPage: controlledCurrentPage,
+    pageSize: controlledPageSize,
+    onPageChange,
+    onPageSizeChange,
+    sortColumn: controlledSortColumn,
+    sortDirection: controlledSortDirection,
+    onSortChange,
+  } = server ?? {};
   const [localSortColumn, setLocalSortColumn] = useState<string | null>(columns.find(col => col.sortable === true)?.key ?? null);
   const sortColumn = controlledSortColumn !== undefined ? controlledSortColumn : localSortColumn;
 
@@ -60,7 +63,7 @@ export function useDataTable<T>({
   const [localCurrentPage, setLocalCurrentPage] = useState<number>(1);
   const currentPage = controlledCurrentPage ?? localCurrentPage;
 
-  const [localPageSize, setLocalPageSize] = useState<number>(defaultPageSize);
+  const [localPageSize, setLocalPageSize] = useState<number>(pageSizeDefault);
   const pageSize = controlledPageSize ?? localPageSize;
 
   const tableRef = useRef<HTMLTableElement>(null);
@@ -273,7 +276,7 @@ export function useDataTable<T>({
 
   const toggleRowSelection = (id: string): void => {
     if (selectedRows.includes(id)) {
-      setSelectedRows(selectedRows.filter(rowId => rowId !== id));
+      setSelectedRows(selectedRows.filter(key => key !== id));
     } else {
       setSelectedRows([...selectedRows, id]);
     }
@@ -283,7 +286,7 @@ export function useDataTable<T>({
     if (selectedRows.length === data.length) {
       setSelectedRows([]);
     } else {
-      setSelectedRows(data.map(item => getRowId(item)));
+      setSelectedRows(data.map(item => rowKey(item)));
     }
   };
 

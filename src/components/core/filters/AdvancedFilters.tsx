@@ -85,11 +85,11 @@ export function AdvancedFilters<T extends Record<string, unknown> = Record<strin
           <div className="space-y-6">
             {sections.map((section, sectionIndex) => (
               <div key={sectionIndex} className="space-y-4">
-                <h3 className="font-semibold text-sm text-gray-900 dark:text-gray-100 border-b pb-2">{section.title}</h3>
+                <h3 className="font-semibold text-sm text-gray-900 dark:text-gray-100 border-b pb-2">{t(section.titleKey)}</h3>
 
                 {section.filters.map(field => (
                   <div key={field.key} className="space-y-2">
-                    <Label htmlFor={field.key}>{field.label}</Label>
+                    <Label htmlFor={field.key}>{t(field.labelKey)}</Label>
                     <FilterField
                       field={field}
                       value={localFilters[field.key]}
@@ -109,10 +109,10 @@ export function AdvancedFilters<T extends Record<string, unknown> = Record<strin
 
         <SheetFooter className="gap-2 p-6 border-t bg-white dark:bg-gray-950">
           <Button variant="outline" className="flex-1" onClick={handleClearAllFilters}>
-            Effacer les filtres
+            {t("filters.clear")}
           </Button>
           <Button className="flex-1 bg-orange-500 hover:bg-orange-600 text-white" onClick={handleApplyFilters}>
-            Rechercher
+            {t("filters.apply")}
           </Button>
         </SheetFooter>
       </SheetContent>

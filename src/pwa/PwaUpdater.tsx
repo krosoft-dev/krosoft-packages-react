@@ -1,6 +1,6 @@
 /// <reference types="vite-plugin-pwa/react" />
 import { useEffect } from "react";
-import { useTranslation } from "react-i18next";
+import { useKrosoftTranslation } from "@/i18n";
 import { toast } from "sonner";
 import { useRegisterSW } from "virtual:pwa-register/react";
 
@@ -39,7 +39,7 @@ export interface PwaUpdaterProps {
  * ouverts sans leur demander leur avis.
  */
 export const PwaUpdater = ({ checkIntervalMs = DEFAULT_CHECK_INTERVAL_MS }: PwaUpdaterProps = {}): null => {
-  const { t } = useTranslation();
+  const { t } = useKrosoftTranslation();
 
   const {
     needRefresh: [needRefresh, setNeedRefresh],

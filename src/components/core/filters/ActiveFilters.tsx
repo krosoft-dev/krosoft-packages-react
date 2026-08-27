@@ -7,7 +7,7 @@ interface ActiveFiltersProps {
   filters: Record<string, unknown>;
   onRemoveFilter: (key: string, value?: unknown) => void;
   onClearAll: () => void;
-  filterLabels?: Record<string, string>;
+  filterLabelKeys?: Record<string, string>;
   optionLabels?: Record<string, string>;
 }
 
@@ -27,7 +27,7 @@ const getFilterDisplayValue = (key: string, value: unknown, t: (key: string) => 
   return strValue;
 };
 
-export function ActiveFilters({ filters, onRemoveFilter, onClearAll, filterLabels = {}, optionLabels = {} }: ActiveFiltersProps): React.ReactElement | null {
+export function ActiveFilters({ filters, onRemoveFilter, onClearAll, filterLabelKeys = {}, optionLabels = {} }: ActiveFiltersProps): React.ReactElement | null {
   const { t } = useKrosoftTranslation();
   const activeFilters = Object.entries(filters).filter(([_key, value]) => {
     if (value === undefined || value === null || value === "") return false;
@@ -39,9 +39,10 @@ export function ActiveFilters({ filters, onRemoveFilter, onClearAll, filterLabel
 
   return (
     <div className="flex flex-wrap items-center gap-2 mb-4">
-      <span className="text-sm text-gray-600 font-medium">Filtres actifs :</span>
+      <span className="text-sm text-gray-600 font-medium">{t("filters.active")}</span>
       {activeFilters.flatMap(([key, value]) => {
-        const label = filterLabels[key] ?? key;
+        const labelKey = filterLabelKeys[key] as string | undefined;
+        const label = labelKey !== undefined ? t(labelKey) : key;
 
         if (Array.isArray(value)) {
           return value.map(val => {
@@ -83,7 +84,7 @@ export function ActiveFilters({ filters, onRemoveFilter, onClearAll, filterLabel
       })}
       {activeFilters.length > 0 && (
         <button onClick={onClearAll} className="text-xs text-red-500 hover:text-red-600 transition-colors font-medium ml-auto">
-          Effacer tout
+          {t("filters.clearAll")}
         </button>
       )}
     </div>

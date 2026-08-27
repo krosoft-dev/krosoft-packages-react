@@ -2,15 +2,17 @@ import React from "react";
 import { Button } from "../../ui/button";
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "../../ui/dropdown-menu";
 import { SettingsIcon } from "lucide-react";
-import { ColumnDef } from "@/types/ColumnDef";
+import { useKrosoftTranslation } from "@/i18n";
+import { DataTableColumn } from "@/types/DataTableColumn";
 
 export interface TableSettingsProps<T> {
-  columns: ColumnDef<T>[];
+  columns: DataTableColumn<T>[];
   visibleColumns: Set<string>;
   toggleColumnVisibility: (columnKey: string) => void;
 }
 
 export function TableSettings<T>({ columns, visibleColumns, toggleColumnVisibility }: TableSettingsProps<T>): React.JSX.Element {
+  const { t } = useKrosoftTranslation();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -27,7 +29,7 @@ export function TableSettings<T>({ columns, visibleColumns, toggleColumnVisibili
               toggleColumnVisibility(column.key);
             }}
           >
-            {column.label}
+            {t(column.headerKey)}
           </DropdownMenuCheckboxItem>
         ))}
       </DropdownMenuContent>

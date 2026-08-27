@@ -1,9 +1,9 @@
 import { describe, it, expect } from "vitest";
 import { ACTIONS_COLUMN_KEY, getAlignmentClass, getColumnAlignment, getFixedCellProps, SELECTION_COLUMN_KEY } from "../../src/helpers";
-import type { ColumnDef } from "../../src/types";
+import type { DataTableColumn } from "../../src/types";
 
 type Row = { id: string };
-const column = (over: Partial<ColumnDef<Row>> = {}): ColumnDef<Row> => ({ key: "k", label: "K", ...over });
+const column = (over: Partial<DataTableColumn<Row>> = {}): DataTableColumn<Row> => ({ key: "k", headerKey: "K", ...over });
 
 describe("getColumnAlignment", () => {
   it("donne la priorité à `align` explicite", () => {

@@ -5,7 +5,7 @@ import { useDocumentTitle } from "@/hooks/ui/useDocumentTitle";
 import { AppAction } from "@/types/AppAction";
 import { ArrowLeftIcon } from "lucide-react";
 import React from "react";
-import { useTranslation } from "react-i18next";
+import { useKrosoftTranslation } from "@/i18n";
 
 export interface AppPageHeaderProps {
   icon?: React.ElementType;
@@ -18,7 +18,7 @@ export interface AppPageHeaderProps {
 }
 
 export function AppPageHeader({ icon: Icon, titleKey, descriptionKey, actions, onBack, renderPreActions, className }: AppPageHeaderProps): React.JSX.Element {
-  const { t } = useTranslation();
+  const { t } = useKrosoftTranslation();
 
   useDocumentTitle(t(titleKey));
 

@@ -5,17 +5,17 @@ import type { FilterSection } from "@/types/FilterSection";
 
 const SECTIONS_SIMPLES: FilterSection[] = [
   {
-    title: "Identification",
+    titleKey: "Identification",
     filters: [
       {
         key: "nom",
-        label: "Nom",
+        labelKey: "Nom",
         type: "text",
         placeholder: "Rechercher par nom...",
       },
       {
         key: "statut",
-        label: "Statut",
+        labelKey: "Statut",
         type: "select",
         placeholder: "Tous les statuts",
         options: [
@@ -26,7 +26,7 @@ const SECTIONS_SIMPLES: FilterSection[] = [
       },
       {
         key: "villes",
-        label: "Villes",
+        labelKey: "Villes",
         type: "multi-select",
         placeholder: "Toutes les villes",
         options: [
@@ -42,17 +42,17 @@ const SECTIONS_SIMPLES: FilterSection[] = [
 
 const SECTIONS_COMPLETES: FilterSection[] = [
   {
-    title: "Identité",
+    titleKey: "Identité",
     filters: [
       {
         key: "nom",
-        label: "Nom",
+        labelKey: "Nom",
         type: "text",
         placeholder: "Rechercher...",
       },
       {
         key: "statut",
-        label: "Statut",
+        labelKey: "Statut",
         type: "select",
         placeholder: "Tous les statuts",
         options: [
@@ -64,11 +64,11 @@ const SECTIONS_COMPLETES: FilterSection[] = [
     ],
   },
   {
-    title: "Localisation",
+    titleKey: "Localisation",
     filters: [
       {
         key: "villes",
-        label: "Villes",
+        labelKey: "Villes",
         type: "multi-select",
         placeholder: "Toutes les villes",
         options: [
@@ -85,30 +85,30 @@ const SECTIONS_COMPLETES: FilterSection[] = [
     ],
   },
   {
-    title: "Financier",
+    titleKey: "Financier",
     filters: [
       {
         key: "budgetMin",
-        label: "Budget minimum",
+        labelKey: "Budget minimum",
         type: "number",
         placeholder: "0",
         min: 0,
       },
       {
         key: "budgetMax",
-        label: "Budget maximum",
+        labelKey: "Budget maximum",
         type: "number",
         placeholder: "500 000",
       },
       {
         key: "dateCreation",
-        label: "Créé depuis le",
+        labelKey: "Créé depuis le",
         type: "date",
         placeholder: "Sélectionner une date",
       },
       {
         key: "periodeMission",
-        label: "Période de mission",
+        labelKey: "Période de mission",
         type: "date-range",
         placeholder: "Sélectionner une période",
       },
@@ -135,17 +135,17 @@ export const WithDateRange: Story = {
   args: {
     sections: [
       {
-        title: "Dates",
+        titleKey: "Dates",
         filters: [
           {
             key: "dateCreation",
-            label: "Date de création",
+            labelKey: "Date de création",
             type: "date",
             placeholder: "Sélectionner une date",
           },
           {
             key: "periodeMission",
-            label: "Période de mission",
+            labelKey: "Période de mission",
             type: "date-range",
             placeholder: "Sélectionner une période",
           },

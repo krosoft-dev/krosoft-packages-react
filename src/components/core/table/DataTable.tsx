@@ -1,69 +1,32 @@
 import { useDataTable } from "@/hooks/ui/useDataTable";
 import { useFixedColumns } from "@/hooks/ui/useFixedColumns";
 import React from "react";
-import { defaultPageSize as DEFAULT_PAGE_SIZE, pagesSizes as DEFAULT_PAGE_SIZE_OPTIONS } from "../../../constants/datatable";
+import { pageSizeDefault as DEFAULT_PAGE_SIZE, pagesSizes as DEFAULT_PAGE_SIZE_OPTIONS } from "../../../constants/datatable";
 import { TableBody } from "./TableBody";
 import { TableBulkActions } from "./TableBulkActions";
 import { TableHeader } from "./TableHeader";
 import { TablePagination } from "./TablePagination";
 import { TableSettings } from "./TableSettings";
-import type { BulkAction, ColumnDef, DataTableConfig, RowAction } from "../../../types";
+import type { DataTableConfig, DataTableServerState } from "../../../types";
 
 export interface DataTableProps<T> {
   data: T[];
-  columns: ColumnDef<T>[];
-  getRowId: (row: T) => string; // Fonction obligatoire pour identifier chaque ligne de façon unique
-  onRowClick?: (row: T, event: React.MouseEvent<HTMLTableRowElement>) => void;
-  onRowNavigate?: (row: T) => string; // Retourne l'URL de destination de la ligne au clic (prioritaire sur onRowClick)
-  actions?: RowAction<T>[]; // Actions personnalisées pour le menu
-  bulkActions?: BulkAction[]; // Actions rapides pour la sélection multiple
   isLoading?: boolean; // Indique si les données sont en cours de chargement
   error?: string | null; // Message d'erreur affiché si le chargement des données a échoué
-  config?: DataTableConfig<T>; // Options regroupées (dense, bordered, colonnes déplaçables/redimensionnables/visibilité, actions figées, messages…)
-  defaultPageSize?: number; // Nombre par défaut de lignes par page
-  pageSizeOptions?: number[]; // Options pour le nombre de lignes par page
-
-  // Server-side pagination
-  totalRows?: number;
-  currentPage?: number;
-  pageSize?: number;
-  onPageChange?: (page: number) => void;
-  onPageSizeChange?: (pageSize: number) => void;
-
-  // Server-side sorting
-  sortColumn?: string | null;
-  sortDirection?: "asc" | "desc";
-  onSortChange?: (column: string | null, direction: "asc" | "desc") => void;
+  config: DataTableConfig<T>; // Colonnes, identification/navigation des lignes, actions, pagination et options regroupées
+  server?: DataTableServerState; // État contrôlé server-side : sa présence active le mode server-side
 }
 
-export function DataTable<T>({
-  data,
-  columns,
-  getRowId,
-  onRowClick,
-  onRowNavigate,
-  actions,
-  bulkActions,
-  isLoading = false,
-  error = null,
-  config,
-  defaultPageSize = DEFAULT_PAGE_SIZE,
-  pageSizeOptions = DEFAULT_PAGE_SIZE_OPTIONS,
-  totalRows,
-  currentPage,
-  pageSize: controlledPageSize,
-  onPageChange,
-  onPageSizeChange,
-  sortColumn: controlledSortColumn,
-  sortDirection: controlledSortDirection,
-  onSortChange,
-}: DataTableProps<T>): React.JSX.Element {
-  const dense = config?.dense ?? false;
-  const bordered = config?.bordered ?? false;
-  const draggableColumns = config?.draggableColumns ?? false;
-  const resizableColumns = config?.resizableColumns ?? false;
-  const columnVisibility = config?.columnVisibility ?? false;
-  const fixedActions = config?.fixedActions ?? false;
+export function DataTable<T>({ data, isLoading = false, error = null, config, server }: DataTableProps<T>): React.JSX.Element {
+  const { columns, rowKey, onRowClick, onRowNavigate, actions, bulkActions } = config;
+  const pageSizeDefault = config.pageSizeDefault ?? DEFAULT_PAGE_SIZE;
+  const pageSizeOptions = config.pageSizeOptions ?? DEFAULT_PAGE_SIZE_OPTIONS;
+  const dense = config.dense ?? false;
+  const bordered = config.bordered ?? false;
+  const draggableColumns = config.draggableColumns ?? false;
+  const resizableColumns = config.resizableColumns ?? false;
+  const columnVisibility = config.columnVisibility ?? false;
+  const fixedActions = config.fixedActions ?? false;
 
   const {
     sortColumn,
@@ -96,19 +59,12 @@ export function DataTable<T>({
   } = useDataTable({
     data,
     columns,
-    getRowId,
-    defaultPageSize,
+    rowKey,
+    pageSizeDefault,
     actions,
     bulkActions,
     columnVisibility,
-    totalRows,
-    currentPage,
-    pageSize: controlledPageSize,
-    onPageChange,
-    onPageSizeChange,
-    sortColumn: controlledSortColumn,
-    sortDirection: controlledSortDirection,
-    onSortChange,
+    server,
   });
 
   // La case de sélection est toujours la première colonne : si une colonne est figée à gauche,
@@ -163,9 +119,9 @@ export function DataTable<T>({
               isLoading={isLoading}
               error={error}
               colSpanCount={colSpanCount}
-              messages={config?.messages}
+              messages={config.messages}
               paginatedData={paginatedData}
-              getRowId={getRowId}
+              rowKey={rowKey}
               onRowClick={onRowClick}
               onRowNavigate={onRowNavigate}
               hasBulkActions={hasBulkActions}
@@ -183,7 +139,7 @@ export function DataTable<T>({
         </div>
 
         <TablePagination
-          totalItems={totalRows ?? data.length}
+          totalItems={server?.totalRows ?? data.length}
           startIndex={startIndex}
           endIndex={endIndex}
           pageSize={pageSize}

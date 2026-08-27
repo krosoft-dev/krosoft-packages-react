@@ -1,9 +1,12 @@
 import { cleanup, fireEvent, render } from "@testing-library/react";
+import { createInstance } from "i18next";
 import * as React from "react";
+import { I18nextProvider } from "react-i18next";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { DataTable } from "../../../../src/components/core/table/DataTable";
 import { ACTIONS_COLUMN_KEY, SELECTION_COLUMN_KEY } from "../../../../src/helpers/table.helper";
-import type { ColumnDef } from "../../../../src/types/ColumnDef";
+import type { DataTableColumn } from "../../../../src/types/DataTableColumn";
+import type { DataTableConfig } from "../../../../src/types/DataTableConfig";
 
 // Le DataTable navigue via useNavigate : le mock évite d'envelopper chaque test dans un Router.
 const { navigateMock } = vi.hoisted(() => ({ navigateMock: vi.fn() }));
@@ -19,14 +22,16 @@ const rows: Row[] = [
   { id: "2", name: "Jane Smith", email: "jane@example.com", role: "user" },
 ];
 
-const columns: ColumnDef<Row>[] = [
-  { key: "name", label: "Name", fixed: "left" },
-  { key: "email", label: "Email" },
-  { key: "role", label: "Role", fixed: "right" },
+const columns: DataTableColumn<Row>[] = [
+  { key: "name", headerKey: "Name", fixed: "left" },
+  { key: "email", headerKey: "Email" },
+  { key: "role", headerKey: "Role", fixed: "right" },
 ];
 
-const renderTable = (props: Partial<React.ComponentProps<typeof DataTable<Row>>> = {}): HTMLElement => {
-  const { container } = render(<DataTable data={rows} columns={columns} getRowId={(row: Row) => row.id} {...props} />);
+type TableOverrides = Partial<Omit<React.ComponentProps<typeof DataTable<Row>>, "config">> & { config?: Partial<DataTableConfig<Row>> };
+
+const renderTable = ({ config, ...props }: TableOverrides = {}): HTMLElement => {
+  const { container } = render(<DataTable data={rows} config={{ columns, rowKey: (row: Row) => row.id, ...config }} {...props} />);
   return container;
 };
 
@@ -56,14 +61,14 @@ afterEach(() => {
 });
 
 describe("DataTable — alignement des colonnes", () => {
-  const alignedColumns: ColumnDef<Row>[] = [
-    { key: "name", label: "Name" },
-    { key: "email", label: "Email", align: "right" },
-    { key: "role", label: "Role", className: "text-right" },
+  const alignedColumns: DataTableColumn<Row>[] = [
+    { key: "name", headerKey: "Name" },
+    { key: "email", headerKey: "Email", align: "right" },
+    { key: "role", headerKey: "Role", className: "text-right" },
   ];
 
   it("range le libellé du même côté que les cellules quand la colonne est alignée à droite", () => {
-    const container = renderTable({ columns: alignedColumns });
+    const container = renderTable({ config: { columns: alignedColumns } });
 
     for (const key of ["email", "role"]) {
       const header = headerCell(container, key);
@@ -76,7 +81,7 @@ describe("DataTable — alignement des colonnes", () => {
   });
 
   it("laisse l'en-tête par défaut aux colonnes alignées à gauche", () => {
-    const container = renderTable({ columns: alignedColumns });
+    const container = renderTable({ config: { columns: alignedColumns } });
 
     const header = headerCell(container, "name");
     expect(header.className).toContain("text-left");
@@ -84,7 +89,7 @@ describe("DataTable — alignement des colonnes", () => {
   });
 
   it("colle l'icône de tri au libellé plutôt qu'au bord de la colonne", () => {
-    const container = renderTable({ columns: [{ key: "name", label: "Name", sortable: true }] });
+    const container = renderTable({ config: { columns: [{ key: "name", headerKey: "Name", sortable: true }] } });
 
     const contenu = headerCell(container, "name").querySelector("div");
     // Rien ne doit pousser l'icône à l'autre extrémité : elle qualifie le libellé, pas la colonne.
@@ -95,21 +100,21 @@ describe("DataTable — alignement des colonnes", () => {
   });
 
   it("n'ajoute aucun élément d'icône sur une colonne non triable", () => {
-    const container = renderTable({ columns: [{ key: "name", label: "Name" }] });
+    const container = renderTable({ config: { columns: [{ key: "name", headerKey: "Name" }] } });
 
     // Un conteneur d'icône vide ouvrirait une gouttière après le libellé.
     expect(headerCell(container, "name").querySelector("div")?.children.length).toBe(1);
   });
 
   it("aligne les cellules quand l'alignement vient de align", () => {
-    const container = renderTable({ columns: alignedColumns });
+    const container = renderTable({ config: { columns: alignedColumns } });
 
     expect(bodyCells(container, "email").every(cell => cell.className.includes("text-right"))).toBe(true);
     expect(bodyCells(container, "name").every(cell => cell.className.includes("text-left"))).toBe(true);
   });
 
   it("garde l'icône de tri à droite du libellé, même sur une colonne alignée à droite", () => {
-    const container = renderTable({ columns: [{ key: "name", label: "Name", align: "right", sortable: true }] });
+    const container = renderTable({ config: { columns: [{ key: "name", headerKey: "Name", align: "right", sortable: true }] } });
 
     const header = headerCell(container, "name");
     const contenu = header.querySelector("div");
@@ -120,13 +125,13 @@ describe("DataTable — alignement des colonnes", () => {
   });
 
   it("rétablit le retrait droit sur une colonne redimensionnable, pour dégager la poignée", () => {
-    const container = renderTable({ columns: [{ key: "name", label: "Name", align: "right", sortable: true }], config: { resizableColumns: true } });
+    const container = renderTable({ config: { columns: [{ key: "name", headerKey: "Name", align: "right", sortable: true }], resizableColumns: true } });
 
     expect(headerCell(container, "name").querySelector("div")?.className).toContain("pr-2");
   });
 
   it("centre l'en-tête d'une colonne centrée", () => {
-    const container = renderTable({ columns: [{ key: "name", label: "Name", align: "center" }] });
+    const container = renderTable({ config: { columns: [{ key: "name", headerKey: "Name", align: "center" }] } });
 
     const header = headerCell(container, "name");
     expect(header.className).toContain("text-center");
@@ -134,7 +139,7 @@ describe("DataTable — alignement des colonnes", () => {
   });
 
   it("colle les actions au bord droit de leur colonne", () => {
-    const container = renderTable({ actions: [{ label: "Run", onClick: () => {} }] });
+    const container = renderTable({ config: { actions: [{ labelKey: "Run", onClick: () => {} }] } });
 
     const cells = bodyCells(container, ACTIONS_COLUMN_KEY);
     expect(cells.every(cell => cell.className.includes("text-right"))).toBe(true);
@@ -164,9 +169,11 @@ describe("DataTable — mode dense", () => {
 
   it("laisse les cellules de sélection et d'actions déjà compactes suivre la hauteur des lignes", () => {
     const container = renderTable({
-      config: { dense: true },
-      bulkActions: [{ label: "Supprimer", onClick: () => undefined }],
-      actions: [{ label: "Modifier", onClick: () => undefined }],
+      config: {
+        dense: true,
+        bulkActions: [{ labelKey: "Supprimer", onClick: () => undefined }],
+        actions: [{ labelKey: "Modifier", onClick: () => undefined }],
+      },
     });
 
     // Elles gardent leur padding compact propre (p-1 pour la sélection, py-1 pour les actions) :
@@ -213,6 +220,72 @@ describe("DataTable — messages d'état", () => {
   });
 });
 
+describe("DataTable — i18n", () => {
+  it("résout labelKey des actions de ligne dans le namespace de l'application", async () => {
+    // Instance locale passée par Provider : le test ne touche pas l'i18next global.
+    const i18nInstance = createInstance();
+    await i18nInstance.init({ lng: "fr", resources: { fr: { translation: { "actions.edit": "Modifier" } } } });
+
+    const { container } = render(
+      <I18nextProvider i18n={i18nInstance}>
+        <DataTable data={rows} config={{ columns, rowKey: (row: Row) => row.id, actions: [{ labelKey: "actions.edit", onClick: () => undefined }] }} />
+      </I18nextProvider>,
+    );
+
+    const actionsCell = bodyCells(container, ACTIONS_COLUMN_KEY)[0];
+    expect(actionsCell.textContent).toContain("Modifier");
+    expect(actionsCell.textContent).not.toContain("actions.edit");
+  });
+
+  it("résout labelKey des actions groupées dans le namespace de l'application", async () => {
+    // Instance locale passée par Provider : le test ne touche pas l'i18next global.
+    const i18nInstance = createInstance();
+    await i18nInstance.init({ lng: "fr", resources: { fr: { translation: { "actions.deleteAll": "Tout supprimer" } } } });
+
+    const { container } = render(
+      <I18nextProvider i18n={i18nInstance}>
+        <DataTable data={rows} config={{ columns, rowKey: (row: Row) => row.id, bulkActions: [{ labelKey: "actions.deleteAll", onClick: () => undefined }] }} />
+      </I18nextProvider>,
+    );
+
+    // Le bandeau n'apparaît qu'avec une sélection active.
+    const checkbox = bodyCells(container, SELECTION_COLUMN_KEY)[0].querySelector('[role="checkbox"]');
+    if (checkbox === null) throw new Error("Case de sélection introuvable");
+    fireEvent.click(checkbox);
+
+    expect(container.textContent).toContain("Tout supprimer");
+    expect(container.textContent).not.toContain("actions.deleteAll");
+    // Les libellés propres au bandeau viennent du package (repli français embarqué ici).
+    expect(container.textContent).toContain("1 sélectionné(s)");
+    expect(container.textContent).toContain("Désélectionner");
+  });
+
+  it("résout headerKey dans le namespace de l'application, et retombe sur la clé sans traduction", async () => {
+    // Instance locale passée par Provider : le test ne touche pas l'i18next global.
+    const i18nInstance = createInstance();
+    await i18nInstance.init({ lng: "fr", resources: { fr: { translation: { "columns.name": "Nom" } } } });
+
+    const { container } = render(
+      <I18nextProvider i18n={i18nInstance}>
+        <DataTable
+          data={rows}
+          config={{
+            columns: [
+              { key: "name", headerKey: "columns.name" },
+              { key: "email", headerKey: "Email" },
+            ],
+            rowKey: (row: Row) => row.id,
+          }}
+        />
+      </I18nextProvider>,
+    );
+
+    expect(headerCell(container, "name").textContent).toContain("Nom");
+    expect(headerCell(container, "name").textContent).not.toContain("columns.name");
+    expect(headerCell(container, "email").textContent).toContain("Email");
+  });
+});
+
 describe("DataTable — navigation au clic", () => {
   const firstRow = (container: HTMLElement): HTMLTableRowElement => {
     const row = container.querySelector<HTMLTableRowElement>("tbody tr");
@@ -221,7 +294,7 @@ describe("DataTable — navigation au clic", () => {
   };
 
   it("navigue via le router avec l'URL calculée au clic sur une ligne", () => {
-    const container = renderTable({ onRowNavigate: (row: Row) => `/users/${row.id}` });
+    const container = renderTable({ config: { onRowNavigate: (row: Row) => `/users/${row.id}` } });
 
     fireEvent.click(firstRow(container));
 
@@ -230,7 +303,7 @@ describe("DataTable — navigation au clic", () => {
 
   it("ouvre l'URL dans un nouvel onglet au Ctrl+clic ou Cmd+clic, sans passer par le router", () => {
     const open = vi.spyOn(window, "open").mockImplementation(() => null);
-    const container = renderTable({ onRowNavigate: (row: Row) => `/users/${row.id}` });
+    const container = renderTable({ config: { onRowNavigate: (row: Row) => `/users/${row.id}` } });
 
     fireEvent.click(firstRow(container), { ctrlKey: true });
     fireEvent.click(firstRow(container), { metaKey: true });
@@ -243,7 +316,7 @@ describe("DataTable — navigation au clic", () => {
 
   it("donne la priorité à onRowNavigate sur onRowClick", () => {
     const onRowClick = vi.fn();
-    const container = renderTable({ onRowNavigate: (row: Row) => `/users/${row.id}`, onRowClick });
+    const container = renderTable({ config: { onRowNavigate: (row: Row) => `/users/${row.id}`, onRowClick } });
 
     fireEvent.click(firstRow(container));
 
@@ -252,16 +325,18 @@ describe("DataTable — navigation au clic", () => {
   });
 
   it("affiche le curseur pointeur sur les lignes quand onRowNavigate est fourni", () => {
-    const container = renderTable({ onRowNavigate: (row: Row) => `/users/${row.id}` });
+    const container = renderTable({ config: { onRowNavigate: (row: Row) => `/users/${row.id}` } });
 
     expect(firstRow(container).className).toContain("cursor-pointer");
   });
 
   it("ne déclenche pas la navigation au clic sur la case de sélection ou la colonne d'actions", () => {
     const container = renderTable({
-      onRowNavigate: (row: Row) => `/users/${row.id}`,
-      bulkActions: [{ label: "Supprimer", onClick: () => undefined }],
-      actions: [{ label: "Modifier", onClick: () => undefined }],
+      config: {
+        onRowNavigate: (row: Row) => `/users/${row.id}`,
+        bulkActions: [{ labelKey: "Supprimer", onClick: () => undefined }],
+        actions: [{ labelKey: "Modifier", onClick: () => undefined }],
+      },
     });
 
     for (const key of [SELECTION_COLUMN_KEY, ACTIONS_COLUMN_KEY]) {
@@ -309,8 +384,7 @@ describe("DataTable — colonnes figées", () => {
 
   it("fige l'en-tête de la colonne des actions avec ses cellules quand fixedActions est actif", () => {
     const container = renderTable({
-      config: { fixedActions: true },
-      actions: [{ label: "Modifier", onClick: () => undefined }],
+      config: { fixedActions: true, actions: [{ labelKey: "Modifier", onClick: () => undefined }] },
     });
 
     const header = headerCell(container, ACTIONS_COLUMN_KEY);
@@ -321,7 +395,7 @@ describe("DataTable — colonnes figées", () => {
 
   it("fige la case de sélection avec la première colonne figée à gauche", () => {
     const container = renderTable({
-      bulkActions: [{ label: "Supprimer", onClick: () => undefined }],
+      config: { bulkActions: [{ labelKey: "Supprimer", onClick: () => undefined }] },
     });
 
     const header = headerCell(container, SELECTION_COLUMN_KEY);
@@ -334,13 +408,15 @@ describe("DataTable — colonnes figées", () => {
     stubColumnWidths({ name: 150, email: 200, role: 100, [ACTIONS_COLUMN_KEY]: 40 });
 
     const container = renderTable({
-      columns: [
-        { key: "name", label: "Name", fixed: "left" },
-        { key: "email", label: "Email", fixed: "left" },
-        { key: "role", label: "Role", fixed: "right" },
-      ],
-      config: { fixedActions: true },
-      actions: [{ label: "Modifier", onClick: () => undefined }],
+      config: {
+        columns: [
+          { key: "name", headerKey: "Name", fixed: "left" },
+          { key: "email", headerKey: "Email", fixed: "left" },
+          { key: "role", headerKey: "Role", fixed: "right" },
+        ],
+        fixedActions: true,
+        actions: [{ labelKey: "Modifier", onClick: () => undefined }],
+      },
     });
 
     // À gauche, la deuxième colonne figée démarre après la largeur de la première.
@@ -358,9 +434,11 @@ describe("DataTable — colonnes figées", () => {
     const { container } = render(
       <DataTable
         data={rows}
-        columns={columns.map(column => (column.fixed === "left" ? { ...column, fixed: undefined } : column))}
-        getRowId={(row: Row) => row.id}
-        bulkActions={[{ label: "Supprimer", onClick: () => undefined }]}
+        config={{
+          columns: columns.map(column => (column.fixed === "left" ? { ...column, fixed: undefined } : column)),
+          rowKey: (row: Row) => row.id,
+          bulkActions: [{ labelKey: "Supprimer", onClick: () => undefined }],
+        }}
       />,
     );
 
@@ -369,24 +447,24 @@ describe("DataTable — colonnes figées", () => {
 });
 
 describe("DataTable — colonnes qui changent après le montage", () => {
-  const baseColumns: ColumnDef<Row>[] = [
-    { key: "name", label: "Name" },
-    { key: "email", label: "Email" },
+  const baseColumns: DataTableColumn<Row>[] = [
+    { key: "name", headerKey: "Name" },
+    { key: "email", headerKey: "Email" },
   ];
 
   it("affiche une colonne ajoutée après coup, à sa place dans la liste", () => {
-    const { container, rerender } = render(<DataTable data={rows} columns={baseColumns} getRowId={(row: Row) => row.id} />);
+    const { container, rerender } = render(<DataTable data={rows} config={{ columns: baseColumns, rowKey: (row: Row) => row.id }} />);
 
     expect(container.querySelector('thead th[data-column-key="role"]')).toBeNull();
 
     // La colonne « role » arrive en position 1 (après « name »), typiquement au chargement asynchrone
     // d'une donnée qui conditionne son affichage.
-    const withRole: ColumnDef<Row>[] = [
-      { key: "name", label: "Name" },
-      { key: "role", label: "Role" },
-      { key: "email", label: "Email" },
+    const withRole: DataTableColumn<Row>[] = [
+      { key: "name", headerKey: "Name" },
+      { key: "role", headerKey: "Role" },
+      { key: "email", headerKey: "Email" },
     ];
-    rerender(<DataTable data={rows} columns={withRole} getRowId={(row: Row) => row.id} />);
+    rerender(<DataTable data={rows} config={{ columns: withRole, rowKey: (row: Row) => row.id }} />);
 
     expect(headerCell(container, "role").textContent).toContain("Role");
     expect(bodyCells(container, "role").map(cell => cell.textContent)).toEqual(["admin", "user"]);
@@ -396,27 +474,27 @@ describe("DataTable — colonnes qui changent après le montage", () => {
   });
 
   it("retire une colonne disparue de la liste", () => {
-    const withRole: ColumnDef<Row>[] = [...baseColumns, { key: "role", label: "Role" }];
-    const { container, rerender } = render(<DataTable data={rows} columns={withRole} getRowId={(row: Row) => row.id} />);
+    const withRole: DataTableColumn<Row>[] = [...baseColumns, { key: "role", headerKey: "Role" }];
+    const { container, rerender } = render(<DataTable data={rows} config={{ columns: withRole, rowKey: (row: Row) => row.id }} />);
 
     expect(headerCell(container, "role").textContent).toContain("Role");
 
-    rerender(<DataTable data={rows} columns={baseColumns} getRowId={(row: Row) => row.id} />);
+    rerender(<DataTable data={rows} config={{ columns: baseColumns, rowKey: (row: Row) => row.id }} />);
 
     expect(container.querySelector('thead th[data-column-key="role"]')).toBeNull();
   });
 
   it("préserve le choix de visibilité des colonnes déjà connues quand une nouvelle apparaît", () => {
-    const hideableColumns: ColumnDef<Row>[] = [
-      { key: "name", label: "Name" },
-      { key: "email", label: "Email", defaultVisible: false },
+    const hideableColumns: DataTableColumn<Row>[] = [
+      { key: "name", headerKey: "Name" },
+      { key: "email", headerKey: "Email", defaultVisible: false },
     ];
-    const { container, rerender } = render(<DataTable data={rows} columns={hideableColumns} getRowId={(row: Row) => row.id} />);
+    const { container, rerender } = render(<DataTable data={rows} config={{ columns: hideableColumns, rowKey: (row: Row) => row.id }} />);
 
     // « email » démarre masquée (defaultVisible: false).
     expect(container.querySelector('thead th[data-column-key="email"]')).toBeNull();
 
-    rerender(<DataTable data={rows} columns={[...hideableColumns, { key: "role", label: "Role" }]} getRowId={(row: Row) => row.id} />);
+    rerender(<DataTable data={rows} config={{ columns: [...hideableColumns, { key: "role", headerKey: "Role" }], rowKey: (row: Row) => row.id }} />);
 
     // La nouvelle colonne s'affiche, la masquée le reste.
     expect(headerCell(container, "role").textContent).toContain("Role");

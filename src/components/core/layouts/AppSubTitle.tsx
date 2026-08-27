@@ -1,5 +1,5 @@
 import { AppAction } from "@/types/AppAction";
-import { useTranslation } from "react-i18next";
+import { useKrosoftTranslation } from "@/i18n";
 import { AppActions } from "./AppActions";
 
 export interface AppSubTitleProps {
@@ -9,7 +9,7 @@ export interface AppSubTitleProps {
 }
 
 export function AppSubTitle({ titleKey, actions, className }: AppSubTitleProps): React.JSX.Element {
-  const { t } = useTranslation();
+  const { t } = useKrosoftTranslation();
 
   return (
     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">

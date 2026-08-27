@@ -4,9 +4,9 @@ import React, { useMemo, useState } from "react";
 import FormDialog from "@/components/core/dialogs/FormDialog";
 import { SearchInput } from "@/components/core/inputs/SearchInput";
 import { AppPageHeader } from "@/components/core/layouts/AppPageHeader";
-import { ColumnDef, DataTable, RowAction } from "@/components/core/table/DataTable";
+import { DataTable } from "@/components/core/table/DataTable";
 import { Badge } from "@/components/ui/badge";
-import type { FormSchema } from "@/types";
+import type { DataTableColumn, FormSchema, DataTableRowAction } from "@/types";
 
 // --- Modèle de données -------------------------------------------------------
 
@@ -120,10 +120,10 @@ const TagsPage = (): React.JSX.Element => {
     setOpen(false);
   };
 
-  const columns: ColumnDef<Tag>[] = [
+  const columns: DataTableColumn<Tag>[] = [
     {
       key: "nom",
-      label: "Tag",
+      headerKey: "Tag",
       minWidth: 220,
       sortable: true,
       renderCell: row => (
@@ -133,14 +133,14 @@ const TagsPage = (): React.JSX.Element => {
       ),
     },
     // `align: "right"` range les nombres ET leur en-tête du même côté.
-    { key: "documents", label: "Documents", minWidth: 130, sortable: true, align: "right" },
-    { key: "projets", label: "Projets", minWidth: 130, sortable: true, align: "right" },
+    { key: "documents", headerKey: "Documents", minWidth: 130, sortable: true, align: "right" },
+    { key: "projets", headerKey: "Projets", minWidth: 130, sortable: true, align: "right" },
   ];
 
-  const actions: RowAction<Tag>[] = [
-    { label: "Renommer", icon: PencilIcon, overflow: true, onClick: ouvrirRenommage },
+  const actions: DataTableRowAction<Tag>[] = [
+    { labelKey: "Renommer", icon: PencilIcon, overflow: true, onClick: ouvrirRenommage },
     {
-      label: "Supprimer",
+      labelKey: "Supprimer",
       icon: Trash2Icon,
       overflow: true,
       className: "text-destructive focus:bg-destructive/10 focus:text-destructive",
@@ -161,7 +161,7 @@ const TagsPage = (): React.JSX.Element => {
 
       <SearchInput searchQuery={recherche} placeholder="Rechercher un tag..." onSearch={setRecherche} />
 
-      <DataTable data={tagsFiltres} columns={columns} getRowId={row => row.id} actions={actions} defaultPageSize={10} config={{ columnVisibility: true }} />
+      <DataTable data={tagsFiltres} config={{ columns, rowKey: row => row.id, actions, columnVisibility: true, pageSizeDefault: 10 }} />
 
       <FormDialog<Tag>
         open={open}

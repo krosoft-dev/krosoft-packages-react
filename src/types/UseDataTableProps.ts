@@ -1,25 +1,15 @@
-import { BulkAction } from "./BulkAction";
-import { ColumnDef } from "./ColumnDef";
-import { RowAction } from "./RowAction";
+import { DataTableBulkAction } from "./DataTableBulkAction";
+import { DataTableColumn } from "./DataTableColumn";
+import { DataTableServerState } from "./DataTableServerState";
+import { DataTableRowAction } from "./DataTableRowAction";
 
 export interface UseDataTableProps<T> {
   data: T[];
-  columns: ColumnDef<T>[];
-  getRowId: (row: T) => string;
-  defaultPageSize: number;
-  actions?: RowAction<T>[];
-  bulkActions?: BulkAction[];
+  columns: DataTableColumn<T>[];
+  rowKey: (row: T) => string;
+  pageSizeDefault: number;
+  actions?: DataTableRowAction<T>[];
+  bulkActions?: DataTableBulkAction[];
   columnVisibility?: boolean;
-
-  // Server-side pagination
-  totalRows?: number;
-  currentPage?: number;
-  pageSize?: number;
-  onPageChange?: (page: number) => void;
-  onPageSizeChange?: (pageSize: number) => void;
-
-  // Server-side sorting
-  sortColumn?: string | null;
-  sortDirection?: "asc" | "desc";
-  onSortChange?: (column: string | null, direction: "asc" | "desc") => void;
+  server?: DataTableServerState;
 }

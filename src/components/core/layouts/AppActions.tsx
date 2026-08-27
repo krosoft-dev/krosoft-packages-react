@@ -3,7 +3,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 import { cn } from "@/helpers/tailwind.helper";
 import { AppAction } from "@/types/AppAction";
 import { MoreVerticalIcon } from "lucide-react";
-import { useTranslation } from "react-i18next";
+import { useKrosoftTranslation } from "@/i18n";
 import { useMobile } from "@/hooks/ui/useMobile";
 
 export interface AppActionsProps {
@@ -12,7 +12,7 @@ export interface AppActionsProps {
 }
 
 export function AppActions({ actions, className }: AppActionsProps): React.JSX.Element | null {
-  const { t } = useTranslation();
+  const { t } = useKrosoftTranslation();
   const isMobile = useMobile();
 
   if (!actions || actions.length === 0) return null;
@@ -40,7 +40,7 @@ export function AppActions({ actions, className }: AppActionsProps): React.JSX.E
                     return (
                       <DropdownMenuItem
                         key={childIndex}
-                        onClick={() => void child.onClick()}
+                        onClick={() => void child.onClick?.()}
                         disabled={child.disabled}
                         className={cn("gap-2", child.className)}
                       >
@@ -54,7 +54,7 @@ export function AppActions({ actions, className }: AppActionsProps): React.JSX.E
             }
 
             return (
-              <DropdownMenuItem key={index} onClick={() => void action.onClick()} disabled={action.disabled} className={cn("gap-2", action.className)}>
+              <DropdownMenuItem key={index} onClick={() => void action.onClick?.()} disabled={action.disabled} className={cn("gap-2", action.className)}>
                 {action.icon && <action.icon className="size-4" />}
                 {action.labelKey && t(action.labelKey)}
               </DropdownMenuItem>
@@ -88,7 +88,7 @@ export function AppActions({ actions, className }: AppActionsProps): React.JSX.E
                     return (
                       <DropdownMenuItem
                         key={childIndex}
-                        onClick={() => void child.onClick()}
+                        onClick={() => void child.onClick?.()}
                         disabled={child.disabled}
                         className={cn("gap-2", child.className)}
                       >
@@ -106,7 +106,7 @@ export function AppActions({ actions, className }: AppActionsProps): React.JSX.E
             <Button
               key={index}
               variant={action.variant}
-              onClick={() => void action.onClick()}
+              onClick={() => void action.onClick?.()}
               disabled={action.disabled}
               className={cn("gap-2", action.className)}
             >

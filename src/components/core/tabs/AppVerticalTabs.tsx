@@ -3,7 +3,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import type { TabConfig } from "@/types/TabConfig";
 import { ConstructionIcon } from "lucide-react";
 import { useKrosoftTranslation } from "@/i18n";
-import { useTranslation } from "react-i18next";
 import { useSearchParams } from "react-router-dom";
 
 export interface AppVerticalTabsProps<T = unknown> {
@@ -12,8 +11,7 @@ export interface AppVerticalTabsProps<T = unknown> {
 }
 
 export const AppVerticalTabs = ({ tabs, item }: AppVerticalTabsProps): React.JSX.Element => {
-  const { t } = useTranslation();
-  const { t: tKrosoft } = useKrosoftTranslation();
+  const { t } = useKrosoftTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
   // L'onglet de l'URL peut ne pas exister dans la liste : lien obsolète, ou onglet retiré selon
   // les droits de l'utilisateur. On retombe alors sur le premier onglet plutôt que de n'afficher aucun contenu.
@@ -38,8 +36,8 @@ export const AppVerticalTabs = ({ tabs, item }: AppVerticalTabsProps): React.JSX
         <div className="flex items-center justify-center h-64 text-gray-500">
           <div className="text-center">
             <ConstructionIcon className="h-12 w-12 mx-auto mb-4 text-amber-500" />
-            <p className="text-lg font-medium">{tKrosoft("states.underConstruction")}</p>
-            <p className="text-sm text-gray-400">{tKrosoft("states.comingSoon")}</p>
+            <p className="text-lg font-medium">{t("states.underConstruction")}</p>
+            <p className="text-sm text-gray-400">{t("states.comingSoon")}</p>
           </div>
         </div>
       </div>
@@ -76,7 +74,7 @@ export const AppVerticalTabs = ({ tabs, item }: AppVerticalTabsProps): React.JSX
       <div className="md:hidden w-full border-b pb-4 mb-4">
         <Select value={activeTab} onValueChange={handleTabChange}>
           <SelectTrigger className="w-full">
-            <SelectValue placeholder={tKrosoft("select.section")} />
+            <SelectValue placeholder={t("select.section")} />
           </SelectTrigger>
           <SelectContent>
             {tabs.map((tab, index) => (

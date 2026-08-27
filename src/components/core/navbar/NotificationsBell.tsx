@@ -39,8 +39,13 @@ export interface NotificationsBellProps {
   onMarkAllAsRead?: () => void;
   /** Sans ce callback, aucune entrée n'affiche de bouton de suppression. */
   onRemove?: (item: NotificationItem) => void;
+  /**
+   * Sans ce callback, aucun pied « Voir tout » n'est affiché. Le composant ne navigue pas :
+   * à l'appelant d'ouvrir la page complète (le panneau se referme avant l'appel).
+   */
+  onSeeAll?: () => void;
 
-  loading?: boolean;
+  isLoading?: boolean;
 
   /**
    * Compteur de la pastille. Par défaut, le nombre d'entrées non lues — à renseigner quand la
@@ -60,6 +65,7 @@ export interface NotificationsBellProps {
   loadingLabel?: string;
   markAllAsReadLabel?: string;
   removeLabel?: string;
+  seeAllLabel?: string;
 
   className?: string;
   /** Classes du panneau : sa largeur par défaut convient rarement à tous les projets. */
@@ -90,7 +96,8 @@ export const NotificationsBell = ({
   onSelect,
   onMarkAllAsRead,
   onRemove,
-  loading = false,
+  onSeeAll,
+  isLoading = false,
   unreadCount,
   maxBadgeCount = DEFAULT_MAX_BADGE_COUNT,
   open,
@@ -101,6 +108,7 @@ export const NotificationsBell = ({
   loadingLabel,
   markAllAsReadLabel,
   removeLabel,
+  seeAllLabel,
   className,
   contentClassName,
   badgeClassName,
@@ -124,6 +132,11 @@ export const NotificationsBell = ({
   const handleSelect = (item: NotificationItem): void => {
     handleOpenChange(false);
     onSelect?.(item);
+  };
+
+  const handleSeeAll = (): void => {
+    handleOpenChange(false);
+    onSeeAll?.();
   };
 
   return (
@@ -161,11 +174,11 @@ export const NotificationsBell = ({
           )}
         </div>
 
-        {loading && <p className="px-3 py-6 text-center text-sm text-muted-foreground">{loadingLabel ?? t("states.loading")}</p>}
+        {isLoading && <p className="px-3 py-6 text-center text-sm text-muted-foreground">{loadingLabel ?? t("states.loading")}</p>}
 
-        {!loading && items.length === 0 && <p className="px-3 py-6 text-center text-sm text-muted-foreground">{emptyLabel ?? t("notifications.empty")}</p>}
+        {!isLoading && items.length === 0 && <p className="px-3 py-6 text-center text-sm text-muted-foreground">{emptyLabel ?? t("notifications.empty")}</p>}
 
-        {!loading && items.length > 0 && (
+        {!isLoading && items.length > 0 && (
           <ScrollArea className="max-h-96">
             <ul className="divide-y">
               {items.map(item => {
@@ -223,6 +236,14 @@ export const NotificationsBell = ({
               })}
             </ul>
           </ScrollArea>
+        )}
+
+        {onSeeAll && (
+          <div className="border-t p-1">
+            <Button type="button" variant="ghost" size="sm" className="h-8 w-full justify-center text-xs font-medium" onClick={handleSeeAll}>
+              {seeAllLabel ?? t("notifications.seeAll")}
+            </Button>
+          </div>
         )}
       </PopoverContent>
     </Popover>

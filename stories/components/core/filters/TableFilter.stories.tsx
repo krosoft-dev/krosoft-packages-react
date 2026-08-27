@@ -5,11 +5,11 @@ import type { FilterSection } from "@/types/FilterSection";
 
 const SECTIONS_CLIENTS: FilterSection[] = [
   {
-    title: "Identité",
+    titleKey: "Identité",
     filters: [
       {
         key: "statut",
-        label: "Statut",
+        labelKey: "Statut",
         type: "select",
         placeholder: "Tous les statuts",
         options: [
@@ -22,7 +22,7 @@ const SECTIONS_CLIENTS: FilterSection[] = [
       },
       {
         key: "villes",
-        label: "Ville",
+        labelKey: "Ville",
         type: "multi-select",
         placeholder: "Toutes les villes",
         options: [
@@ -39,36 +39,36 @@ const SECTIONS_CLIENTS: FilterSection[] = [
       },
       {
         key: "nom",
-        label: "Nom",
+        labelKey: "Nom",
         type: "text",
         placeholder: "Rechercher par nom...",
       },
     ],
   },
   {
-    title: "Financier",
+    titleKey: "Financier",
     filters: [
       {
         key: "budgetMin",
-        label: "Budget minimum",
+        labelKey: "Budget minimum",
         type: "number",
         placeholder: "0",
         min: 0,
       },
       {
         key: "budgetMax",
-        label: "Budget maximum",
+        labelKey: "Budget maximum",
         type: "number",
         placeholder: "1 000 000",
       },
     ],
   },
   {
-    title: "Dates",
+    titleKey: "Dates",
     filters: [
       {
         key: "dateCreation",
-        label: "Créé depuis le",
+        labelKey: "Créé depuis le",
         type: "date",
         placeholder: "Sélectionner une date",
       },
@@ -112,11 +112,11 @@ export const WithQuickFilters: Story = {
     searchPlaceholder: "Rechercher...",
     sections: [
       {
-        title: "Statut",
+        titleKey: "Statut",
         filters: [
           {
             key: "statut",
-            label: "Statut",
+            labelKey: "Statut",
             type: "multi-select",
             placeholder: "Tous",
             options: [
@@ -128,7 +128,7 @@ export const WithQuickFilters: Story = {
           },
           {
             key: "villes",
-            label: "Ville",
+            labelKey: "Ville",
             type: "multi-select",
             placeholder: "Toutes",
             options: [

@@ -1,19 +1,19 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { TableBulkActions } from "@/components/core/table/TableBulkActions";
-import type { BulkAction } from "@/types/BulkAction";
+import type { DataTableBulkAction } from "@/types/DataTableBulkAction";
 import { Download, Mail, Trash2 } from "lucide-react";
 
-const ACTIONS_DEFAULT: BulkAction[] = [
+const ACTIONS_DEFAULT: DataTableBulkAction[] = [
   {
-    label: "Exporter",
+    labelKey: "Exporter",
     icon: Download,
     onClick: (_ids, clear) => {
       clear();
     },
   },
   {
-    label: "Envoyer un email",
+    labelKey: "Envoyer un email",
     icon: Mail,
     onClick: (_ids, clear) => {
       clear();
@@ -21,10 +21,10 @@ const ACTIONS_DEFAULT: BulkAction[] = [
   },
 ];
 
-const ACTIONS_WITH_DESTRUCTIVE: BulkAction[] = [
+const ACTIONS_WITH_DESTRUCTIVE: DataTableBulkAction[] = [
   ...ACTIONS_DEFAULT,
   {
-    label: "Supprimer",
+    labelKey: "Supprimer",
     icon: Trash2,
     variant: "destructive",
     onClick: (_ids, clear) => {
@@ -79,15 +79,15 @@ export const ManySelected: Story = {
 export const NoIcon: Story = {
   render: () => {
     const [selected, setSelected] = useState(["1", "2"]);
-    const actions: BulkAction[] = [
+    const actions: DataTableBulkAction[] = [
       {
-        label: "Archiver",
+        labelKey: "Archiver",
         onClick: (_ids, clear) => {
           clear();
         },
       },
       {
-        label: "Dupliquer",
+        labelKey: "Dupliquer",
         onClick: (_ids, clear) => {
           clear();
         },
@@ -102,9 +102,9 @@ export const Interactive: Story = {
     const [selected, setSelected] = useState(["id-1", "id-2", "id-5", "id-8"]);
     const [log, setLog] = useState<string[]>([]);
 
-    const actions: BulkAction[] = [
+    const actions: DataTableBulkAction[] = [
       {
-        label: "Exporter",
+        labelKey: "Exporter",
         icon: Download,
         onClick: (ids, clear) => {
           setLog(prev => [`Export : ${ids.join(", ")}`, ...prev]);
@@ -112,7 +112,7 @@ export const Interactive: Story = {
         },
       },
       {
-        label: "Envoyer un email",
+        labelKey: "Envoyer un email",
         icon: Mail,
         onClick: (ids, clear) => {
           setLog(prev => [`Email : ${ids.join(", ")}`, ...prev]);
@@ -120,7 +120,7 @@ export const Interactive: Story = {
         },
       },
       {
-        label: "Supprimer",
+        labelKey: "Supprimer",
         icon: Trash2,
         variant: "destructive",
         onClick: (ids, clear) => {

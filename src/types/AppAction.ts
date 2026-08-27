@@ -14,7 +14,7 @@ export type AppAction =
       icon?: React.ElementType;
       labelKey?: string;
       variant?: ButtonVariantType;
-      onClick: never;
+      onClick?: never;
       disabled?: boolean;
       children: AppAction[];
       className?: string;

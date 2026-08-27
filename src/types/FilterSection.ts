@@ -1,6 +1,6 @@
 import { FilterFieldConfig } from "./FilterFieldConfig";
 
 export interface FilterSection<T extends Record<string, unknown> = Record<string, unknown>> {
-  title: string;
+  titleKey: string;
   filters: FilterFieldConfig<T>[];
 }

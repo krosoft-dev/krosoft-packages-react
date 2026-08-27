@@ -22,11 +22,19 @@ vi.mock("sonner", () => ({
   },
 }));
 
-vi.mock("react-i18next", () => ({
-  useTranslation: () => ({
-    t: (key: string) => (key === "pwa.updateAvailable" ? "Une nouvelle version est disponible." : "Actualiser"),
-  }),
-}));
+vi.mock("react-i18next", () => {
+  const translations: Record<string, string> = {
+    "pwa.updateAvailable": "Une nouvelle version est disponible.",
+    "pwa.updateAction": "Actualiser",
+  };
+  return {
+    useTranslation: () => ({
+      t: (key: string) => translations[key] ?? key,
+      ready: true,
+      i18n: { exists: (key: string) => key in translations },
+    }),
+  };
+});
 
 vi.mock("virtual:pwa-register/react", () => ({
   useRegisterSW: (options: typeof registeredOptions) => {

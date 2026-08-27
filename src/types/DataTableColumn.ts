@@ -1,8 +1,9 @@
 import React from "react";
 
-export interface ColumnDef<T> {
+export interface DataTableColumn<T> {
   key: string;
-  label: string;
+  // Clé i18n de l'en-tête.
+  headerKey: string;
   defaultVisible?: boolean;
   minWidth?: number;
   sortable?: boolean;

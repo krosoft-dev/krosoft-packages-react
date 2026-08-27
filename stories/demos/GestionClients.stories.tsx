@@ -3,9 +3,9 @@ import { PlusIcon, UserIcon, UsersIcon } from "lucide-react";
 import React, { useState } from "react";
 import FormDialog from "@/components/core/dialogs/FormDialog";
 import { AppPageHeader } from "@/components/core/layouts/AppPageHeader";
-import { ColumnDef, DataTable } from "@/components/core/table/DataTable";
+import { DataTable } from "@/components/core/table/DataTable";
 import { Badge } from "@/components/ui/badge";
-import type { FormSchema } from "@/types";
+import type { DataTableColumn, FormSchema } from "@/types";
 
 // --- Modèle de données -------------------------------------------------------
 
@@ -187,20 +187,20 @@ const GestionClientsPage = (): React.JSX.Element => {
     });
   };
 
-  const columns: ColumnDef<Client>[] = [
-    { key: "nom", label: "Raison sociale", minWidth: 180, sortable: true },
-    { key: "email", label: "E-mail", minWidth: 200 },
+  const columns: DataTableColumn<Client>[] = [
+    { key: "nom", headerKey: "Raison sociale", minWidth: 180, sortable: true },
+    { key: "email", headerKey: "E-mail", minWidth: 200 },
     {
       key: "statut",
-      label: "Statut",
+      headerKey: "Statut",
       minWidth: 120,
       renderCell: row => <Badge variant={STATUT_VARIANTS[row.statut]}>{STATUT_LABELS[row.statut]}</Badge>,
     },
-    { key: "ville", label: "Ville", minWidth: 120, renderCell: row => VILLE_LABELS[row.ville] ?? row.ville },
-    { key: "secteur", label: "Secteur", minWidth: 120, renderCell: row => SECTEUR_LABELS[row.secteur] ?? row.secteur },
+    { key: "ville", headerKey: "Ville", minWidth: 120, renderCell: row => VILLE_LABELS[row.ville] ?? row.ville },
+    { key: "secteur", headerKey: "Secteur", minWidth: 120, renderCell: row => SECTEUR_LABELS[row.secteur] ?? row.secteur },
     {
       key: "budget",
-      label: "Budget",
+      headerKey: "Budget",
       minWidth: 130,
       sortable: true,
       getSortValue: row => row.budget,
@@ -217,7 +217,7 @@ const GestionClientsPage = (): React.JSX.Element => {
         actions={[{ labelKey: "Nouveau client", icon: PlusIcon, onClick: ouvrirCreation }]}
       />
 
-      <DataTable data={clients} columns={columns} getRowId={row => row.id} onRowClick={ouvrirFiche} defaultPageSize={10} config={{ columnVisibility: false }} />
+      <DataTable data={clients} config={{ columns, rowKey: row => row.id, onRowClick: ouvrirFiche, columnVisibility: false, pageSizeDefault: 10 }} />
 
       <FormDialog<Client>
         open={open}
