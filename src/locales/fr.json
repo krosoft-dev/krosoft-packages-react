@@ -33,7 +33,8 @@
     "title": "Notifications",
     "empty": "Aucune notification.",
     "markAllAsRead": "Tout marquer comme lu",
-    "remove": "Supprimer la notification"
+    "remove": "Supprimer la notification",
+    "seeAll": "Voir tout"
   },
   "select": {
     "placeholder": "Sélectionner...",

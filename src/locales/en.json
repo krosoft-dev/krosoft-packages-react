@@ -33,7 +33,8 @@
     "title": "Notifications",
     "empty": "No notifications.",
     "markAllAsRead": "Mark all as read",
-    "remove": "Delete notification"
+    "remove": "Delete notification",
+    "seeAll": "See all"
   },
   "select": {
     "placeholder": "Select...",

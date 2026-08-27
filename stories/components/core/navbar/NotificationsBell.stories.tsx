@@ -45,7 +45,15 @@ export const Empty: Story = {
 };
 
 export const Loading: Story = {
-  args: { items: [], open: true, loading: true },
+  args: { items: [], open: true, isLoading: true },
+};
+
+/**
+ * Pied « Voir tout » : affiché uniquement quand `onSeeAll` est fourni. Le composant ne navigue pas
+ * lui-même — il referme le panneau puis rappelle l'application, à qui d'ouvrir la page complète.
+ */
+export const SeeAll: Story = {
+  args: { items, open: true, onSeeAll: () => undefined },
 };
 
 /**
@@ -73,7 +81,8 @@ export const CustomItems: Story = {
 
 /**
  * Cas réel : la liste vit dans l'application, le composant n'affiche que ce qu'on lui donne.
- * Le clic marque comme lu, « tout marquer comme lu » vide le compteur, la corbeille retire l'entrée.
+ * Le clic marque comme lu, « tout marquer comme lu » vide le compteur, la corbeille retire l'entrée,
+ * « Voir tout » ouvrirait la page complète des notifications.
  */
 const Interactive = (): React.ReactElement => {
   const [current, setCurrent] = React.useState(withIcons);
@@ -90,6 +99,7 @@ const Interactive = (): React.ReactElement => {
       onRemove={item => {
         setCurrent(previous => previous.filter(entry => entry.key !== item.key));
       }}
+      onSeeAll={() => undefined}
     />
   );
 };
