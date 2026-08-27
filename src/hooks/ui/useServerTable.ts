@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from "react";
+import { searchDebounceMs } from "@/constants";
 
 export interface UseServerTableResult<TFilters> {
   currentPage: number;
@@ -37,7 +38,7 @@ export function useServerTable<TFilters>(
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearchText(searchText);
-    }, options.debounceMs ?? 300);
+    }, options.debounceMs ?? searchDebounceMs);
 
     return () => {
       clearTimeout(handler);
