@@ -5,6 +5,17 @@ import React from "react";
 import { createInstance } from "i18next";
 import { I18nextProvider } from "react-i18next";
 import { Badge } from "@/components/ui/badge";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { buttonVariants } from "@/components/ui/button";
 import { PencilIcon, TrashIcon } from "lucide-react";
 
 const meta: Meta<typeof DataTable> = {
@@ -352,31 +363,103 @@ export const WithConditionalActions: Story = {
   },
 };
 
+type PendingBulkAction = {
+  label: string;
+  variant?: "destructive";
+  rows: UserData[];
+  confirm: () => void;
+};
+
+const BulkActionsDemo = (): React.JSX.Element => {
+  const [pending, setPending] = React.useState<PendingBulkAction | null>(null);
+
+  const askConfirmation = (label: string, variant: "destructive" | undefined, rows: UserData[], clearSelection: () => void): void => {
+    setPending({
+      label,
+      variant,
+      rows,
+      confirm: () => {
+        console.warn(`${label} — IDs: ${rows.map(row => row.id).join(", ")}`);
+        clearSelection();
+      },
+    });
+  };
+
+  return (
+    <>
+      <DataTable
+        data={mockData}
+        config={{
+          columns,
+          rowKey: (row: UserData) => row.id,
+          bulkActions: [
+            {
+              labelKey: "Activate Selected",
+              onClick: (rows: UserData[], clearSelection: () => void): void => {
+                askConfirmation("Activate Selected", undefined, rows, clearSelection);
+              },
+            },
+            {
+              labelKey: "Delete Selected",
+              variant: "destructive",
+              onClick: (rows: UserData[], clearSelection: () => void): void => {
+                askConfirmation("Delete Selected", "destructive", rows, clearSelection);
+              },
+            },
+          ],
+        }}
+      />
+      <AlertDialog
+        open={pending !== null}
+        onOpenChange={open => {
+          if (!open) {
+            setPending(null);
+          }
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Confirmer « {pending?.label} »</AlertDialogTitle>
+            <AlertDialogDescription>
+              {pending?.rows.length} utilisateur(s) sélectionné(s). Confirmez-vous l'action sur les éléments suivants ?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <ul className="max-h-48 space-y-1 overflow-y-auto rounded-surface border p-3 text-sm">
+            {pending?.rows.map(row => (
+              <li key={row.id} className="flex justify-between gap-4">
+                <span className="font-medium">{row.name}</span>
+                <span className="text-muted-foreground">{row.email}</span>
+              </li>
+            ))}
+          </ul>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Annuler</AlertDialogCancel>
+            <AlertDialogAction
+              className={pending?.variant === "destructive" ? buttonVariants({ variant: "destructive" }) : undefined}
+              onClick={() => {
+                pending?.confirm();
+                setPending(null);
+              }}
+            >
+              Confirmer
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
+  );
+};
+
 export const WithBulkActions: Story = {
-  args: {
-    data: mockData,
-    config: {
-      columns,
-      rowKey: (row: UserData) => row.id,
-      bulkActions: [
-        {
-          labelKey: "Activate Selected",
-          onClick: (rows: UserData[], clearSelection: () => void): void => {
-            console.warn(`Activating users with IDs: ${rows.map(row => row.id).join(", ")}`);
-            clearSelection();
-          },
-        },
-        {
-          labelKey: "Delete Selected",
-          variant: "destructive",
-          onClick: (rows: UserData[], clearSelection: () => void): void => {
-            console.warn(`Deleting users with IDs: ${rows.map(row => row.id).join(", ")}`);
-            clearSelection();
-          },
-        },
-      ],
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Les actions groupées (`bulkActions`) reçoivent les lignes sélectionnées (`T[]`) et un `clearSelection`. Ici, chaque action ouvre d'abord une popup de confirmation listant les objets sélectionnés ; l'action réelle (et `clearSelection`) n'est exécutée qu'à la validation.",
+      },
     },
   },
+  render: () => <BulkActionsDemo />,
 };
 
 export const WithNoData: Story = {
