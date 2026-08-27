@@ -8,8 +8,9 @@ import { ACTIONS_COLUMN_KEY, getAlignmentClass, getColumnAlignment, getFixedCell
 
 export interface TableHeaderProps<T> {
   hasBulkActions: boolean;
-  selectedRows: string[];
-  totalItems: number;
+  // Sélection de la page courante uniquement : « tout cocher » agit page par page.
+  allSelected: boolean;
+  someSelected: boolean;
   toggleSelectAll: () => void;
   visibleColumnsArray: DataTableColumn<T>[];
   draggableColumns: boolean;
@@ -39,8 +40,8 @@ const HEADER_JUSTIFY: Record<"left" | "center" | "right", string> = {
 
 export function TableHeader<T>({
   hasBulkActions,
-  selectedRows,
-  totalItems,
+  allSelected,
+  someSelected,
   toggleSelectAll,
   visibleColumnsArray,
   draggableColumns,
@@ -63,9 +64,9 @@ export function TableHeader<T>({
 }: TableHeaderProps<T>): React.JSX.Element {
   const { t } = useKrosoftTranslation();
   let checkboxChecked: boolean | "indeterminate" = false;
-  if (selectedRows.length === totalItems && totalItems > 0) {
+  if (allSelected) {
     checkboxChecked = true;
-  } else if (selectedRows.length > 0) {
+  } else if (someSelected) {
     checkboxChecked = "indeterminate";
   }
 

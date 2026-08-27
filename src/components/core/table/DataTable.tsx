@@ -1,6 +1,6 @@
 import { useDataTable } from "@/hooks/ui/useDataTable";
 import { useFixedColumns } from "@/hooks/ui/useFixedColumns";
-import React from "react";
+import React, { useMemo } from "react";
 import { pageSizeDefault as DEFAULT_PAGE_SIZE, pagesSizes as DEFAULT_PAGE_SIZE_OPTIONS } from "../../../constants/datatable";
 import { TableBody } from "./TableBody";
 import { TableBulkActions } from "./TableBulkActions";
@@ -72,6 +72,16 @@ export function DataTable<T>({ data, isLoading = false, error = null, config, se
   const fixedSelection = hasBulkActions && visibleColumnsArray.some(column => column.fixed === "left");
   const fixedColumns = useFixedColumns(tableRef);
 
+  // Index par clé de la sélection (dérivé, pas un second état) : `selectedRows` porte des objets,
+  // mais après un refetch une ligne sélectionnée n'a plus la même référence que dans `data` —
+  // l'appartenance se teste donc par clé. Local au composant, comme le fait déjà `AppDataTable`.
+  const selectedKeys = useMemo(() => new Set(selectedRows.map(rowKey)), [selectedRows, rowKey]);
+
+  // État de la case « tout sélectionner », restreint à la page affichée : la sélection
+  // peut couvrir d'autres pages, mais l'en-tête ne parle que des lignes visibles.
+  const allSelected = data.length > 0 && data.every(row => selectedKeys.has(rowKey(row)));
+  const someSelected = !allSelected && data.some(row => selectedKeys.has(rowKey(row)));
+
   return (
     // Le tableau suit le preset de l'application — square reste square — mais
     // bascule sur les valeurs plafonnées : ni ses contrôles ni son cadre ne
@@ -79,7 +89,7 @@ export function DataTable<T>({ data, isLoading = false, error = null, config, se
     // groupées et la pagination. Les fallbacks correspondent au preset "soft".
     <div className="space-y-4 [--k-radius-control:var(--k-radius-control-dense,0.5rem)] [--k-radius-surface:var(--k-radius-surface-dense,0.75rem)]">
       {selectedRows.length > 0 && bulkActions !== undefined && bulkActions.length > 0 && (
-        <TableBulkActions selectedRows={selectedRows} setSelectedRows={setSelectedRows} bulkActions={bulkActions} />
+        <TableBulkActions<T> selectedRows={selectedRows} setSelectedRows={setSelectedRows} bulkActions={bulkActions} />
       )}
 
       <div className="w-full bg-card rounded-surface border border-border overflow-hidden">
@@ -87,8 +97,8 @@ export function DataTable<T>({ data, isLoading = false, error = null, config, se
           <table ref={tableRef} className="w-full">
             <TableHeader
               hasBulkActions={hasBulkActions}
-              selectedRows={selectedRows}
-              totalItems={data.length}
+              allSelected={allSelected}
+              someSelected={someSelected}
               toggleSelectAll={toggleSelectAll}
               visibleColumnsArray={visibleColumnsArray}
               draggableColumns={draggableColumns}
@@ -125,7 +135,7 @@ export function DataTable<T>({ data, isLoading = false, error = null, config, se
               onRowClick={onRowClick}
               onRowNavigate={onRowNavigate}
               hasBulkActions={hasBulkActions}
-              selectedRows={selectedRows}
+              selectedKeys={selectedKeys}
               toggleRowSelection={toggleRowSelection}
               visibleColumnsArray={visibleColumnsArray}
               columnWidths={columnWidths}

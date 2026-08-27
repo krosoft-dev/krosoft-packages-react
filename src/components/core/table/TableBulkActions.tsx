@@ -1,15 +1,15 @@
 import React from "react";
 import { Button } from "../../ui/button";
 import { useKrosoftTranslation } from "@/i18n";
-import { DataTableBulkAction } from "@/types/DataTableBulkAction";
+import type { DataTableBulkAction } from "@/types/DataTableBulkAction";
 
-export interface TableBulkActionsProps {
-  selectedRows: string[];
-  setSelectedRows: React.Dispatch<React.SetStateAction<string[]>>;
-  bulkActions: DataTableBulkAction[];
+export interface TableBulkActionsProps<T> {
+  selectedRows: T[];
+  setSelectedRows: React.Dispatch<React.SetStateAction<T[]>>;
+  bulkActions: DataTableBulkAction<T>[];
 }
 
-export function TableBulkActions({ selectedRows, setSelectedRows, bulkActions }: TableBulkActionsProps): React.JSX.Element {
+export function TableBulkActions<T>({ selectedRows, setSelectedRows, bulkActions }: TableBulkActionsProps<T>): React.JSX.Element {
   const { t } = useKrosoftTranslation();
   return (
     <div className="bg-muted/60 border border-border px-3 py-1.5 flex items-center justify-between rounded-surface">

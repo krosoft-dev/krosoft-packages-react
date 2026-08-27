@@ -361,16 +361,16 @@ export const WithBulkActions: Story = {
       bulkActions: [
         {
           labelKey: "Activate Selected",
-          onClick: (selectedIds: string[], clearSelection: () => void): void => {
-            console.warn(`Activating users with IDs: ${selectedIds.join(", ")}`);
+          onClick: (rows: UserData[], clearSelection: () => void): void => {
+            console.warn(`Activating users with IDs: ${rows.map(row => row.id).join(", ")}`);
             clearSelection();
           },
         },
         {
           labelKey: "Delete Selected",
           variant: "destructive",
-          onClick: (selectedIds: string[], clearSelection: () => void): void => {
-            console.warn(`Deleting users with IDs: ${selectedIds.join(", ")}`);
+          onClick: (rows: UserData[], clearSelection: () => void): void => {
+            console.warn(`Deleting users with IDs: ${rows.map(row => row.id).join(", ")}`);
             clearSelection();
           },
         },
@@ -456,16 +456,16 @@ export const FullFeatured: Story = {
       bulkActions: [
         {
           labelKey: "Export Selected",
-          onClick: (selectedIds: string[], clearSelection: () => void): void => {
-            console.warn(`Exporting users with IDs: ${selectedIds.join(", ")}`);
+          onClick: (rows: UserData[], clearSelection: () => void): void => {
+            console.warn(`Exporting users with IDs: ${rows.map(row => row.id).join(", ")}`);
             clearSelection();
           },
         },
         {
           labelKey: "Delete Selected",
           variant: "destructive",
-          onClick: (selectedIds: string[], clearSelection: () => void): void => {
-            console.warn(`Deleting users with IDs: ${selectedIds.join(", ")}`);
+          onClick: (rows: UserData[], clearSelection: () => void): void => {
+            console.warn(`Deleting users with IDs: ${rows.map(row => row.id).join(", ")}`);
             clearSelection();
           },
         },
@@ -518,8 +518,8 @@ export const WithFixedColumns: Story = {
           labelKey: "Supprimer",
           icon: TrashIcon,
           variant: "destructive" as const,
-          onClick: (selectedIds: string[], clearSelection: () => void): void => {
-            console.warn(`Deleting users with IDs: ${selectedIds.join(", ")}`);
+          onClick: (rows: UserData[], clearSelection: () => void): void => {
+            console.warn(`Deleting users with IDs: ${rows.map(row => row.id).join(", ")}`);
             clearSelection();
           },
         },

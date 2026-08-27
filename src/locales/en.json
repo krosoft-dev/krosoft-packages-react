@@ -91,6 +91,10 @@
     "updatedMessage": "The language has been changed to {{language}}."
   },
   "theme": {
+    "system": "Automatic (system)",
+    "systemMessage": "The theme automatically follows your system preferences",
+    "light": "Light",
+    "dark": "Dark",
     "updatedTitle": "Theme updated",
     "updatedMessage": "The theme has been changed to {{theme}}."
   }

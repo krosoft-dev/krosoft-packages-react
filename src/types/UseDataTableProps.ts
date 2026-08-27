@@ -9,7 +9,7 @@ export interface UseDataTableProps<T> {
   rowKey: (row: T) => string;
   pageSizeDefault: number;
   actions?: DataTableRowAction<T>[];
-  bulkActions?: DataTableBulkAction[];
+  bulkActions?: DataTableBulkAction<T>[];
   columnVisibility?: boolean;
   server?: DataTableServerState;
 }

@@ -4,8 +4,9 @@ import { DataTableColumn } from "./DataTableColumn";
 export interface UseDataTableResult<T> {
   sortColumn: string | null;
   sortDirection: "asc" | "desc";
-  selectedRows: string[];
-  setSelectedRows: React.Dispatch<React.SetStateAction<string[]>>;
+  /** Lignes sélectionnées, en objets complets : la sélection persiste à travers la pagination server-side. */
+  selectedRows: T[];
+  setSelectedRows: React.Dispatch<React.SetStateAction<T[]>>;
   visibleColumns: Set<string>;
   columnWidths: Record<string, number>;
   currentPage: number;
@@ -29,6 +30,6 @@ export interface UseDataTableResult<T> {
   handleDragOver: (e: React.DragEvent, columnKey: string) => void;
   handleDrop: (e: React.DragEvent, targetColumnKey: string) => void;
   toggleColumnVisibility: (columnKey: string) => void;
-  toggleRowSelection: (id: string) => void;
+  toggleRowSelection: (row: T) => void;
   toggleSelectAll: () => void;
 }

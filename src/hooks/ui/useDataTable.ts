@@ -55,7 +55,10 @@ export function useDataTable<T>({
   const [localSortDirection, setLocalSortDirection] = useState<"asc" | "desc">("asc");
   const sortDirection = controlledSortDirection ?? localSortDirection;
 
-  const [selectedRows, setSelectedRows] = useState<string[]>([]);
+  // La sélection conserve les objets complets (pas seulement leurs clés) : la sélection
+  // persiste d'une page à l'autre en server-side, où seule la page courante est dans `data`.
+  // On la garde donc autoportante, sans dépendre d'un cache des lignes déjà vues.
+  const [selectedRows, setSelectedRows] = useState<T[]>([]);
   const [visibilityOverrides, setVisibilityOverrides] = useState<Record<string, boolean>>({});
   const [widthOverrides, setWidthOverrides] = useState<Record<string, number>>({});
   const [columnOrderOverride, setColumnOrderOverride] = useState<string[] | null>(null);
@@ -274,20 +277,21 @@ export function useDataTable<T>({
     setVisibilityOverrides(prev => ({ ...prev, [columnKey]: !currentlyVisible }));
   };
 
-  const toggleRowSelection = (id: string): void => {
-    if (selectedRows.includes(id)) {
-      setSelectedRows(selectedRows.filter(key => key !== id));
-    } else {
-      setSelectedRows([...selectedRows, id]);
-    }
+  // Comparaison par clé (et non par référence) : react-query renvoie de nouvelles instances
+  // à chaque refetch, une ligne sélectionnée n'est donc jamais la même référence que dans `data`.
+  const toggleRowSelection = (row: T): void => {
+    const key = rowKey(row);
+    setSelectedRows(previous => (previous.some(selected => rowKey(selected) === key) ? previous.filter(selected => rowKey(selected) !== key) : [...previous, row]));
   };
 
   const toggleSelectAll = (): void => {
-    if (selectedRows.length === data.length) {
-      setSelectedRows([]);
-    } else {
-      setSelectedRows(data.map(item => rowKey(item)));
-    }
+    setSelectedRows(previous => {
+      const pageKeys = new Set(data.map(rowKey));
+      const withoutPage = previous.filter(selected => !pageKeys.has(rowKey(selected)));
+      const allPageSelected = data.length > 0 && data.every(row => previous.some(selected => rowKey(selected) === rowKey(row)));
+      // « Tout cocher » agit page par page : on garde la sélection des autres pages, on ne bascule que la page courante.
+      return allPageSelected ? withoutPage : [...withoutPage, ...data];
+    });
   };
 
   return {

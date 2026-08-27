@@ -21,7 +21,7 @@ export interface DataTableConfig<T> {
   /** Actions par ligne, affichées en ligne ou dans le menu kebab (`overflow`). */
   actions?: DataTableRowAction<T>[];
   /** Actions rapides sur la sélection multiple. */
-  bulkActions?: DataTableBulkAction[];
+  bulkActions?: DataTableBulkAction<T>[];
   /** Nombre de lignes par page au premier affichage. */
   pageSizeDefault?: number;
   /** Options proposées pour le nombre de lignes par page. */
