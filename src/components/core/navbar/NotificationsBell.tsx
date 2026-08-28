@@ -179,7 +179,7 @@ export const NotificationsBell = ({
         {!isLoading && items.length === 0 && <p className="px-3 py-6 text-center text-sm text-muted-foreground">{emptyLabel ?? t("notifications.empty")}</p>}
 
         {!isLoading && items.length > 0 && (
-          <ScrollArea className="max-h-96">
+          <ScrollArea viewportClassName="max-h-96">
             <ul className="divide-y">
               {items.map(item => {
                 const Icon = item.icon;
