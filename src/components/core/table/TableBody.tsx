@@ -112,11 +112,18 @@ export function TableBody<T>({
   const selectionFixed = getFixedCellProps(fixedColumns[SELECTION_COLUMN_KEY], "body");
   const actionsFixed = getFixedCellProps(fixedColumns[ACTIONS_COLUMN_KEY], "body");
 
-  const isRowClickable = onRowNavigate !== undefined || onRowClick !== undefined;
+  // Dès qu'une sélection est en cours, le clic sur la ligne coche/décoche au lieu de
+  // naviguer : pas de navigation involontaire pendant qu'on sélectionne des lignes.
+  const isSelectionActive = hasBulkActions && selectedKeys.size > 0;
+  const isRowClickable = isSelectionActive || onRowNavigate !== undefined || onRowClick !== undefined;
 
   // La navigation prime sur onRowClick : Ctrl/Cmd + clic reproduit le comportement natif
   // des liens en ouvrant l'URL dans un nouvel onglet, sinon le router prend le relais.
   const handleRowClick = (row: T, event: React.MouseEvent<HTMLTableRowElement>): void => {
+    if (isSelectionActive) {
+      toggleRowSelection(row);
+      return;
+    }
     if (onRowNavigate !== undefined) {
       const url = onRowNavigate(row);
       if (event.ctrlKey || event.metaKey) {
