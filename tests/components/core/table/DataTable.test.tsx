@@ -345,6 +345,41 @@ describe("DataTable — navigation au clic", () => {
 
     expect(navigateMock).not.toHaveBeenCalled();
   });
+
+  it("bascule la sélection au clic sur une ligne tant qu'une sélection est en cours", () => {
+    const onRowClick = vi.fn();
+    const container = renderTable({
+      config: {
+        onRowNavigate: (row: Row) => `/users/${row.id}`,
+        onRowClick,
+        bulkActions: [{ labelKey: "Supprimer", onClick: () => undefined }],
+      },
+    });
+
+    const rowCheckbox = (index: number): Element => {
+      const checkbox = bodyCells(container, SELECTION_COLUMN_KEY)[index].querySelector('[role="checkbox"]');
+      if (checkbox === null) throw new Error("Case de sélection introuvable");
+      return checkbox;
+    };
+    fireEvent.click(rowCheckbox(0));
+
+    // Sélection active : le clic sur une autre ligne la coche au lieu de naviguer.
+    const secondRow = container.querySelectorAll<HTMLTableRowElement>("tbody tr")[1];
+    fireEvent.click(secondRow);
+    expect(navigateMock).not.toHaveBeenCalled();
+    expect(onRowClick).not.toHaveBeenCalled();
+    expect(rowCheckbox(1).getAttribute("data-state")).toBe("checked");
+
+    // Re-clic : la ligne se décoche.
+    fireEvent.click(secondRow);
+    expect(rowCheckbox(1).getAttribute("data-state")).toBe("unchecked");
+
+    // Sélection vidée : le clic redevient navigant.
+    fireEvent.click(firstRow(container));
+    expect(rowCheckbox(0).getAttribute("data-state")).toBe("unchecked");
+    fireEvent.click(firstRow(container));
+    expect(navigateMock).toHaveBeenCalledExactlyOnceWith("/users/1");
+  });
 });
 
 describe("DataTable — colonnes figées", () => {
