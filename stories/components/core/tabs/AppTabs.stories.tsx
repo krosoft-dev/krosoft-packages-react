@@ -117,6 +117,28 @@ export const FitWidth: Story = {
   },
 };
 
+// AppTabs imbriqués : le niveau parent pilote ?tab=, l'enfant ?subtab=. Les deux noms de
+// paramètres étant distincts, changer un sous-onglet ne touche pas l'onglet parent (et vice versa).
+const nestedChildTabs: TabConfig[] = [
+  { value: "apercu", titleKey: "Aperçu", component: makeContent("Aperçu") },
+  { value: "detail", titleKey: "Détail", component: makeContent("Détail") },
+];
+
+const nestedParentTabs: TabConfig[] = [
+  { value: "informations", titleKey: "Informations", component: makeContent("Informations") },
+  {
+    value: "metriques",
+    titleKey: "Métriques",
+    component: () => <AppTabs tabs={nestedChildTabs} paramName="subtab" fit />,
+  },
+];
+
+export const Nested: Story = {
+  args: {
+    tabs: nestedParentTabs,
+  },
+};
+
 // Largeur volontairement contrainte pour reproduire le mobile : la liste défile
 // horizontalement au lieu d'élargir la page.
 export const ScrollableTabs: Story = {

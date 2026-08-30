@@ -10,19 +10,25 @@ export interface AppTabsProps<T = unknown> {
   itemId?: string | null;
   item?: T | null;
   fit?: boolean;
+  // Nom du paramètre d'URL qui porte l'onglet actif. Configurable pour permettre des AppTabs
+  // imbriqués : chaque niveau doit utiliser un nom distinct (ex. "tab" / "subtab") sinon les
+  // deux se synchronisent sur la même valeur et la navigation casse.
+  paramName?: string;
 }
 
-export function AppTabs({ tabs, itemId, item, fit }: AppTabsProps): React.JSX.Element {
+export function AppTabs({ tabs, itemId, item, fit, paramName = "tab" }: AppTabsProps): React.JSX.Element {
   const { t } = useKrosoftTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
   // L'onglet de l'URL peut ne pas exister dans la liste : lien obsolète, ou onglet retiré selon
   // les droits de l'utilisateur. On retombe alors sur le premier onglet plutôt que de n'afficher aucun contenu.
-  const requestedTab = searchParams.get("tab");
+  const requestedTab = searchParams.get(paramName);
   const activeTab = tabs.find(tab => tab.value === requestedTab)?.value ?? tabs[0]?.value;
 
   const handleTabChange = (value: string) => {
-    const newSearchParams = new URLSearchParams();
-    newSearchParams.set("tab", value);
+    // On repart des params existants au lieu d'un objet vide : sinon changer d'onglet effacerait
+    // tous les autres query params (filtres, et surtout l'onglet d'un AppTabs parent en cas d'imbrication).
+    const newSearchParams = new URLSearchParams(searchParams);
+    newSearchParams.set(paramName, value);
     setSearchParams(newSearchParams);
   };
 
