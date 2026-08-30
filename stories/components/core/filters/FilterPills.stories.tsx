@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { CheckCircle, Circle, Clock, Film, Tv } from "lucide-react";
-import { FilterPills, type FilterPillOption, type FilterPillsProps } from "@/components/core/filters/FilterPills";
+import { FilterPills, type FilterPillsProps } from "@/components/core/filters/FilterPills";
+import type { FilterPillOption } from "@/components/core/filters/FilterPillsGroup";
 
 // Wrapper pour résoudre le type générique avec Storybook
 const FilterPillsString = (props: FilterPillsProps<string>): React.ReactElement => <FilterPills<string> {...props} />;
