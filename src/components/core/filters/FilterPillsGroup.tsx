@@ -16,7 +16,8 @@ export interface FilterPillsGroupProps<T extends string | number> {
   options: FilterPillOption<T>[];
   /** Valeurs actives ; plusieurs pastilles peuvent l'être à la fois. */
   values: T[];
-  onToggle: (value: T) => void;
+  /** `NoInfer` : `T` est déduit de `options`/`values` seulement, pour accepter un setter `useState` directement. */
+  onToggle: (value: NoInfer<T>) => void;
   /** Style des options actives : fond plein (`solid`, défaut) ou bordure/texte `primary` (`outline`). */
   variant?: FilterPillsVariant;
 }

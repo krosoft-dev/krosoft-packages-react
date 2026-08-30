@@ -3,7 +3,8 @@ import { FilterPillsGroup, type FilterPillOption, type FilterPillsVariant } from
 export interface FilterPillsProps<T extends string | number> {
   options: FilterPillOption<T>[];
   value: T;
-  onChange: (value: T) => void;
+  /** `NoInfer` : `T` est déduit de `options`/`value` seulement, pour accepter un setter `useState` directement. */
+  onChange: (value: NoInfer<T>) => void;
   /** Style de l'option active : fond plein (`solid`, défaut) ou bordure/texte `primary` (`outline`). */
   variant?: FilterPillsVariant;
 }
