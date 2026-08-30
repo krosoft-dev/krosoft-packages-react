@@ -97,5 +97,10 @@
     "dark": "Sombre",
     "updatedTitle": "Thème mis à jour",
     "updatedMessage": "Le thème a été changé vers {{theme}}."
+  },
+  "pwa": {
+    "updateAvailable": "Une nouvelle version est disponible.",
+    "updateAction": "Actualiser",
+    "updateDismiss": "Ignorer"
   }
 }

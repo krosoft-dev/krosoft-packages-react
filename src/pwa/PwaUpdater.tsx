@@ -25,8 +25,10 @@ export interface PwaUpdaterProps {
  *
  * - configurer `VitePWA({ registerType: "prompt" })` — en `autoUpdate`, le service
  *   worker prend la main tout seul et le toast n'a plus rien à proposer ;
- * - monter `<Sonner />` ;
- * - fournir les clés `pwa.updateAvailable`, `pwa.updateAction` et `pwa.updateDismiss`.
+ * - monter `<Sonner />`.
+ *
+ * Les clés `pwa.updateAvailable`, `pwa.updateAction` et `pwa.updateDismiss` sont
+ * fournies par le package ; l'hôte peut les surcharger dans ses propres traductions.
  *
  * ```tsx
  * import { PwaUpdater } from "@krosoft/react/pwa";

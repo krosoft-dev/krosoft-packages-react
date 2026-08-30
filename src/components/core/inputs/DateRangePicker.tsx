@@ -85,6 +85,7 @@ export const DateRangePicker = ({ value, onChange, placeholder, className }: Dat
         <PopoverContent className="w-auto p-0" align="start" side="bottom" sideOffset={4}>
           <Calendar
             mode="range"
+            resetOnSelect
             defaultMonth={tempRange?.from}
             selected={tempRange}
             onSelect={setTempRange}
