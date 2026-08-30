@@ -179,6 +179,94 @@ export const DenseWithGroups: Story = {
   },
 };
 
+// Mode dense avec plusieurs groupes titrés : met en évidence l'espacement entre les groupes.
+const denseGroups = [
+  {
+    title: "Suivi",
+    items: [
+      { label: "Dashboard", path: "/home", icon: LayoutDashboard },
+      { label: "Flux", path: "/flux", icon: Zap },
+      { label: "Exécutions", path: "/executions", icon: Inbox },
+    ],
+  },
+  {
+    title: "Ressources",
+    items: [
+      { label: "Packages", path: "/packages", icon: FileText },
+      { label: "Agents", path: "/agents", icon: Users },
+    ],
+  },
+  {
+    title: "Système",
+    items: [
+      { label: "Tenants", path: "/tenants", icon: Building2 },
+      { label: "Paramètres", path: "/settings", icon: Settings },
+    ],
+  },
+];
+
+// Une seule liste plate, sans titre de section (cas "sans groupe").
+const flatItems = [
+  {
+    items: [
+      { label: "Dashboard", path: "/home", icon: LayoutDashboard },
+      { label: "Flux", path: "/flux", icon: Zap },
+      { label: "Exécutions", path: "/executions", icon: Inbox },
+      { label: "Packages", path: "/packages", icon: FileText },
+      { label: "Tenants", path: "/tenants", icon: Building2 },
+    ],
+  },
+];
+
+// Affiche côte à côte les deux configurations : avec groupes titrés et sans groupe (liste plate).
+const SidebarsComparison = ({ dense = false }: { dense?: boolean }): React.ReactElement => {
+  const [pathGroups, setPathGroups] = React.useState("/home");
+  const [pathFlat, setPathFlat] = React.useState("/home");
+
+  return (
+    <div className="flex h-screen w-full bg-background font-sans">
+      <SidebarProvider>
+        <Sidebar
+          dense={dense}
+          groups={denseGroups}
+          currentPath={pathGroups}
+          onItemClick={path => {
+            setPathGroups(path);
+          }}
+          slots={{ header: <SidebarHeader name="Avec groupes" subName="Suivi / Ressources / Système" icon={Shield} dense={dense} /> }}
+        />
+      </SidebarProvider>
+
+      <SidebarProvider>
+        <Sidebar
+          dense={dense}
+          groups={flatItems}
+          currentPath={pathFlat}
+          onItemClick={path => {
+            setPathFlat(path);
+          }}
+          slots={{ header: <SidebarHeader name="Sans groupe" subName="Liste plate" icon={Building2} dense={dense} /> }}
+        />
+      </SidebarProvider>
+
+      <main className="flex-1 p-8 overflow-y-auto">
+        <h1 className="text-3xl font-bold text-foreground">Comparaison{dense ? " dense" : ""}</h1>
+        <p className="text-muted-foreground mt-1">
+          À gauche : sidebar avec groupes titrés (espacement entre groupes). À droite : sidebar sans groupe (liste plate).
+        </p>
+      </main>
+    </div>
+  );
+};
+
+export const GroupesEtSansGroupe: Story = {
+  render: () => <SidebarsComparison />,
+};
+
+export const DenseGroupesEtSansGroupe: Story = {
+  render: () => <SidebarsComparison dense />,
+};
+
 const sampleGroupsWithSubItems = [
   {
     title: "Application",
