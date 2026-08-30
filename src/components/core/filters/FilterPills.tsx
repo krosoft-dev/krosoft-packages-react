@@ -52,7 +52,7 @@ export function FilterPills<T extends string | number>({ options, value, onChang
             onClick={() => {
               onChange(optionValue);
             }}
-            className={cn("inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-full border transition-colors", styles)}
+            className={cn("inline-flex items-center gap-1 text-xs px-2.5 py-1 rounded-control border transition-colors", styles)}
           >
             {Icon && <Icon className="size-3 shrink-0" />}
             {label} {count !== undefined && <span className="opacity-60">({count})</span>}
