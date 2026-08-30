@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import type { Config } from "tailwindcss";
+import plugin from "tailwindcss/plugin";
 import tailwindcssAnimate from "tailwindcss-animate";
 
 /**
@@ -196,7 +197,29 @@ const krosoftPreset = {
   // générées et les overlays (dialog, popover, select, dropdown) s'affichent
   // sans transition. Le plugin est porté par le preset pour que les projets
   // consommateurs n'aient rien à déclarer de leur côté.
-  plugins: [tailwindcssAnimate],
+  plugins: [
+    tailwindcssAnimate,
+    // Scrollbar fine et discrète, qui se colore au survol. Portée par le preset
+    // pour être disponible dans tous les projets consommateurs (contenu applicatif,
+    // conteneur de scroll de la sidebar…) sans redéclarer le style dans chaque `index.css`.
+    plugin(({ addUtilities }) => {
+      addUtilities({
+        ".scrollbar-modern": {
+          transition: "scrollbar-color 0.3s ease",
+          "&::-webkit-scrollbar": { width: "6px", height: "6px" },
+          "&::-webkit-scrollbar-track": { background: "transparent" },
+          "&::-webkit-scrollbar-button": { display: "none", width: "0", height: "0" },
+          "&::-webkit-scrollbar-thumb": { backgroundColor: "hsl(var(--border))", borderRadius: "9999px" },
+          "&:hover::-webkit-scrollbar-thumb": { backgroundColor: "hsl(var(--muted-foreground))" },
+          // Firefox n'a pas de pseudo-éléments de scrollbar : on passe par les propriétés standard.
+          "@supports (-moz-appearance: none)": {
+            scrollbarWidth: "thin",
+            scrollbarColor: "hsl(var(--border)) transparent",
+          },
+        },
+      });
+    }),
+  ],
   // Partial<Config> et non Config : c'est le type d'un preset (`presets: Array<Partial<Config>>`).
   // Un preset ne déclare pas de `content` — voir krosoftContent ci-dessus.
 } satisfies Partial<Config>;

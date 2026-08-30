@@ -329,43 +329,5 @@
   }
 }
 
-@layer utilities {
-  .scrollbar-modern {
-    transition: scrollbar-color 0.3s ease;
-  }
-
-  /* Only apply standard scrollbar properties to Firefox */
-  @supports (-moz-appearance: none) {
-    .scrollbar-modern {
-      scrollbar-width: thin;
-      scrollbar-color: hsl(var(--sidebar-border)) transparent;
-    }
-    .scrollbar-modern:hover {
-      scrollbar-color: hsl(var(--k-sidebar-muted)) transparent;
-    }
-  }
-
-  .scrollbar-modern::-webkit-scrollbar {
-    width: 5px;
-    height: 5px;
-  }
-
-  .scrollbar-modern::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  .scrollbar-modern::-webkit-scrollbar-button {
-    display: none;
-    width: 0;
-    height: 0;
-  }
-
-  .scrollbar-modern::-webkit-scrollbar-thumb {
-    background-color: hsl(var(--sidebar-border));
-    border-radius: 10px;
-  }
-
-  .scrollbar-modern:hover::-webkit-scrollbar-thumb {
-    background-color: hsl(var(--k-sidebar-muted));
-  }
-}
+/* `.scrollbar-modern` est fourni par le preset Tailwind partagé (src/tailwind/index.ts)
+   afin d'être disponible dans tous les projets consommateurs sans redéclaration. */

@@ -46,9 +46,20 @@ export interface SidebarProps {
   search?: SidebarSearch;
   dense?: boolean;
   loading?: boolean;
+  /** Affiche la croix de fermeture du drawer mobile. Désactiver lorsque le header contient déjà ses propres contrôles pour éviter la superposition. */
+  showCloseButton?: boolean;
 }
 
-export const Sidebar = ({ groups, currentPath, onItemClick, slots, search, dense = false, loading = false }: SidebarProps): React.ReactElement => {
+export const Sidebar = ({
+  groups,
+  currentPath,
+  onItemClick,
+  slots,
+  search,
+  dense = false,
+  loading = false,
+  showCloseButton = true,
+}: SidebarProps): React.ReactElement => {
   const { t } = useKrosoftTranslation();
   const { enabled: searchable = false, placeholder: searchPlaceholder } = search ?? {};
   const { header: headerNode, footer: footerNode } = slots ?? {};
@@ -142,7 +153,10 @@ export const Sidebar = ({ groups, currentPath, onItemClick, slots, search, dense
           setCollapsed(!open);
         }}
       >
-        <SheetContent side="left" className="w-[16rem] p-0 bg-sidebar border-r border-sidebar-border overflow-hidden [&>button]:text-sidebar-foreground">
+        <SheetContent
+          side="left"
+          className={cn("w-[16rem] p-0 bg-sidebar border-r border-sidebar-border overflow-hidden", showCloseButton ? "[&>button]:text-sidebar-foreground" : "[&>button]:hidden")}
+        >
           <SheetTitle className="sr-only">{t("sidebar.menu")}</SheetTitle>
           <SheetDescription className="sr-only">{t("sidebar.description")}</SheetDescription>
           {sidebarContent}
