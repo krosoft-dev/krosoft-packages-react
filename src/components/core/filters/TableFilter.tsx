@@ -128,8 +128,8 @@ export function TableFilter<T extends Record<string, unknown> = Record<string, u
 
   return (
     <div className="space-y-4 w-full">
-      <div className="flex flex-wrap items-center gap-3 justify-between">
-        <div className="flex flex-wrap items-center gap-3">
+      <div className="flex flex-wrap items-center gap-2 justify-between">
+        <div className="flex flex-wrap items-center gap-2">
           {/* Barre de recherche */}
           {onSearchChange !== undefined ? (
             <SearchInput
