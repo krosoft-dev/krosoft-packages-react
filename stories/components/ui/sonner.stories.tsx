@@ -33,10 +33,10 @@ export const WithActionAndClose: Story = {
       <Toaster />
       <Button
         onClick={() =>
-          toast("Une nouvelle version est disponible.", {
+          toast("Export terminé, le fichier est prêt.", {
             duration: Infinity,
             closeButton: true,
-            action: { label: "Actualiser", onClick: () => {} },
+            action: { label: "Ouvrir", onClick: () => {} },
           })
         }
       >

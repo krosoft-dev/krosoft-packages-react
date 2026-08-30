@@ -4,9 +4,9 @@ import { PwaUpdater } from "../../src/pwa/PwaUpdater";
 
 interface UpdateToastOptions {
   duration: number;
-  closeButton: boolean;
   dismissible: boolean;
   action: { label: string; onClick: () => void };
+  cancel: { label: string; onClick: () => void };
   onDismiss: () => void;
 }
 
@@ -26,6 +26,7 @@ vi.mock("react-i18next", () => {
   const translations: Record<string, string> = {
     "pwa.updateAvailable": "Une nouvelle version est disponible.",
     "pwa.updateAction": "Actualiser",
+    "pwa.updateDismiss": "Ignorer",
   };
   return {
     useTranslation: () => ({
@@ -76,8 +77,18 @@ describe("PwaUpdater", () => {
 
     const options = toast.mock.calls[0][1];
     expect(options.duration).toBe(Infinity);
-    expect(options.closeButton).toBe(true);
     expect(options.dismissible).toBe(true);
+  });
+
+  it("propose deux boutons : actualiser et ignorer, sans croix", () => {
+    needRefresh = true;
+
+    render(<PwaUpdater />);
+
+    const options = toast.mock.calls[0][1];
+    expect(options.action.label).toBe("Actualiser");
+    expect(options.cancel.label).toBe("Ignorer");
+    expect("closeButton" in options).toBe(false);
   });
 
   it("active le service worker en attente quand l'utilisateur accepte", () => {
@@ -94,6 +105,15 @@ describe("PwaUpdater", () => {
 
     render(<PwaUpdater />);
     toast.mock.calls[0][1].onDismiss();
+
+    expect(setNeedRefresh).toHaveBeenCalledWith(false);
+  });
+
+  it("oublie la proposition quand l'utilisateur clique sur Ignorer", () => {
+    needRefresh = true;
+
+    render(<PwaUpdater />);
+    toast.mock.calls[0][1].cancel.onClick();
 
     expect(setNeedRefresh).toHaveBeenCalledWith(false);
   });

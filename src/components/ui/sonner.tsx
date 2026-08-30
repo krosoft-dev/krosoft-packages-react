@@ -17,8 +17,10 @@ const Toaster = ({ ...props }: ToasterProps) => {
         classNames: {
           toast: "group toast group-[.toaster]:bg-background group-[.toaster]:text-foreground group-[.toaster]:border-border group-[.toaster]:shadow-lg",
           description: "group-[.toast]:text-muted-foreground",
-          actionButton: "group-[.toast]:bg-primary group-[.toast]:text-primary-foreground",
-          cancelButton: "group-[.toast]:bg-muted group-[.toast]:text-muted-foreground",
+          // `!rounded-control` : sonner impose un radius de 4px en dur sur ses boutons,
+          // on aligne sur le token de forme des contrôles du design system.
+          actionButton: "group-[.toast]:bg-primary group-[.toast]:text-primary-foreground !rounded-control",
+          cancelButton: "group-[.toast]:bg-muted group-[.toast]:text-muted-foreground !rounded-control",
           // Sonner colle par défaut une pastille cerclée en absolu au coin du toast. On la
           // remet dans le flux (`order-last`) pour qu'elle se pose après le bouton d'action.
           // Le `!` est indispensable : les règles de sonner sont plus spécifiques que ces classes.
