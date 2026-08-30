@@ -116,9 +116,9 @@ export const Sidebar = ({ groups, currentPath, onItemClick, slots, search, dense
               </div>
             ))
           : filteredGroups.map((group, groupIdx) => (
-              <div key={groupIdx} className={dense ? "mb-6" : "mb-9"}>
+              <div key={groupIdx} className={dense ? "mb-7" : "mb-10"}>
                 {!isCollapsed && group.title !== undefined && group.title !== "" && (
-                  <h3 className={cn("px-4 text-xs uppercase tracking-wider font-semibold text-sidebar-muted", dense ? "mb-1" : "mb-2")}>{group.title}</h3>
+                  <h3 className={cn("px-4 text-xs uppercase tracking-wider font-semibold text-sidebar-muted", dense ? "mb-3" : "mb-4")}>{group.title}</h3>
                 )}
                 <nav className={cn("flex flex-col", dense ? "gap-0.5" : "gap-1")}>
                   {group.items.map((item, itemIdx) => (
