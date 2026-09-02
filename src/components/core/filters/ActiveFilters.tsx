@@ -39,7 +39,7 @@ export function ActiveFilters({ filters, onRemoveFilter, onClearAll, filterLabel
 
   return (
     <div className="flex flex-wrap items-center gap-2 mb-4">
-      <span className="text-sm text-gray-600 font-medium">{t("filters.active")}</span>
+      <span className="text-sm text-muted-foreground font-medium">{t("filters.active")}</span>
       {activeFilters.flatMap(([key, value]) => {
         const labelKey = filterLabelKeys[key] as string | undefined;
         const label = labelKey !== undefined ? t(labelKey) : key;
@@ -51,14 +51,14 @@ export function ActiveFilters({ filters, onRemoveFilter, onClearAll, filterLabel
               <Badge
                 key={`${key}_${String(val)}`}
                 variant="secondary"
-                className="flex items-center gap-1 px-3 py-1 bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100"
+                className="flex items-center gap-1 px-3 py-1 bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20"
               >
                 {label}: {displayValue}
                 <button
                   onClick={() => {
                     onRemoveFilter(key, val);
                   }}
-                  className="ml-1 hover:bg-blue-200 rounded-full p-0.5"
+                  className="ml-1 hover:bg-primary/20 rounded-full p-0.5"
                 >
                   <XIcon className="size-4" />
                 </button>
@@ -69,13 +69,13 @@ export function ActiveFilters({ filters, onRemoveFilter, onClearAll, filterLabel
 
         const displayValue = getFilterDisplayValue(key, value, t, optionLabels);
         return (
-          <Badge key={key} variant="secondary" className="flex items-center gap-1 px-3 py-1 bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100">
+          <Badge key={key} variant="secondary" className="flex items-center gap-1 px-3 py-1 bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20">
             {label}: {displayValue}
             <button
               onClick={() => {
                 onRemoveFilter(key);
               }}
-              className="ml-1 hover:bg-blue-200 rounded-full p-0.5"
+              className="ml-1 hover:bg-primary/20 rounded-full p-0.5"
             >
               <XIcon className="size-4" />
             </button>
@@ -83,7 +83,7 @@ export function ActiveFilters({ filters, onRemoveFilter, onClearAll, filterLabel
         );
       })}
       {activeFilters.length > 0 && (
-        <button onClick={onClearAll} className="text-xs text-red-500 hover:text-red-600 transition-colors font-medium ml-auto">
+        <button onClick={onClearAll} className="text-xs text-destructive hover:text-destructive/80 transition-colors font-medium ml-auto">
           {t("filters.clearAll")}
         </button>
       )}

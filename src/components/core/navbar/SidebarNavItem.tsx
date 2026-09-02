@@ -2,7 +2,7 @@ import * as React from "react";
 import { ChevronDownIcon } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "../../ui/tooltip";
 import { cn } from "@/helpers/tailwind.helper";
-import { SidebarItem, SidebarSubItem } from "./Sidebar";
+import { SidebarItem } from "./Sidebar";
 
 export interface SidebarNavItemProps extends SidebarItem {
   currentPath: string;
@@ -62,7 +62,9 @@ export const SidebarNavItem = ({
 
   const collapsedClasses = dense ? "justify-center p-2 h-9 w-9 mx-auto" : "justify-center p-3 h-12 w-12 mx-auto";
   const expandedClasses = dense ? "px-3 py-1.5 h-9" : "px-4 py-3 h-12";
-  const activeClasses = dense ? "bg-sidebar-primary text-sidebar-primary-foreground" : "bg-sidebar-primary text-sidebar-primary-foreground shadow-lg";
+  // Item actif : fond teinté de la couleur primaire + contour discret primaire + texte/icône primaire.
+  // Reproduit le rendu des maquettes (pill avec outline coloré subtil).
+  const activeClasses = "bg-sidebar-primary/10 text-sidebar-primary font-semibold border border-sidebar-primary/40 [&_svg]:text-sidebar-primary";
 
   const content = (
     <a
@@ -72,15 +74,15 @@ export const SidebarNavItem = ({
         "flex items-center cursor-pointer transition-all duration-200 group rounded-control",
         dense ? "gap-2.5  mb-0.5" : "gap-3  mb-1",
         collapsed ? collapsedClasses : expandedClasses,
-        active ? activeClasses : "hover:bg-sidebar-accent text-sidebar-foreground hover:text-sidebar-accent-foreground",
+        active ? activeClasses : "border border-transparent hover:bg-sidebar-accent text-sidebar-foreground hover:text-sidebar-accent-foreground",
       )}
     >
       <div className={cn("flex-shrink-0 transition-transform group-hover:scale-110", collapsed ? "flex items-center justify-center" : "")}>
-        <Icon className="size-4" />
+        <Icon className={cn("size-4", active && "text-sidebar-primary")} />
       </div>
       {!collapsed && (
         <>
-          <span className={cn("flex-grow transition-opacity duration-150 font-medium", dense ? "text-sm" : "")}>{label}</span>
+          <span className={cn("flex-grow transition-opacity duration-150", active ? "font-semibold" : "font-medium", dense ? "text-sm" : "")}>{label}</span>
           {badge !== undefined && <span className="bg-red-500 text-white text-xs rounded-full py-1 min-w-[20px] text-center px-2 font-semibold">{badge}</span>}
           {subItems && subItems.length > 0 && <ChevronDownIcon className={cn("size-4 transition-transform duration-200", isOpen ? "rotate-180" : "")} />}
         </>

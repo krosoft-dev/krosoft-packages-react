@@ -97,7 +97,7 @@ export function SearchableFilterPill<T extends string>({
           <ChevronDown className="size-3.5 opacity-60" />
         </button>
       </PopoverTrigger>
-      <PopoverContent className="w-56 p-0" align="start">
+      <PopoverContent className="w-72 max-w-[var(--radix-popover-content-available-width)] p-0" align="start">
         {searchable ? (
           <div className="border-b border-border p-2">
             <div className="relative">
@@ -114,7 +114,7 @@ export function SearchableFilterPill<T extends string>({
             </div>
           </div>
         ) : null}
-        <div className="flex flex-col gap-0.5 max-h-56 overflow-y-auto p-1.5">
+        <div className="flex flex-col gap-0.5 max-h-56 overflow-y-auto overflow-x-hidden p-1.5">
           {filteredOptions.length > 0 && (
             <label className="flex items-center gap-2.5 rounded-md px-2 py-2 text-sm hover:bg-muted cursor-pointer transition-colors">
               <Checkbox checked={isAllSelected} onCheckedChange={handleToggleAll} />
@@ -123,15 +123,20 @@ export function SearchableFilterPill<T extends string>({
           )}
           {filteredOptions.length === 0 && <p className="px-2 py-3 text-center text-xs text-muted-foreground">{t("states.noResult")}</p>}
           {filteredOptions.map(opt => (
-            <label key={opt.value} className="flex items-center gap-2.5 rounded-md px-2 py-2 text-sm hover:bg-muted cursor-pointer transition-colors">
-              <Checkbox
-                checked={selected.includes(opt.value as T)}
-                onCheckedChange={() => {
-                  onToggle(opt.value as T);
-                }}
-              />
+            <label key={opt.value} className="flex min-w-0 items-center gap-2.5 rounded-md px-2 py-2 text-sm hover:bg-muted cursor-pointer transition-colors">
+              <span className="shrink-0">
+                <Checkbox
+                  checked={selected.includes(opt.value as T)}
+                  onCheckedChange={() => {
+                    onToggle(opt.value as T);
+                  }}
+                />
+              </span>
               {opt.color && <span className="size-2.5 shrink-0 rounded-full" style={{ backgroundColor: opt.color }} />}
-              {opt.label}
+              {/* Libellés longs tronqués (ellipsis) plutôt que de forcer un défilement horizontal du panneau. */}
+              <span className="min-w-0 flex-1 truncate" title={opt.label}>
+                {opt.label}
+              </span>
             </label>
           ))}
         </div>
