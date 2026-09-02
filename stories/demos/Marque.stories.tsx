@@ -21,20 +21,22 @@ const Pastille = ({ classe, nom }: { classe: string; nom: string }): React.JSX.E
 );
 
 /**
- * Le dégradé d'un thème, sur les deux surfaces qui le portent : l'en-tête d'`AppDialog`
- * et le bouton `brand`. L'en-tête est reproduit plutôt qu'ouvert en vraie dialog — une
+ * Les deux dégradés d'un thème : `--k-dialog-header-*` sur l'en-tête d'`AppDialog`,
+ * `--k-brand-*` sur le bouton `brand`. Ils partent des mêmes teintes dans les thèmes
+ * embarqués, mais rien ne les lie : une application peut déplacer sa marque sans
+ * toucher aux dialogs. L'en-tête est reproduit plutôt qu'ouvert en vraie dialog — une
  * dialog part en portal dans `body` et prendrait le thème global, pas celui du bloc.
  */
 const Echantillon = ({ label, className }: { label: string; className: string }): React.JSX.Element => (
   <div className={`${className} rounded-surface border border-border bg-background text-foreground overflow-hidden`}>
-    <div className="bg-gradient-to-r from-brand-from to-brand-to p-4">
-      <div className="flex items-center gap-2 text-brand-foreground">
-        <div className="p-2 bg-brand-foreground/20 rounded-control">
+    <div className="bg-gradient-to-r from-dialog-header-from to-dialog-header-to p-4">
+      <div className="flex items-center gap-2 text-dialog-header-foreground">
+        <div className="p-2 bg-dialog-header-foreground/20 rounded-control">
           <SparklesIcon className="size-4" />
         </div>
         <span className="text-xl font-bold">{label}</span>
       </div>
-      <p className="text-brand-foreground/80 text-sm mt-1">En-tête d&apos;AppDialog : titre, icône et description suivent `--k-brand-foreground`.</p>
+      <p className="text-dialog-header-foreground/80 text-sm mt-1">En-tête d&apos;AppDialog — `--k-dialog-header-*`.</p>
     </div>
 
     <div className="p-4 space-y-4">
@@ -44,10 +46,17 @@ const Echantillon = ({ label, className }: { label: string; className: string })
         <Button variant="outline">Bouton secondaire</Button>
       </div>
 
-      <div className="flex flex-wrap gap-4">
-        <Pastille classe="bg-brand-from" nom="--k-brand-from" />
-        <Pastille classe="bg-brand-to" nom="--k-brand-to" />
-        <Pastille classe="bg-brand-foreground" nom="--k-brand-foreground" />
+      <div className="space-y-2">
+        <div className="flex flex-wrap gap-4">
+          <Pastille classe="bg-brand-from" nom="--k-brand-from" />
+          <Pastille classe="bg-brand-to" nom="--k-brand-to" />
+          <Pastille classe="bg-brand-foreground" nom="--k-brand-foreground" />
+        </div>
+        <div className="flex flex-wrap gap-4">
+          <Pastille classe="bg-dialog-header-from" nom="--k-dialog-header-from" />
+          <Pastille classe="bg-dialog-header-to" nom="--k-dialog-header-to" />
+          <Pastille classe="bg-dialog-header-foreground" nom="--k-dialog-header-foreground" />
+        </div>
       </div>
     </div>
   </div>
@@ -60,8 +69,9 @@ const meta: Meta = {
     docs: {
       description: {
         component:
-          "Le dégradé de marque (`--k-brand-from`, `--k-brand-to`, `--k-brand-foreground`) habille l'en-tête d'`AppDialog` et le bouton `variant=\"brand\"`. " +
-          "Chaque thème embarqué le redéclare avec ses propres teintes : le foreground n'est donc pas toujours blanc — un dégradé clair demande un texte sombre.",
+          "Deux dégradés distincts : `--k-brand-*` pour la marque de l'application (bouton `variant=\"brand\"`, bandeaux) et `--k-dialog-header-*` pour l'en-tête d'`AppDialog`. " +
+          "Ils partent des mêmes teintes dans les thèmes embarqués mais rien ne les lie — déplacer la marque ne touche pas les dialogs. " +
+          "Chaque thème les redéclare : le foreground n'est donc pas toujours blanc, un dégradé clair demande un texte sombre.",
       },
     },
   },

@@ -92,11 +92,14 @@ Rien n'oblige à suivre un preset : n'importe quelle valeur convient (`--k-radiu
 | `--k-success`, `--k-warning`, `--k-info` (+ `-foreground`) | `bg-success`, `text-warning-foreground`, `border-info`…          |
 | `--k-topbar-*`                                             | `bg-topbar`, `text-topbar-foreground`, `bg-topbar-accent`…       |
 | `--k-brand-from`, `--k-brand-to`, `--k-brand-foreground`   | `from-brand-from`, `to-brand-to`, `text-brand-foreground`        |
+| `--k-dialog-header-*` (mêmes suffixes)                     | `from-dialog-header-from`, `text-dialog-header-foreground`…      |
 | `--k-sidebar-muted`                                        | `text-sidebar-muted`                                             |
 | `--k-radius-control`, `--k-radius-surface` (+ `-dense`)    | `rounded-control`, `rounded-surface`                             |
 | `--k-font-heading`, `--k-font-body`                        | appliquées directement par `globals.css` sur `body` et `h1`–`h6` |
 
-`--k-brand-*` est le dégradé de marque : il habille l'en-tête d'`AppDialog` et le bouton `variant="brand"`. Deux bornes plutôt qu'une couleur pleine, parce que les surfaces qui le portent sont des dégradés — un thème qui n'en veut pas met la même valeur des deux côtés. C'est la surface la plus identitaire du package : chaque thème embarqué le redéclare avec ses propres teintes (violet par défaut, jaune sur Temporal, cyan sur Ocean). `--k-brand-foreground` porte le texte et les icônes posés dessus, et n'est donc pas toujours blanc : un dégradé clair demande un texte sombre. Story `Design Tokens/Marque` pour comparer les thèmes côte à côte.
+`--k-brand-*` est le dégradé de marque, à la main de l'application : bouton `variant="brand"`, bandeaux, écrans de connexion. Deux bornes plutôt qu'une couleur pleine, parce que les surfaces qui le portent sont des dégradés — un thème qui n'en veut pas met la même valeur des deux côtés. Chaque thème embarqué le redéclare avec ses propres teintes (violet par défaut, jaune sur Temporal, cyan sur Ocean). `-foreground` porte le texte et les icônes posés dessus, et n'est donc pas toujours blanc : un dégradé clair demande un texte sombre.
+
+`--k-dialog-header-*` habille l'en-tête d'`AppDialog` et suit les mêmes trois suffixes. Tokens **distincts** de la marque à dessein : l'en-tête est un choix de composant, la marque un choix d'application, et retoucher l'un ne doit pas déplacer l'autre. Ils ne sont pas indépendants pour rien : un projet qui ne déclare que `--k-brand-*` obtient quand même une dialog cohérente, le preset retombant dessus. Story `Design Tokens/Marque` pour comparer les thèmes côte à côte.
 
 Ces couleurs sont désormais mappées par le preset partagé : un projet consommateur qui les déclarait dans son propre `tailwind.config` peut supprimer ces lignes.
 

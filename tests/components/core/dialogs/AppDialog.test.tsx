@@ -104,6 +104,21 @@ describe("AppDialog — largeur", () => {
   });
 });
 
+// L'en-tête a ses propres tokens : une application qui déplace `--k-brand-*` pour un
+// bandeau ou un écran de connexion ne doit pas voir bouger ses dialogs.
+describe("AppDialog — en-tête", () => {
+  it("s'habille des tokens d'en-tête, pas de ceux de la marque", () => {
+    renderDialog({ config: { title: "Titre", icon: () => <span /> } });
+
+    // Le titre est un <h2> : le premier div au-dessus est l'en-tête.
+    const classes = screen.getByText("Titre").closest("div")?.className ?? "";
+
+    expect(classes).toContain("from-dialog-header-from");
+    expect(classes).toContain("to-dialog-header-to");
+    expect(classes).not.toContain("brand");
+  });
+});
+
 describe("AppDialog — erreur", () => {
   it("affiche le message d'une Error", () => {
     renderDialog({ error: new Error("Connexion perdue") });

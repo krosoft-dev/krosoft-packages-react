@@ -114,7 +114,7 @@ export function AppDialog({ open, onOpenChange, config, isLoading, error, footer
           "max-h-[100dvh] sm:max-h-[90vh] border-0 shadow-2xl p-0 flex flex-col overflow-hidden",
           // Croix de fermeture de `DialogContent` : elle hérite sinon de la couleur
           // du texte et devient illisible sur l'en-tête sombre en thème clair.
-          "[&>button]:text-brand-foreground [&>button]:focus:ring-brand-foreground",
+          "[&>button]:text-dialog-header-foreground [&>button]:focus:ring-dialog-header-foreground",
           loading && "[&>button]:pointer-events-none [&>button]:opacity-40",
           maxWidth ?? SIZE_CLASS[size],
           className,
@@ -126,19 +126,22 @@ export function AppDialog({ open, onOpenChange, config, isLoading, error, footer
           </div>
         ) : null}
         <DialogHeader
-          className={cn("bg-gradient-to-r from-brand-from to-brand-to p-4 sm:p-6 pr-12 sm:pr-12 sm:rounded-t-surface shrink-0", headerClassName)}
+          className={cn(
+            "bg-gradient-to-r from-dialog-header-from to-dialog-header-to p-4 sm:p-6 pr-12 sm:pr-12 sm:rounded-t-surface shrink-0",
+            headerClassName,
+          )}
         >
-          <DialogTitle className="text-xl sm:text-2xl font-bold flex items-center gap-2 text-brand-foreground">
+          <DialogTitle className="text-xl sm:text-2xl font-bold flex items-center gap-2 text-dialog-header-foreground">
             {Icon !== undefined ? (
-              <div className="p-2 bg-brand-foreground/20 rounded-control">
-                <Icon className="size-4 text-brand-foreground" />
+              <div className="p-2 bg-dialog-header-foreground/20 rounded-control">
+                <Icon className="size-4 text-dialog-header-foreground" />
               </div>
             ) : null}
 
             {translate(title)}
           </DialogTitle>
           {description !== undefined && description !== "" ? (
-            <DialogDescription className="text-brand-foreground/80 text-base">{translate(description)}</DialogDescription>
+            <DialogDescription className="text-dialog-header-foreground/80 text-base">{translate(description)}</DialogDescription>
           ) : null}
         </DialogHeader>
 

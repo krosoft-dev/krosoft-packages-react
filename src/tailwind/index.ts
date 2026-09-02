@@ -95,15 +95,25 @@ const krosoftPreset = {
           foreground: "hsl(var(--card-foreground))",
         },
 
-        // Dégradé de marque : en-tête de dialog, boutons `brand`… Déclaré en deux
-        // bornes plutôt qu'en couleur pleine parce que les surfaces qui le portent
-        // sont toujours des dégradés — un thème qui n'en veut pas met la même
-        // valeur des deux côtés. Chaque thème embarqué le redéclare, `-foreground`
-        // compris : il n'est blanc que tant que le dégradé est sombre.
+        // Dégradé de marque, à la main de l'application : bouton `variant="brand"`,
+        // bandeaux, écrans de connexion… Déclaré en deux bornes plutôt qu'en couleur
+        // pleine parce que les surfaces qui le portent sont des dégradés — un thème
+        // qui n'en veut pas met la même valeur des deux côtés. Chaque thème embarqué
+        // le redéclare, `-foreground` compris : il n'est blanc que tant que le
+        // dégradé est sombre.
         brand: {
           from: "hsl(var(--k-brand-from))",
           to: "hsl(var(--k-brand-to))",
           foreground: "hsl(var(--k-brand-foreground))",
+        },
+        // Dégradé de l'en-tête d'AppDialog. Tokens distincts de `brand` : l'en-tête
+        // est un choix de composant, la marque un choix d'application — retoucher
+        // l'un ne doit pas déplacer l'autre. Le repli sur `--k-brand-*` garde les
+        // deux alignés tant qu'un projet ne déclare que sa marque.
+        "dialog-header": {
+          from: "hsl(var(--k-dialog-header-from, var(--k-brand-from)))",
+          to: "hsl(var(--k-dialog-header-to, var(--k-brand-to)))",
+          foreground: "hsl(var(--k-dialog-header-foreground, var(--k-brand-foreground)))",
         },
         // Couleurs ajoutées par krosoft (variables préfixées --k-). Les composants
         // du package utilisent ces classes (bg-success, text-topbar-foreground,

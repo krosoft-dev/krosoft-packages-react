@@ -55,14 +55,23 @@
     --k-info: 217 91% 60%;
     --k-info-foreground: 0 0% 100%;
 
-    /* Dégradé de marque : en-tête d'AppDialog, bouton `brand`. Chaque thème le
-       redéclare avec ses propres teintes — c'est la surface la plus identitaire
-       du package, elle suit la personnalité du thème plutôt que le socle shadcn.
-       `--k-brand-foreground` porte le texte et les icônes posés dessus : il n'est
-       pas toujours blanc, un dégradé clair (Temporal, Ocean) demande un texte sombre. */
+    /* Dégradé de marque : bouton `variant="brand"`, bandeaux, écrans de connexion —
+       il est à la main de l'application. Chaque thème le redéclare avec ses propres
+       teintes : c'est la surface la plus identitaire du package, elle suit la
+       personnalité du thème plutôt que le socle shadcn. `-foreground` porte le texte
+       et les icônes posés dessus : il n'est pas toujours blanc, un dégradé clair
+       (Temporal, Ocean) demande un texte sombre. */
     --k-brand-from: 222 47% 11%;
     --k-brand-to: 272 72% 47%;
     --k-brand-foreground: 0 0% 100%;
+
+    /* En-tête d'AppDialog. Repart des mêmes teintes que la marque, mais s'en
+       détache : retoucher `--k-brand-*` pour un bandeau ou un écran de connexion
+       ne doit pas déplacer l'en-tête des dialogs. Sans ces trois lignes, le preset
+       retombe sur `--k-brand-*`. */
+    --k-dialog-header-from: 222 47% 11%;
+    --k-dialog-header-to: 272 72% 47%;
+    --k-dialog-header-foreground: 0 0% 100%;
 
     /* Palette des séries de graphes (CHART_COLORS). Volontairement déclarée sur
        :root seulement : ces teintes moyennes restent lisibles sur fond clair
@@ -150,6 +159,14 @@
     --k-brand-to: 272 72% 55%;
     --k-brand-foreground: 0 0% 100%;
 
+    /* En-tête d'AppDialog. Repart des mêmes teintes que la marque, mais s'en
+       détache : retoucher `--k-brand-*` pour un bandeau ou un écran de connexion
+       ne doit pas déplacer l'en-tête des dialogs. Sans ces trois lignes, le preset
+       retombe sur `--k-brand-*`. */
+    --k-dialog-header-from: 222 47% 18%;
+    --k-dialog-header-to: 272 72% 55%;
+    --k-dialog-header-foreground: 0 0% 100%;
+
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
@@ -216,6 +233,14 @@
     --k-brand-to: 60 100% 55%;
     --k-brand-foreground: 0 0% 5%;
 
+    /* En-tête d'AppDialog — volontairement détaché de la marque ici : le dégradé
+       orange/jaune de `--k-brand-*` écrasait le reste de la dialog, qui est presque
+       noire sur ce thème. L'en-tête reste donc dans le noir du pied et ne garde du
+       jaune que le titre et un halo doré à droite. */
+    --k-dialog-header-from: 0 0% 8%;
+    --k-dialog-header-to: 42 92% 26%;
+    --k-dialog-header-foreground: 60 100% 55%;
+
     --border: 0 0% 14%;
     --input: 0 0% 14%;
     --ring: 60 100% 55%;
@@ -281,6 +306,16 @@
     --k-brand-from: 205 90% 42%;
     --k-brand-to: 190 85% 52%;
     --k-brand-foreground: 222 47% 6%;
+
+    /* En-tête d'AppDialog — détaché de la marque comme sur Temporal : le bleu/cyan
+       clair de `--k-brand-*` écrasait une dialog par ailleurs très sombre. L'en-tête
+       part donc du bleu nuit du fond vers un cyan profond, et ne garde du cyan vif
+       que le titre. Ce cyan est plus clair que `--primary` et la borne droite plus
+       sombre qu'un cyan de thème : mesuré sur le dégradé, le titre passait sinon sous
+       le contraste tenu par les trois autres thèmes. */
+    --k-dialog-header-from: 222 47% 10%;
+    --k-dialog-header-to: 199 89% 22%;
+    --k-dialog-header-foreground: 199 90% 68%;
 
     --border: 222 35% 18%;
     --input: 222 35% 18%;
