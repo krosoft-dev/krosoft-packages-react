@@ -158,3 +158,37 @@ describe("MultiSelect", () => {
     expect(trigger.getAttribute("aria-invalid")).toBe("true");
   });
 });
+
+// La largeur sépare le champ de formulaire du contrôle de barre de filtres. Sans le palier
+// `md:`, le `w-full` du trigger renvoie chaque filtre sur sa propre ligne dans une barre en
+// `flex-wrap` : c'est le défaut que `filter` et `pill` évitent.
+describe("MultiSelect — largeur selon le variant", () => {
+  const renderVariant = (variant: "input" | "filter" | "pill", className?: string): HTMLButtonElement => {
+    const { container } = render(<MultiSelect variant={variant} className={className} options={options} selected={[]} onToggle={noop} />);
+    return container.querySelector("button") as HTMLButtonElement;
+  };
+
+  it.each([["filter"], ["pill"]] as const)("variant %s : porte la largeur de barre de filtres", variant => {
+    expect(renderVariant(variant).className).toContain("md:w-[200px]");
+  });
+
+  it("variant input : laisse le champ occuper la largeur de son conteneur", () => {
+    const classes = renderVariant("input").className;
+
+    expect(classes).not.toContain("md:w-[200px]");
+    expect(classes.split(/\s+/)).toContain("w-full");
+  });
+
+  it.each([["filter"], ["pill"]] as const)("variant %s : un className cible la largeur de remplacement", variant => {
+    expect(renderVariant(variant, "md:w-52").className).not.toContain("md:w-[200px]");
+  });
+
+  // Le défaut de largeur était auparavant posé en `className ?? …` : une classe sans rapport,
+  // comme une marge, effaçait alors la largeur au lieu de s'y ajouter.
+  it.each([["filter"], ["pill"]] as const)("variant %s : un className sans largeur laisse le défaut en place", variant => {
+    const classes = renderVariant(variant, "mt-1").className;
+
+    expect(classes).toContain("md:w-[200px]");
+    expect(classes.split(/\s+/)).toContain("mt-1");
+  });
+});

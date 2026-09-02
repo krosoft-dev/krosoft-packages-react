@@ -350,3 +350,40 @@ export const PillInteractive: Story = {
     );
   },
 };
+
+// --- Variant "filter" : l'apparence de "input", la largeur d'une barre de filtres ---
+
+export const Filter: Story = {
+  args: {
+    variant: "filter",
+    options: STATUTS,
+    selected: ["disponible"],
+    placeholder: "Statut",
+  },
+};
+
+/**
+ * Le même contrôle dans les deux variants, posé dans la barre en `flex-wrap` où il finira.
+ * `input` y hérite du `w-full` du trigger et occupe la ligne entière ; `filter` tient sa
+ * largeur et laisse la place aux filtres suivants.
+ */
+export const FilterVsInput: Story = {
+  render: () => (
+    <div className="space-y-6 pb-72">
+      <div>
+        <p className="mb-2 text-xs font-medium text-muted-foreground">{`variant="filter"`}</p>
+        <div className="flex flex-wrap gap-2">
+          <MultiSelect variant="filter" options={STATUTS} selected={[]} onToggle={() => undefined} placeholder="Statut" />
+          <MultiSelect variant="filter" options={VILLES} selected={[]} onToggle={() => undefined} placeholder="Ville" />
+        </div>
+      </div>
+      <div>
+        <p className="mb-2 text-xs font-medium text-muted-foreground">{`variant="input"`}</p>
+        <div className="flex flex-wrap gap-2">
+          <MultiSelect options={STATUTS} selected={[]} onToggle={() => undefined} placeholder="Statut" />
+          <MultiSelect options={VILLES} selected={[]} onToggle={() => undefined} placeholder="Ville" />
+        </div>
+      </div>
+    </div>
+  ),
+};

@@ -71,3 +71,40 @@ describe("SingleSelect", () => {
     expect(trigger.getAttribute("aria-invalid")).toBe("true");
   });
 });
+
+// Les deux modes de rendu ont chacun leur trigger (Radix et cmdk) : la largeur doit suivre le
+// variant dans l'un comme dans l'autre, sinon passer `searchable` deplacerait la mise en page.
+describe("SingleSelect — largeur selon le variant", () => {
+  const renderVariant = (variant: "input" | "filter", searchable: boolean, className?: string): Element => {
+    render(<SingleSelect variant={variant} searchable={searchable} className={className} options={options} value={undefined} onChange={vi.fn()} />);
+    return screen.getByRole("combobox");
+  };
+
+  it.each([
+    ["simple", false],
+    ["searchable", true],
+  ])("%s : le variant filter porte la largeur de barre de filtres", (_mode, searchable) => {
+    expect(renderVariant("filter", searchable).className).toContain("md:w-[200px]");
+  });
+
+  it.each([
+    ["simple", false],
+    ["searchable", true],
+  ])("%s : le variant input laisse le champ occuper son conteneur", (_mode, searchable) => {
+    const classes = renderVariant("input", searchable).className;
+
+    expect(classes).not.toContain("md:w-[200px]");
+    expect(classes.split(/\s+/)).toContain("w-full");
+  });
+
+  it("filter : un className remplace la largeur en ciblant le meme palier", () => {
+    expect(renderVariant("filter", false, "md:w-52").className).not.toContain("md:w-[200px]");
+  });
+
+  it("filter : un className sans largeur laisse le defaut en place", () => {
+    const classes = renderVariant("filter", false, "mt-1").className;
+
+    expect(classes).toContain("md:w-[200px]");
+    expect(classes.split(/\s+/)).toContain("mt-1");
+  });
+});
