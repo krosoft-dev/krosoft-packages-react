@@ -115,12 +115,6 @@ export function SearchableFilterPill<T extends string>({
           </div>
         ) : null}
         <div className="flex flex-col gap-0.5 max-h-56 overflow-y-auto overflow-x-hidden p-1.5">
-          {filteredOptions.length > 0 && (
-            <label className="flex items-center gap-2.5 rounded-md px-2 py-2 text-sm hover:bg-muted cursor-pointer transition-colors">
-              <Checkbox checked={isAllSelected} onCheckedChange={handleToggleAll} />
-              {t("filters.selectAll")}
-            </label>
-          )}
           {filteredOptions.length === 0 && <p className="px-2 py-3 text-center text-xs text-muted-foreground">{t("states.noResult")}</p>}
           {filteredOptions.map(opt => (
             <label key={opt.value} className="flex min-w-0 items-center gap-2.5 rounded-md px-2 py-2 text-sm hover:bg-muted cursor-pointer transition-colors">
@@ -140,22 +134,32 @@ export function SearchableFilterPill<T extends string>({
             </label>
           ))}
         </div>
-        {selected.length > 0 && (
+        {filteredOptions.length > 0 && (
           <div className="border-t border-border p-1.5">
-            <button
-              onClick={() => {
-                if (onClear !== undefined) {
-                  onClear();
-                } else {
-                  selected.forEach(s => {
-                    onToggle(s);
-                  });
-                }
-              }}
-              className="w-full rounded-md px-2 py-1.5 text-xs text-muted-foreground hover:text-foreground hover:bg-muted transition-colors text-center"
-            >
-              {t("filters.deselectAll")}
-            </button>
+            {isAllSelected ? (
+              <button
+                onClick={() => {
+                  if (onClear !== undefined) {
+                    onClear();
+                  } else {
+                    selected.forEach(s => {
+                      onToggle(s);
+                    });
+                  }
+                }}
+                className="w-full rounded-md px-2 py-1.5 text-xs text-muted-foreground hover:text-foreground hover:bg-muted transition-colors text-center"
+              >
+                {t("filters.deselectAll")}
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={handleToggleAll}
+                className="w-full rounded-md px-2 py-1.5 text-xs text-muted-foreground hover:text-foreground hover:bg-muted transition-colors text-center"
+              >
+                {t("filters.selectAll")}
+              </button>
+            )}
           </div>
         )}
       </PopoverContent>

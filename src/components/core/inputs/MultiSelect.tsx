@@ -165,12 +165,6 @@ export const MultiSelect = ({
             </div>
           ) : null}
           <div className="flex flex-col gap-0.5 max-h-56 overflow-y-auto p-1.5 scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-muted-foreground/20 scrollbar-track-transparent [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-muted-foreground/20 [&::-webkit-scrollbar-track]:bg-transparent">
-            {filteredOptions.length > 0 && (
-              <label className="flex items-center gap-2.5 rounded-md px-2 py-2 text-sm hover:bg-muted cursor-pointer transition-colors">
-                <Checkbox checked={isAllSelected} onCheckedChange={handleToggleAll} />
-                Tout sélectionner
-              </label>
-            )}
             {filteredOptions.length === 0 && <p className="px-2 py-3 text-center text-xs text-muted-foreground">{t("states.noResult")}</p>}
             {filteredOptions.map(opt => (
               <label key={opt.value} className="flex items-center gap-2.5 rounded-md px-2 py-2 text-sm hover:bg-muted cursor-pointer transition-colors">
@@ -185,15 +179,25 @@ export const MultiSelect = ({
               </label>
             ))}
           </div>
-          {selected.length > 0 && (
+          {filteredOptions.length > 0 && (
             <div className="border-t border-border p-1.5">
-              <button
-                type="button"
-                onClick={onClear}
-                className="w-full rounded-md px-2 py-1.5 text-xs text-muted-foreground hover:text-foreground hover:bg-muted transition-colors text-center"
-              >
-                Tout désélectionner
-              </button>
+              {isAllSelected ? (
+                <button
+                  type="button"
+                  onClick={onClear}
+                  className="w-full rounded-md px-2 py-1.5 text-xs text-muted-foreground hover:text-foreground hover:bg-muted transition-colors text-center"
+                >
+                  {t("filters.deselectAll")}
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleToggleAll}
+                  className="w-full rounded-md px-2 py-1.5 text-xs text-muted-foreground hover:text-foreground hover:bg-muted transition-colors text-center"
+                >
+                  {t("filters.selectAll")}
+                </button>
+              )}
             </div>
           )}
         </div>
