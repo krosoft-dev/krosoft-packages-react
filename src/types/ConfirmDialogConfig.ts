@@ -9,7 +9,6 @@ export interface ConfirmDialogConfig {
   loadingKey?: string;
   icon?: React.ElementType;
   titleClassName?: string;
-  headerClassName?: string;
   openDialog: (id: string, name: string) => void;
   onClose: () => void;
   onConfirm: () => Promise<void>;

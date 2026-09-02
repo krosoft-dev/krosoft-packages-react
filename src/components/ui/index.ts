@@ -26,7 +26,7 @@ export { ChartContainer, ChartLegend, ChartLegendContent, ChartStyle, ChartToolt
 export type { ChartConfig } from "./chart";
 export { Checkbox } from "./checkbox";
 export { Collapsible, CollapsibleContent, CollapsibleTrigger } from "./collapsible";
-export { controlBaseClass, controlTriggerClass } from "./control";
+export { controlBaseClass, controlFilterWidthClass, controlTriggerClass } from "./control";
 export { Command, CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandSeparator, CommandShortcut } from "./command";
 export type { CommandDialogProps } from "./command";
 export {

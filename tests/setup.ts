@@ -12,3 +12,20 @@ globalThis.ResizeObserver ??= class {
 if (typeof Element !== "undefined") {
   Element.prototype.scrollIntoView = (): void => {};
 }
+
+// jsdom ne fournit pas `matchMedia`, dont dépend `useMobile` — donc toute barre
+// d'actions ou mise en page qui s'adapte au mobile. Le stub reste inerte : le hook
+// lit `window.innerWidth`, un test qui vise le rendu mobile le règle lui-même.
+if (typeof window !== "undefined") {
+  window.matchMedia = (query: string): MediaQueryList =>
+    ({
+      matches: false,
+      media: query,
+      onchange: null,
+      addEventListener: (): void => {},
+      removeEventListener: (): void => {},
+      addListener: (): void => {},
+      removeListener: (): void => {},
+      dispatchEvent: (): boolean => false,
+    }) as MediaQueryList;
+}

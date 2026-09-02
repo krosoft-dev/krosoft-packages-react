@@ -40,7 +40,6 @@ export function ConfirmationDialog({ isLoading, error, config, destructive = fal
             {config.icon && <config.icon className="size-4" />}
             {t(config.title)}
           </AlertDialogTitle>
-          {config.headerClassName && <AlertDialogHeader className={config.headerClassName} />}
           <AlertDialogDescription>{t(config.description)}</AlertDialogDescription>
           {config.itemName && (
             <AlertDialogDescription>
