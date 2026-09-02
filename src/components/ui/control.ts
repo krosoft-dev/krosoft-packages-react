@@ -24,3 +24,17 @@ export const controlTriggerClass = cn(
   // Radix rend le focus au trigger, et `focus:` laisserait alors l'anneau coloré persister.
   "flex items-center justify-between outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 [&>span]:line-clamp-1",
 );
+
+/**
+ * Largeur d'un contrôle posé dans une barre de filtres (`variant="filter"`, pastille `"pill"`).
+ *
+ * Deux paliers parce qu'une barre de filtres n'a pas la même forme selon la place : empilée en
+ * colonne sur mobile, où chaque contrôle prend toute la largeur, et alignée en ligne au-delà de
+ * `md`, où une largeur fixe garde les contrôles d'aplomb quel que soit leur contenu — sans elle,
+ * le `w-full` du trigger renvoie chaque filtre sur sa propre ligne.
+ *
+ * C'est un défaut, pas une contrainte : un `className` l'écrase (`cn` passe par `tailwind-merge`).
+ * Comme elle porte un palier `md:`, une largeur de remplacement doit elle aussi le cibler
+ * (`md:w-52`) : sans ce palier, elle ne vaudrait que sous le point de rupture.
+ */
+export const controlFilterWidthClass = "w-full md:w-[200px]";

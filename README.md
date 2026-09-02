@@ -127,3 +127,19 @@ applyTokenPreset(radiusPresets, "round"); // pose les variables sur <html>
 | `tokensToStyle`    | Les mêmes variables en `style` React, pour un sous-arbre   |
 
 C'est aussi ce qui rend la suite extensible : une nouvelle famille de tokens (densité, élévation…) ne demande ni attribut dédié ni preset CSS, seulement un objet à côté de `radiusPresets` et ses variables dans `:root`.
+
+## Soumettre un formulaire depuis une barre d'actions
+
+`GenericForm` accepte un `id` posé sur son `<form>`. Un bouton rendu ailleurs dans la page — pied d'`AppDialog`, en-tête d'`AppPageHeader` — le soumet en le visant par `form`, plutôt qu'en remontant une fonction de submit :
+
+```tsx
+const formId = useId();
+
+<AppPageHeader
+  titleKey="Modifier l'achat"
+  actions={[{ labelKey: "Sauvegarder", type: "submit", form: formId }]}
+/>
+<GenericForm id={formId} schema={schema} onSubmit={onSubmit} renderActions={false} />;
+```
+
+Une action `type: "submit"` porte donc `form` au lieu d'`onClick` — les deux s'excluent. La validation reste celle du formulaire, et rien ne transite par une ref. Sur mobile, où les actions passent en menu déroulant et ne sont plus des `<button>`, `AppActions` retombe sur `requestSubmit()` du formulaire ciblé : c'est pourquoi `form` y est requis.

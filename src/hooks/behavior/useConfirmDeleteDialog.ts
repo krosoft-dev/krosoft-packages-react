@@ -23,9 +23,8 @@ export const useConfirmDeleteDialog = ({ titleKey, descriptionKey, confirmKey, o
 
   return {
     ...config,
-    loadingKey: "Suppression...",
+    loadingKey: "actions.deleting",
     icon: TrashIcon,
     titleClassName: "flex items-center gap-2 text-destructive",
-    headerClassName: "bg-gradient-to-r from-slate-900 to-purple-700 rounded-t-surface shrink-0",
   };
 };

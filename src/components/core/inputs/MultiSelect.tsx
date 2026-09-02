@@ -1,7 +1,7 @@
 import { useKrosoftTranslation } from "@/i18n";
 import React, { useState, useMemo } from "react";
 import { Command as CommandPrimitive } from "cmdk";
-import { Checkbox, controlBaseClass, controlTriggerClass, Popover, PopoverContent, PopoverTrigger } from "@/components/ui";
+import { Checkbox, controlBaseClass, controlFilterWidthClass, controlTriggerClass, Popover, PopoverContent, PopoverTrigger } from "@/components/ui";
 import { ChevronDownIcon, SearchIcon, XIcon } from "lucide-react";
 import { cn } from "@/helpers/tailwind.helper";
 import type { SelectOption } from "@krosoft/core/types";
@@ -25,9 +25,11 @@ interface MultiSelectProps<T extends string = string> extends Omit<React.Compone
   onSelectAll?: (values: T[]) => void;
   /**
    * `"input"` : contrôle de formulaire pleine largeur (libellés sélectionnés + compteur `+N`).
+   * `"filter"` : le même contrôle, mais dimensionné pour une barre de filtres
+   * (`controlFilterWidthClass`) plutôt que pour la largeur d'un champ de formulaire.
    * `"pill"` : pastille de filtre compacte (libellé i18n fixe + badge du nombre de sélections).
    */
-  variant?: "input" | "pill";
+  variant?: "input" | "filter" | "pill";
   placeholder?: string;
   /** Libellé i18n fixe de la pastille (variant `"pill"`). */
   labelKey?: string;
@@ -59,6 +61,9 @@ export const MultiSelect = <T extends string = string>({
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const isPill = variant === "pill";
+  // `pill` et `filter` vivent tous deux dans une barre de filtres : même largeur par défaut,
+  // seule l'apparence du trigger les sépare.
+  const filterWidth = variant === "input" ? undefined : controlFilterWidthClass;
 
   const filteredOptions = useMemo(() => {
     if (query === "") {
@@ -158,7 +163,8 @@ export const MultiSelect = <T extends string = string>({
         controlBaseClass,
         "inline-flex items-center justify-between gap-1.5 whitespace-nowrap transition-colors",
         selected.length > 0 ? "border-primary bg-primary/10 text-primary font-medium" : "hover:bg-muted",
-        className ?? "w-full md:w-[180px]",
+        filterWidth,
+        className,
       )}
     >
       <span className="truncate">{labelKey !== undefined ? t(labelKey) : (placeholder ?? t("select.placeholder"))}</span>
@@ -176,7 +182,14 @@ export const MultiSelect = <T extends string = string>({
       {...triggerProps}
       type="button"
       disabled={disabled}
-      className={cn(controlTriggerClass, "w-full", open && "ring-2 ring-ring ring-offset-2", selected.length === 0 && "text-muted-foreground", className)}
+      className={cn(
+        controlTriggerClass,
+        "w-full",
+        filterWidth,
+        open && "ring-2 ring-ring ring-offset-2",
+        selected.length === 0 && "text-muted-foreground",
+        className,
+      )}
     >
       <span className="truncate">{selected.length === 0 ? (placeholder ?? t("select.placeholder")) : visibleLabels.join(", ")}</span>
       <div className="flex shrink-0 items-center gap-1">

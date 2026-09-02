@@ -11,6 +11,16 @@ export interface AppActionsProps {
   className?: string;
 }
 
+/**
+ * Déclenche la soumission du formulaire visé par une action `type: "submit"`.
+ * Le menu mobile rend les actions en `DropdownMenuItem` — un `div[role=menuitem]`,
+ * que l'attribut `form` ne relie à aucun formulaire : on passe donc par le DOM.
+ */
+const submitTargetForm = (formId: string): void => {
+  const form = document.getElementById(formId);
+  if (form instanceof HTMLFormElement) form.requestSubmit();
+};
+
 export function AppActions({ actions, className }: AppActionsProps): React.JSX.Element | null {
   const { t } = useKrosoftTranslation();
   const isMobile = useMobile();
@@ -40,7 +50,13 @@ export function AppActions({ actions, className }: AppActionsProps): React.JSX.E
                     return (
                       <DropdownMenuItem
                         key={childIndex}
-                        onClick={() => void child.onClick?.()}
+                        onClick={() => {
+                          if (child.type === "submit") {
+                            submitTargetForm(child.form);
+                            return;
+                          }
+                          void child.onClick?.();
+                        }}
                         disabled={child.disabled}
                         className={cn("gap-2", child.className)}
                       >
@@ -54,7 +70,18 @@ export function AppActions({ actions, className }: AppActionsProps): React.JSX.E
             }
 
             return (
-              <DropdownMenuItem key={index} onClick={() => void action.onClick?.()} disabled={action.disabled} className={cn("gap-2", action.className)}>
+              <DropdownMenuItem
+                key={index}
+                onClick={() => {
+                  if (action.type === "submit") {
+                    submitTargetForm(action.form);
+                    return;
+                  }
+                  void action.onClick?.();
+                }}
+                disabled={action.disabled}
+                className={cn("gap-2", action.className)}
+              >
                 {action.icon && <action.icon className="size-4" />}
                 {action.labelKey && t(action.labelKey)}
               </DropdownMenuItem>
@@ -88,7 +115,13 @@ export function AppActions({ actions, className }: AppActionsProps): React.JSX.E
                     return (
                       <DropdownMenuItem
                         key={childIndex}
-                        onClick={() => void child.onClick?.()}
+                        onClick={() => {
+                          if (child.type === "submit") {
+                            submitTargetForm(child.form);
+                            return;
+                          }
+                          void child.onClick?.();
+                        }}
                         disabled={child.disabled}
                         className={cn("gap-2", child.className)}
                       >
@@ -106,7 +139,10 @@ export function AppActions({ actions, className }: AppActionsProps): React.JSX.E
             <Button
               key={index}
               variant={action.variant}
-              onClick={() => void action.onClick?.()}
+              // Bouton rendu hors du formulaire : `form` suffit à le soumettre, sans passer par le DOM.
+              type={action.type}
+              form={action.form}
+              onClick={action.onClick ? () => void action.onClick?.() : undefined}
               disabled={action.disabled}
               className={cn("gap-2", action.className)}
             >

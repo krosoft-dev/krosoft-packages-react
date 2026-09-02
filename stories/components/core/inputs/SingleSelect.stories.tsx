@@ -274,3 +274,41 @@ export const InDialog: Story = {
     );
   },
 };
+
+// --- Variant "filter" : l'apparence de "input", la largeur d'une barre de filtres ---
+
+export const Filter: Story = {
+  args: {
+    variant: "filter",
+    options: STATUTS,
+    value: undefined,
+    placeholder: "Statut",
+  },
+};
+
+/**
+ * Le meme controle dans les deux variants, pose dans la barre en `flex-wrap` ou il finira.
+ * `input` y herite du `w-full` du trigger et occupe la ligne entiere ; `filter` tient sa
+ * largeur et laisse la place aux filtres suivants. Les deux modes de rendu (simple et
+ * `searchable`) se dimensionnent de la meme facon.
+ */
+export const FilterVsInput: Story = {
+  render: () => (
+    <div className="space-y-6 pb-72">
+      <div>
+        <p className="mb-2 text-xs font-medium text-muted-foreground">{`variant="filter"`}</p>
+        <div className="flex flex-wrap gap-2">
+          <SingleSelect variant="filter" options={STATUTS} value={undefined} onChange={() => undefined} placeholder="Statut" />
+          <SingleSelect variant="filter" searchable options={PAYS} value={undefined} onChange={() => undefined} placeholder="Pays" />
+        </div>
+      </div>
+      <div>
+        <p className="mb-2 text-xs font-medium text-muted-foreground">{`variant="input"`}</p>
+        <div className="flex flex-wrap gap-2">
+          <SingleSelect options={STATUTS} value={undefined} onChange={() => undefined} placeholder="Statut" />
+          <SingleSelect searchable options={PAYS} value={undefined} onChange={() => undefined} placeholder="Pays" />
+        </div>
+      </div>
+    </div>
+  ),
+};

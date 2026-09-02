@@ -2,7 +2,7 @@ import { useKrosoftTranslation } from "@/i18n";
 import React, { useMemo, useState } from "react";
 import { Command as CommandPrimitive } from "cmdk";
 import { CheckIcon, ChevronDownIcon, PlusIcon, SearchIcon, XIcon } from "lucide-react";
-import { Popover, PopoverContent, PopoverTrigger, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, controlTriggerClass } from "@/components/ui";
+import { Popover, PopoverContent, PopoverTrigger, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, controlFilterWidthClass, controlTriggerClass } from "@/components/ui";
 import { cn } from "@/helpers/tailwind.helper";
 import type { SelectOption } from "@krosoft/core/types";
 
@@ -38,6 +38,12 @@ interface SingleSelectProps extends Omit<React.ComponentProps<"button">, "childr
    * dialogue : sans ça, le `Dialog` neutralise les clics sur le panneau porté dans le portail.
    */
   modal?: boolean;
+  /**
+   * `"input"` : contrôle de formulaire pleine largeur.
+   * `"filter"` : le même contrôle, dimensionné pour une barre de filtres
+   * (`controlFilterWidthClass`) plutôt que pour la largeur d'un champ de formulaire.
+   */
+  variant?: "input" | "filter";
   className?: string;
 }
 
@@ -54,12 +60,14 @@ export const SingleSelect = ({
   createLabel,
   disabled = false,
   modal = true,
+  variant = "input",
   className,
   ...triggerProps
 }: SingleSelectProps): React.ReactElement => {
   const { t } = useKrosoftTranslation();
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
+  const filterWidth = variant === "filter" ? controlFilterWidthClass : undefined;
 
   const hasValue = value !== undefined && value !== "";
   const selectedOption = useMemo(() => (hasValue ? options.find(o => o.value === value) : undefined), [hasValue, options, value]);
@@ -71,7 +79,7 @@ export const SingleSelect = ({
       <Select value={value ?? ""} onValueChange={onChange} disabled={disabled}>
         <SelectTrigger
           {...triggerProps}
-          className={cn(!hasValue && "text-muted-foreground", className)}
+          className={cn(!hasValue && "text-muted-foreground", filterWidth, className)}
           onClear={
             onClear !== undefined && hasValue && !disabled
               ? e => {
@@ -132,6 +140,7 @@ export const SingleSelect = ({
           className={cn(
             controlTriggerClass,
             "w-full",
+            filterWidth,
             "data-[state=open]:ring-2 data-[state=open]:ring-ring data-[state=open]:ring-offset-2",
             !hasValue && "text-muted-foreground",
             className,
