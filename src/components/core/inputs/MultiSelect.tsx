@@ -11,7 +11,13 @@ export interface MultiSelectOption extends SelectOption {
   disabled?: boolean;
 }
 
-interface MultiSelectProps<T extends string = string> {
+/**
+ * Les props non reconnues (et la `ref`) sont relayées au bouton du trigger : c'est ce qui permet à un
+ * `<FormControl>` (Slot) d'y poser `id`, `aria-describedby` et `aria-invalid`, et donc de raccrocher le
+ * champ à son libellé et à son message d'erreur. Sous React 19 `ref` est une prop ordinaire, elle voyage
+ * donc dans le spread : pas de `forwardRef`, qui effacerait en plus le générique `T` (voir aussi `SingleSelect`).
+ */
+interface MultiSelectProps<T extends string = string> extends Omit<React.ComponentProps<"button">, "children" | "disabled" | "onChange" | "onToggle" | "value"> {
   options: MultiSelectOption[];
   selected: T[];
   onToggle: (val: T) => void;
@@ -47,6 +53,7 @@ export const MultiSelect = <T extends string = string>({
   disabled = false,
   maxCount,
   className,
+  ...triggerProps
 }: MultiSelectProps<T>): React.ReactElement => {
   const { t } = useKrosoftTranslation();
   const [query, setQuery] = useState("");
@@ -144,6 +151,7 @@ export const MultiSelect = <T extends string = string>({
 
   const trigger = isPill ? (
     <button
+      {...triggerProps}
       type="button"
       disabled={disabled}
       className={cn(
@@ -165,6 +173,7 @@ export const MultiSelect = <T extends string = string>({
     </button>
   ) : (
     <button
+      {...triggerProps}
       type="button"
       disabled={disabled}
       className={cn(controlTriggerClass, "w-full", open && "ring-2 ring-ring ring-offset-2", selected.length === 0 && "text-muted-foreground", className)}

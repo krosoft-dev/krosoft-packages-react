@@ -16,8 +16,7 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
         // Dégradé de marque partagé avec l'en-tête d'AppDialog (tokens --k-brand-*).
         // Survol par opacité, comme les autres variants, plutôt qu'un second jeu de teintes à thémer.
-        styled:
-          "bg-gradient-to-r from-brand-from to-brand-to hover:from-brand-from/90 hover:to-brand-to/90 text-brand-foreground shadow-lg shadow-brand-to/25 px-6 h-12",
+        brand: "bg-gradient-to-r from-brand-from to-brand-to hover:from-brand-from/90 hover:to-brand-to/90 text-brand-foreground shadow-lg shadow-brand-to/25",
       },
       size: {
         default: "h-10 px-4 py-2",

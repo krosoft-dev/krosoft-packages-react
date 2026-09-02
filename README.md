@@ -96,7 +96,7 @@ Rien n'oblige à suivre un preset : n'importe quelle valeur convient (`--k-radiu
 | `--k-radius-control`, `--k-radius-surface` (+ `-dense`)    | `rounded-control`, `rounded-surface`                             |
 | `--k-font-heading`, `--k-font-body`                        | appliquées directement par `globals.css` sur `body` et `h1`–`h6` |
 
-`--k-brand-*` est le dégradé de marque : il habille l'en-tête d'`AppDialog`. Deux bornes plutôt qu'une couleur pleine, parce que les surfaces qui le portent sont des dégradés — un thème qui n'en veut pas met la même valeur des deux côtés. Il est déclaré sur `:root` seulement, comme la palette des graphes : ces teintes portent du texte blanc et restent identiques en clair comme en sombre.
+`--k-brand-*` est le dégradé de marque : il habille l'en-tête d'`AppDialog` et le bouton `variant="brand"`. Deux bornes plutôt qu'une couleur pleine, parce que les surfaces qui le portent sont des dégradés — un thème qui n'en veut pas met la même valeur des deux côtés. C'est la surface la plus identitaire du package : chaque thème embarqué le redéclare avec ses propres teintes (violet par défaut, jaune sur Temporal, cyan sur Ocean). `--k-brand-foreground` porte le texte et les icônes posés dessus, et n'est donc pas toujours blanc : un dégradé clair demande un texte sombre. Story `Design Tokens/Marque` pour comparer les thèmes côte à côte.
 
 Ces couleurs sont désormais mappées par le preset partagé : un projet consommateur qui les déclarait dans son propre `tailwind.config` peut supprimer ces lignes.
 

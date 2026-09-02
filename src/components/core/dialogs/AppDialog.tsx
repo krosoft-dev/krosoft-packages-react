@@ -1,15 +1,14 @@
-import { Button, buttonVariants } from "@/components/ui";
+import { Button } from "@/components/ui";
 import { ErrorAlert } from "@/components/core/states/ErrorAlert";
 import { cn } from "@/helpers/tailwind.helper";
 import { useKrosoftTranslation } from "@/i18n";
 import { ErrorHttp } from "@krosoft/core/types";
-import type { VariantProps } from "class-variance-authority";
+import type { ButtonVariantType } from "@/types";
 import React from "react";
 import { Progress } from "../../ui/progress";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../../ui/dialog";
 
-/** Dérivé de `buttonVariants` : un variant ajouté au `Button` devient utilisable ici sans rien recopier. */
-export type ButtonVariantType = NonNullable<VariantProps<typeof buttonVariants>["variant"]>;
+export type { ButtonVariantType };
 
 export type AppDialogSize = "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "full";
 

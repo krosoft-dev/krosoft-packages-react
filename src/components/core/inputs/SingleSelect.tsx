@@ -13,7 +13,13 @@ export interface SingleSelectOption extends SelectOption {
   disabled?: boolean;
 }
 
-interface SingleSelectProps {
+/**
+ * Les props non reconnues (et la `ref`) sont relayées au bouton du trigger, dans les deux modes : c'est ce
+ * qui permet à un `<FormControl>` (Slot) d'y poser `id`, `aria-describedby` et `aria-invalid`, et donc de
+ * raccrocher le champ à son libellé et à son message d'erreur. Sous React 19 `ref` est une prop ordinaire,
+ * elle voyage donc dans le spread : pas besoin de `forwardRef` (voir aussi `MultiSelect`).
+ */
+interface SingleSelectProps extends Omit<React.ComponentProps<"button">, "children" | "disabled" | "onChange" | "value"> {
   options?: SingleSelectOption[];
   value: string | undefined;
   onChange: (value: string) => void;
@@ -49,6 +55,7 @@ export const SingleSelect = ({
   disabled = false,
   modal = true,
   className,
+  ...triggerProps
 }: SingleSelectProps): React.ReactElement => {
   const { t } = useKrosoftTranslation();
   const [open, setOpen] = useState(false);
@@ -63,6 +70,7 @@ export const SingleSelect = ({
     return (
       <Select value={value ?? ""} onValueChange={onChange} disabled={disabled}>
         <SelectTrigger
+          {...triggerProps}
           className={cn(!hasValue && "text-muted-foreground", className)}
           onClear={
             onClear !== undefined && hasValue && !disabled
@@ -116,6 +124,7 @@ export const SingleSelect = ({
     <Popover open={open} onOpenChange={handleOpenChange} modal={modal}>
       <PopoverTrigger asChild>
         <button
+          {...triggerProps}
           type="button"
           role="combobox"
           aria-expanded={open}

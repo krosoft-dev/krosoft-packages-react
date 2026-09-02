@@ -55,10 +55,11 @@
     --k-info: 217 91% 60%;
     --k-info-foreground: 0 0% 100%;
 
-    /* Dégradé de marque (en-tête d'AppDialog, bouton `styled`). Déclaré sur
-       :root seulement, comme la palette des graphes : ces teintes sont pensées
-       pour porter du texte blanc et restent identiques en clair comme en sombre.
-       Un thème qui veut sa propre marque redéclare ces trois variables. */
+    /* Dégradé de marque : en-tête d'AppDialog, bouton `brand`. Chaque thème le
+       redéclare avec ses propres teintes — c'est la surface la plus identitaire
+       du package, elle suit la personnalité du thème plutôt que le socle shadcn.
+       `--k-brand-foreground` porte le texte et les icônes posés dessus : il n'est
+       pas toujours blanc, un dégradé clair (Temporal, Ocean) demande un texte sombre. */
     --k-brand-from: 222 47% 11%;
     --k-brand-to: 272 72% 47%;
     --k-brand-foreground: 0 0% 100%;
@@ -144,6 +145,11 @@
     --k-info: 217 91% 60%;
     --k-info-foreground: 0 0% 100%;
 
+    /* Marque — même identité qu'en clair, remontée en luminosité pour tenir sur le fond sombre. */
+    --k-brand-from: 222 47% 18%;
+    --k-brand-to: 272 72% 55%;
+    --k-brand-foreground: 0 0% 100%;
+
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
@@ -205,6 +211,11 @@
     --k-info: 217 91% 60%;
     --k-info-foreground: 0 0% 100%;
 
+    /* Marque — orange vers le jaune primaire du thème. Texte sombre : le dégradé est clair. */
+    --k-brand-from: 30 100% 50%;
+    --k-brand-to: 60 100% 55%;
+    --k-brand-foreground: 0 0% 5%;
+
     --border: 0 0% 14%;
     --input: 0 0% 14%;
     --ring: 60 100% 55%;
@@ -265,6 +276,11 @@
 
     --k-info: 199 89% 55%;
     --k-info-foreground: 222 47% 6%;
+
+    /* Marque — bleu profond vers cyan, la teinte primaire du thème. Texte bleu nuit. */
+    --k-brand-from: 205 90% 42%;
+    --k-brand-to: 190 85% 52%;
+    --k-brand-foreground: 222 47% 6%;
 
     --border: 222 35% 18%;
     --input: 222 35% 18%;

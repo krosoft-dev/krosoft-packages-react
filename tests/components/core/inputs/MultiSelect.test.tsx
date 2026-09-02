@@ -1,4 +1,5 @@
 import { cleanup, fireEvent, render, screen, type RenderResult } from "@testing-library/react";
+import { createRef } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { MultiSelect } from "../../../../src/components/core/inputs/MultiSelect";
 
@@ -100,7 +101,9 @@ describe("MultiSelect", () => {
 
   it("bascule sur « Tout désélectionner » dès que les options basculables sont toutes cochées", () => {
     const onSelectAll = vi.fn();
-    const { container } = render(<MultiSelect options={optionsAvecDesactivees} selected={["online", "running", "offline"]} onToggle={noop} onSelectAll={onSelectAll} />);
+    const { container } = render(
+      <MultiSelect options={optionsAvecDesactivees} selected={["online", "running", "offline"]} onToggle={noop} onSelectAll={onSelectAll} />,
+    );
 
     openPanel(container);
     fireEvent.click(screen.getByText("Tout désélectionner"));
@@ -128,5 +131,30 @@ describe("MultiSelect", () => {
     openPanel(container);
 
     expect(screen.queryByText("Tout sélectionner")).toBeNull();
+  });
+
+  // Ce relais est ce dont `<FormControl>` (Slot) a besoin pour raccrocher le champ à son libellé
+  // et à son message d'erreur : sans lui, l'id et les aria-* injectés tomberaient dans le vide.
+  it.each([["input"], ["pill"]] as const)("variant %s : relaie la ref et les props DOM au trigger", variant => {
+    const ref = createRef<HTMLButtonElement>();
+    const { container } = render(
+      <MultiSelect
+        ref={ref}
+        variant={variant}
+        id="statuts-field"
+        aria-describedby="statuts-message"
+        aria-invalid
+        options={options}
+        selected={[]}
+        onToggle={noop}
+      />,
+    );
+
+    const trigger = container.querySelector("button") as HTMLButtonElement;
+
+    expect(ref.current).toBe(trigger);
+    expect(trigger.getAttribute("id")).toBe("statuts-field");
+    expect(trigger.getAttribute("aria-describedby")).toBe("statuts-message");
+    expect(trigger.getAttribute("aria-invalid")).toBe("true");
   });
 });

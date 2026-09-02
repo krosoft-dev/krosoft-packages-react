@@ -95,10 +95,11 @@ const krosoftPreset = {
           foreground: "hsl(var(--card-foreground))",
         },
 
-        // Dégradé de marque : en-tête de dialog, boutons `styled`… Déclaré en deux
+        // Dégradé de marque : en-tête de dialog, boutons `brand`… Déclaré en deux
         // bornes plutôt qu'en couleur pleine parce que les surfaces qui le portent
         // sont toujours des dégradés — un thème qui n'en veut pas met la même
-        // valeur des deux côtés.
+        // valeur des deux côtés. Chaque thème embarqué le redéclare, `-foreground`
+        // compris : il n'est blanc que tant que le dégradé est sombre.
         brand: {
           from: "hsl(var(--k-brand-from))",
           to: "hsl(var(--k-brand-to))",
