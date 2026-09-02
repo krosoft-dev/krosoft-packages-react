@@ -48,9 +48,9 @@ export function ConfirmationDialog({ isLoading, error, config, destructive = fal
             </AlertDialogDescription>
           )}
         </AlertDialogHeader>
-        <ErrorAlert error={error instanceof Error ? null : error} />
+        <ErrorAlert error={error} />
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={isLoading}>{t("common.buttons.cancel")}</AlertDialogCancel>
+          <AlertDialogCancel disabled={isLoading}>{t("actions.cancel")}</AlertDialogCancel>
           <Button
             onClick={e => {
               e.preventDefault();
@@ -59,7 +59,7 @@ export function ConfirmationDialog({ isLoading, error, config, destructive = fal
             disabled={isLoading}
             className={destructive ? "bg-destructive text-destructive-foreground hover:bg-destructive/90" : ""}
           >
-            {isLoading ? t(config.loadingKey || "common.buttons.loading") : config.confirmKey}
+            {isLoading ? t(config.loadingKey ?? "states.loading") : t(config.confirmKey)}
           </Button>
         </AlertDialogFooter>
       </AlertDialogContent>

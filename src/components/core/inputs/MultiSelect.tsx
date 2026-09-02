@@ -6,8 +6,13 @@ import { ChevronDownIcon, SearchIcon, XIcon } from "lucide-react";
 import { cn } from "@/helpers/tailwind.helper";
 import type { SelectOption } from "@krosoft/core/types";
 
+export interface MultiSelectOption extends SelectOption {
+  /** Option visible mais non basculable : grisée, ignorée par le clic, la navigation clavier et les actions globales. */
+  disabled?: boolean;
+}
+
 interface MultiSelectProps<T extends string = string> {
-  options: SelectOption[];
+  options: MultiSelectOption[];
   selected: T[];
   onToggle: (val: T) => void;
   onClear?: () => void;
@@ -55,12 +60,17 @@ export const MultiSelect = <T extends string = string>({
     return options.filter(o => o.label.toLowerCase().includes(query.toLowerCase()));
   }, [options, query]);
 
+  // Une option désactivée n'est jamais basculée par l'utilisateur : ni au clic, ni au clavier, ni par
+  // les actions globales ("Tout sélectionner", croix du trigger). Elle reste donc hors de tous les calculs.
+  const selectableValues = useMemo(() => filteredOptions.filter(o => o.disabled !== true).map(o => o.value as T), [filteredOptions]);
+  const lockedSelected = useMemo(() => selected.filter(s => options.find(o => o.value === s)?.disabled === true), [options, selected]);
+
   const isAllSelected = useMemo(() => {
-    if (filteredOptions.length === 0) {
+    if (selectableValues.length === 0) {
       return false;
     }
-    return filteredOptions.every(opt => selected.includes(opt.value as T));
-  }, [filteredOptions, selected]);
+    return selectableValues.every(value => selected.includes(value));
+  }, [selectableValues, selected]);
 
   // Au-delà de `maxCount`, les libellés restants sont résumés par un compteur gardé hors
   // de la zone tronquée : sinon des libellés longs mangent tout le trigger et on ne voit
@@ -76,10 +86,21 @@ export const MultiSelect = <T extends string = string>({
     }
   };
 
-  // Vide toute la sélection en respectant l'API disponible : `onClear` si fourni, sinon
-  // `onSelectAll([])`, sinon on bascule chaque valeur sélectionnée.
+  // Vide la sélection en respectant l'API disponible : `onClear` si fourni, sinon `onSelectAll([])`,
+  // sinon on bascule chaque valeur sélectionnée. Dès qu'une option désactivée est sélectionnée, ce
+  // vidage global lui passerait dessus : on retombe alors sur les seules API capables de la préserver.
   const clearAll = (): void => {
-    if (onClear !== undefined) {
+    if (lockedSelected.length > 0) {
+      if (onSelectAll !== undefined) {
+        onSelectAll(lockedSelected);
+      } else {
+        selected
+          .filter(s => !lockedSelected.includes(s))
+          .forEach(s => {
+            onToggle(s);
+          });
+      }
+    } else if (onClear !== undefined) {
       onClear();
     } else if (onSelectAll !== undefined) {
       onSelectAll([] as T[]);
@@ -92,30 +113,30 @@ export const MultiSelect = <T extends string = string>({
 
   const handleToggleAll = (): void => {
     if (isAllSelected) {
-      // Désélectionner les options visibles (filtrées)
+      // Désélectionner les options visibles (filtrées) et basculables
       if (onSelectAll !== undefined) {
-        const filteredValues = filteredOptions.map(o => o.value as T);
-        const remaining = selected.filter(s => !filteredValues.includes(s));
+        const remaining = selected.filter(s => !selectableValues.includes(s));
         onSelectAll(remaining);
-      } else if (onClear !== undefined) {
+      } else if (onClear !== undefined && selected.every(s => selectableValues.includes(s))) {
+        // `onClear` vide tout : réservé au cas où la sélection ne déborde pas des options visibles et basculables.
         onClear();
       } else {
-        selected.forEach(s => {
-          onToggle(s);
+        selectableValues.forEach(value => {
+          onToggle(value);
         });
       }
     } else if (onSelectAll !== undefined) {
       const newSelected = [...selected];
-      filteredOptions.forEach(opt => {
-        if (!newSelected.includes(opt.value as T)) {
-          newSelected.push(opt.value as T);
+      selectableValues.forEach(value => {
+        if (!newSelected.includes(value)) {
+          newSelected.push(value);
         }
       });
       onSelectAll(newSelected);
     } else {
-      filteredOptions.forEach(opt => {
-        if (!selected.includes(opt.value as T)) {
-          onToggle(opt.value as T);
+      selectableValues.forEach(value => {
+        if (!selected.includes(value)) {
+          onToggle(value);
         }
       });
     }
@@ -200,14 +221,17 @@ export const MultiSelect = <T extends string = string>({
           )}
           <CommandPrimitive.List className="flex flex-col gap-0.5 max-h-56 overflow-y-auto overflow-x-hidden p-1.5 scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-muted-foreground/20 scrollbar-track-transparent [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-muted-foreground/20 [&::-webkit-scrollbar-track]:bg-transparent">
             {filteredOptions.length === 0 && <p className="px-2 py-3 text-center text-xs text-muted-foreground">{t("states.noResult")}</p>}
+            {/* cmdk pose toujours l'attribut `data-disabled` (`"true"` ou `"false"`) : cibler la valeur,
+                sinon le style grisé s'appliquerait à tous les items. */}
             {filteredOptions.map(opt => (
               <CommandPrimitive.Item
                 key={opt.value}
                 value={opt.value}
+                disabled={opt.disabled}
                 onSelect={() => {
                   onToggle(opt.value as T);
                 }}
-                className="flex min-w-0 items-center gap-2.5 rounded-md px-2 py-2 text-sm cursor-pointer transition-colors data-[selected=true]:bg-muted"
+                className="flex min-w-0 items-center gap-2.5 rounded-md px-2 py-2 text-sm cursor-pointer transition-colors data-[selected=true]:bg-muted data-[disabled=true]:cursor-not-allowed data-[disabled=true]:opacity-50"
               >
                 {/* Case présentational : c'est l'item cmdk (clic/Entrée) qui bascule, pas la case elle-même. */}
                 <span className="pointer-events-none shrink-0">
@@ -222,7 +246,8 @@ export const MultiSelect = <T extends string = string>({
             ))}
           </CommandPrimitive.List>
         </CommandPrimitive>
-        {filteredOptions.length > 0 && (
+        {/* Masqué quand plus rien n'est basculable : le bouton serait sans effet. */}
+        {selectableValues.length > 0 && (
           <div className="border-t border-border p-1.5">
             <button
               type="button"

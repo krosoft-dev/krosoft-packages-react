@@ -26,7 +26,7 @@ import { cn } from "@/helpers/tailwind.helper";
 
 import { FormField, FormSchema, FormSection, HtmlFormField, ImageFormField, NumberFormField, SelectFormField } from "@/types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useForm, ControllerRenderProps, SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 import { useToast } from "@/hooks/ui/useToast";
@@ -70,15 +70,79 @@ interface GenericFormProps<T> {
    */
   renderActions?: boolean;
   /**
-   * Callback that exposes the internal submit function to a parent component (like a modal dialog).
+   * Identifiant posé sur le `<form>`. Permet à un bouton rendu hors du formulaire
+   * (pied d'une dialog, barre d'actions) de le soumettre via `form="<id>"`.
    */
-  onRegisterSubmit?: (submit: () => void) => void;
+  id?: string;
   /**
    * The default column span (1 to 4) for fields that do not explicitly declare a layout.cols property.
    * Defaults to 4 (full width).
    */
   defaultCols?: 1 | 2 | 3 | 4;
 }
+
+/**
+ * Builds the Zod validation schema from the field rules declared in the form schema.
+ * Tolerates a missing schema so it can be called before the schema is loaded.
+ */
+const buildZodSchema = <T,>(schema: FormSchema<T> | null | undefined): z.ZodObject<Record<string, z.ZodType>> => {
+  const schemaFields: Record<string, z.ZodType> = {};
+
+  (schema?.sections ?? []).forEach(section => {
+    section.fields.forEach(field => {
+      if (field.rules) {
+        schemaFields[field.key as string] = field.rules(z);
+      } else {
+        switch (field.type) {
+          case "checkbox":
+            schemaFields[field.key as string] = z.boolean().nullable().optional();
+            break;
+          case "html":
+            break;
+          case "text":
+          case "textarea":
+          case "number":
+          case "date":
+          case "time":
+          case "select":
+          case "multiSelect":
+          case "color":
+          case "image":
+            schemaFields[field.key as string] = z.string().nullable().optional();
+            break;
+        }
+      }
+    });
+  });
+
+  return z.object(schemaFields);
+};
+
+/**
+ * Initial form values: the provided data when available, otherwise the default value of each field.
+ */
+const buildDefaultValues = <T,>(schema: FormSchema<T> | null | undefined, initialData?: T): Record<string, unknown> =>
+  (initialData as unknown as Record<string, unknown>) ||
+  Object.fromEntries((schema?.sections ?? []).flatMap(section => section.fields.map(field => [field.key, field.defaultValue ?? null])));
+
+/**
+ * Image previews already available in the initial data, keyed by field.
+ */
+const buildImagePreviews = <T,>(schema: FormSchema<T> | null | undefined, initialData?: T): Record<string, string> => {
+  const previews: Record<string, string> = {};
+  if (!initialData) return previews;
+
+  (schema?.sections ?? []).forEach(section => {
+    section.fields.forEach(field => {
+      const value = initialData[field.key as keyof T];
+      if (field.type === "image" && typeof value === "string" && value) {
+        previews[field.key as string] = value;
+      }
+    });
+  });
+
+  return previews;
+};
 
 /**
  * A highly dynamic, Zod-validated generic form generator.
@@ -93,15 +157,28 @@ export const GenericForm = <T,>({
   initialData,
   disabled = false,
   renderActions = true,
-  onRegisterSubmit,
+  id,
   defaultCols = 4,
 }: GenericFormProps<T>): React.ReactElement | null => {
   const { t } = useKrosoftTranslation();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [imagePreview, setImagePreview] = useState<Record<string, string>>({});
+  const [imagePreview, setImagePreview] = useState<Record<string, string>>(() => buildImagePreviews(schema, initialData));
 
-  if (!schema) return null;
+  const form = useForm({
+    resolver: zodResolver(buildZodSchema(schema)),
+    defaultValues: buildDefaultValues(schema, initialData),
+  });
+
+  // Le schéma peut être chargé de façon asynchrone : les valeurs par défaut et les aperçus calculés
+  // au montage sont alors vides, il faut les réinjecter dès que le schéma devient disponible.
+  const isSchemaInitialized = useRef(!!schema);
+  useEffect(() => {
+    if (!schema || isSchemaInitialized.current) return;
+    isSchemaInitialized.current = true;
+    form.reset(buildDefaultValues(schema, initialData));
+    setImagePreview(buildImagePreviews(schema, initialData));
+  }, [form, schema, initialData]);
 
   const getColSpanClass = (cols: number): string => {
     switch (cols) {
@@ -116,70 +193,6 @@ export const GenericForm = <T,>({
         return "md:col-span-4 col-span-4";
     }
   };
-
-  const buildZodSchema = (): z.ZodObject<Record<string, z.ZodType>> => {
-    const schemaFields: Record<string, z.ZodType> = {};
-
-    schema.sections.forEach(section => {
-      section.fields.forEach(field => {
-        if (field.rules) {
-          schemaFields[field.key as string] = field.rules(z);
-        } else {
-          switch (field.type) {
-            case "checkbox":
-              schemaFields[field.key as string] = z.boolean().nullable().optional();
-              break;
-            case "html":
-              break;
-            case "text":
-            case "textarea":
-            case "number":
-            case "date":
-            case "time":
-            case "select":
-            case "multiSelect":
-            case "color":
-            case "image":
-              schemaFields[field.key as string] = z.string().nullable().optional();
-              break;
-          }
-        }
-      });
-    });
-
-    return z.object(schemaFields);
-  };
-
-  const zodSchema = buildZodSchema();
-
-  const form = useForm({
-    resolver: zodResolver(zodSchema),
-    defaultValues:
-      (initialData as unknown as Record<string, unknown>) ||
-      Object.fromEntries(schema.sections.flatMap(section => section.fields.map(field => [field.key, field.defaultValue ?? null]))),
-  });
-
-  // Register submit function with parent
-  useState(() => {
-    if (onRegisterSubmit) {
-      onRegisterSubmit(() => void form.handleSubmit(handleSubmitWithValidation as unknown as (data: Record<string, unknown>) => Promise<void>)());
-    }
-  });
-
-  // Initialize image previews from initialData
-  useState(() => {
-    if (initialData) {
-      const imagePreviews: Record<string, string> = {};
-      schema.sections.forEach(section => {
-        section.fields.forEach(field => {
-          if (field.type === "image" && initialData[field.key as keyof T]) {
-            imagePreviews[field.key as string] = initialData[field.key as keyof T] as string;
-          }
-        });
-      });
-      setImagePreview(imagePreviews);
-    }
-  });
 
   const handleSubmitWithValidation = async (data: T): Promise<void> => {
     if (isSubmitting) return;
@@ -209,30 +222,8 @@ export const GenericForm = <T,>({
     }
   };
 
-  const handleImagePreview = (fieldKey: string, url: string) => {
-    if (url) {
-      setImagePreview(prev => ({ ...prev, [fieldKey]: url }));
-    }
-  };
-
-  const renderImagePreview = (fieldKey: string) => {
-    const url = imagePreview[fieldKey];
-    if (!url) return null;
-
-    return (
-      <div className="mt-2 relative">
-        <div className="relative w-full h-40 bg-gray-100 rounded-surface overflow-hidden">
-          <img
-            src={url}
-            alt="Preview"
-            className="w-full h-full object-cover"
-            onError={e => {
-              e.currentTarget.src = "https://via.placeholder.com/400x200?text=Aperçu+non+disponible";
-            }}
-          />
-        </div>
-      </div>
-    );
+  const handleImagePreview = (fieldKey: string, url: string): void => {
+    setImagePreview(prev => ({ ...prev, [fieldKey]: url }));
   };
 
   const hasNullableRule = (rules?: (_z: typeof z) => z.ZodType): boolean => {
@@ -280,7 +271,11 @@ export const GenericForm = <T,>({
         );
       case "image": {
         const imageField = field as ImageFormField<T>;
-        const imageValue = imageField.value !== undefined ? imageField.value : (formField.value as string | undefined);
+        const fieldKey = field.key as string;
+        const formValue = typeof formField.value === "string" ? formField.value : undefined;
+        // Champ contrôlé : la prop fait foi. Sinon on affiche l'URL portée par le formulaire, ou
+        // l'aperçu local du fichier tout juste sélectionné (formField.value contient alors un File).
+        const imageValue = imageField.value !== undefined ? imageField.value : (formValue ?? imagePreview[fieldKey]);
         return (
           <ImageInput
             value={imageValue ?? ""}
@@ -291,9 +286,11 @@ export const GenericForm = <T,>({
               if (file) {
                 const reader = new FileReader();
                 reader.onloadend = () => {
-                  handleImagePreview(field.key as string, reader.result as string);
+                  handleImagePreview(fieldKey, reader.result as string);
                 };
                 reader.readAsDataURL(file);
+              } else {
+                handleImagePreview(fieldKey, "");
               }
             }}
             accept={imageField.accept}
@@ -471,7 +468,7 @@ export const GenericForm = <T,>({
       </div>
     );
 
-    if (schema.useCards === false) {
+    if (schema?.useCards === false) {
       return (
         <div key={index} className="space-y-4 mb-6">
           {section.titleKey && <AppSubTitle titleKey={section.titleKey} />}
@@ -492,9 +489,12 @@ export const GenericForm = <T,>({
     );
   };
 
+  if (!schema) return null;
+
   return (
     <Form {...form}>
       <form
+        id={id}
         onSubmit={e => {
           void form.handleSubmit(handleSubmitWithValidation as unknown as SubmitHandler<Record<string, unknown>>)(e);
         }}

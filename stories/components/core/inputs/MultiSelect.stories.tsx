@@ -32,6 +32,14 @@ const STATUTS = [
   { value: "indisponible", label: "Indisponible", color: "#ef4444" },
 ];
 
+// Villes annoncées mais pas encore ouvertes : visibles et grisées plutôt que masquées.
+const VILLES_PARTIELLES = [
+  { value: "paris", label: "Paris" },
+  { value: "lyon", label: "Lyon" },
+  { value: "marseille", label: "Marseille", disabled: true },
+  { value: "bordeaux", label: "Bordeaux", disabled: true },
+];
+
 const meta: Meta<typeof MultiSelect> = {
   title: "Core/Inputs/MultiSelect",
   component: MultiSelect,
@@ -72,6 +80,49 @@ export const Searchable: Story = {
 export const AllSelected: Story = {
   args: {
     selected: VILLES.map(v => v.value),
+  },
+};
+
+export const WithDisabledOptions: Story = {
+  render: () => {
+    const [selected, setSelected] = useState<string[]>([]);
+    return (
+      <div className="w-72 pb-72 space-y-2">
+        <MultiSelect
+          options={VILLES_PARTIELLES}
+          selected={selected}
+          onToggle={val => {
+            setSelected(prev => (prev.includes(val) ? prev.filter(v => v !== val) : [...prev, val]));
+          }}
+          onSelectAll={setSelected}
+          placeholder="Sélectionner des villes"
+        />
+        <p className="text-xs text-muted-foreground">
+          {selected.length === 0 ? "Aucune sélection" : `Sélectionnés : ${selected.join(", ")}`}
+        </p>
+      </div>
+    );
+  },
+};
+
+// Une valeur imposée par le métier : sélectionnée, grisée, et conservée par « Tout désélectionner » et par le ×.
+export const WithLockedSelection: Story = {
+  render: () => {
+    const [selected, setSelected] = useState<string[]>(["paris", "marseille"]);
+    return (
+      <div className="w-72 pb-72 space-y-2">
+        <MultiSelect
+          options={VILLES_PARTIELLES}
+          selected={selected}
+          onToggle={val => {
+            setSelected(prev => (prev.includes(val) ? prev.filter(v => v !== val) : [...prev, val]));
+          }}
+          onSelectAll={setSelected}
+          placeholder="Sélectionner des villes"
+        />
+        <p className="text-xs text-muted-foreground">Sélectionnés : {selected.join(", ")}</p>
+      </div>
+    );
   },
 };
 

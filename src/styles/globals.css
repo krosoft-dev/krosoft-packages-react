@@ -55,6 +55,14 @@
     --k-info: 217 91% 60%;
     --k-info-foreground: 0 0% 100%;
 
+    /* Dégradé de marque (en-tête d'AppDialog, bouton `styled`). Déclaré sur
+       :root seulement, comme la palette des graphes : ces teintes sont pensées
+       pour porter du texte blanc et restent identiques en clair comme en sombre.
+       Un thème qui veut sa propre marque redéclare ces trois variables. */
+    --k-brand-from: 222 47% 11%;
+    --k-brand-to: 272 72% 47%;
+    --k-brand-foreground: 0 0% 100%;
+
     /* Palette des séries de graphes (CHART_COLORS). Volontairement déclarée sur
        :root seulement : ces teintes moyennes restent lisibles sur fond clair
        comme sur les thèmes sombres, qui n'ont donc pas à les redéfinir. */

@@ -95,6 +95,15 @@ const krosoftPreset = {
           foreground: "hsl(var(--card-foreground))",
         },
 
+        // Dégradé de marque : en-tête de dialog, boutons `styled`… Déclaré en deux
+        // bornes plutôt qu'en couleur pleine parce que les surfaces qui le portent
+        // sont toujours des dégradés — un thème qui n'en veut pas met la même
+        // valeur des deux côtés.
+        brand: {
+          from: "hsl(var(--k-brand-from))",
+          to: "hsl(var(--k-brand-to))",
+          foreground: "hsl(var(--k-brand-foreground))",
+        },
         // Couleurs ajoutées par krosoft (variables préfixées --k-). Les composants
         // du package utilisent ces classes (bg-success, text-topbar-foreground,
         // text-sidebar-muted…) : sans ce mapping, elles ne sont pas générées et

@@ -1,5 +1,5 @@
 export { AppDialog } from "./AppDialog";
-export type { ButtonVariantType, DialogAction, AppDialogConfig } from "./AppDialog";
+export type { ButtonVariantType, DialogAction, AppDialogConfig, AppDialogSize } from "./AppDialog";
 export {
   Dialog,
   DialogPortal,

@@ -1,8 +1,8 @@
 import { useKrosoftTranslation } from "@/i18n";
-import { AppDialog, AppDialogConfig, DialogAction } from "@/components/core/dialogs/AppDialog";
+import { AppDialog, AppDialogConfig, AppDialogSize, DialogAction } from "@/components/core/dialogs/AppDialog";
 import { Button } from "@/components/ui";
 import { Pen, Save, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { GenericForm } from "@/components/core/forms/GenericForm";
 import type { FormSchema } from "@/types";
 
@@ -20,6 +20,12 @@ export interface FormDialogProps<T> {
   saveLabel?: string;
   cancelLabel?: string;
   hideSaveIcon?: boolean;
+  /** Largeur maximale à partir de `sm`. `4xl` par défaut. */
+  size?: AppDialogSize;
+  /**
+   * Classe de largeur brute, breakpoint compris (`"sm:max-w-4xl"`).
+   * @deprecated Préférer `size`.
+   */
   maxWidth?: string;
   isLoading?: boolean;
 }
@@ -35,16 +41,21 @@ export default function FormDialog<T>({
   customFooter,
   defaultEditing = false,
   footerActions = true,
-  saveLabel = "Sauvegarder",
+  saveLabel,
   cancelLabel,
   hideSaveIcon = false,
-  maxWidth = "sm:max-w-4xl",
+  size = "4xl",
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+  maxWidth,
   isLoading = false,
 }: FormDialogProps<T>): React.ReactElement | null {
   const { t } = useKrosoftTranslation();
+  const save = saveLabel ?? t("actions.save");
   const [isEditing, setIsEditing] = useState(defaultEditing);
   const [isSaving, setIsSaving] = useState(false);
-  const [submitForm, setSubmitForm] = useState<(() => void) | null>(null);
+  // Le pied de la dialog est rendu hors du `<form>` : les boutons d'enregistrement
+  // le visent par `form="<id>"` plutôt que par une fonction de submit remontée.
+  const formId = useId();
 
   useEffect(() => {
     if (open) {
@@ -54,24 +65,12 @@ export default function FormDialog<T>({
 
   if (data === null || data === undefined) return null;
 
-  const handleEditToggle = (): void => {
-    if (isEditing) {
-      if (onSave !== undefined && submitForm) {
-        submitForm();
-      }
-    } else {
-      setIsEditing(true);
-    }
+  const handleEdit = (): void => {
+    setIsEditing(true);
   };
 
   const handleCancel = (): void => {
     setIsEditing(false);
-  };
-
-  const handleSaveClick = (): void => {
-    if (onSave !== undefined && submitForm) {
-      submitForm();
-    }
   };
 
   const handleFormSubmit = async (formData: T): Promise<void> => {
@@ -100,8 +99,9 @@ export default function FormDialog<T>({
         });
       }
       actions.push({
-        label: isSaving ? "Enregistrement..." : saveLabel,
-        onClick: handleSaveClick,
+        label: isSaving ? t("actions.saving") : save,
+        type: "submit",
+        form: formId,
         variant: "default",
         disabled: isSaving || isLoading,
         icon: hideSaveIcon ? undefined : Save,
@@ -109,7 +109,7 @@ export default function FormDialog<T>({
     } else {
       actions.push({
         label: t("actions.edit"),
-        onClick: handleEditToggle,
+        onClick: handleEdit,
         variant: "outline",
         icon: Pen,
       });
@@ -118,6 +118,7 @@ export default function FormDialog<T>({
 
   const config: AppDialogConfig = {
     title: title(data),
+    size,
     maxWidth,
     actions: footerActions ? actions : [],
   };
@@ -136,6 +137,7 @@ export default function FormDialog<T>({
         {headerBadge !== undefined ? <div className="mb-4">{headerBadge(data)}</div> : null}
 
         <GenericForm
+          id={formId}
           schema={schema}
           initialData={data}
           disabled={!isEditing}
@@ -143,9 +145,6 @@ export default function FormDialog<T>({
             void handleFormSubmit(formData);
           }}
           renderActions={false}
-          onRegisterSubmit={submitFn => {
-            setSubmitForm(() => submitFn);
-          }}
           isLoading={isSaving || isLoading}
         />
 
@@ -161,15 +160,15 @@ export default function FormDialog<T>({
                     {cancelLabel ?? t("actions.cancel")}
                   </Button>
                 ) : null}
-                <Button onClick={handleSaveClick} size="sm" disabled={isSaving || isLoading} className="text-white">
+                <Button type="submit" form={formId} size="sm" disabled={isSaving || isLoading} className="text-white">
                   {!hideSaveIcon ? <Save className="size-4 mr-2" /> : null}
-                  {isSaving ? "Enregistrement..." : saveLabel}
+                  {isSaving ? t("actions.saving") : save}
                 </Button>
               </>
             ) : (
-              <Button onClick={handleEditToggle} variant="outline" size="sm">
+              <Button onClick={handleEdit} variant="outline" size="sm">
                 <Pen className="size-4 mr-2" />
-                Modifier
+                {t("actions.edit")}
               </Button>
             )}
           </div>

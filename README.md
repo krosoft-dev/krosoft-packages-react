@@ -91,9 +91,12 @@ Rien n'oblige à suivre un preset : n'importe quelle valeur convient (`--k-radiu
 | ---------------------------------------------------------- | ---------------------------------------------------------------- |
 | `--k-success`, `--k-warning`, `--k-info` (+ `-foreground`) | `bg-success`, `text-warning-foreground`, `border-info`…          |
 | `--k-topbar-*`                                             | `bg-topbar`, `text-topbar-foreground`, `bg-topbar-accent`…       |
+| `--k-brand-from`, `--k-brand-to`, `--k-brand-foreground`   | `from-brand-from`, `to-brand-to`, `text-brand-foreground`        |
 | `--k-sidebar-muted`                                        | `text-sidebar-muted`                                             |
 | `--k-radius-control`, `--k-radius-surface` (+ `-dense`)    | `rounded-control`, `rounded-surface`                             |
 | `--k-font-heading`, `--k-font-body`                        | appliquées directement par `globals.css` sur `body` et `h1`–`h6` |
+
+`--k-brand-*` est le dégradé de marque : il habille l'en-tête d'`AppDialog`. Deux bornes plutôt qu'une couleur pleine, parce que les surfaces qui le portent sont des dégradés — un thème qui n'en veut pas met la même valeur des deux côtés. Il est déclaré sur `:root` seulement, comme la palette des graphes : ces teintes portent du texte blanc et restent identiques en clair comme en sombre.
 
 Ces couleurs sont désormais mappées par le preset partagé : un projet consommateur qui les déclarait dans son propre `tailwind.config` peut supprimer ces lignes.
 

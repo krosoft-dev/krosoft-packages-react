@@ -107,7 +107,7 @@ export const WithError: Story = {
   },
 };
 
-export const CustomMaxWidth: Story = {
+export const LargeSize: Story = {
   render: DialogWrapper,
   args: {
     open: false,
@@ -115,7 +115,7 @@ export const CustomMaxWidth: Story = {
     config: {
       title: "Conditions d'utilisation",
       description: "Veuillez lire attentivement nos conditions d'utilisation.",
-      maxWidth: "sm:max-w-4xl",
+      size: "4xl",
       icon: CheckCircle,
       actions: [
         {
@@ -125,5 +125,53 @@ export const CustomMaxWidth: Story = {
         },
       ],
     },
+  },
+};
+
+// Pendant un chargement la dialog se verrouille : ni échap, ni croix, ni overlay.
+// « Annuler » s'en exclut explicitement, sinon un envoi long n'offrirait plus aucune sortie.
+export const LoadingWithEscapeHatch: Story = {
+  render: DialogWrapper,
+  args: {
+    open: false,
+    onOpenChange: (): void => {},
+    config: {
+      title: "Envoi en cours",
+      description: "La dialog reste ouverte tant que l'envoi n'est pas terminé.",
+      icon: Info,
+      actions: [
+        {
+          label: "Annuler",
+          onClick: (): void => {},
+          variant: "outline",
+          disableOnLoading: false,
+        },
+        {
+          label: "Envoyer",
+          onClick: (): void => {},
+          variant: "default",
+        },
+      ],
+    },
+    isLoading: true,
+  },
+};
+
+export const CustomFooter: Story = {
+  render: DialogWrapper,
+  args: {
+    open: false,
+    onOpenChange: (): void => {},
+    config: {
+      title: "Pied de dialog libre",
+      description: "`footer` prend le pas sur `config.actions` quand le gabarit ne suffit plus.",
+      icon: CheckCircle,
+    },
+    footer: (
+      <div className="flex items-center justify-between gap-3">
+        <span className="text-sm text-muted-foreground">3 éléments sélectionnés</span>
+        <Button>Appliquer</Button>
+      </div>
+    ),
   },
 };

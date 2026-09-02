@@ -30,6 +30,14 @@ const TENANTS = [
   { value: "4", label: "Sage Template", description: "Modèles" },
 ];
 
+// Options annoncées mais pas encore livrées : visibles et grisées plutôt que masquées.
+const DECLENCHEURS = [
+  { value: "cron", label: "Planification" },
+  { value: "fileWatcher", label: "Surveillance de fichiers", disabled: true },
+  { value: "webHook", label: "WebHook", disabled: true },
+  { value: "emailReceived", label: "Réception d'e-mail", disabled: true },
+];
+
 const meta: Meta<typeof SingleSelect> = {
   title: "Core/Inputs/SingleSelect",
   component: SingleSelect,
@@ -123,6 +131,21 @@ export const DisabledWithValue: Story = {
   args: {
     value: "fr",
     disabled: true,
+  },
+};
+
+export const WithDisabledOptions: Story = {
+  args: {
+    options: DECLENCHEURS,
+    placeholder: "Sélectionner un déclencheur",
+  },
+};
+
+export const SimpleWithDisabledOptions: Story = {
+  args: {
+    searchable: false,
+    options: DECLENCHEURS,
+    placeholder: "Sélectionner un déclencheur",
   },
 };
 

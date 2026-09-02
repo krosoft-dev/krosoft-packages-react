@@ -9,6 +9,8 @@ import type { SelectOption } from "@krosoft/core/types";
 export interface SingleSelectOption extends SelectOption {
   /** Texte secondaire affiché en gris à côté du libellé (ex. le groupe d'un tenant). Inclus dans la recherche (mode `searchable`). */
   description?: string;
+  /** Option visible mais non sélectionnable : grisée, ignorée par le clic et par la navigation clavier. */
+  disabled?: boolean;
 }
 
 interface SingleSelectProps {
@@ -76,7 +78,7 @@ export const SingleSelect = ({
         </SelectTrigger>
         <SelectContent>
           {options.map(option => (
-            <SelectItem key={option.value} value={option.value}>
+            <SelectItem key={option.value} value={option.value} disabled={option.disabled}>
               <span className="flex items-center">
                 {option.color !== undefined && <span className="mr-2 size-2.5 shrink-0 rounded-full" style={{ backgroundColor: option.color }} />}
                 {option.label}
@@ -180,15 +182,18 @@ export const SingleSelect = ({
           </div>
           <CommandPrimitive.List className="flex flex-col gap-0.5 max-h-56 overflow-y-auto overflow-x-hidden p-1.5 scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-muted-foreground/20 scrollbar-track-transparent [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-muted-foreground/20 [&::-webkit-scrollbar-track]:bg-transparent">
             {!canCreate && <CommandPrimitive.Empty className="px-2 py-3 text-center text-xs text-muted-foreground">{emptyLabel ?? t("states.noResult")}</CommandPrimitive.Empty>}
+            {/* cmdk pose toujours l'attribut `data-disabled` (`"true"` ou `"false"`) : cibler la valeur,
+                sinon le style grisé s'appliquerait à tous les items. */}
             {options.map(option => (
               <CommandPrimitive.Item
                 key={option.value}
                 value={option.value}
                 keywords={[option.label, option.description ?? ""]}
+                disabled={option.disabled}
                 onSelect={() => {
                   handleSelect(option.value);
                 }}
-                className="flex min-w-0 items-center gap-2.5 rounded-md px-2 py-2 text-sm cursor-pointer transition-colors data-[selected=true]:bg-muted"
+                className="flex min-w-0 items-center gap-2.5 rounded-md px-2 py-2 text-sm cursor-pointer transition-colors data-[selected=true]:bg-muted data-[disabled=true]:cursor-not-allowed data-[disabled=true]:opacity-50"
               >
                 <CheckIcon className={cn("size-4 shrink-0", value === option.value ? "opacity-100" : "opacity-0")} />
                 {option.color && <span className="size-2.5 shrink-0 rounded-full" style={{ backgroundColor: option.color }} />}
