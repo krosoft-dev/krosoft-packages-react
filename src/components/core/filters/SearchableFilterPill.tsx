@@ -19,6 +19,7 @@ export function SearchableFilterPill<T extends string>({
   onSelectAll,
   searchable = false,
   searchPlaceholder,
+  className = "w-full md:w-[180px]",
 }: {
   labelKey: string;
   options: FilterOption[];
@@ -28,6 +29,7 @@ export function SearchableFilterPill<T extends string>({
   onSelectAll?: (values: T[]) => void;
   searchable?: boolean;
   searchPlaceholder?: string;
+  className?: string;
 }): React.ReactElement {
   const { t } = useKrosoftTranslation();
   const [query, setQuery] = useState("");
@@ -84,17 +86,20 @@ export function SearchableFilterPill<T extends string>({
         <button
           className={cn(
             controlBaseClass,
-            "inline-flex items-center gap-1.5 whitespace-nowrap transition-colors",
+            "inline-flex items-center justify-between gap-1.5 whitespace-nowrap transition-colors",
             isActive ? "border-primary bg-primary/10 text-primary font-medium" : "hover:bg-muted",
+            className,
           )}
         >
-          {t(labelKey)}
-          {selected.length > 0 && (
-            <span className="flex h-4 min-w-[16px] items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-primary-foreground">
-              {selected.length}
-            </span>
-          )}
-          <ChevronDown className="size-3.5 opacity-60" />
+          <span className="truncate">{t(labelKey)}</span>
+          <div className="flex shrink-0 items-center gap-1.5">
+            {selected.length > 0 && (
+              <span className="flex h-4 min-w-[16px] items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-primary-foreground">
+                {selected.length}
+              </span>
+            )}
+            <ChevronDown className="size-3.5 opacity-60" />
+          </div>
         </button>
       </PopoverTrigger>
       <PopoverContent className="w-72 max-w-[var(--radix-popover-content-available-width)] p-0" align="start">
