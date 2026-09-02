@@ -12,7 +12,7 @@ export interface FilterPillsProps<T extends string | number> {
 /**
  * Groupe de pastilles de filtre à sélection unique, avec compteur optionnel par option.
  *
- * Complémentaire de `SearchableFilterPill` (multi-sélection en popover) : ici toutes les
+ * Complémentaire de `MultiSelect variant="pill"` (multi-sélection en popover) : ici toutes les
  * options sont visibles en ligne et une seule est active à la fois, comme un segmented control.
  * Pour la multi-sélection inline, voir `FilterPillsGroup`.
  */

@@ -1,10 +1,11 @@
 import { useKrosoftTranslation } from "@/i18n";
 import type { FilterSection } from "@/types/FilterSection";
 import React, { useMemo } from "react";
+import type { SelectOption } from "@krosoft/core/types";
+import { MultiSelect } from "../inputs/MultiSelect";
 import { SearchInput } from "../inputs/SearchInput";
 import { ActiveFilters } from "./ActiveFilters";
 import { AdvancedFilters } from "./AdvancedFilters";
-import { FilterOption, SearchableFilterPill } from "./SearchableFilterPill";
 
 export interface TableFilterProps<T extends Record<string, unknown> = Record<string, unknown>> {
   // Recherche
@@ -84,7 +85,7 @@ export function TableFilter<T extends Record<string, unknown> = Record<string, u
 
   // Extraire dynamiquement les filtres rapides de l'ensemble des sections
   const quickFilters = useMemo(() => {
-    const list: { key: keyof T; labelKey: string; options: FilterOption[]; searchable?: boolean; searchPlaceholder?: string }[] = [];
+    const list: { key: keyof T; labelKey: string; options: SelectOption[]; searchable?: boolean; searchPlaceholder?: string }[] = [];
     sections.forEach(sec => {
       sec.filters.forEach(f => {
         if (f.isQuickFilter === true) {
@@ -144,8 +145,9 @@ export function TableFilter<T extends Record<string, unknown> = Record<string, u
 
           {/* Filtres rapides (pastilles) */}
           {quickFilters.map(q => (
-            <SearchableFilterPill
+            <MultiSelect
               key={q.key as string}
+              variant="pill"
               labelKey={q.labelKey}
               options={q.options}
               selected={Array.isArray(filters[q.key]) ? (filters[q.key] as string[]) : []}

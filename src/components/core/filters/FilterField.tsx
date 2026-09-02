@@ -1,12 +1,11 @@
 import { useKrosoftTranslation } from "@/i18n";
 import React from "react";
-import { Input, Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui";
+import { Input } from "@/components/ui";
 import { DatePicker } from "@/components/core/inputs/DatePicker";
 import { DateRangePicker } from "@/components/core/inputs/DateRangePicker";
+import { SingleSelect } from "@/components/core/inputs/SingleSelect";
 import { MultiSelect } from "@/components/core/inputs/MultiSelect";
-import { SearchableSelect } from "@/components/core/inputs/SearchableSelect";
 import { DateRangeValue } from "@/types/DateRangeValue";
-import { cn } from "@/helpers/tailwind.helper";
 import { FilterFieldConfig } from "@/types/FilterFieldConfig";
 
 interface FilterFieldProps<T extends Record<string, unknown>> {
@@ -50,30 +49,15 @@ export const FilterField = <T extends Record<string, unknown>>({
       );
 
     case "select":
-      if (field.searchable === true) {
-        return (
-          <SearchableSelect
-            options={field.options ?? []}
-            value={value as string | undefined}
-            onChange={onChange}
-            placeholder={field.placeholder}
-            searchPlaceholder={field.searchPlaceholder}
-          />
-        );
-      }
       return (
-        <Select value={(value as string | undefined) ?? ""} onValueChange={onChange}>
-          <SelectTrigger className={cn((value === undefined || value === "") && "text-muted-foreground")}>
-            <SelectValue placeholder={field.placeholder} />
-          </SelectTrigger>
-          <SelectContent>
-            {field.options?.map(option => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <SingleSelect
+          options={field.options ?? []}
+          value={value as string | undefined}
+          onChange={onChange}
+          searchable={field.searchable === true}
+          placeholder={field.placeholder}
+          searchPlaceholder={field.searchPlaceholder}
+        />
       );
 
     case "date":

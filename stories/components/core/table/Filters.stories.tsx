@@ -23,11 +23,11 @@ Le composant \`TableFilter\` orchestre les sous-composants suivants :
 | Composant | Rôle |
 |---|---|
 | \`SearchInput\` | Barre de recherche textuelle avec icône et bouton d'effacement. |
-| \`SearchableFilterPill\` | Pastille de filtre rapide (multi-sélection avec cases à cocher, recherche, et "Tout sélectionner"). |
+| \`MultiSelect variant="pill"\` | Pastille de filtre rapide (multi-sélection avec cases à cocher, recherche, et "Tout sélectionner"). |
 | \`AdvancedFilters\` | Panneau latéral (\`Sheet\`) affichant tous les filtres regroupés par section. |
 | \`FilterField\` | Rendu conditionnel du champ de filtre selon son type (\`text\`, \`number\`, \`select\`, \`multi-select\`, \`date\`). |
-| \`SearchableSelect\` | Menu déroulant à choix unique avec barre de recherche intégrée et coche visuelle. |
-| \`MultiSelectField\` | Menu déroulant à choix multiples avec cases à cocher, recherche, "Tout sélectionner" et "Tout désélectionner". |
+| \`SingleSelect\` | Select à choix unique (simple ou, via \`searchable\`, avec barre de recherche et coche visuelle). |
+| \`MultiSelect\` | Menu déroulant à choix multiples avec cases à cocher, recherche, "Tout sélectionner" et "Tout désélectionner". |
 | \`DatePicker\` | Sélecteur de date avec calendrier localisé (français). |
 | \`ActiveFilters\` | Bandeau affichant les filtres actifs sous forme de badges supprimables, avec un bouton "Effacer tout". |
 

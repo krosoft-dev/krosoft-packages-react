@@ -1,9 +1,8 @@
 import { cleanup, render } from "@testing-library/react";
 import * as React from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { SearchableFilterPill } from "../../../src/components/core/filters/SearchableFilterPill";
+import { SingleSelect } from "../../../src/components/core/inputs/SingleSelect";
 import { MultiSelect } from "../../../src/components/core/inputs/MultiSelect";
-import { SearchableSelect } from "../../../src/components/core/inputs/SearchableSelect";
 import { Button, Input, Select, SelectTrigger, SelectValue } from "../../../src/components/ui";
 
 const options = [{ value: "actif", label: "Actif" }];
@@ -26,8 +25,9 @@ const controls: { name: string; element: React.ReactElement }[] = [
     ),
   },
   { name: "MultiSelect", element: <MultiSelect options={options} selected={[]} onToggle={noop} onClear={noop} /> },
-  { name: "SearchableSelect", element: <SearchableSelect options={options} value={undefined} onChange={noop} /> },
-  { name: "SearchableFilterPill", element: <SearchableFilterPill<string> labelKey="Statut" options={options} selected={[]} onToggle={noop} /> },
+  { name: "SingleSelect", element: <SingleSelect options={options} value={undefined} onChange={noop} /> },
+  { name: "SingleSelect (searchable)", element: <SingleSelect searchable options={options} value={undefined} onChange={noop} /> },
+  { name: "MultiSelect (pill)", element: <MultiSelect variant="pill" labelKey="Statut" options={options} selected={[]} onToggle={noop} /> },
   { name: "Button", element: <Button variant="outline">Filtres</Button> },
 ];
 

@@ -51,4 +51,11 @@ describe("MultiSelect", () => {
     expect(screen.getByText("En ligne, En cours d'exécution")).toBeTruthy();
     expect(screen.queryByText(/^\+/)).toBeNull();
   });
+
+  it("variant pill : affiche le libellé fixe et le badge du nombre de sélections", () => {
+    render(<MultiSelect variant="pill" labelKey="Statut" options={options} selected={["online", "offline"]} onToggle={noop} />);
+
+    expect(screen.getByText("Statut")).toBeTruthy();
+    expect(screen.getByText("2")).toBeTruthy();
+  });
 });

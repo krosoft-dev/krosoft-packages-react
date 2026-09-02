@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
 import { AppDialog } from "@/components/core/dialogs";
-import { SearchableSelect } from "@/components/core/inputs/SearchableSelect";
+import { SingleSelect } from "@/components/core/inputs/SingleSelect";
 import { Button } from "@/components/ui";
 
 const PAYS = [
@@ -30,9 +30,9 @@ const TENANTS = [
   { value: "4", label: "Sage Template", description: "Modèles" },
 ];
 
-const meta: Meta<typeof SearchableSelect> = {
-  title: "Core/Inputs/SearchableSelect",
-  component: SearchableSelect,
+const meta: Meta<typeof SingleSelect> = {
+  title: "Core/Inputs/SingleSelect",
+  component: SingleSelect,
   decorators: [
     Story => (
       <div className="w-64 pb-72">
@@ -44,12 +44,23 @@ const meta: Meta<typeof SearchableSelect> = {
     options: PAYS,
     value: undefined,
     onChange: () => {},
+    searchable: true,
     placeholder: "Sélectionner un pays",
   },
 };
 
 export default meta;
-type Story = StoryObj<typeof SearchableSelect>;
+type Story = StoryObj<typeof SingleSelect>;
+
+// Mode simple (Radix Select, sans recherche)
+export const Simple: Story = {
+  args: {
+    searchable: false,
+    options: STATUTS,
+    value: "disponible",
+    placeholder: "Sélectionner un statut",
+  },
+};
 
 export const Default: Story = {};
 
@@ -71,7 +82,7 @@ export const WithClear: Story = {
     const [value, setValue] = useState<string | undefined>("fr");
     return (
       <div className="w-64 pb-72 space-y-2">
-        <SearchableSelect options={PAYS} value={value} onChange={setValue} onClear={() => setValue(undefined)} placeholder="Sélectionner un pays" />
+        <SingleSelect searchable options={PAYS} value={value} onChange={setValue} onClear={() => { setValue(undefined); }} placeholder="Sélectionner un pays" />
         <p className="text-xs text-muted-foreground">
           {value !== undefined ? `Sélectionné : ${PAYS.find(p => p.value === value)?.label}` : "Aucune sélection"}
         </p>
@@ -128,7 +139,7 @@ export const WithColorsInteractive: Story = {
     const [value, setValue] = useState<string | undefined>(undefined);
     return (
       <div className="w-64 pb-72 space-y-2">
-        <SearchableSelect options={STATUTS} value={value} onChange={setValue} onClear={() => setValue(undefined)} placeholder="Sélectionner un statut" />
+        <SingleSelect searchable options={STATUTS} value={value} onChange={setValue} onClear={() => { setValue(undefined); }} placeholder="Sélectionner un statut" />
         <p className="text-xs text-muted-foreground">
           {value !== undefined ? `Sélectionné : ${STATUTS.find(s => s.value === value)?.label}` : "Aucune sélection"}
         </p>
@@ -142,7 +153,7 @@ export const Interactive: Story = {
     const [value, setValue] = useState<string | undefined>(undefined);
     return (
       <div className="w-64 pb-72 space-y-2">
-        <SearchableSelect options={PAYS} value={value} onChange={setValue} onClear={() => setValue(undefined)} placeholder="Sélectionner un pays" />
+        <SingleSelect searchable options={PAYS} value={value} onChange={setValue} onClear={() => { setValue(undefined); }} placeholder="Sélectionner un pays" />
         <p className="text-xs text-muted-foreground">
           {value !== undefined ? `Sélectionné : ${PAYS.find(p => p.value === value)?.label}` : "Aucune sélection"}
         </p>
@@ -171,7 +182,8 @@ export const Creatable: Story = {
     const [value, setValue] = useState<string | undefined>(undefined);
     return (
       <div className="w-64 pb-72 space-y-2">
-        <SearchableSelect
+        <SingleSelect
+          searchable
           options={groupes}
           value={value}
           onChange={setValue}
@@ -226,7 +238,8 @@ export const InDialog: Story = {
             ],
           }}
         >
-          <SearchableSelect
+          <SingleSelect
+            searchable
             options={TENANTS}
             value={value}
             onChange={setValue}
