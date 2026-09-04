@@ -15,6 +15,12 @@ export interface DataTableConfig<T> {
   columns: DataTableColumn<T>[];
   /** Retourne la clé unique de la ligne (key React, sélection). */
   rowKey: (row: T) => string;
+  /**
+   * Autorise ou non la sélection d'une ligne (cases à cocher + « tout sélectionner »).
+   * Une ligne non sélectionnable a sa case désactivée et est ignorée par le « tout sélectionner ».
+   * Par défaut toutes les lignes sont sélectionnables.
+   */
+  rowSelectable?: (row: T) => boolean;
   onRowClick?: (row: T, event: React.MouseEvent<HTMLTableRowElement>) => void;
   /** Retourne l'URL de destination de la ligne au clic (prioritaire sur onRowClick). */
   onRowNavigate?: (row: T) => string;

@@ -18,7 +18,7 @@ export interface DataTableProps<T> {
 }
 
 export function DataTable<T>({ data, isLoading = false, error = null, config, server }: DataTableProps<T>): React.JSX.Element {
-  const { columns, rowKey, onRowClick, onRowNavigate, actions, bulkActions } = config;
+  const { columns, rowKey, rowSelectable, onRowClick, onRowNavigate, actions, bulkActions } = config;
   const pageSizeDefault = config.pageSizeDefault ?? DEFAULT_PAGE_SIZE;
   const pageSizeOptions = config.pageSizeOptions ?? DEFAULT_PAGE_SIZE_OPTIONS;
   const dense = config.dense ?? false;
@@ -60,6 +60,7 @@ export function DataTable<T>({ data, isLoading = false, error = null, config, se
     data,
     columns,
     rowKey,
+    rowSelectable,
     pageSizeDefault,
     actions,
     bulkActions,
@@ -77,10 +78,12 @@ export function DataTable<T>({ data, isLoading = false, error = null, config, se
   // l'appartenance se teste donc par clé. Local au composant, comme le fait déjà `AppDataTable`.
   const selectedKeys = useMemo(() => new Set(selectedRows.map(rowKey)), [selectedRows, rowKey]);
 
-  // État de la case « tout sélectionner », restreint à la page affichée : la sélection
-  // peut couvrir d'autres pages, mais l'en-tête ne parle que des lignes visibles.
-  const allSelected = data.length > 0 && data.every(row => selectedKeys.has(rowKey(row)));
-  const someSelected = !allSelected && data.some(row => selectedKeys.has(rowKey(row)));
+  // État de la case « tout sélectionner », restreint à la page affichée et aux seules
+  // lignes sélectionnables : la sélection peut couvrir d'autres pages, mais l'en-tête ne
+  // parle que des lignes visibles, et une ligne non sélectionnable n'entre jamais en compte.
+  const selectablePageRows = useMemo(() => (rowSelectable === undefined ? data : data.filter(rowSelectable)), [data, rowSelectable]);
+  const allSelected = selectablePageRows.length > 0 && selectablePageRows.every(row => selectedKeys.has(rowKey(row)));
+  const someSelected = !allSelected && selectablePageRows.some(row => selectedKeys.has(rowKey(row)));
 
   return (
     // Le tableau suit le preset de l'application — square reste square — mais
@@ -135,6 +138,7 @@ export function DataTable<T>({ data, isLoading = false, error = null, config, se
               onRowClick={onRowClick}
               onRowNavigate={onRowNavigate}
               hasBulkActions={hasBulkActions}
+              rowSelectable={rowSelectable}
               selectedKeys={selectedKeys}
               toggleRowSelection={toggleRowSelection}
               visibleColumnsArray={visibleColumnsArray}

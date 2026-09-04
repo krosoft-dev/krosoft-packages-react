@@ -33,6 +33,7 @@ export function useDataTable<T>({
   data,
   columns,
   rowKey,
+  rowSelectable,
   pageSizeDefault,
   actions,
   bulkActions,
@@ -280,17 +281,21 @@ export function useDataTable<T>({
   // Comparaison par clé (et non par référence) : react-query renvoie de nouvelles instances
   // à chaque refetch, une ligne sélectionnée n'est donc jamais la même référence que dans `data`.
   const toggleRowSelection = (row: T): void => {
+    // Une ligne non sélectionnable ne peut jamais entrer dans la sélection, même via un clic sur la ligne.
+    if (rowSelectable !== undefined && !rowSelectable(row)) return;
     const key = rowKey(row);
     setSelectedRows(previous => (previous.some(selected => rowKey(selected) === key) ? previous.filter(selected => rowKey(selected) !== key) : [...previous, row]));
   };
 
   const toggleSelectAll = (): void => {
     setSelectedRows(previous => {
-      const pageKeys = new Set(data.map(rowKey));
+      // « Tout cocher » ne porte que sur les lignes sélectionnables de la page.
+      const selectablePageRows = rowSelectable === undefined ? data : data.filter(rowSelectable);
+      const pageKeys = new Set(selectablePageRows.map(rowKey));
       const withoutPage = previous.filter(selected => !pageKeys.has(rowKey(selected)));
-      const allPageSelected = data.length > 0 && data.every(row => previous.some(selected => rowKey(selected) === rowKey(row)));
+      const allPageSelected = selectablePageRows.length > 0 && selectablePageRows.every(row => previous.some(selected => rowKey(selected) === rowKey(row)));
       // « Tout cocher » agit page par page : on garde la sélection des autres pages, on ne bascule que la page courante.
-      return allPageSelected ? withoutPage : [...withoutPage, ...data];
+      return allPageSelected ? withoutPage : [...withoutPage, ...selectablePageRows];
     });
   };
 

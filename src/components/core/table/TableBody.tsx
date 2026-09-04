@@ -18,6 +18,7 @@ export interface TableBodyProps<T> {
   onRowClick?: (row: T, event: React.MouseEvent<HTMLTableRowElement>) => void;
   onRowNavigate?: (row: T) => string; // Retourne l'URL de destination de la ligne au clic (prioritaire sur onRowClick)
   hasBulkActions: boolean;
+  rowSelectable?: (row: T) => boolean;
   selectedKeys: Set<string>;
   toggleRowSelection: (row: T) => void;
   visibleColumnsArray: DataTableColumn<T>[];
@@ -42,6 +43,7 @@ export function TableBody<T>({
   onRowClick,
   onRowNavigate,
   hasBulkActions,
+  rowSelectable,
   selectedKeys,
   toggleRowSelection,
   visibleColumnsArray,
@@ -140,6 +142,7 @@ export function TableBody<T>({
     <tbody className="divide-y divide-border">
       {paginatedData.map(row => {
         const key = rowKey(row);
+        const selectable = rowSelectable === undefined || rowSelectable(row);
         return (
           <tr
             key={key}
@@ -159,6 +162,7 @@ export function TableBody<T>({
                 <div className="flex items-center justify-center">
                   <Checkbox
                     checked={selectedKeys.has(key)}
+                    disabled={!selectable}
                     onCheckedChange={() => {
                       toggleRowSelection(row);
                     }}

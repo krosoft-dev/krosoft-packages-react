@@ -7,6 +7,7 @@ export interface UseDataTableProps<T> {
   data: T[];
   columns: DataTableColumn<T>[];
   rowKey: (row: T) => string;
+  rowSelectable?: (row: T) => boolean;
   pageSizeDefault: number;
   actions?: DataTableRowAction<T>[];
   bulkActions?: DataTableBulkAction<T>[];
