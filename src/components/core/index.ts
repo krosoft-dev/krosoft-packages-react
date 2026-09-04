@@ -3,6 +3,7 @@ export * from "./charts";
 export * from "./dialogs";
 export * from "./filters";
 export * from "./forms";
+export * from "./icons";
 export * from "./inputs";
 export * from "./language";
 export * from "./layouts";
