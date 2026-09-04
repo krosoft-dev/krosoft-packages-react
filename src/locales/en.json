@@ -78,7 +78,10 @@
     "selectedCount": "{{count}} selected",
     "clearSelection": "Clear selection",
     "rangeOfTotal": "{{range}} of {{total}}",
-    "perPage": "{{count}} / page"
+    "perPage": "{{count}} / page",
+    "tableMode": "Table mode",
+    "property": "Property",
+    "value": "Value"
   },
   "sidebar": {
     "menu": "Navigation menu",

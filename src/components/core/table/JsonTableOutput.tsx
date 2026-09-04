@@ -1,5 +1,6 @@
 import { Label, SimpleTable, SimpleTableBody, SimpleTableCell, SimpleTableHead, SimpleTableHeader, SimpleTableRow, Switch } from "@/components/ui";
 import { formatJsonValue, isRecord, tryParseJson } from "@krosoft/core/helpers";
+import { useKrosoftTranslation } from "@/i18n";
 import React, { useState } from "react";
 
 interface JsonTableOutputProps {
@@ -8,6 +9,7 @@ interface JsonTableOutputProps {
 }
 
 export const JsonTableOutput = ({ header, output }: JsonTableOutputProps): React.JSX.Element | null => {
+  const { t } = useKrosoftTranslation();
   const [showTable, setShowTable] = useState(true);
 
   const jsonData = tryParseJson(output);
@@ -19,7 +21,7 @@ export const JsonTableOutput = ({ header, output }: JsonTableOutputProps): React
       <div className="flex items-center gap-2">
         <Switch id="table-mode" checked={showTable} onCheckedChange={setShowTable} />
         <Label htmlFor="table-mode" className="text-xs">
-          Mode tableau
+          {t("table.tableMode")}
         </Label>
       </div>
     </div>
@@ -81,8 +83,8 @@ export const JsonTableOutput = ({ header, output }: JsonTableOutputProps): React
         <TableWrapper>
           <SimpleTableHeader className="bg-muted/50">
             <SimpleTableRow>
-              <SimpleTableHead className="font-medium">Propriété</SimpleTableHead>
-              <SimpleTableHead className="font-medium">Valeur</SimpleTableHead>
+              <SimpleTableHead className="font-medium">{t("table.property")}</SimpleTableHead>
+              <SimpleTableHead className="font-medium">{t("table.value")}</SimpleTableHead>
             </SimpleTableRow>
           </SimpleTableHeader>
           <SimpleTableBody>
