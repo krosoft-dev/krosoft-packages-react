@@ -15,9 +15,11 @@ export interface AppPageHeaderProps {
   onBack?: (() => void) | null;
   renderPreActions?: () => React.JSX.Element;
   className?: string;
+  /** Affiche le sous-titre (descriptionKey) sur la même ligne que le titre. */
+  inline?: boolean;
 }
 
-export function AppPageHeader({ icon: Icon, titleKey, descriptionKey, actions, onBack, renderPreActions, className }: AppPageHeaderProps): React.JSX.Element {
+export function AppPageHeader({ icon: Icon, titleKey, descriptionKey, actions, onBack, renderPreActions, className, inline }: AppPageHeaderProps): React.JSX.Element {
   const { t } = useKrosoftTranslation();
 
   useDocumentTitle(t(titleKey));
@@ -35,7 +37,7 @@ export function AppPageHeader({ icon: Icon, titleKey, descriptionKey, actions, o
             <Icon className="h-6 w-6 text-blue-600" />
           </div>
         )}
-        <AppTitle titleKey={titleKey} descriptionKey={descriptionKey} />
+        <AppTitle titleKey={titleKey} descriptionKey={descriptionKey} inline={inline} />
       </div>
       <div className="flex shrink-0 items-center gap-2 md:gap-4">
         {renderPreActions && renderPreActions()}
