@@ -32,6 +32,15 @@ const STATUTS = [
   { value: "indisponible", label: "Indisponible", color: "#ef4444" },
 ];
 
+// Options avec vignette : la première sans image affiche le placeholder gris.
+const PROJETS = [
+  { value: "1", label: "Mantes-La-Ville", imageUrl: null },
+  { value: "2", label: "Dardilly", imageUrl: "https://picsum.photos/seed/dardilly/80/56" },
+  { value: "3", label: "PAU - TERRA COTTA", imageUrl: "https://picsum.photos/seed/pau/80/56" },
+  { value: "4", label: "SAINT PIERRE D'IRUBE", imageUrl: "https://picsum.photos/seed/irube/80/56" },
+  { value: "5", label: "Rozven", imageUrl: "https://picsum.photos/seed/rozven/80/56" },
+];
+
 // Villes annoncées mais pas encore ouvertes : visibles et grisées plutôt que masquées.
 const VILLES_PARTIELLES = [
   { value: "paris", label: "Paris" },
@@ -63,6 +72,27 @@ export default meta;
 type Story = StoryObj<typeof MultiSelect>;
 
 export const Default: Story = {};
+
+// Vignette par option (`imageUrl`) dans la liste : image si URL, placeholder gris si `null`.
+export const WithImages: Story = {
+  render: () => {
+    const [selected, setSelected] = useState<string[]>(["2"]);
+    return (
+      <div className="w-72 pb-72 space-y-2">
+        <MultiSelect
+          searchable
+          options={PROJETS}
+          selected={selected}
+          onToggle={val => setSelected(prev => (prev.includes(val) ? prev.filter(v => v !== val) : [...prev, val]))}
+          onClear={() => setSelected([])}
+          placeholder="Sélectionner des projets"
+          searchPlaceholder="Rechercher un projet..."
+        />
+        <p className="text-xs text-muted-foreground">La première option (sans image) affiche le placeholder « — ».</p>
+      </div>
+    );
+  },
+};
 
 export const WithSelections: Story = {
   args: {

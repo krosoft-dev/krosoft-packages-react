@@ -5,12 +5,15 @@ import { CheckIcon, ChevronDownIcon, PlusIcon, SearchIcon, XIcon } from "lucide-
 import { Popover, PopoverContent, PopoverTrigger, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, controlFilterWidthClass, controlTriggerClass } from "@/components/ui";
 import { cn } from "@/helpers/tailwind.helper";
 import type { SelectOption } from "@krosoft/core/types";
+import { renderOptionThumbnail } from "./select.helper";
 
 export interface SingleSelectOption extends SelectOption {
   /** Texte secondaire affiché en gris à côté du libellé (ex. le groupe d'un tenant). Inclus dans la recherche (mode `searchable`). */
   description?: string;
   /** Option visible mais non sélectionnable : grisée, ignorée par le clic et par la navigation clavier. */
   disabled?: boolean;
+  /** Vignette affichée avant le libellé. Définie (URL) → image ; définie à `null`/`""` → placeholder gris ; absente → pas de vignette. */
+  imageUrl?: string | null;
 }
 
 /**
@@ -96,6 +99,7 @@ export const SingleSelect = ({
           {options.map(option => (
             <SelectItem key={option.value} value={option.value} disabled={option.disabled}>
               <span className="flex items-center">
+                {renderOptionThumbnail(option.imageUrl, "mr-2")}
                 {option.color !== undefined && <span className="mr-2 size-2.5 shrink-0 rounded-full" style={{ backgroundColor: option.color }} />}
                 {option.label}
                 {option.description !== undefined && <span className="ml-1 text-muted-foreground">({option.description})</span>}
@@ -149,6 +153,7 @@ export const SingleSelect = ({
           {/* Marges explicites plutôt qu'un `gap` : `controlTriggerClass` applique `line-clamp-1`
               à ce span, ce qui le passe en `-webkit-box` et neutralise la mise en page flex. */}
           <span className="flex items-center truncate">
+            {renderOptionThumbnail(selectedOption?.imageUrl, "mr-2")}
             {selectedOption?.color && <span className="mr-2 size-2.5 shrink-0 rounded-full" style={{ backgroundColor: selectedOption.color }} />}
             <span className="truncate">{selectedLabel ?? placeholder ?? t("select.placeholder")}</span>
             {selectedOption?.description !== undefined && <span className="ml-1 truncate text-muted-foreground">({selectedOption.description})</span>}
@@ -214,6 +219,7 @@ export const SingleSelect = ({
                 className="flex min-w-0 items-center gap-2.5 rounded-md px-2 py-2 text-sm cursor-pointer transition-colors data-[selected=true]:bg-muted data-[disabled=true]:cursor-not-allowed data-[disabled=true]:opacity-50"
               >
                 <CheckIcon className={cn("size-4 shrink-0", value === option.value ? "opacity-100" : "opacity-0")} />
+                {renderOptionThumbnail(option.imageUrl)}
                 {option.color && <span className="size-2.5 shrink-0 rounded-full" style={{ backgroundColor: option.color }} />}
                 {/* Libellés longs tronqués (ellipsis) plutôt que de forcer un défilement horizontal du panneau. */}
                 <span className="min-w-0 flex-1 truncate" title={option.label}>

@@ -30,6 +30,15 @@ const TENANTS = [
   { value: "4", label: "Sage Template", description: "Modèles" },
 ];
 
+// Options avec vignette : la première sans image affiche le placeholder gris.
+const PROJETS = [
+  { value: "1", label: "Mantes-La-Ville", imageUrl: null },
+  { value: "2", label: "Dardilly", imageUrl: "https://picsum.photos/seed/dardilly/80/56" },
+  { value: "3", label: "PAU - TERRA COTTA", imageUrl: "https://picsum.photos/seed/pau/80/56" },
+  { value: "4", label: "SAINT PIERRE D'IRUBE", imageUrl: "https://picsum.photos/seed/irube/80/56" },
+  { value: "5", label: "Rozven", imageUrl: "https://picsum.photos/seed/rozven/80/56" },
+];
+
 // Options annoncées mais pas encore livrées : visibles et grisées plutôt que masquées.
 const DECLENCHEURS = [
   { value: "cron", label: "Planification" },
@@ -182,6 +191,40 @@ export const Interactive: Story = {
         </p>
       </div>
     );
+  },
+};
+
+// Vignette par option (`imageUrl`) : image si URL, placeholder gris si `null`.
+export const WithImages: Story = {
+  render: () => {
+    const [value, setValue] = useState<string | undefined>("2");
+    return (
+      <div className="w-72 pb-72 space-y-2">
+        <SingleSelect
+          searchable
+          options={PROJETS}
+          value={value}
+          onChange={setValue}
+          onClear={() => {
+            setValue(undefined);
+          }}
+          placeholder="Aucun projet"
+          searchPlaceholder="Rechercher un projet..."
+          emptyLabel="Aucun projet trouvé"
+        />
+        <p className="text-xs text-muted-foreground">La première option (sans image) affiche le placeholder « — ».</p>
+      </div>
+    );
+  },
+};
+
+// Même chose en mode simple (Radix Select, sans recherche).
+export const SimpleWithImages: Story = {
+  args: {
+    searchable: false,
+    options: PROJETS,
+    value: "3",
+    placeholder: "Aucun projet",
   },
 };
 

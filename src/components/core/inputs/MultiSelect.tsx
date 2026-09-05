@@ -5,10 +5,13 @@ import { Checkbox, controlBaseClass, controlFilterWidthClass, controlTriggerClas
 import { ChevronDownIcon, SearchIcon, XIcon } from "lucide-react";
 import { cn } from "@/helpers/tailwind.helper";
 import type { SelectOption } from "@krosoft/core/types";
+import { renderOptionThumbnail } from "./select.helper";
 
 export interface MultiSelectOption extends SelectOption {
   /** Option visible mais non basculable : grisée, ignorée par le clic, la navigation clavier et les actions globales. */
   disabled?: boolean;
+  /** Vignette affichée avant le libellé dans la liste. Définie (URL) → image ; définie à `null`/`""` → placeholder gris ; absente → pas de vignette. */
+  imageUrl?: string | null;
 }
 
 /**
@@ -259,6 +262,7 @@ export const MultiSelect = <T extends string = string>({
                 <span className="pointer-events-none shrink-0">
                   <Checkbox checked={selected.includes(opt.value as T)} />
                 </span>
+                {renderOptionThumbnail(opt.imageUrl)}
                 {opt.color && <span className="size-2.5 shrink-0 rounded-full" style={{ backgroundColor: opt.color }} />}
                 {/* Libellés longs tronqués (ellipsis) plutôt que de forcer un défilement horizontal du panneau. */}
                 <span className="min-w-0 flex-1 truncate" title={opt.label}>
