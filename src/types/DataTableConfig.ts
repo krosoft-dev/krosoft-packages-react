@@ -22,8 +22,17 @@ export interface DataTableConfig<T> {
    */
   rowSelectable?: (row: T) => boolean;
   onRowClick?: (row: T, event: React.MouseEvent<HTMLTableRowElement>) => void;
-  /** Retourne l'URL de destination de la ligne au clic (prioritaire sur onRowClick). */
+  /**
+   * Retourne l'URL de destination de la ligne au clic (prioritaire sur onRowClick).
+   * Une ligne non navigable (voir `rowNavigable`) perd son curseur de lien et son clic retombe sur `onRowClick`.
+   */
   onRowNavigate?: (row: T) => string;
+  /**
+   * Autorise ou non la navigation au clic sur une ligne (`onRowNavigate`).
+   * Une ligne non navigable perd son curseur de lien et son clic retombe sur `onRowClick`.
+   * Par défaut toutes les lignes sont navigables.
+   */
+  rowNavigable?: (row: T) => boolean;
   /** Actions par ligne, affichées en ligne ou dans le menu kebab (`overflow`). */
   actions?: DataTableRowAction<T>[];
   /** Actions rapides sur la sélection multiple. */

@@ -293,6 +293,12 @@ describe("DataTable — navigation au clic", () => {
     return row;
   };
 
+  const rowAt = (container: HTMLElement, index: number): HTMLTableRowElement => {
+    const row = container.querySelectorAll<HTMLTableRowElement>("tbody tr")[index];
+    if (row === undefined) throw new Error(`Aucune ligne à l'index ${String(index)}`);
+    return row;
+  };
+
   it("navigue via le router avec l'URL calculée au clic sur une ligne", () => {
     const container = renderTable({ config: { onRowNavigate: (row: Row) => `/users/${row.id}` } });
 
@@ -328,6 +334,28 @@ describe("DataTable — navigation au clic", () => {
     const container = renderTable({ config: { onRowNavigate: (row: Row) => `/users/${row.id}` } });
 
     expect(firstRow(container).className).toContain("cursor-pointer");
+  });
+
+  it("ne navigue pas et retire le curseur pointeur sur une ligne non navigable", () => {
+    const container = renderTable({
+      config: { onRowNavigate: (row: Row) => `/users/${row.id}`, rowNavigable: (row: Row) => row.id === "1" },
+    });
+
+    fireEvent.click(rowAt(container, 1));
+
+    expect(navigateMock).not.toHaveBeenCalled();
+    expect(rowAt(container, 0).className).toContain("cursor-pointer");
+    expect(rowAt(container, 1).className).not.toContain("cursor-pointer");
+  });
+
+  it("retombe sur onRowClick pour une ligne non navigable", () => {
+    const onRowClick = vi.fn();
+    const container = renderTable({ config: { onRowNavigate: (row: Row) => `/users/${row.id}`, rowNavigable: () => false, onRowClick } });
+
+    fireEvent.click(firstRow(container));
+
+    expect(navigateMock).not.toHaveBeenCalled();
+    expect(onRowClick).toHaveBeenCalledTimes(1);
   });
 
   it("ne déclenche pas la navigation au clic sur la case de sélection ou la colonne d'actions", () => {

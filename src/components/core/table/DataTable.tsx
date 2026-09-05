@@ -18,7 +18,7 @@ export interface DataTableProps<T> {
 }
 
 export function DataTable<T>({ data, isLoading = false, error = null, config, server }: DataTableProps<T>): React.JSX.Element {
-  const { columns, rowKey, rowSelectable, onRowClick, onRowNavigate, actions, bulkActions } = config;
+  const { columns, rowKey, rowSelectable, onRowClick, onRowNavigate, rowNavigable, actions, bulkActions } = config;
   const pageSizeDefault = config.pageSizeDefault ?? DEFAULT_PAGE_SIZE;
   const pageSizeOptions = config.pageSizeOptions ?? DEFAULT_PAGE_SIZE_OPTIONS;
   const dense = config.dense ?? false;
@@ -137,6 +137,7 @@ export function DataTable<T>({ data, isLoading = false, error = null, config, se
               rowKey={rowKey}
               onRowClick={onRowClick}
               onRowNavigate={onRowNavigate}
+              rowNavigable={rowNavigable}
               hasBulkActions={hasBulkActions}
               rowSelectable={rowSelectable}
               selectedKeys={selectedKeys}

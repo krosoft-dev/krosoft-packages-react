@@ -17,6 +17,7 @@ export interface TableBodyProps<T> {
   rowKey: (row: T) => string;
   onRowClick?: (row: T, event: React.MouseEvent<HTMLTableRowElement>) => void;
   onRowNavigate?: (row: T) => string; // Retourne l'URL de destination de la ligne au clic (prioritaire sur onRowClick)
+  rowNavigable?: (row: T) => boolean; // Autorise ou non la navigation d'une ligne ; par défaut toutes les lignes sont navigables
   hasBulkActions: boolean;
   rowSelectable?: (row: T) => boolean;
   selectedKeys: Set<string>;
@@ -42,6 +43,7 @@ export function TableBody<T>({
   rowKey,
   onRowClick,
   onRowNavigate,
+  rowNavigable,
   hasBulkActions,
   rowSelectable,
   selectedKeys,
@@ -117,17 +119,22 @@ export function TableBody<T>({
   // Dès qu'une sélection est en cours, le clic sur la ligne coche/décoche au lieu de
   // naviguer : pas de navigation involontaire pendant qu'on sélectionne des lignes.
   const isSelectionActive = hasBulkActions && selectedKeys.size > 0;
-  const isRowClickable = isSelectionActive || onRowNavigate !== undefined || onRowClick !== undefined;
+  // La navigation se décide ligne par ligne : une ligne peut être exclue (droits, état de la
+  // donnée) sans que le tableau entier perde sa navigation.
+  const getRowUrl = (row: T): string | undefined => {
+    if (rowNavigable !== undefined && !rowNavigable(row)) return undefined;
+
+    return onRowNavigate?.(row);
+  };
 
   // La navigation prime sur onRowClick : Ctrl/Cmd + clic reproduit le comportement natif
   // des liens en ouvrant l'URL dans un nouvel onglet, sinon le router prend le relais.
-  const handleRowClick = (row: T, event: React.MouseEvent<HTMLTableRowElement>): void => {
+  const handleRowClick = (row: T, url: string | undefined, event: React.MouseEvent<HTMLTableRowElement>): void => {
     if (isSelectionActive) {
       toggleRowSelection(row);
       return;
     }
-    if (onRowNavigate !== undefined) {
-      const url = onRowNavigate(row);
+    if (url !== undefined) {
       if (event.ctrlKey || event.metaKey) {
         window.open(url, "_blank");
       } else {
@@ -143,12 +150,14 @@ export function TableBody<T>({
       {paginatedData.map(row => {
         const key = rowKey(row);
         const selectable = rowSelectable === undefined || rowSelectable(row);
+        const url = getRowUrl(row);
+        const isRowClickable = isSelectionActive || url !== undefined || onRowClick !== undefined;
         return (
           <tr
             key={key}
             className={`group hover:bg-muted/50 transition-colors ${isRowClickable ? "cursor-pointer" : ""}`}
             onClick={e => {
-              handleRowClick(row, e);
+              handleRowClick(row, url, e);
             }}
           >
             {hasBulkActions ? (
