@@ -152,12 +152,14 @@ export const SingleSelect = ({
         >
           {/* Marges explicites plutôt qu'un `gap` : `controlTriggerClass` applique `line-clamp-1`
               à ce span, ce qui le passe en `-webkit-box` et neutralise la mise en page flex. */}
-          <span className="flex items-center truncate">
-            {renderOptionThumbnail(selectedOption?.imageUrl, "mr-2")}
+          {/* `div` (et non `span`) : `controlTriggerClass` applique `[&>span]:line-clamp-1`, qui passe un
+              `span` direct en `-webkit-box` vertical et empilerait la vignette au-dessus du libellé. */}
+          <div className="flex min-w-0 items-center truncate">
+            {renderOptionThumbnail(selectedOption?.imageUrl, "mr-2 h-6 w-8")}
             {selectedOption?.color && <span className="mr-2 size-2.5 shrink-0 rounded-full" style={{ backgroundColor: selectedOption.color }} />}
             <span className="truncate">{selectedLabel ?? placeholder ?? t("select.placeholder")}</span>
             {selectedOption?.description !== undefined && <span className="ml-1 truncate text-muted-foreground">({selectedOption.description})</span>}
-          </span>
+          </div>
           <div className="flex items-center gap-1">
             {onClear && hasValue && !disabled && (
               <span
@@ -216,9 +218,8 @@ export const SingleSelect = ({
                 onSelect={() => {
                   handleSelect(option.value);
                 }}
-                className="flex min-w-0 items-center gap-2.5 rounded-md px-2 py-2 text-sm cursor-pointer transition-colors data-[selected=true]:bg-muted data-[disabled=true]:cursor-not-allowed data-[disabled=true]:opacity-50"
+                className="flex min-w-0 items-center gap-2 rounded-md px-2 py-2 text-sm cursor-pointer transition-colors data-[selected=true]:bg-muted data-[disabled=true]:cursor-not-allowed data-[disabled=true]:opacity-50"
               >
-                <CheckIcon className={cn("size-4 shrink-0", value === option.value ? "opacity-100" : "opacity-0")} />
                 {renderOptionThumbnail(option.imageUrl)}
                 {option.color && <span className="size-2.5 shrink-0 rounded-full" style={{ backgroundColor: option.color }} />}
                 {/* Libellés longs tronqués (ellipsis) plutôt que de forcer un défilement horizontal du panneau. */}
@@ -226,6 +227,8 @@ export const SingleSelect = ({
                   {option.label}
                 </span>
                 {option.description !== undefined && <span className="shrink-0 truncate text-muted-foreground">({option.description})</span>}
+                {/* Coche en fin de ligne : le contenu (vignette/libellé) reste aligné à gauche même sans sélection. */}
+                <CheckIcon className={cn("ml-auto size-4 shrink-0", value === option.value ? "opacity-100" : "opacity-0")} />
               </CommandPrimitive.Item>
             ))}
             {canCreate && (

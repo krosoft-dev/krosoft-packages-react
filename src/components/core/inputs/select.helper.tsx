@@ -10,8 +10,8 @@ export const renderOptionThumbnail = (imageUrl: string | null | undefined, class
     return null;
   }
   return imageUrl ? (
-    <img src={imageUrl} alt="" loading="lazy" className={cn("h-7 w-10 shrink-0 rounded object-cover", className)} />
+    <img src={imageUrl} alt="" loading="lazy" className={cn("h-9 w-12 shrink-0 rounded object-cover", className)} />
   ) : (
-    <span className={cn("flex h-7 w-10 shrink-0 items-center justify-center rounded bg-muted text-[9px] text-muted-foreground", className)}>—</span>
+    <span className={cn("flex h-9 w-12 shrink-0 items-center justify-center rounded bg-muted text-[9px] text-muted-foreground", className)}>—</span>
   );
 };
