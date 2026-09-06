@@ -50,6 +50,9 @@
     "clearPeriod": "Clear the selected period"
   },
   "filters": {
+    "title": "Filters",
+    "filter": "Filter",
+    "reset": "Reset",
     "advanced": "Advanced filters",
     "more": "More filters",
     "active": "Active filters:",
