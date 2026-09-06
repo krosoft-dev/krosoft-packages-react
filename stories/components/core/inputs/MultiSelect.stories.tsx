@@ -294,7 +294,7 @@ export const InDialog: Story = {
           }}
           config={{
             title: "Sélectionner des villes",
-            description: "Le panneau doit s'afficher en entier, par-dessus la boîte de dialogue.",
+            description: "Le panneau doit s'afficher en entier par-dessus la boîte de dialogue, et sa liste doit rester scrollable à la molette (grâce au mode modal).",
             actions: [
               {
                 label: "Fermer",
@@ -307,7 +307,7 @@ export const InDialog: Story = {
           }}
         >
           <MultiSelect
-            options={VILLES}
+            options={NOMBREUSES_OPTIONS}
             selected={selected}
             onToggle={val => {
               setSelected(prev => (prev.includes(val) ? prev.filter(v => v !== val) : [...prev, val]));

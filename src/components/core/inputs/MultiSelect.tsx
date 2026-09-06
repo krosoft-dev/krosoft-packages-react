@@ -39,6 +39,11 @@ interface MultiSelectProps<T extends string = string> extends Omit<React.Compone
   searchable?: boolean;
   searchPlaceholder?: string;
   disabled?: boolean;
+  /**
+   * Panneau rendu en modal (défaut, comme le `Select`). À laisser tel quel dans une boîte de
+   * dialogue : sans ça, le `Dialog` neutralise les clics et le scroll sur le panneau porté dans le portail.
+   */
+  modal?: boolean;
   /** Nombre de libellés affichés dans le trigger (variant `"input"`), le reste est résumé par un compteur `+N`. */
   maxCount?: number;
   className?: string;
@@ -56,6 +61,7 @@ export const MultiSelect = <T extends string = string>({
   searchable = false,
   searchPlaceholder,
   disabled = false,
+  modal = true,
   maxCount,
   className,
   ...triggerProps
@@ -220,7 +226,7 @@ export const MultiSelect = <T extends string = string>({
   );
 
   return (
-    <Popover open={open} onOpenChange={handleOpenChange}>
+    <Popover open={open} onOpenChange={handleOpenChange} modal={modal}>
       <PopoverTrigger asChild>{trigger}</PopoverTrigger>
       <PopoverContent className={cn("p-0", isPill ? "w-72 max-w-[var(--radix-popover-content-available-width)]" : "w-[var(--radix-popover-trigger-width)]")} align="start">
         {/* cmdk pilote la nav clavier (↑/↓ + Entrée pour cocher). `shouldFilter={false}` : on garde

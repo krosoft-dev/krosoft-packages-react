@@ -291,8 +291,8 @@ export const InDialog: Story = {
             setIsOpen(false);
           }}
           config={{
-            title: "Rattacher à un tenant",
-            description: "Le panneau de recherche doit s'afficher en entier, par-dessus la boîte de dialogue.",
+            title: "Rattacher à un pays",
+            description: "Le panneau de recherche doit s'afficher en entier par-dessus la boîte de dialogue, et sa liste doit rester scrollable à la molette (grâce au mode modal).",
             actions: [
               {
                 label: "Fermer",
@@ -306,11 +306,11 @@ export const InDialog: Story = {
         >
           <SingleSelect
             searchable
-            options={TENANTS}
+            options={PAYS}
             value={value}
             onChange={setValue}
-            placeholder="Sélectionner un tenant"
-            searchPlaceholder="Rechercher un tenant..."
+            placeholder="Sélectionner un pays"
+            searchPlaceholder="Rechercher un pays..."
           />
         </AppDialog>
       </div>
