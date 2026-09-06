@@ -355,3 +355,25 @@ export const FilterVsInput: Story = {
     </div>
   ),
 };
+
+// Au-delà de ~40 options, seule la fenêtre visible est montée (le reste est simulé par des cales) :
+// l'ouverture reste rapide même avec des centaines d'entrées. Scroll et recherche restent fluides.
+const BEAUCOUP_D_OPTIONS = Array.from({ length: 400 }, (_, i) => ({ value: `opt-${String(i)}`, label: `Option ${String(i + 1)}` }));
+
+export const Virtualized: Story = {
+  render: () => {
+    const [value, setValue] = useState<string | undefined>(undefined);
+    return (
+      <div className="w-72 pb-72">
+        <SingleSelect
+          searchable
+          options={BEAUCOUP_D_OPTIONS}
+          value={value}
+          onChange={setValue}
+          placeholder="400 options"
+          searchPlaceholder="Rechercher..."
+        />
+      </div>
+    );
+  },
+};

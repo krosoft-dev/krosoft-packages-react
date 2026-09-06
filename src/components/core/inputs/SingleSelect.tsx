@@ -5,7 +5,7 @@ import { CheckIcon, ChevronDownIcon, PlusIcon, SearchIcon, XIcon } from "lucide-
 import { Popover, PopoverContent, PopoverTrigger, Select, SelectContent, SelectItem, SelectTrigger, SelectValue, controlFilterWidthClass, controlTriggerClass } from "@/components/ui";
 import { cn } from "@/helpers/tailwind.helper";
 import type { SelectOption } from "@krosoft/core/types";
-import { renderOptionThumbnail } from "./select.helper";
+import { renderOptionThumbnail, useOptionWindow } from "./select.helper";
 
 export interface SingleSelectOption extends SelectOption {
   /** Texte secondaire affiché en gris à côté du libellé (ex. le groupe d'un tenant). Inclus dans la recherche (mode `searchable`). */
@@ -76,6 +76,23 @@ export const SingleSelect = ({
   const selectedOption = useMemo(() => (hasValue ? options.find(o => o.value === value) : undefined), [hasValue, options, value]);
   const selectedLabel = hasValue ? (selectedOption?.label ?? value) : undefined;
 
+  // Filtrage manuel (au lieu du filtre interne de cmdk) : indispensable au fenêtrage des longues listes.
+  // Calculé avant le retour anticipé du mode simple pour respecter l'ordre des hooks.
+  const trimmedSearch = search.trim();
+  const filteredOptions = useMemo(() => {
+    if (trimmedSearch === "") {
+      return options;
+    }
+    const q = trimmedSearch.toLowerCase();
+    return options.filter(o => `${o.label} ${o.description ?? ""}`.toLowerCase().includes(q));
+  }, [options, trimmedSearch]);
+  const { listRef, virtualized, startIndex, endIndex, padTop, padBottom, onScroll, resetScroll } = useOptionWindow(
+    open,
+    filteredOptions.length,
+    options.some(o => o.imageUrl !== undefined),
+  );
+  const visibleOptions = virtualized ? filteredOptions.slice(startIndex, endIndex) : filteredOptions;
+
   // --- Mode simple : select Radix (pas de recherche) ---
   if (!searchable) {
     return (
@@ -112,14 +129,21 @@ export const SingleSelect = ({
   }
 
   // --- Mode searchable : combobox cmdk (nav clavier ↑/↓ + Entrée) restylé pour matcher MultiSelect ---
-  const trimmedSearch = search.trim();
   const canCreate = onCreate !== undefined && trimmedSearch !== "" && !options.some(o => o.label.toLowerCase() === trimmedSearch.toLowerCase());
 
   const handleOpenChange = (isOpen: boolean): void => {
     setOpen(isOpen);
-    if (!isOpen) {
+    if (isOpen) {
+      resetScroll();
+    } else {
       setSearch("");
     }
+  };
+
+  // Filtrer remet la fenêtre en haut : la liste change de contenu, l'ancien scroll n'a plus de sens.
+  const handleSearchChange = (next: string): void => {
+    setSearch(next);
+    resetScroll();
   };
 
   const handleSelect = (optionValue: string): void => {
@@ -186,30 +210,35 @@ export const SingleSelect = ({
       <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
         {/* Primitives cmdk (nav clavier) restylées à l'identique de MultiSelect. Le filtrage ne porte
             que sur les mots-clés : la `value` d'un item est son identifiant (souvent un GUID). */}
-        <CommandPrimitive
-          className="flex flex-col"
-          filter={(_, searchValue, keywords) => {
-            const haystack = (keywords ?? []).join(" ").toLowerCase();
-            return haystack.includes(searchValue.trim().toLowerCase()) ? 1 : 0;
-          }}
-        >
+        {/* `shouldFilter={false}` : filtrage manuel (`filteredOptions`), nécessaire au fenêtrage. */}
+        <CommandPrimitive shouldFilter={false} className="flex flex-col">
           <div className="border-b border-border p-2">
             <div className="relative">
               <SearchIcon className="absolute left-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
               <CommandPrimitive.Input
                 value={search}
-                onValueChange={setSearch}
+                onValueChange={handleSearchChange}
                 placeholder={searchPlaceholder ?? t("search.placeholder")}
                 className="w-full rounded-control bg-muted/50 py-1.5 pl-7 pr-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-1 focus:ring-ring"
                 autoFocus
               />
             </div>
           </div>
-          <CommandPrimitive.List className="flex flex-col gap-0.5 max-h-56 overflow-y-auto overflow-x-hidden p-1.5 scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-muted-foreground/20 scrollbar-track-transparent [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-muted-foreground/20 [&::-webkit-scrollbar-track]:bg-transparent">
-            {!canCreate && <CommandPrimitive.Empty className="px-2 py-3 text-center text-xs text-muted-foreground">{emptyLabel ?? t("states.noResult")}</CommandPrimitive.Empty>}
+          <CommandPrimitive.List
+            ref={listRef}
+            onScroll={onScroll}
+            className={cn(
+              "flex flex-col max-h-56 overflow-y-auto overflow-x-hidden p-1.5 scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-muted-foreground/20 scrollbar-track-transparent [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-muted-foreground/20 [&::-webkit-scrollbar-track]:bg-transparent",
+              !virtualized && "gap-0.5",
+            )}
+          >
+            {filteredOptions.length === 0 && !canCreate && (
+              <div className="px-2 py-3 text-center text-xs text-muted-foreground">{emptyLabel ?? t("states.noResult")}</div>
+            )}
+            {padTop > 0 && <div aria-hidden style={{ height: padTop }} />}
             {/* cmdk pose toujours l'attribut `data-disabled` (`"true"` ou `"false"`) : cibler la valeur,
                 sinon le style grisé s'appliquerait à tous les items. */}
-            {options.map(option => (
+            {visibleOptions.map(option => (
               <CommandPrimitive.Item
                 key={option.value}
                 value={option.value}
@@ -231,6 +260,7 @@ export const SingleSelect = ({
                 <CheckIcon className={cn("ml-auto size-4 shrink-0", value === option.value ? "opacity-100" : "opacity-0")} />
               </CommandPrimitive.Item>
             ))}
+            {padBottom > 0 && <div aria-hidden style={{ height: padBottom }} />}
             {canCreate && (
               <CommandPrimitive.Item
                 forceMount

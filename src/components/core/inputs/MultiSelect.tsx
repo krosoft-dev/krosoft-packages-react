@@ -1,11 +1,11 @@
 import { useKrosoftTranslation } from "@/i18n";
-import React, { useState, useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { Command as CommandPrimitive } from "cmdk";
-import { Checkbox, controlBaseClass, controlFilterWidthClass, controlTriggerClass, Popover, PopoverContent, PopoverTrigger } from "@/components/ui";
+import { Badge, Checkbox, controlBaseClass, controlFilterWidthClass, controlTriggerClass, Popover, PopoverContent, PopoverTrigger } from "@/components/ui";
 import { ChevronDownIcon, SearchIcon, XIcon } from "lucide-react";
 import { cn } from "@/helpers/tailwind.helper";
 import type { SelectOption } from "@krosoft/core/types";
-import { renderOptionThumbnail } from "./select.helper";
+import { renderOptionThumbnail, useOptionWindow } from "./select.helper";
 
 export interface MultiSelectOption extends SelectOption {
   /** Option visible mais non basculable : grisée, ignorée par le clic, la navigation clavier et les actions globales. */
@@ -44,6 +44,8 @@ interface MultiSelectProps<T extends string = string> extends Omit<React.Compone
    * dialogue : sans ça, le `Dialog` neutralise les clics et le scroll sur le panneau porté dans le portail.
    */
   modal?: boolean;
+  /** Affiche les options sélectionnées en pastilles retirables sous le contrôle (`variant="input"`). */
+  chips?: boolean;
   /** Nombre de libellés affichés dans le trigger (variant `"input"`), le reste est résumé par un compteur `+N`. */
   maxCount?: number;
   className?: string;
@@ -62,6 +64,7 @@ export const MultiSelect = <T extends string = string>({
   searchPlaceholder,
   disabled = false,
   modal = true,
+  chips = false,
   maxCount,
   className,
   ...triggerProps
@@ -100,11 +103,26 @@ export const MultiSelect = <T extends string = string>({
   const visibleLabels = maxCount !== undefined && maxCount > 0 ? selectedLabels.slice(0, maxCount) : selectedLabels;
   const hiddenCount = selectedLabels.length - visibleLabels.length;
 
+  const { listRef, virtualized, startIndex, endIndex, padTop, padBottom, onScroll, resetScroll } = useOptionWindow(
+    open,
+    filteredOptions.length,
+    options.some(o => o.imageUrl !== undefined),
+  );
+  const visibleOptions = virtualized ? filteredOptions.slice(startIndex, endIndex) : filteredOptions;
+
   const handleOpenChange = (isOpen: boolean): void => {
     setOpen(isOpen);
-    if (!isOpen) {
+    if (isOpen) {
+      resetScroll();
+    } else {
       setQuery("");
     }
+  };
+
+  // Filtrer remet la fenêtre en haut : la liste change de contenu, l'ancien scroll n'a plus de sens.
+  const handleQueryChange = (value: string): void => {
+    setQuery(value);
+    resetScroll();
   };
 
   // Vide la sélection en respectant l'API disponible : `onClear` si fourni, sinon `onSelectAll([])`,
@@ -162,6 +180,8 @@ export const MultiSelect = <T extends string = string>({
       });
     }
   };
+
+  const selectedOptions = useMemo(() => selected.map(value => ({ value, option: options.find(o => o.value === value) })), [options, selected]);
 
   const trigger = isPill ? (
     <button
@@ -225,7 +245,34 @@ export const MultiSelect = <T extends string = string>({
     </button>
   );
 
+  const chipsRow =
+    chips && selectedOptions.length > 0 ? (
+      <div className="mt-2 flex flex-wrap gap-1.5">
+        {selectedOptions.map(({ value, option }) => {
+          const locked = option?.disabled === true;
+          return (
+            <Badge key={value} variant="secondary" className="flex items-center gap-1 border border-primary/20 bg-primary/10 py-0.5 pl-2 pr-1 text-primary">
+              <span className="max-w-[16rem] truncate">{option?.label ?? value}</span>
+              {!locked && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    onToggle(value);
+                  }}
+                  className="rounded-full p-0.5 hover:bg-primary/20"
+                  aria-label={t("filters.remove")}
+                >
+                  <XIcon className="size-3" />
+                </button>
+              )}
+            </Badge>
+          );
+        })}
+      </div>
+    ) : null;
+
   return (
+    <>
     <Popover open={open} onOpenChange={handleOpenChange} modal={modal}>
       <PopoverTrigger asChild>{trigger}</PopoverTrigger>
       <PopoverContent className={cn("p-0", isPill ? "w-72 max-w-[var(--radix-popover-content-available-width)]" : "w-[var(--radix-popover-trigger-width)]")} align="start">
@@ -239,7 +286,7 @@ export const MultiSelect = <T extends string = string>({
                 <SearchIcon className="absolute left-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
                 <CommandPrimitive.Input
                   value={query}
-                  onValueChange={setQuery}
+                  onValueChange={handleQueryChange}
                   placeholder={searchPlaceholder ?? t("search.placeholder")}
                   className="w-full rounded-control bg-muted/50 py-1.5 pl-7 pr-2 text-sm text-foreground placeholder:text-muted-foreground outline-none focus:ring-1 focus:ring-ring"
                   autoFocus
@@ -250,11 +297,19 @@ export const MultiSelect = <T extends string = string>({
             // Sans recherche visible, un input caché sert d'ancre de focus pour que cmdk capte les flèches.
             <CommandPrimitive.Input autoFocus tabIndex={-1} className="sr-only" />
           )}
-          <CommandPrimitive.List className="flex flex-col gap-0.5 max-h-56 overflow-y-auto overflow-x-hidden p-1.5 scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-muted-foreground/20 scrollbar-track-transparent [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-muted-foreground/20 [&::-webkit-scrollbar-track]:bg-transparent">
+          <CommandPrimitive.List
+            ref={listRef}
+            onScroll={onScroll}
+            className={cn(
+              "flex flex-col max-h-56 overflow-y-auto overflow-x-hidden p-1.5 scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-muted-foreground/20 scrollbar-track-transparent [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-muted-foreground/20 [&::-webkit-scrollbar-track]:bg-transparent",
+              !virtualized && "gap-0.5",
+            )}
+          >
             {filteredOptions.length === 0 && <p className="px-2 py-3 text-center text-xs text-muted-foreground">{t("states.noResult")}</p>}
+            {padTop > 0 && <div aria-hidden style={{ height: padTop }} />}
             {/* cmdk pose toujours l'attribut `data-disabled` (`"true"` ou `"false"`) : cibler la valeur,
                 sinon le style grisé s'appliquerait à tous les items. */}
-            {filteredOptions.map(opt => (
+            {visibleOptions.map(opt => (
               <CommandPrimitive.Item
                 key={opt.value}
                 value={opt.value}
@@ -276,6 +331,7 @@ export const MultiSelect = <T extends string = string>({
                 </span>
               </CommandPrimitive.Item>
             ))}
+            {padBottom > 0 && <div aria-hidden style={{ height: padBottom }} />}
           </CommandPrimitive.List>
         </CommandPrimitive>
         {/* Masqué quand plus rien n'est basculable : le bouton serait sans effet. */}
@@ -292,5 +348,7 @@ export const MultiSelect = <T extends string = string>({
         )}
       </PopoverContent>
     </Popover>
+    {chipsRow}
+    </>
   );
 };

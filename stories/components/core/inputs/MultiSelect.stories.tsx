@@ -83,8 +83,12 @@ export const WithImages: Story = {
           searchable
           options={PROJETS}
           selected={selected}
-          onToggle={val => setSelected(prev => (prev.includes(val) ? prev.filter(v => v !== val) : [...prev, val]))}
-          onClear={() => setSelected([])}
+          onToggle={val => {
+            setSelected(prev => (prev.includes(val) ? prev.filter(v => v !== val) : [...prev, val]));
+          }}
+          onClear={() => {
+            setSelected([]);
+          }}
           placeholder="Sélectionner des projets"
           searchPlaceholder="Rechercher un projet..."
         />
@@ -192,6 +196,61 @@ export const WithMaxCount: Story = {
     options: NOMBREUSES_OPTIONS,
     selected: ["paris", "lyon", "marseille", "bordeaux", "nice"],
     maxCount: 2,
+  },
+};
+
+// Les sélections s'affichent en pastilles retirables sous le contrôle (comme les filtres actifs).
+export const WithChips: Story = {
+  render: () => {
+    const [selected, setSelected] = useState<string[]>(["paris", "lyon", "nice"]);
+    return (
+      <div className="w-72 pb-72">
+        <MultiSelect
+          chips
+          searchable
+          options={NOMBREUSES_OPTIONS}
+          selected={selected}
+          onToggle={val => {
+            setSelected(prev => (prev.includes(val) ? prev.filter(v => v !== val) : [...prev, val]));
+          }}
+          onClear={() => {
+            setSelected([]);
+          }}
+          onSelectAll={setSelected}
+          placeholder="Sélectionner des villes"
+          searchPlaceholder="Rechercher une ville..."
+        />
+      </div>
+    );
+  },
+};
+
+// Au-delà de ~40 options, seule la fenêtre visible est montée (le reste est simulé par des cales) :
+// l'ouverture reste rapide même avec des centaines d'entrées. Scroll et recherche restent fluides.
+const BEAUCOUP_D_OPTIONS = Array.from({ length: 400 }, (_, i) => ({ value: `opt-${String(i)}`, label: `Option ${String(i + 1)}` }));
+
+export const Virtualized: Story = {
+  render: () => {
+    const [selected, setSelected] = useState<string[]>([]);
+    return (
+      <div className="w-72 pb-72">
+        <MultiSelect
+          chips
+          searchable
+          options={BEAUCOUP_D_OPTIONS}
+          selected={selected}
+          onToggle={val => {
+            setSelected(prev => (prev.includes(val) ? prev.filter(v => v !== val) : [...prev, val]));
+          }}
+          onClear={() => {
+            setSelected([]);
+          }}
+          onSelectAll={setSelected}
+          placeholder="400 options"
+          searchPlaceholder="Rechercher..."
+        />
+      </div>
+    );
   },
 };
 
