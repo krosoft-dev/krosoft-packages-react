@@ -1,6 +1,6 @@
 import { useKrosoftTranslation } from "@/i18n";
 import * as React from "react";
-import { LoaderCircleIcon, SearchIcon } from "lucide-react";
+import { ClockIcon, LoaderCircleIcon, SearchIcon, XIcon } from "lucide-react";
 import { cn } from "@/helpers/tailwind.helper";
 import { Button } from "../../ui/button";
 import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "../../ui/command";
@@ -48,6 +48,21 @@ export interface GlobalSearchProps {
   shortcut?: boolean;
   shortcutLabel?: string;
 
+  /**
+   * Termes déjà recherchés, proposés tant que la saisie est vide — la plus récente en premier.
+   * La persistance et l'ordre restent à la charge de l'appelant : le composant ne fait que
+   * les afficher. Masqué dès qu'une saisie est en cours, pour laisser place aux résultats.
+   */
+  history?: string[];
+  /** Clic sur une entrée d'historique : à l'appelant de relancer la recherche sur ce terme. */
+  onHistorySelect?: (term: string) => void;
+  /** Sans ce callback, aucune entrée d'historique n'affiche sa croix de suppression. */
+  onHistoryRemove?: (term: string) => void;
+  /** Intitulé du groupe d'historique. */
+  historyHeading?: string;
+  /** Libellé accessible de la croix qui retire une entrée de l'historique. */
+  removeFromHistoryLabel?: string;
+
   placeholder?: string;
   emptyLabel?: string;
   loadingLabel?: string;
@@ -70,6 +85,10 @@ export interface GlobalSearchProps {
  * Le filtrage interne de cmdk est désactivé (`shouldFilter={false}`) : les résultats
  * arrivent déjà filtrés en amont — côté serveur pour les données, sans accents pour
  * les pages — et cmdk en masquerait une partie en refiltrant sur la saisie brute.
+ *
+ * Tant que la saisie est vide, l'historique (`history`) est proposé : chaque terme
+ * relance une recherche (`onHistorySelect`) et peut être retiré via sa croix
+ * (`onHistoryRemove`). Sa persistance reste à la charge de l'appelant.
  */
 export const GlobalSearch = ({
   groups,
@@ -83,6 +102,11 @@ export const GlobalSearch = ({
   triggerLabel,
   shortcut = true,
   shortcutLabel = "Ctrl+K",
+  history,
+  onHistorySelect,
+  onHistoryRemove,
+  historyHeading,
+  removeFromHistoryLabel,
   placeholder,
   emptyLabel,
   loadingLabel,
@@ -129,6 +153,9 @@ export const GlobalSearch = ({
   };
 
   const hasResults = groups.some(group => group.items.length > 0);
+  // L'historique n'a de sens qu'au démarrage de la recherche : dès qu'on saisit, place aux résultats.
+  const historyEntries = history ?? [];
+  const showHistory = search.trim() === "" && historyEntries.length > 0;
 
   return (
     <>
@@ -164,7 +191,51 @@ export const GlobalSearch = ({
             </div>
           )}
 
-          {!hasResults && !loading && <CommandEmpty>{emptyLabel ?? t("states.noResultDot")}</CommandEmpty>}
+          {!hasResults && !showHistory && !loading && <CommandEmpty>{emptyLabel ?? t("states.noResultDot")}</CommandEmpty>}
+
+          {showHistory && (
+            <CommandGroup heading={historyHeading ?? t("search.historyTitle")}>
+              {historyEntries.map(term => (
+                <CommandItem
+                  key={`history-${term}`}
+                  value={`history-${term}`}
+                  className="gap-3 px-2 py-2"
+                  onSelect={() => {
+                    onHistorySelect?.(term);
+                  }}
+                >
+                  <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+                    <ClockIcon className="size-4" />
+                  </span>
+
+                  <span className="min-w-0 flex-1 truncate font-medium">{term}</span>
+
+                  {onHistoryRemove && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="size-7 shrink-0 text-muted-foreground hover:text-destructive"
+                      aria-label={removeFromHistoryLabel ?? t("search.removeFromHistory")}
+                      title={removeFromHistoryLabel ?? t("search.removeFromHistory")}
+                      // cmdk sélectionne l'item au clic : on stoppe la propagation pour ne retirer
+                      // que l'entrée, et on évite que le `pointerdown` ne vole le focus de la saisie.
+                      onPointerDown={event => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                      }}
+                      onClick={event => {
+                        event.stopPropagation();
+                        onHistoryRemove(term);
+                      }}
+                    >
+                      <XIcon className="size-4" />
+                    </Button>
+                  )}
+                </CommandItem>
+              ))}
+            </CommandGroup>
+          )}
 
           {groups.map(group =>
             group.items.length === 0 ? null : (

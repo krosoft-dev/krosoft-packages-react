@@ -27,7 +27,9 @@
     "globalDescription": "Rechercher une page ou une donnée dans l'application.",
     "commandTitle": "Palette de commandes",
     "commandDescription": "Rechercher une commande à exécuter.",
-    "loading": "Recherche..."
+    "loading": "Recherche...",
+    "historyTitle": "Recherches récentes",
+    "removeFromHistory": "Retirer de l'historique"
   },
   "notifications": {
     "trigger": "Notifications",

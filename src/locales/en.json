@@ -27,7 +27,9 @@
     "globalDescription": "Search for a page or a record across the application.",
     "commandTitle": "Command palette",
     "commandDescription": "Search for a command to run.",
-    "loading": "Searching..."
+    "loading": "Searching...",
+    "historyTitle": "Recent searches",
+    "removeFromHistory": "Remove from history"
   },
   "notifications": {
     "trigger": "Notifications",

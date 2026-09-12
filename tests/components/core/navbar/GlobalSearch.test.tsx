@@ -164,6 +164,49 @@ describe("GlobalSearch", () => {
     expect(screen.queryByText(hint)).toBeNull();
   });
 
+  it("affiche l'historique quand la saisie est vide et relance la recherche au clic", () => {
+    const onHistorySelect = vi.fn();
+    renderGlobalSearch({ open: true, search: "", history: ["lego", "facture"], onHistorySelect });
+
+    expect(screen.queryByText("Recherches récentes")).not.toBeNull();
+    expect(screen.queryByText("lego")).not.toBeNull();
+
+    fireEvent.click(screen.getByText("facture"));
+
+    expect(onHistorySelect).toHaveBeenCalledWith("facture");
+  });
+
+  it("masque l'historique dès qu'une saisie est en cours", () => {
+    renderGlobalSearch({ open: true, search: "fac", history: ["lego", "facture"] });
+
+    expect(screen.queryByText("Recherches récentes")).toBeNull();
+    expect(screen.queryByText("lego")).toBeNull();
+  });
+
+  it("retire une entrée via sa croix sans déclencher la sélection", () => {
+    const onHistorySelect = vi.fn();
+    const onHistoryRemove = vi.fn();
+    renderGlobalSearch({ open: true, search: "", history: ["lego"], onHistorySelect, onHistoryRemove });
+
+    fireEvent.click(screen.getByRole("button", { name: "Retirer de l'historique" }));
+
+    expect(onHistoryRemove).toHaveBeenCalledWith("lego");
+    expect(onHistorySelect).not.toHaveBeenCalled();
+  });
+
+  it("n'affiche pas de croix sans callback de suppression", () => {
+    renderGlobalSearch({ open: true, search: "", history: ["lego"], onHistorySelect: vi.fn() });
+
+    expect(screen.queryByRole("button", { name: "Retirer de l'historique" })).toBeNull();
+  });
+
+  it("préfère l'historique à l'état vide quand aucun groupe n'a de résultat", () => {
+    renderGlobalSearch({ open: true, search: "", groups: [{ heading: "Pages", items: [] }], history: ["lego"], onHistorySelect: vi.fn() });
+
+    expect(screen.queryByText("Aucun résultat.")).toBeNull();
+    expect(screen.queryByText("lego")).not.toBeNull();
+  });
+
   it("accepte des libellés personnalisés", () => {
     const { rerender } = renderGlobalSearch({ groups: [], triggerLabel: "Search", placeholder: "Search...", emptyLabel: "No result." });
 

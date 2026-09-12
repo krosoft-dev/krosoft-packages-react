@@ -142,3 +142,52 @@ export const CustomLabels: Story = {
     description: "Search a page or a record across the app.",
   },
 };
+
+/**
+ * Historique des recherches : proposé tant que la saisie est vide, chaque terme relance la
+ * recherche et peut être retiré via sa croix. La persistance reste à la charge de l'application
+ * (ici un simple état local).
+ */
+const HistoryGlobalSearch = (args: Partial<GlobalSearchProps>): React.ReactElement => {
+  const [search, setSearch] = React.useState("");
+  const [history, setHistory] = React.useState<string[]>(["lego", "facture acme", "clients"]);
+
+  const groups: GlobalSearchGroup[] = [
+    { heading: "Pages", items: pages.filter(page => matches(page, search)) },
+    { heading: "Documents", items: search.trim() === "" ? [] : documents.filter(document => matches(document, search)) },
+  ];
+
+  const rememberSearch = (term: string): void => {
+    const trimmed = term.trim();
+    if (!trimmed) return;
+    setHistory(prev => [trimmed, ...prev.filter(entry => entry.toLowerCase() !== trimmed.toLowerCase())].slice(0, 8));
+  };
+
+  return (
+    <div className="flex w-[28rem] flex-col items-center gap-4 rounded-surface border border-border bg-card p-6 text-card-foreground">
+      <div className="flex w-full items-center justify-between">
+        <span className="text-sm text-muted-foreground">Header de l&apos;application</span>
+        <GlobalSearch
+          {...args}
+          groups={groups}
+          search={search}
+          onSearch={setSearch}
+          onSelect={() => {
+            rememberSearch(search);
+          }}
+          history={history}
+          onHistorySelect={setSearch}
+          onHistoryRemove={term => {
+            setHistory(prev => prev.filter(entry => entry !== term));
+          }}
+        />
+      </div>
+
+      <p className="text-sm text-muted-foreground">Ouvrez la palette : les recherches récentes s&apos;affichent tant que le champ est vide.</p>
+    </div>
+  );
+};
+
+export const WithHistory: Story = {
+  render: args => <HistoryGlobalSearch {...args} />,
+};
