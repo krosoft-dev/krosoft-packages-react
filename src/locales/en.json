@@ -78,6 +78,11 @@
     "invalidType": "Only {{types}} files are accepted",
     "tooLarge": "The file must not exceed {{size}}MB"
   },
+  "dropzone": {
+    "title": "Drag and drop your files here",
+    "hint": "or click to browse",
+    "uploading": "Uploading…"
+  },
   "table": {
     "previousPage": "Previous page",
     "nextPage": "Next page",

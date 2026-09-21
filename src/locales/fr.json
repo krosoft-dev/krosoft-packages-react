@@ -78,6 +78,11 @@
     "invalidType": "Seuls les fichiers {{types}} sont acceptés",
     "tooLarge": "Le fichier ne doit pas dépasser {{size}}MB"
   },
+  "dropzone": {
+    "title": "Glissez-déposez vos fichiers ici",
+    "hint": "ou cliquez pour parcourir",
+    "uploading": "Envoi en cours…"
+  },
   "table": {
     "previousPage": "Page précédente",
     "nextPage": "Page suivante",

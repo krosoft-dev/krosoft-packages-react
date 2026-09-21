@@ -1,4 +1,5 @@
 export { ImageInput } from "./ImageInput";
+export { FileDropzone } from "./FileDropzone";
 export { SearchInput } from "./SearchInput";
 export { DatePicker } from "./DatePicker";
 export { DateRangePicker } from "./DateRangePicker";
