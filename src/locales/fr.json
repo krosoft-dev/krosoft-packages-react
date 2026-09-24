@@ -74,7 +74,8 @@
   },
   "image": {
     "empty": "Aucune image",
-    "upload": "Cliquer pour uploader",
+    "upload": "Cliquer ou glisser une image",
+    "drop": "Déposer l'image ici",
     "invalidType": "Seuls les fichiers {{types}} sont acceptés",
     "tooLarge": "Le fichier ne doit pas dépasser {{size}}MB"
   },
