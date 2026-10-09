@@ -3,9 +3,12 @@ import { cn } from "@/helpers/tailwind.helper";
 import { useMobile } from "@/hooks/ui/useMobile";
 import { ChartDatum } from "@/types/ChartDatum";
 import * as React from "react";
-import { Pie, PieChart as RechartsPieChart, type PieLabelRenderProps } from "recharts";
+import { Pie, PieChart as RechartsPieChart, Sector, type PieLabelRenderProps, type PieSectorShapeProps } from "recharts";
 import { getChartColor } from "./chartColors";
 import { buildTooltipValueFormatter } from "./chartTooltip.helper";
+
+/** Débord, en pixels, de la part survolée quand le graphe est cliquable. */
+const ACTIVE_SECTOR_OFFSET = 6;
 
 export interface PieChartProps {
   data: ChartDatum[];
@@ -74,6 +77,10 @@ export const PieChart = ({
           // rend le graphe illisible sur un tableau de bord qui se rafraîchit.
           isAnimationActive={false}
           className={cn("stroke-background", onSelect && "cursor-pointer")}
+          // Une part cliquable ressort au survol pour signaler le lien.
+          shape={(props: PieSectorShapeProps) => (
+            <Sector {...props} outerRadius={onSelect && props.isActive ? props.outerRadius + ACTIVE_SECTOR_OFFSET : props.outerRadius} />
+          )}
           onClick={
             onSelect
               ? (_, index) => {

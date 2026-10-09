@@ -51,3 +51,13 @@ export const WithCurrency: Story = {
     valueFormatter: value => `${value.toLocaleString("fr-FR")} €`,
   },
 };
+
+/** La part survolée déborde pour signaler qu'elle est cliquable. */
+export const Clickable: Story = {
+  args: {
+    onSelect: datum => {
+      // eslint-disable-next-line no-alert
+      alert(`${datum.name} : ${String(datum.value)}`);
+    },
+  },
+};

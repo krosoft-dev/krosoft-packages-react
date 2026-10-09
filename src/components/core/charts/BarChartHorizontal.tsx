@@ -2,8 +2,11 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/
 import { cn } from "@/helpers/tailwind.helper";
 import { ChartDatum } from "@/types/ChartDatum";
 import * as React from "react";
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
+import { Bar, BarChart, CartesianGrid, Rectangle, XAxis, YAxis, type BarShapeProps } from "recharts";
 import { buildTooltipValueFormatter } from "./chartTooltip.helper";
+
+/** Opacité des barres non survolées quand le graphe est cliquable. */
+const DIMMED_BAR_OPACITY = 0.35;
 
 export interface BarChartHorizontalProps {
   data: ChartDatum[];
@@ -38,6 +41,7 @@ export const BarChartHorizontal = ({
   onSelect,
   className,
 }: BarChartHorizontalProps): React.JSX.Element => {
+  const [hoveredIndex, setHoveredIndex] = React.useState<number | null>(null);
   const config = React.useMemo(() => ({ value: { label, color } }), [label, color]);
   const tooltipFormatter = React.useMemo(() => buildTooltipValueFormatter(valueFormatter, label), [valueFormatter, label]);
   // `fill` porté par la donnée : recharts l'étale sur le rectangle après les
@@ -75,6 +79,24 @@ export const BarChartHorizontal = ({
           fill="var(--color-value)"
           radius={[0, 4, 4, 0]}
           className={onSelect ? "cursor-pointer" : undefined}
+          // Une barre cliquable ressort au survol, les autres s'estompant, pour signaler le lien.
+          onMouseEnter={
+            onSelect
+              ? (_, index) => {
+                  setHoveredIndex(index);
+                }
+              : undefined
+          }
+          onMouseLeave={
+            onSelect
+              ? () => {
+                  setHoveredIndex(null);
+                }
+              : undefined
+          }
+          shape={(props: BarShapeProps) => (
+            <Rectangle {...props} fillOpacity={hoveredIndex !== null && hoveredIndex !== props.index ? DIMMED_BAR_OPACITY : 1} />
+          )}
           onClick={
             onSelect
               ? (_, index) => {

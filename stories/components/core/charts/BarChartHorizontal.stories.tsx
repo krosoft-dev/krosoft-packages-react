@@ -43,6 +43,7 @@ export const WithoutTruncation: Story = {
   args: { maxLabelLength: 0, categoryWidth: 200 },
 };
 
+/** Au survol, les autres barres s'estompent pour signaler que la barre pointée est cliquable. */
 export const Clickable: Story = {
   args: {
     onSelect: datum => {
