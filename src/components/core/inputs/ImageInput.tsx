@@ -3,7 +3,7 @@ import { Button } from "@/components/ui";
 import { useNotifications } from "@/hooks/ui/useNotifications";
 import { cn } from "@/helpers/tailwind.helper";
 import { ImageIcon, UploadIcon, XIcon } from "lucide-react";
-import { forwardRef, useRef } from "react";
+import { forwardRef, useRef, useState } from "react";
 
 interface ImageInputProps {
   value?: string;
@@ -20,31 +20,57 @@ export const ImageInput = forwardRef<HTMLDivElement, ImageInputProps>(
     const { t } = useKrosoftTranslation();
     const { showError } = useNotifications();
     const inputRef = useRef<HTMLInputElement>(null);
+    const [dragOver, setDragOver] = useState(false);
 
-    const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0];
-      if (!file) return;
-
+    const selectFile = (file: File): void => {
       // Validation du type MIME
       const acceptedTypes = accept.split(",").map(t => t.trim());
       if (!acceptedTypes.includes(file.type)) {
         showError(t("states.errorTitle"), t("image.invalidType", { types: hint }));
-        if (inputRef.current) inputRef.current.value = "";
         return;
       }
 
       // Validation de la taille
       if (file.size > maxSizeMB * 1024 * 1024) {
         showError(t("states.errorTitle"), t("image.tooLarge", { size: maxSizeMB }));
-        if (inputRef.current) inputRef.current.value = "";
         return;
       }
 
       onChange(file);
-      if (inputRef.current) inputRef.current.value = "";
     };
 
-    const handleRemove = () => {
+    const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>): void => {
+      const file = e.target.files?.[0];
+      if (file) {
+        selectFile(file);
+      }
+      if (inputRef.current) {
+        inputRef.current.value = "";
+      }
+    };
+
+    // preventDefault sur dragover est obligatoire pour que le drop soit accepté,
+    // sinon le navigateur ouvre le fichier dans un nouvel onglet.
+    const handleDragOver = (e: React.DragEvent<HTMLLabelElement>): void => {
+      e.preventDefault();
+      setDragOver(true);
+    };
+
+    const handleDragLeave = (e: React.DragEvent<HTMLLabelElement>): void => {
+      e.preventDefault();
+      setDragOver(false);
+    };
+
+    const handleDrop = (e: React.DragEvent<HTMLLabelElement>): void => {
+      e.preventDefault();
+      setDragOver(false);
+      const file = e.dataTransfer.files?.[0];
+      if (file) {
+        selectFile(file);
+      }
+    };
+
+    const handleRemove = (): void => {
       onChange(null);
     };
 
@@ -66,14 +92,19 @@ export const ImageInput = forwardRef<HTMLDivElement, ImageInputProps>(
           </div>
         ) : (
           <label
+            data-testid="image-input-dropzone"
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
             className={cn(
               "flex flex-col items-center justify-center w-full h-32",
-              "border-2 border-dashed border-border rounded-surface",
+              "border-2 border-dashed rounded-surface",
               "cursor-pointer hover:bg-muted/50 transition-colors",
+              dragOver ? "border-primary bg-primary/10" : "border-border",
             )}
           >
             <UploadIcon className="h-8 w-8 text-muted-foreground mb-2" />
-            <span className="text-sm text-muted-foreground">{t("image.upload")}</span>
+            <span className="text-sm text-muted-foreground">{t(dragOver ? "image.drop" : "image.upload")}</span>
             <span className="text-xs text-muted-foreground mt-1">
               {hint} (max {maxSizeMB}MB)
             </span>
