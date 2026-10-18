@@ -7,3 +7,4 @@ export * from "./FiltersContainer";
 export * from "./FiltersMobileDrawer";
 export * from "./TableFilter";
 export * from "./ConditionFilter";
+export * from "./ConditionFilterGroup";

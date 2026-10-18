@@ -73,7 +73,8 @@
       "operator": "Operator",
       "value": "Value",
       "apply": "Apply",
-      "clear": "Remove filter"
+      "clear": "Remove filter",
+      "add": "Condition"
     }
   },
   "form": {
