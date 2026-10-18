@@ -65,7 +65,16 @@
     "deselectAll": "Tout désélectionner",
     "remove": "Retirer",
     "yes": "Oui",
-    "no": "Non"
+    "no": "Non",
+    "condition": {
+      "label": "Condition",
+      "field": "Champ",
+      "selectField": "Choisir un champ...",
+      "operator": "Opérateur",
+      "value": "Valeur",
+      "apply": "Appliquer",
+      "clear": "Retirer le filtre"
+    }
   },
   "form": {
     "validationTitle": "Erreur de validation",

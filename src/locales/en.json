@@ -65,7 +65,16 @@
     "deselectAll": "Deselect all",
     "remove": "Remove",
     "yes": "Yes",
-    "no": "No"
+    "no": "No",
+    "condition": {
+      "label": "Condition",
+      "field": "Field",
+      "selectField": "Choose a field...",
+      "operator": "Operator",
+      "value": "Value",
+      "apply": "Apply",
+      "clear": "Remove filter"
+    }
   },
   "form": {
     "validationTitle": "Validation error",
