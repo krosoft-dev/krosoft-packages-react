@@ -98,8 +98,7 @@ export function TablePagination({
                 <Button
                   key={page}
                   variant={page === currentPage ? "default" : "ghost"}
-                  size="icon"
-                  className="h-8 w-8 rounded-control text-sm"
+                  className="h-8 min-w-8 px-2 rounded-control text-sm tabular-nums"
                   onClick={() => {
                     setCurrentPage(page);
                   }}
