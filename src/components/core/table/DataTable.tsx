@@ -51,6 +51,7 @@ export function DataTable<T>({ data, isLoading = false, error = null, config, se
     handleDragOver,
     handleDrop,
     toggleColumnVisibility,
+    setColumnsVisibility,
     toggleRowSelection,
     toggleSelectAll,
     pageSize,
@@ -65,6 +66,9 @@ export function DataTable<T>({ data, isLoading = false, error = null, config, se
     actions,
     bulkActions,
     columnVisibility,
+    columnVisibilityState: config.columnVisibilityState,
+    onColumnVisibilityChange: config.onColumnVisibilityChange,
+    columnVisibilityStorage: config.columnVisibilityStorage,
     server,
   });
 
@@ -122,7 +126,12 @@ export function DataTable<T>({ data, isLoading = false, error = null, config, se
               fixedActions={fixedActions}
               settingsNode={
                 columnVisibility ? (
-                  <TableSettings columns={columns} visibleColumns={visibleColumns} toggleColumnVisibility={toggleColumnVisibility} />
+                  <TableSettings
+                    columns={columns}
+                    visibleColumns={visibleColumns}
+                    toggleColumnVisibility={toggleColumnVisibility}
+                    setColumnsVisibility={setColumnsVisibility}
+                  />
                 ) : undefined
               }
             />

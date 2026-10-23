@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { DataTable } from "@/components/core/table/DataTable";
-import type { DataTableColumn } from "@/types";
+import type { DataTableColumn, DataTableColumnVisibilityState } from "@/types";
 import React from "react";
 import { createInstance } from "i18next";
 import { I18nextProvider } from "react-i18next";
@@ -16,6 +16,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { buttonVariants } from "@/components/ui/button";
+import { localStorageColumnVisibility } from "@/helpers/table.helper";
 import { PencilIcon, TrashIcon } from "lucide-react";
 
 const meta: Meta<typeof DataTable> = {
@@ -582,6 +583,101 @@ const wideColumns: DataTableColumn<UserData>[] = [
   { key: "location", headerKey: "Location", minWidth: 180, renderCell: () => "Paris, France" },
   { key: "phone", headerKey: "Phone", minWidth: 160, renderCell: () => "+33 1 23 45 67 89" },
 ];
+
+const manyColumns: DataTableColumn<UserData>[] = [
+  ...wideColumns,
+  ...["Department", "Job title", "Hire date", "Contract", "Country", "City", "Postal code", "Language", "Timezone", "Birthday", "Badge number", "Cost center"].map(
+    (label, index): DataTableColumn<UserData> => ({
+      key: `extra${index.toString()}`,
+      headerKey: label,
+      minWidth: 150,
+      // La moitié des colonnes est masquée par défaut, pour tester « Tout » depuis un état partiel.
+      defaultVisible: index % 2 === 0,
+      renderCell: row => `${label} ${row.id}`,
+    }),
+  ),
+];
+
+export const WithManyColumns: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Une vingtaine de colonnes, dont une partie masquée par défaut (`defaultVisible: false`). Le menu des colonnes (roue crantée) propose une recherche, une liste qui défile et les actions **Tout** / **Aucun**, qui ne portent que sur les colonnes trouvées par la recherche.",
+      },
+    },
+  },
+  args: {
+    data: mockData,
+    config: {
+      columns: manyColumns,
+      rowKey: (row: UserData) => row.id,
+      columnVisibility: true,
+    },
+  },
+};
+
+export const WithColumnVisibilityLocalStorage: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Le choix des colonnes est enregistré dans le `localStorage` via `config={{ columnVisibilityStorage: localStorageColumnVisibility("storybook.datatable.colonnes") }}`. Masquez des colonnes puis rechargez la page : elles restent masquées.',
+      },
+    },
+  },
+  args: {
+    data: mockData,
+    config: {
+      columns: manyColumns,
+      rowKey: (row: UserData) => row.id,
+      columnVisibility: true,
+      columnVisibilityStorage: localStorageColumnVisibility("storybook.datatable.colonnes"),
+    },
+  },
+};
+
+const ControlledColumnVisibilityDemo = (): React.JSX.Element => {
+  // Simule des préférences chargées depuis la base : `undefined` le temps du chargement.
+  const [visibility, setVisibility] = React.useState<DataTableColumnVisibilityState | undefined>(undefined);
+
+  React.useEffect(() => {
+    const timeout = window.setTimeout(() => {
+      setVisibility({ email: false, extra1: true });
+    }, 800);
+    return () => {
+      window.clearTimeout(timeout);
+    };
+  }, []);
+
+  return (
+    <div className="space-y-3">
+      <DataTable
+        data={mockData}
+        config={{
+          columns: manyColumns,
+          rowKey: (row: UserData) => row.id,
+          columnVisibility: true,
+          columnVisibilityState: visibility,
+          onColumnVisibilityChange: setVisibility,
+        }}
+      />
+      <pre className="rounded-md bg-muted p-3 text-xs">{visibility === undefined ? "Chargement des préférences…" : JSON.stringify(visibility, null, 2)}</pre>
+    </div>
+  );
+};
+
+export const WithControlledColumnVisibility: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Visibilité contrôlée par l'application (`columnVisibilityState` + `onColumnVisibilityChange`), par exemple pour l'enregistrer en base. Les préférences arrivent après un faux chargement ; l'état transmis à l'application est affiché sous le tableau.",
+      },
+    },
+  },
+  render: () => <ControlledColumnVisibilityDemo />,
+};
 
 export const WithFixedColumns: Story = {
   parameters: {

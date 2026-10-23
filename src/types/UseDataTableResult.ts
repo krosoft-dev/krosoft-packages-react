@@ -30,6 +30,8 @@ export interface UseDataTableResult<T> {
   handleDragOver: (e: React.DragEvent, columnKey: string) => void;
   handleDrop: (e: React.DragEvent, targetColumnKey: string) => void;
   toggleColumnVisibility: (columnKey: string) => void;
+  /** Affiche ou masque plusieurs colonnes d'un coup (actions « Tout » / « Aucun » du menu des colonnes). */
+  setColumnsVisibility: (columnKeys: string[], visible: boolean) => void;
   toggleRowSelection: (row: T) => void;
   toggleSelectAll: () => void;
 }

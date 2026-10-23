@@ -1,6 +1,8 @@
 import React from "react";
 import type { DataTableBulkAction } from "./DataTableBulkAction";
 import type { DataTableColumn } from "./DataTableColumn";
+import type { DataTableColumnVisibilityState } from "./DataTableColumnVisibilityState";
+import type { DataTableColumnVisibilityStorage } from "./DataTableColumnVisibilityStorage";
 import type { DataTableMessages } from "./DataTableMessages";
 import type { DataTableRowAction } from "./DataTableRowAction";
 
@@ -51,6 +53,19 @@ export interface DataTableConfig<T> {
   resizableColumns?: boolean;
   /** Affiche le bouton de gestion de la visibilité des colonnes. */
   columnVisibility?: boolean;
+  /**
+   * Visibilité des colonnes contrôlée par l'application, par exemple pour l'enregistrer en base.
+   * Dès que cette prop est définie, elle fait autorité et `columnVisibilityStorage` est ignoré.
+   * Tant qu'elle vaut `undefined` (préférences en cours de chargement), le tableau affiche ses colonnes par défaut.
+   */
+  columnVisibilityState?: DataTableColumnVisibilityState;
+  /** Appelée à chaque changement de visibilité (case, « Tout », « Aucun »), en mode contrôlé comme en mode local. */
+  onColumnVisibilityChange?: (state: DataTableColumnVisibilityState) => void;
+  /**
+   * Stockage navigateur du choix des colonnes, lu au montage et écrit à chaque changement.
+   * Le package fournit `localStorageColumnVisibility("factures.colonnes")`.
+   */
+  columnVisibilityStorage?: DataTableColumnVisibilityStorage;
   /** Fige la colonne des actions (et du réglage des colonnes) sur le bord droit. */
   fixedActions?: boolean;
   /** Clés i18n des messages d'état (vide, chargement). */
