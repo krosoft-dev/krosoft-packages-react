@@ -99,7 +99,7 @@
     "zod": "^4.6.7"
   },
   "devDependencies": {
-    "@krosoft/core": "^0.0.71",
+    "@krosoft/core": "^0.0.72",
     "@krosoft/tooling-eslint": "^0.0.35",
     "@krosoft/tooling-eslint-react": "^0.0.30",
     "@krosoft/tooling-prettier": "^0.0.20",
