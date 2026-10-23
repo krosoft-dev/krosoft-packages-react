@@ -101,7 +101,7 @@
   "devDependencies": {
     "@krosoft/core": "^0.0.72",
     "@krosoft/tooling-eslint": "^0.0.35",
-    "@krosoft/tooling-eslint-react": "^0.0.30",
+    "@krosoft/tooling-eslint-react": "^0.0.31",
     "@krosoft/tooling-prettier": "^0.0.20",
     "@krosoft/tooling-tsconfig-react": "^0.0.10",
     "@storybook/addon-docs": "^10.6.3",
