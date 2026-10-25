@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { buttonVariants } from "@/components/ui/button";
 import { localStorageColumnVisibility } from "@/helpers/table.helper";
-import { PencilIcon, TrashIcon } from "lucide-react";
+import { LinkIcon, PencilIcon, TrashIcon } from "lucide-react";
 
 const meta: Meta<typeof DataTable> = {
   title: "Core/Table/DataTable",
@@ -27,7 +27,7 @@ const meta: Meta<typeof DataTable> = {
     docs: {
       description: {
         component:
-          "Le composant `DataTable` permet d'afficher des données sous forme de tableau avec des fonctionnalités avancées (tri, sélection, menu d'actions).\n\n### Fonctionnalités\n\n- **Tri** : Activez le tri colonne par colonne avec `sortable: true` dans `DataTableColumn`. Un icône `↕` apparaît sur les colonnes triables ; `↑`/`↓` indique la colonne et le sens actifs.\n- **En-têtes i18n** : `headerKey` sur un `DataTableColumn` est une clé i18n résolue dans le namespace de l'application (comme `labelKey`/`titleKey`). Sans traduction enregistrée — le cas de ce Storybook — la clé s'affiche telle quelle.\n- **Tri personnalisé** : `getSortValue` sur un `DataTableColumn` fournit la valeur utilisée pour comparer les lignes, quand `row[key]` n'est pas directement triable (tableau, rendu formaté) ou que l'ordre naturel n'est pas celui attendu.\n- **Réorganisation des colonnes** : Glissez et déposez l'icône de poignée dans l'en-tête.\n- **Désactivation du glisser-déposer** : Vous pouvez figer toutes les colonnes en passant `config={{ draggableColumns: false }}`.\n- **Largeur des colonnes** : par défaut (`config.resizableColumns` non activé), `minWidth` sur un `DataTableColumn` n'est qu'un plancher — la colonne s'élargit naturellement selon le contenu. Avec `config={{ resizableColumns: true }}`, `minWidth` devient la largeur figée de départ et une poignée sur le bord droit de l'en-tête permet de la redimensionner manuellement.\n- **Style de colonne** : `className` sur un `DataTableColumn` s'applique à l'en-tête et à chaque cellule de la colonne.\n- **Alignement** : `align: \"left\" | \"center\" | \"right\"` range les cellules **et** leur en-tête du même côté. Il est déduit automatiquement quand `className` porte déjà `text-right` ou `text-center`.\n- **Mode compact** : `config={{ dense: true }}` réduit le padding vertical des cellules (en-têtes et corps) pour un affichage compact.\n- **Navigation au clic** : `onRowNavigate` retourne l'URL de destination d'une ligne ; un clic navigue via le router (react-router), Ctrl/Cmd + clic ouvre l'URL dans un nouvel onglet. Il est prioritaire sur `onRowClick`. Dès qu'au moins une ligne est sélectionnée, le clic sur une ligne coche/décoche sa case au lieu de naviguer — pas de navigation involontaire pendant une sélection.\n- **Colonnes figées** : `fixed: \"left\" | \"right\"` sur un `DataTableColumn` accroche la colonne à un bord ; l'en-tête est figé avec elle, au même pixel. `config.fixedActions` fige de la même façon la colonne des actions. Une colonne figée n'est pas déplaçable au glisser-déposer.\n- **Actions de ligne** : les entrées de `config.actions` (libellé `labelKey`, clé i18n résolue comme `headerKey`) s'affichent en ligne par défaut ; `overflow: true` les déplace dans le menu kebab. `visible(row)` masque une action au cas par cas, `disabled(row)` la désactive sans la masquer, `variant` contrôle son style de bouton.",
+          "Le composant `DataTable` permet d'afficher des données sous forme de tableau avec des fonctionnalités avancées (tri, sélection, menu d'actions).\n\n### Fonctionnalités\n\n- **Tri** : Activez le tri colonne par colonne avec `sortable: true` dans `DataTableColumn`. Un icône `↕` apparaît sur les colonnes triables ; `↑`/`↓` indique la colonne et le sens actifs.\n- **En-têtes i18n** : `headerKey` sur un `DataTableColumn` est une clé i18n résolue dans le namespace de l'application (comme `labelKey`/`titleKey`). Sans traduction enregistrée — le cas de ce Storybook — la clé s'affiche telle quelle.\n- **Tri personnalisé** : `getSortValue` sur un `DataTableColumn` fournit la valeur utilisée pour comparer les lignes, quand `row[key]` n'est pas directement triable (tableau, rendu formaté) ou que l'ordre naturel n'est pas celui attendu.\n- **Réorganisation des colonnes** : Glissez et déposez l'icône de poignée dans l'en-tête.\n- **Désactivation du glisser-déposer** : Vous pouvez figer toutes les colonnes en passant `config={{ draggableColumns: false }}`.\n- **Largeur des colonnes** : par défaut (`config.resizableColumns` non activé), `minWidth` sur un `DataTableColumn` n'est qu'un plancher — la colonne s'élargit naturellement selon le contenu. Avec `config={{ resizableColumns: true }}`, `minWidth` devient la largeur figée de départ et une poignée sur le bord droit de l'en-tête permet de la redimensionner manuellement.\n- **Style de colonne** : `className` sur un `DataTableColumn` s'applique à l'en-tête et à chaque cellule de la colonne.\n- **Alignement** : `align: \"left\" | \"center\" | \"right\"` range les cellules **et** leur en-tête du même côté. Il est déduit automatiquement quand `className` porte déjà `text-right` ou `text-center`.\n- **Mode compact** : `config={{ dense: true }}` réduit le padding vertical des cellules (en-têtes et corps) pour un affichage compact.\n- **Navigation au clic** : `onRowNavigate` retourne l'URL de destination d'une ligne ; un clic navigue via le router (react-router), Ctrl/Cmd + clic ouvre l'URL dans un nouvel onglet. Il est prioritaire sur `onRowClick`. Dès qu'au moins une ligne est sélectionnée, le clic sur une ligne coche/décoche sa case au lieu de naviguer — pas de navigation involontaire pendant une sélection.\n- **Colonnes figées** : `fixed: \"left\" | \"right\"` sur un `DataTableColumn` accroche la colonne à un bord ; l'en-tête est figé avec elle, au même pixel. `config.fixedActions` fige de la même façon la colonne des actions. Une colonne figée n'est pas déplaçable au glisser-déposer.\n- **Actions de ligne** : les entrées de `config.actions` (libellé `labelKey`, clé i18n résolue comme `headerKey`) s'affichent en ligne par défaut ; `overflow: true` les déplace dans le menu kebab. `visible(row)` masque une action au cas par cas, `disabled(row)` la désactive sans la masquer, `variant` contrôle son style de bouton. `iconOnly: true` n'affiche que l'icône dans un bouton carré : le libellé traduit devient l'infobulle et l'`aria-label` du bouton (sans effet dans le menu kebab).",
       },
     },
   },
@@ -327,6 +327,54 @@ export const WithOverflowActions: Story = {
   },
 };
 
+export const WithIconOnlyActions: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Avec `iconOnly: true`, une action en ligne n'affiche que son icône dans un bouton carré aligné sur le bouton kebab. `labelKey` reste obligatoire : son libellé traduit sert d'infobulle au survol (ou au focus clavier) et d'`aria-label`. L'infobulle reste visible quand l'action est désactivée. Dans le menu kebab (`overflow: true`), l'option est ignorée et l'action garde icône et libellé.",
+      },
+    },
+  },
+  args: {
+    data: mockData,
+    config: {
+      columns,
+      rowKey: (row: UserData) => row.id,
+      actions: [
+        {
+          labelKey: "Copier le lien de la ligne",
+          icon: LinkIcon,
+          variant: "ghost",
+          iconOnly: true,
+          onClick: (row: UserData): void => {
+            console.warn(`Copy link: ${row.name}`);
+          },
+        },
+        {
+          labelKey: "Modifier",
+          icon: PencilIcon,
+          iconOnly: true,
+          disabled: (row: UserData) => row.status === "inactive",
+          onClick: (row: UserData): void => {
+            console.warn(`Edit row: ${row.name}`);
+          },
+        },
+        {
+          labelKey: "Supprimer",
+          icon: TrashIcon,
+          iconOnly: true,
+          overflow: true,
+          className: "text-destructive focus:bg-destructive/10 focus:text-destructive",
+          onClick: (row: UserData): void => {
+            console.warn(`Delete row: ${row.name}`);
+          },
+        },
+      ],
+    },
+  },
+};
+
 export const WithConditionalActions: Story = {
   parameters: {
     docs: {
@@ -586,16 +634,27 @@ const wideColumns: DataTableColumn<UserData>[] = [
 
 const manyColumns: DataTableColumn<UserData>[] = [
   ...wideColumns,
-  ...["Department", "Job title", "Hire date", "Contract", "Country", "City", "Postal code", "Language", "Timezone", "Birthday", "Badge number", "Cost center"].map(
-    (label, index): DataTableColumn<UserData> => ({
-      key: `extra${index.toString()}`,
-      headerKey: label,
-      minWidth: 150,
-      // La moitié des colonnes est masquée par défaut, pour tester « Tout » depuis un état partiel.
-      defaultVisible: index % 2 === 0,
-      renderCell: row => `${label} ${row.id}`,
-    }),
-  ),
+  ...[
+    "Department",
+    "Job title",
+    "Hire date",
+    "Contract",
+    "Country",
+    "City",
+    "Postal code",
+    "Language",
+    "Timezone",
+    "Birthday",
+    "Badge number",
+    "Cost center",
+  ].map((label, index): DataTableColumn<UserData> => ({
+    key: `extra${index.toString()}`,
+    headerKey: label,
+    minWidth: 150,
+    // La moitié des colonnes est masquée par défaut, pour tester « Tout » depuis un état partiel.
+    defaultVisible: index % 2 === 0,
+    renderCell: row => `${label} ${row.id}`,
+  })),
 ];
 
 export const WithManyColumns: Story = {
