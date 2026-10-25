@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { createInstance } from "i18next";
 import * as React from "react";
 import { I18nextProvider } from "react-i18next";
@@ -562,5 +562,69 @@ describe("DataTable — colonnes qui changent après le montage", () => {
     // La nouvelle colonne s'affiche, la masquée le reste.
     expect(headerCell(container, "role").textContent).toContain("Role");
     expect(container.querySelector('thead th[data-column-key="email"]')).toBeNull();
+  });
+});
+
+describe("DataTable — actions en icône seule", () => {
+  const LinkIcon = (props: React.SVGProps<SVGSVGElement>): React.JSX.Element => <svg data-testid="link-icon" {...props} />;
+
+  it("n'affiche que l'icône et expose le libellé en aria-label", () => {
+    const container = renderTable({ config: { actions: [{ labelKey: "Copier le lien", icon: LinkIcon, iconOnly: true, onClick: () => undefined }] } });
+
+    const button = bodyCells(container, ACTIONS_COLUMN_KEY)[0].querySelector("button");
+    expect(button?.getAttribute("aria-label")).toBe("Copier le lien");
+    expect(button?.textContent).toBe("");
+    expect(button?.querySelector("[data-testid='link-icon']")).not.toBeNull();
+    expect(button?.className).toContain("h-7 w-7");
+  });
+
+  it("affiche le libellé en infobulle", async () => {
+    const container = renderTable({ config: { actions: [{ labelKey: "Copier le lien", icon: LinkIcon, iconOnly: true, onClick: () => undefined }] } });
+
+    const trigger = bodyCells(container, ACTIONS_COLUMN_KEY)[0].querySelector("[data-state]");
+    if (trigger === null) {
+      throw new Error("Déclencheur d'infobulle introuvable");
+    }
+    fireEvent.focus(trigger);
+
+    expect((await screen.findByRole("tooltip")).textContent).toBe("Copier le lien");
+  });
+
+  it("garde un déclencheur focalisable autour d'un bouton désactivé", () => {
+    const container = renderTable({
+      config: { actions: [{ labelKey: "Copier le lien", icon: LinkIcon, iconOnly: true, disabled: () => true, onClick: () => undefined }] },
+    });
+
+    const button = bodyCells(container, ACTIONS_COLUMN_KEY)[0].querySelector("button");
+    expect(button?.disabled).toBe(true);
+    expect(button?.parentElement?.tagName).toBe("SPAN");
+    expect(button?.parentElement?.getAttribute("tabindex")).toBe("0");
+  });
+
+  it("déclenche onClick avec la ligne", () => {
+    const onClick = vi.fn();
+    const container = renderTable({ config: { actions: [{ labelKey: "Copier le lien", icon: LinkIcon, iconOnly: true, onClick }] } });
+
+    const button = bodyCells(container, ACTIONS_COLUMN_KEY)[0].querySelector("button");
+    if (button === null) {
+      throw new Error("Bouton introuvable");
+    }
+    fireEvent.click(button);
+
+    expect(onClick).toHaveBeenCalledWith(rows[0]);
+  });
+
+  it("retombe sur le libellé quand l'action n'a pas d'icône", () => {
+    const container = renderTable({ config: { actions: [{ labelKey: "Copier le lien", iconOnly: true, onClick: () => undefined }] } });
+
+    expect(bodyCells(container, ACTIONS_COLUMN_KEY)[0].querySelector("button")?.textContent).toBe("Copier le lien");
+  });
+
+  it("ne change rien au rendu par défaut", () => {
+    const container = renderTable({ config: { actions: [{ labelKey: "Modifier", icon: LinkIcon, onClick: () => undefined }] } });
+
+    const button = bodyCells(container, ACTIONS_COLUMN_KEY)[0].querySelector("button");
+    expect(button?.textContent).toBe("Modifier");
+    expect(button?.hasAttribute("aria-label")).toBe(false);
   });
 });
