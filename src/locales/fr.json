@@ -149,5 +149,11 @@
       "messageEnabled": "Les citrouilles sont de sortie.",
       "messageDisabled": "Les citrouilles ont été rangées."
     }
+  },
+  "about": {
+    "title": "À propos",
+    "version": "Version",
+    "environment": "Environnement",
+    "buildDate": "Date de build"
   }
 }

@@ -17,3 +17,5 @@ export { default as FormDialog } from "./FormDialog";
 export type { FormDialogProps } from "./FormDialog";
 export type { ConfirmDialogConfig } from "@/types/ConfirmDialogConfig";
 export { ConfirmationDialog } from "./ConfirmationDialog";
+export { AboutDialog } from "./AboutDialog";
+export type { AboutDialogProps, AboutInfo } from "./AboutDialog";

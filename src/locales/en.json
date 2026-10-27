@@ -149,5 +149,11 @@
       "messageEnabled": "The pumpkins are out.",
       "messageDisabled": "The pumpkins have been put away."
     }
+  },
+  "about": {
+    "title": "About",
+    "version": "Version",
+    "environment": "Environment",
+    "buildDate": "Build date"
   }
 }
