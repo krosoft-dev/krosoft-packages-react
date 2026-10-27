@@ -1,5 +1,5 @@
 import type { FixedColumnOffset } from "@/hooks/ui/useFixedColumns";
-import type { DataTableColumn } from "@/types";
+import type { DataTableColumn, DataTableColumnVisibilityStorage } from "@/types";
 import type React from "react";
 
 /* -------------------------------------------------------------------------- */
@@ -81,5 +81,50 @@ export function getFixedCellProps(offset: FixedColumnOffset | undefined, variant
       .filter(Boolean)
       .join(" "),
     style: offset.side === "left" ? { left: offset.offset } : { right: offset.offset },
+  };
+}
+
+/* -------------------------------------------------------------------------- */
+/* Stockage navigateur de la visibilité des colonnes                           */
+/* -------------------------------------------------------------------------- */
+
+/**
+ * Adaptateur `localStorage` pour `config.columnVisibilityStorage`.
+ *
+ * La clé doit être propre à chaque tableau (ex. `"factures.colonnes"`), sinon deux tableaux
+ * partageraient leurs réglages. Une valeur illisible (JSON invalide, stockage bloqué, rendu côté
+ * serveur) est ignorée et le tableau retombe sur ses colonnes par défaut ; une écriture refusée
+ * (quota, navigation privée) laisse le choix appliqué pour la session en cours.
+ */
+export function localStorageColumnVisibility(key: string): DataTableColumnVisibilityStorage {
+  return {
+    read: () => {
+      if (typeof window === "undefined") {
+        return undefined;
+      }
+      try {
+        const raw = window.localStorage.getItem(key);
+        if (raw === null) {
+          return undefined;
+        }
+        const parsed: unknown = JSON.parse(raw);
+        if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed)) {
+          return undefined;
+        }
+        return Object.fromEntries(Object.entries(parsed).filter((entry): entry is [string, boolean] => typeof entry[1] === "boolean"));
+      } catch {
+        return undefined;
+      }
+    },
+    write: state => {
+      if (typeof window === "undefined") {
+        return;
+      }
+      try {
+        window.localStorage.setItem(key, JSON.stringify(state));
+      } catch {
+        // Stockage plein ou bloqué : le choix ne survivra simplement pas au rechargement.
+      }
+    },
   };
 }

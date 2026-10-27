@@ -13,4 +13,7 @@ export interface DataTableRowAction<T> {
   disabled?: (row: T) => boolean;
   // Si vrai, l'action est placée dans le menu kebab plutôt qu'affichée en ligne
   overflow?: boolean;
+  // Si vrai, le bouton en ligne n'affiche que l'icône : le libellé traduit sert d'infobulle et d'aria-label.
+  // Sans effet sur les actions `overflow`, dont le menu garde icône et libellé.
+  iconOnly?: boolean;
 }

@@ -95,6 +95,9 @@
     "uploading": "Envoi en cours…"
   },
   "table": {
+    "columnsTitle": "Colonnes affichées",
+    "showAllColumns": "Tout",
+    "hideAllColumns": "Aucun",
     "previousPage": "Page précédente",
     "nextPage": "Page suivante",
     "selectedCount": "{{count}} sélectionné(s)",

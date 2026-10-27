@@ -10,6 +10,8 @@ interface UseTableProps<TQueryParams, TResult> {
   queryFn: (queryParams: TQueryParams, sortOptions: SortOption[]) => Promise<PaginationResult<TResult>>;
   defaultSortField?: string;
   defaultSortDirection?: "asc" | "desc";
+  /** Taille de page initiale (par défaut `pageSizeDefault`). */
+  defaultPageSize?: number;
   additionalQueryParams?: Partial<TQueryParams>;
   enabled?: boolean;
   /** Paramètres d'URL propres à la table (filtres métier) à effacer lors d'une réinitialisation. */
@@ -22,6 +24,7 @@ export const useTable = <TQueryParams extends PaginationQuery, TResult>({
   queryFn,
   defaultSortField = "",
   defaultSortDirection = "asc",
+  defaultPageSize = pageSizeDefault,
   additionalQueryParams = {},
   resetUrlParams = [],
   onResetFilters = () => {},
@@ -36,7 +39,7 @@ export const useTable = <TQueryParams extends PaginationQuery, TResult>({
   const initSortDirection = (searchParams.get("sortDirection") as "asc" | "desc") || defaultSortDirection;
 
   const [pageNumber, setPageNumber] = useState(initPage);
-  const [pageSize, setPageSizeState] = useState(pageSizeDefault);
+  const [pageSize, setPageSizeState] = useState(defaultPageSize);
 
   // Changer la taille de page repart de la première page : conserver la page courante
   // pourrait pointer au-delà de la dernière page du nouveau découpage.

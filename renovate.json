@@ -1,5 +1,12 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["github>krosoft-dev/krosoft-tooling-renovate:typeScript"],
-  "assignees": ["krosoft-dev"]
+  "extends": ["github>krosoft-dev/krosoft-tooling-renovate:react"],
+  "assignees": ["krosoft-dev"],
+  "packageRules": [
+    {
+      "description": "Do not bump peer dependency ranges: consumers should not be forced to upgrade",
+      "matchDepTypes": ["peerDependencies"],
+      "enabled": false
+    }
+  ]
 }

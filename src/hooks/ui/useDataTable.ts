@@ -2,7 +2,7 @@ import React, { useState, useMemo, useRef, useCallback, DragEvent } from "react"
 import { UseDataTableProps } from "@/types/UseDataTableProps";
 import { UseDataTableResult } from "@/types/UseDataTableResult";
 import { DataTableColumn } from "@/types/DataTableColumn";
-
+import { DataTableColumnVisibilityState } from "@/types/DataTableColumnVisibilityState";
 const DEFAULT_COLUMN_WIDTH = 100;
 
 const isColumnVisibleByDefault = <T>(column: DataTableColumn<T>): boolean => column.defaultVisible !== false;
@@ -38,6 +38,9 @@ export function useDataTable<T>({
   actions,
   bulkActions,
   columnVisibility = true,
+  columnVisibilityState,
+  onColumnVisibilityChange,
+  columnVisibilityStorage,
   server,
 }: UseDataTableProps<T>): UseDataTableResult<T> {
   const {
@@ -60,7 +63,9 @@ export function useDataTable<T>({
   // persiste d'une page à l'autre en server-side, où seule la page courante est dans `data`.
   // On la garde donc autoportante, sans dépendre d'un cache des lignes déjà vues.
   const [selectedRows, setSelectedRows] = useState<T[]>([]);
-  const [visibilityOverrides, setVisibilityOverrides] = useState<Record<string, boolean>>({});
+  // Lu une seule fois au montage : changer de stockage en cours de vie ne recharge pas les réglages.
+  const [localVisibility, setLocalVisibility] = useState<DataTableColumnVisibilityState>(() => columnVisibilityStorage?.read() ?? {});
+  const visibilityOverrides = columnVisibilityState ?? localVisibility;
   const [widthOverrides, setWidthOverrides] = useState<Record<string, number>>({});
   const [columnOrderOverride, setColumnOrderOverride] = useState<string[] | null>(null);
 
@@ -84,16 +89,19 @@ export function useDataTable<T>({
     return columnOrderOverride === null ? columns : applyColumnOrder(columnOrderOverride, columns);
   }, [columnOrderOverride, columns]);
 
+  // La première colonne (ordre de définition) sert de repère à la ligne : toujours affichée, jamais masquable.
+  const lockedColumnKey = columns.length > 0 ? columns[0].key : undefined;
+
   const visibleColumns = useMemo(() => {
     const visible = new Set<string>();
     for (const column of columns) {
-      const isVisible = visibilityOverrides[column.key] ?? isColumnVisibleByDefault(column);
+      const isVisible = column.key === lockedColumnKey || (visibilityOverrides[column.key] ?? isColumnVisibleByDefault(column));
       if (isVisible) {
         visible.add(column.key);
       }
     }
     return visible;
-  }, [columns, visibilityOverrides]);
+  }, [columns, visibilityOverrides, lockedColumnKey]);
 
   const visibleColumnsArray = useMemo(() => {
     return orderedColumns.filter(col => visibleColumns.has(col.key));
@@ -271,11 +279,31 @@ export function useDataTable<T>({
     return sortedData.slice(startIndex, endIndex);
   }, [sortedData, startIndex, endIndex, totalRows]);
 
+  // En mode contrôlé, l'application seule fait évoluer l'état : on se contente de la prévenir.
+  // Sinon l'état local est mis à jour et, si un stockage est fourni, recopié dedans.
+  const updateVisibility = (next: DataTableColumnVisibilityState): void => {
+    if (columnVisibilityState === undefined) {
+      setLocalVisibility(next);
+      columnVisibilityStorage?.write(next);
+    }
+    onColumnVisibilityChange?.(next);
+  };
+
   const toggleColumnVisibility = (columnKey: string): void => {
     const column = columns.find(col => col.key === columnKey);
-    if (column === undefined) return;
+    if (column === undefined || columnKey === lockedColumnKey) {
+      return;
+    }
     const currentlyVisible = visibilityOverrides[columnKey] ?? isColumnVisibleByDefault(column);
-    setVisibilityOverrides(prev => ({ ...prev, [columnKey]: !currentlyVisible }));
+    updateVisibility({ ...visibilityOverrides, [columnKey]: !currentlyVisible });
+  };
+
+  const setColumnsVisibility = (columnKeys: string[], visible: boolean): void => {
+    const keys = columnKeys.filter(key => key !== lockedColumnKey);
+    if (keys.length === 0) {
+      return;
+    }
+    updateVisibility(keys.reduce<DataTableColumnVisibilityState>((acc, key) => ({ ...acc, [key]: visible }), { ...visibilityOverrides }));
   };
 
   // Comparaison par clé (et non par référence) : react-query renvoie de nouvelles instances
@@ -327,6 +355,7 @@ export function useDataTable<T>({
     handleDragOver,
     handleDrop,
     toggleColumnVisibility,
+    setColumnsVisibility,
     toggleRowSelection,
     toggleSelectAll,
   };

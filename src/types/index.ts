@@ -4,6 +4,8 @@ export * from "./ChartDatum";
 export * from "./ConfirmDialogConfig";
 export * from "./DataTableBulkAction";
 export * from "./DataTableColumn";
+export * from "./DataTableColumnVisibilityState";
+export * from "./DataTableColumnVisibilityStorage";
 export * from "./DataTableConfig";
 export * from "./DataTableMessages";
 export * from "./DataTableRowAction";

@@ -95,6 +95,9 @@
     "uploading": "Uploading…"
   },
   "table": {
+    "columnsTitle": "Displayed columns",
+    "showAllColumns": "All",
+    "hideAllColumns": "None",
     "previousPage": "Previous page",
     "nextPage": "Next page",
     "selectedCount": "{{count}} selected",
