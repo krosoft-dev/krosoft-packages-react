@@ -128,5 +128,23 @@
     "updateAvailable": "Une nouvelle version est disponible.",
     "updateAction": "Actualiser",
     "updateDismiss": "Ignorer"
+  },
+  "seasonal": {
+    "snow": {
+      "label": "Effet neige",
+      "description": "Afficher les flocons de neige en décembre",
+      "toastEnabled": "❄️ Effet neige activé",
+      "toastDisabled": "❄️ Effet neige désactivé",
+      "messageEnabled": "Les flocons de neige sont maintenant visibles.",
+      "messageDisabled": "Les flocons de neige ont été masqués."
+    },
+    "halloween": {
+      "label": "Effet Halloween",
+      "description": "Afficher citrouilles et chauves-souris du 25 octobre au 2 novembre",
+      "toastEnabled": "🎃 Effet Halloween activé",
+      "toastDisabled": "🎃 Effet Halloween désactivé",
+      "messageEnabled": "Les citrouilles sont de sortie.",
+      "messageDisabled": "Les citrouilles ont été rangées."
+    }
   }
 }

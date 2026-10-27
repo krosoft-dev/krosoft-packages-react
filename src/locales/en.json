@@ -128,5 +128,23 @@
     "updateAvailable": "A new version is available.",
     "updateAction": "Refresh",
     "updateDismiss": "Dismiss"
+  },
+  "seasonal": {
+    "snow": {
+      "label": "Snow effect",
+      "description": "Show snowflakes in December",
+      "toastEnabled": "❄️ Snow effect enabled",
+      "toastDisabled": "❄️ Snow effect disabled",
+      "messageEnabled": "Snowflakes are now visible.",
+      "messageDisabled": "Snowflakes have been hidden."
+    },
+    "halloween": {
+      "label": "Halloween effect",
+      "description": "Show pumpkins and bats from October 25 to November 2",
+      "toastEnabled": "🎃 Halloween effect enabled",
+      "toastDisabled": "🎃 Halloween effect disabled",
+      "messageEnabled": "The pumpkins are out.",
+      "messageDisabled": "The pumpkins have been put away."
+    }
   }
 }
