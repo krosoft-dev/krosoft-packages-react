@@ -57,7 +57,7 @@ export const AboutDialog = ({ open, onOpenChange, info, logo, title = "about.tit
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className={cn("sm:max-w-sm", className)} aria-describedby={undefined}>
-        <DialogHeader>
+        <DialogHeader className="mb-6">
           <DialogTitle>{t(title)}</DialogTitle>
         </DialogHeader>
         {logo && <div className="flex justify-center">{logo}</div>}
