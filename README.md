@@ -143,3 +143,20 @@ const formId = useId();
 ```
 
 Une action `type: "submit"` porte donc `form` au lieu d'`onClick` — les deux s'excluent. La validation reste celle du formulaire, et rien ne transite par une ref. Sur mobile, où les actions passent en menu déroulant et ne sont plus des `<button>`, `AppActions` retombe sur `requestSubmit()` du formulaire ciblé : c'est pourquoi `form` y est requis.
+
+## Effets saisonniers
+
+`@krosoft/react/seasonal` affiche des flocons de neige en décembre et des citrouilles du 25 octobre au 2 novembre. Chaque effet est activé par défaut et désactivable par l'utilisateur ; le choix est mémorisé dans le localStorage (`{storagePrefix}snow-effect-enabled`, `{storagePrefix}halloween-effect-enabled`).
+
+L'application installe la dépendance optionnelle `react-snowfall`, puis monte les effets à la racine et les interrupteurs dans sa page profil, avec le même préfixe :
+
+```tsx
+import { SeasonalEffects, SeasonalEffectsSettings } from "@krosoft/react/seasonal";
+
+const storagePrefix = import.meta.env.VITE_LOCALSTORAGE_KEY;
+
+<SeasonalEffects storagePrefix={storagePrefix} />          // App.tsx
+<SeasonalEffectsSettings storagePrefix={storagePrefix} />  // page profil (nécessite <Toaster />)
+```
+
+Les hooks `useSnowEffect` / `useHalloweenEffect` et les prédicats `isSnowSeason` / `isHalloweenSeason` sont exportés pour une interface sur mesure. Les libellés `seasonal.*` sont surchargeables comme les autres.
