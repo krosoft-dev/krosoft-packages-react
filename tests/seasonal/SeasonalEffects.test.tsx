@@ -6,8 +6,14 @@ import { useSnowEffect } from "../../src/seasonal/useSeasonalEffects";
 
 // react-snowfall dessine sur un canvas, que jsdom ne sait pas rendre.
 vi.mock("react-snowfall", () => ({
-  default: ({ images }: { images?: unknown[] }) => <div data-testid={images ? "halloween" : "snow"} />,
+  default: () => <div data-testid="snow" />,
 }));
+
+// Les emojis sont rendus en texte pour savoir quel effet est affiché.
+const { fakeEmojiSnowfall } = vi.hoisted(() => ({
+  fakeEmojiSnowfall: ({ emojis }: { emojis: readonly string[] }) => <div data-testid="emojis">{emojis.join("")}</div>,
+}));
+vi.mock("../../src/seasonal/EmojiSnowfall", () => ({ EmojiSnowfall: fakeEmojiSnowfall }));
 
 // Sans i18next initialisé, `useKrosoftTranslation` retombe sur le français embarqué.
 vi.mock("react-i18next", () => ({
@@ -36,14 +42,14 @@ describe("SeasonalEffects", () => {
     render(<SeasonalEffects storagePrefix={PREFIX} />);
 
     expect(screen.queryByTestId("snow")).not.toBeNull();
-    expect(screen.queryByTestId("halloween")).toBeNull();
+    expect(screen.queryByTestId("emojis")).toBeNull();
   });
 
   it("affiche Halloween pendant sa période", () => {
     setToday("2026-10-31");
     render(<SeasonalEffects storagePrefix={PREFIX} />);
 
-    expect(screen.queryByTestId("halloween")).not.toBeNull();
+    expect(screen.getByTestId("emojis").textContent).toContain("🎃");
     expect(screen.queryByTestId("snow")).toBeNull();
   });
 

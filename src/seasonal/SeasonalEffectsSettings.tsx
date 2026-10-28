@@ -1,33 +1,10 @@
-import { GhostIcon, SnowflakeIcon, type LucideIcon } from "lucide-react";
+import { GhostIcon, SnowflakeIcon } from "lucide-react";
 import React from "react";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
 import { useNotifications } from "@/hooks/ui/useNotifications";
 import { useKrosoftTranslation } from "@/i18n";
+import { EffectSwitch } from "./EffectSwitch";
+import type { SeasonalEffectProps } from "./SeasonalEffectProps";
 import { useHalloweenEffect, useSnowEffect } from "./useSeasonalEffects";
-import type { SeasonalEffectProps } from "./SeasonalEffects";
-
-interface EffectSwitchProps {
-  id: string;
-  label: string;
-  description: string;
-  icon: LucideIcon;
-  checked: boolean;
-  onCheckedChange: (checked: boolean) => void;
-}
-
-const EffectSwitch = ({ id, label, description, icon: Icon, checked, onCheckedChange }: EffectSwitchProps): React.JSX.Element => (
-  <div className="space-y-2">
-    <Label htmlFor={id}>{label}</Label>
-    <div className="flex items-center justify-between gap-4">
-      <div className="flex items-center gap-2 text-sm text-muted-foreground">
-        <Icon className="size-4" />
-        <span>{description}</span>
-      </div>
-      <Switch id={id} checked={checked} onCheckedChange={onCheckedChange} />
-    </div>
-  </div>
-);
 
 export interface SeasonalEffectsSettingsProps extends SeasonalEffectProps {
   className?: string;
