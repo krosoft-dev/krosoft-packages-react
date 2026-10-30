@@ -2,7 +2,7 @@ import type { JSX } from "react";
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { SearchInput } from "@/components/core/inputs/SearchInput";
-import { filterChangelog, getChangelogTags, parseChangelog } from "@/helpers/changelog.helper";
+import { filterChangelog, getChangelogItemAnchors, getChangelogTags, parseChangelog, splitChangelogItems } from "@/helpers/changelog.helper";
 import { cn } from "@/helpers/tailwind.helper";
 import { useNotifications } from "@/hooks/ui/useNotifications";
 import { useKrosoftTranslation } from "@/i18n";
@@ -27,7 +27,7 @@ const SCROLL_SPY_MARGIN = "0px 0px -60% 0px";
 
 /**
  * Journal des modifications : sommaire des dates dans une colonne collante à gauche (la date en cours de lecture
- * y est surlignée), entrées datées empilées à droite. Chaque date porte une ancre partageable (`#2026-10-30-1441`).
+ * y est surlignée), entrées datées empilées à droite. Chaque date et chaque catégorie portent une ancre partageable (`#2026-10-30-1441`, `#2026-10-30-1441-factures`).
  * Sur petit écran, la colonne disparaît et les filtres passent au-dessus des entrées.
  */
 export const AppChangelog = ({ content, showNav = true, showSearch = true }: AppChangelogProps): JSX.Element => {
@@ -47,9 +47,24 @@ export const AppChangelog = ({ content, showNav = true, showSearch = true }: App
     setSelectedTags(current => (current.includes(tag) ? current.filter(selected => selected !== tag) : [...current, tag]));
   };
 
+  // Ancre de chaque élément (catégorie) → entrée qui le contient, pour suivre aussi les liens vers un élément.
+  const itemOwners = useMemo(() => {
+    const owners = new Map<string, string>();
+    visibleEntries.forEach(entry => {
+      getChangelogItemAnchors(entry.id, splitChangelogItems(entry.content)).forEach(anchor => {
+        if (anchor !== undefined) {
+          owners.set(anchor, entry.id);
+        }
+      });
+    });
+    return owners;
+  }, [visibleEntries]);
+
   const hashId = decodeURIComponent(location.hash.slice(1));
-  const linkedId = visibleEntries.some(entry => entry.id === hashId) ? hashId : undefined;
-  const activeId = visibleEntries.some(entry => entry.id === readingId) ? readingId : (linkedId ?? visibleEntries[0]?.id);
+  // Cible du lien : une entrée ou un élément d'une entrée.
+  const linkedEntryId = visibleEntries.some(entry => entry.id === hashId) ? hashId : itemOwners.get(hashId);
+  const linkedId = linkedEntryId === undefined ? undefined : hashId;
+  const activeId = visibleEntries.some(entry => entry.id === readingId) ? readingId : (linkedEntryId ?? visibleEntries[0]?.id);
 
   // Le hash est traité par le navigateur avant le rendu des entrées : on refait le scroll une fois qu'elles sont affichées.
   useEffect(() => {
@@ -146,7 +161,14 @@ export const AppChangelog = ({ content, showNav = true, showSearch = true }: App
         {visibleEntries.length === 0 ? <p className="text-sm text-muted-foreground">{t("changelog.noResult")}</p> : null}
         <div className="divide-y">
           {visibleEntries.map(entry => (
-            <AppChangelogEntry key={entry.id} entry={entry} onSelect={select} onCopyLink={id => void copyLink(id)} selectedTags={selectedTags} />
+            <AppChangelogEntry
+              key={entry.id}
+              entry={entry}
+              onSelect={select}
+              onCopyLink={id => void copyLink(id)}
+              selectedTags={selectedTags}
+              linkedId={linkedId}
+            />
           ))}
         </div>
       </div>

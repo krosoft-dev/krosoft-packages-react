@@ -140,3 +140,20 @@ export const getChangelogTags = (entries: ChangelogEntry[]): string[] => {
   const tags = new Set(entries.flatMap(entry => splitChangelogItems(entry.content).flatMap(item => (item.tag === undefined ? [] : [item.tag]))));
   return [...tags].sort((a, b) => a.localeCompare(b));
 };
+
+/**
+ * Ancre de chaque élément d'une entrée : `{ancre de l'entrée}-{catégorie}` (`2026-10-30-1441-factures`),
+ * suffixée `-2`, `-3`... si la catégorie revient dans la même entrée. Un élément sans catégorie n'a pas d'ancre.
+ */
+export const getChangelogItemAnchors = (entryId: string, items: ChangelogItem[]): (string | undefined)[] => {
+  const used = new Map<string, number>();
+  return items.map(item => {
+    if (item.tag === undefined) {
+      return undefined;
+    }
+    const base = `${entryId}-${slugifyChangelogTitle(item.tag)}`;
+    const count = (used.get(base) ?? 0) + 1;
+    used.set(base, count);
+    return count === 1 ? base : `${base}-${String(count)}`;
+  });
+};

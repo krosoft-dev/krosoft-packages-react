@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { filterChangelog, getChangelogTags, parseChangelog, slugifyChangelogTitle, splitChangelogItems } from "../../src/helpers";
+import { filterChangelog, getChangelogItemAnchors, getChangelogTags, parseChangelog, slugifyChangelogTitle, splitChangelogItems } from "../../src/helpers";
 
 const CHANGELOG = `Texte d'introduction ignoré.
 
@@ -158,5 +158,17 @@ describe("version et titre optionnels", () => {
     const entries = parseChangelog("## [1.3.0] - 2026-10-30 14:41 - Export\n\nA\n\n## 2026-10-29 10:00\n\nB");
     expect(filterChangelog(entries, "1.3.0").map(entry => entry.id)).toEqual(["2026-10-30-1441"]);
     expect(filterChangelog(entries, "export").map(entry => entry.id)).toEqual(["2026-10-30-1441"]);
+  });
+});
+
+describe("getChangelogItemAnchors", () => {
+  it("construit l'ancre d'un élément à partir de l'entrée et de sa catégorie", () => {
+    const items = splitChangelogItems("**Tableau de bord** : total.\n\n**Factures** : export.");
+    expect(getChangelogItemAnchors("2026-10-30-1441", items)).toEqual(["2026-10-30-1441-tableau-de-bord", "2026-10-30-1441-factures"]);
+  });
+
+  it("suffixe une catégorie répétée et ignore les éléments sans catégorie", () => {
+    const items = splitChangelogItems("Intro.\n\n**Factures** : export.\n\n**Factures** : rejet.");
+    expect(getChangelogItemAnchors("2026-10-30-1441", items)).toEqual([undefined, "2026-10-30-1441-factures", "2026-10-30-1441-factures-2"]);
   });
 });
