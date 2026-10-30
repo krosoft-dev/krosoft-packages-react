@@ -2,6 +2,8 @@ import type { ChangelogEntry } from "@/types/ChangelogEntry";
 import type { ChangelogItem } from "@/types/ChangelogItem";
 
 const ENTRY_TITLE = /^## +(.+?)\s*$/;
+// `[1.3.0] - 2026-10-30 14:41 - Titre` : version et titre optionnels, tiret simple ou demi-cadratin.
+const ENTRY_HEADING = /^(?:\[v?([^\]]+)\]\s*[-–]\s*)?(\d{4}-\d{2}-\d{2}(?:[ T]\d{2}:\d{2})?)(?:\s*[-–]\s*(.+))?$/;
 const TITLE_DATE = /^(\d{4})-(\d{2})-(\d{2})(?:[ T](\d{2}):(\d{2}))?/;
 
 /** Slug façon GitHub (rehype-slug) : `2026-10-30 14:41` → `2026-10-30-1441`. */
@@ -23,36 +25,53 @@ const parseTitleDate = (title: string): { date?: Date; hasTime: boolean } => {
   return Number.isNaN(date.getTime()) ? { hasTime: false } : { date, hasTime };
 };
 
+/** Lit la version, la date et le titre d'un titre `##` ; sans date reconnue, le titre entier sert de titre. */
+const parseHeading = (heading: string): Pick<ChangelogEntry, "version" | "title" | "date" | "hasTime"> & { anchorSource: string } => {
+  const match = ENTRY_HEADING.exec(heading);
+  if (!match) {
+    return { title: heading, hasTime: false, anchorSource: heading };
+  }
+  const [, version, datePart, title] = match;
+  return {
+    ...(version === undefined ? {} : { version: version.trim() }),
+    ...(title === undefined ? {} : { title: title.trim() }),
+    ...parseTitleDate(datePart),
+    anchorSource: datePart,
+  };
+};
+
 /**
- * Découpe un journal markdown en entrées : une entrée par titre `##` (en général `## AAAA-MM-JJ HH:MM`),
- * dans l'ordre du fichier. Le texte placé avant le premier `##` est ignoré.
+ * Découpe un journal markdown en entrées : une entrée par titre `##` (`## [1.3.0] - AAAA-MM-JJ HH:MM - Titre`,
+ * version et titre optionnels), dans l'ordre du fichier. Le texte placé avant le premier `##` est ignoré.
  */
 export const parseChangelog = (markdown: string): ChangelogEntry[] => {
   const entries: ChangelogEntry[] = [];
   const usedIds = new Map<string, number>();
-  let current: { title: string; lines: string[] } | undefined;
+  let current: { heading: string; lines: string[] } | undefined;
 
   const flush = (): void => {
     if (!current) {
       return;
     }
+    const { anchorSource, ...parsed } = parseHeading(current.heading);
+    // L'ancre ne dépend que de la date : ajouter une version ou un titre ne casse pas les liens partagés.
     // Même règle que rehype-slug pour les doublons : suffixe -1, -2...
-    const slug = slugifyChangelogTitle(current.title);
+    const slug = slugifyChangelogTitle(anchorSource);
     const count = usedIds.get(slug) ?? 0;
     usedIds.set(slug, count + 1);
     entries.push({
       id: count === 0 ? slug : `${slug}-${String(count)}`,
-      title: current.title,
-      ...parseTitleDate(current.title),
+      heading: current.heading,
+      ...parsed,
       content: current.lines.join("\n").trim(),
     });
   };
 
   for (const line of markdown.split(/\r?\n/)) {
-    const title = ENTRY_TITLE.exec(line)?.[1];
-    if (title !== undefined) {
+    const heading = ENTRY_TITLE.exec(line)?.[1];
+    if (heading !== undefined) {
       flush();
-      current = { title, lines: [] };
+      current = { heading, lines: [] };
     } else {
       current?.lines.push(line);
     }
@@ -111,7 +130,7 @@ export const filterChangelog = (entries: ChangelogEntry[], query: string, tags: 
     if (tags.length > 0 && !splitChangelogItems(entry.content).some(item => item.tag !== undefined && tags.includes(item.tag))) {
       return false;
     }
-    const text = normalizeSearchText(`${entry.title}\n${entry.content}`);
+    const text = normalizeSearchText(`${entry.heading}\n${entry.content}`);
     return terms.every(term => text.includes(term));
   });
 };

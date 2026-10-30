@@ -40,6 +40,7 @@ describe("parseChangelog", () => {
     const [entry] = parseChangelog("## Version initiale\n\nTexte");
     expect(entry.date).toBeUndefined();
     expect(entry.id).toBe("version-initiale");
+    expect(entry.title).toBe("Version initiale");
   });
 
   it("suffixe les ancres en doublon comme rehype-slug", () => {
@@ -127,5 +128,35 @@ describe("filtres par module", () => {
 
   it("combine modules et recherche texte", () => {
     expect(filterChangelog(entries, "rejet", ["Factures"]).map(entry => entry.id)).toEqual(["2026-10-28-0900"]);
+  });
+});
+
+describe("version et titre optionnels", () => {
+  it("lit la version, la date et le titre", () => {
+    const [entry] = parseChangelog("## [1.3.0] - 2026-10-30 14:41 - Export des factures\n\nTexte");
+    expect(entry.version).toBe("1.3.0");
+    expect(entry.title).toBe("Export des factures");
+    expect(entry.date).toEqual(new Date(2026, 9, 30, 14, 41));
+    expect(entry.hasTime).toBe(true);
+  });
+
+  it("accepte la version seule, le titre seul, ou ni l'un ni l'autre", () => {
+    const [versionOnly, titleOnly, dateOnly] = parseChangelog(
+      "## [v1.2.0] - 2026-10-29 10:00\n\nA\n\n## 2026-10-28 09:00 - Tableau de bord\n\nB\n\n## 2026-10-27 08:00\n\nC",
+    );
+    expect([versionOnly.version, versionOnly.title]).toEqual(["1.2.0", undefined]);
+    expect([titleOnly.version, titleOnly.title]).toEqual([undefined, "Tableau de bord"]);
+    expect([dateOnly.version, dateOnly.title, dateOnly.hasTime]).toEqual([undefined, undefined, true]);
+  });
+
+  it("garde une ancre basée sur la date seule, quels que soient la version et le titre", () => {
+    const entries = parseChangelog("## [1.3.0] - 2026-10-30 14:41 - Export\n\nA\n\n## 2026-10-29 10:00\n\nB");
+    expect(entries.map(entry => entry.id)).toEqual(["2026-10-30-1441", "2026-10-29-1000"]);
+  });
+
+  it("cherche aussi dans la version et le titre", () => {
+    const entries = parseChangelog("## [1.3.0] - 2026-10-30 14:41 - Export\n\nA\n\n## 2026-10-29 10:00\n\nB");
+    expect(filterChangelog(entries, "1.3.0").map(entry => entry.id)).toEqual(["2026-10-30-1441"]);
+    expect(filterChangelog(entries, "export").map(entry => entry.id)).toEqual(["2026-10-30-1441"]);
   });
 });

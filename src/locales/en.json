@@ -164,8 +164,8 @@
   "changelog": {
     "nav": "Dates",
     "empty": "No release notes.",
-    "searchPlaceholder": "Search release notes...",
     "noResult": "No release note matches your criteria.",
-    "tagsPlaceholder": "Categories"
+    "tagsPlaceholder": "Categories",
+    "version": "Version {{version}}"
   }
 }

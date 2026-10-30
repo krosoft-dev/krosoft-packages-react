@@ -16,15 +16,19 @@ export interface AppChangelogProps {
    * Le contenu de chaque entrée est rendu par `AppMarkdown`.
    */
   content: string;
-  /** Sommaire des dates à droite de la frise (écrans larges uniquement). Vrai par défaut. */
+  /** Colonne de gauche avec les dates (et les filtres), sur grand écran uniquement. Vrai par défaut. */
   showNav?: boolean;
-  /** Recherche et filtre par catégorie (colonne de droite sur grand écran, au-dessus de la frise sinon). Vrai par défaut. */
+  /** Recherche et filtre par catégorie. Vrai par défaut. */
   showSearch?: boolean;
 }
 
+// Bande de lecture : une entrée devient « en cours » quand son haut passe dans les 40 % supérieurs de l'écran.
+const SCROLL_SPY_MARGIN = "0px 0px -60% 0px";
+
 /**
- * Frise d'un journal des modifications. Chaque date porte une ancre partageable (`#2026-10-30-1441`) :
- * ouvrir l'url fait défiler jusqu'à l'entrée, qui est mise en évidence dans la frise et le sommaire.
+ * Journal des modifications : sommaire des dates dans une colonne collante à gauche (la date en cours de lecture
+ * y est surlignée), entrées datées empilées à droite. Chaque date porte une ancre partageable (`#2026-10-30-1441`).
+ * Sur petit écran, la colonne disparaît et les filtres passent au-dessus des entrées.
  */
 export const AppChangelog = ({ content, showNav = true, showSearch = true }: AppChangelogProps): JSX.Element => {
   const { t } = useKrosoftTranslation();
@@ -33,6 +37,7 @@ export const AppChangelog = ({ content, showNav = true, showSearch = true }: App
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [readingId, setReadingId] = useState<string>();
   const entries = useMemo(() => parseChangelog(content), [content]);
   const tags = useMemo(() => getChangelogTags(entries), [entries]);
   const visibleEntries = useMemo(() => filterChangelog(entries, search, selectedTags), [entries, search, selectedTags]);
@@ -41,24 +46,53 @@ export const AppChangelog = ({ content, showNav = true, showSearch = true }: App
   const toggleTag = (tag: string): void => {
     setSelectedTags(current => (current.includes(tag) ? current.filter(selected => selected !== tag) : [...current, tag]));
   };
-  // La pastille colorée reste sur la dernière entrée publiée, même quand la recherche la masque.
-  const latestId = entries[0]?.id;
 
   const hashId = decodeURIComponent(location.hash.slice(1));
-  const activeId = visibleEntries.some(entry => entry.id === hashId) ? hashId : undefined;
+  const linkedId = visibleEntries.some(entry => entry.id === hashId) ? hashId : undefined;
+  const activeId = visibleEntries.some(entry => entry.id === readingId) ? readingId : (linkedId ?? visibleEntries[0]?.id);
 
-  // Le hash est traité par le navigateur avant le rendu de la frise : on refait le scroll une fois les entrées affichées.
+  // Le hash est traité par le navigateur avant le rendu des entrées : on refait le scroll une fois qu'elles sont affichées.
   useEffect(() => {
-    if (!activeId) {
+    if (!linkedId) {
       return;
     }
     const frame = requestAnimationFrame(() => {
-      document.getElementById(activeId)?.scrollIntoView({ behavior: "smooth", block: "start" });
+      document.getElementById(linkedId)?.scrollIntoView({ behavior: "smooth", block: "start" });
     });
     return () => {
       cancelAnimationFrame(frame);
     };
-  }, [activeId]);
+  }, [linkedId]);
+
+  // Suit l'entrée en cours de lecture pour la surligner dans la colonne des dates.
+  useEffect(() => {
+    const visible = new Set<string>();
+    const observer = new IntersectionObserver(
+      observed => {
+        observed.forEach(item => {
+          if (item.isIntersecting) {
+            visible.add(item.target.id);
+          } else {
+            visible.delete(item.target.id);
+          }
+        });
+        const first = visibleEntries.find(entry => visible.has(entry.id));
+        if (first) {
+          setReadingId(first.id);
+        }
+      },
+      { rootMargin: SCROLL_SPY_MARGIN },
+    );
+    visibleEntries.forEach(entry => {
+      const element = document.getElementById(entry.id);
+      if (element) {
+        observer.observe(element);
+      }
+    });
+    return () => {
+      observer.disconnect();
+    };
+  }, [visibleEntries]);
 
   // replace : choisir une date n'est pas une étape de navigation, le bouton retour ne doit pas la rejouer.
   const select = (id: string): void => {
@@ -80,10 +114,9 @@ export const AppChangelog = ({ content, showNav = true, showSearch = true }: App
     return <p className="text-sm text-muted-foreground">{t("changelog.empty")}</p>;
   }
 
-  // Recherche puis tags de catégorie : dans la colonne de droite (stacked) ou au-dessus de la frise.
-  const renderFilters = (stacked: boolean): JSX.Element => (
+  const filters = (
     <div className="flex flex-col gap-4">
-      <SearchInput search={search} onSearch={setSearch} placeholder={t("changelog.searchPlaceholder")} className={stacked ? "md:w-full" : "md:w-96"} />
+      <SearchInput search={search} onSearch={setSearch} className="md:w-full" />
       {tags.length > 0 ? (
         <AppChangelogTagFilter
           tags={tags}
@@ -97,36 +130,26 @@ export const AppChangelog = ({ content, showNav = true, showSearch = true }: App
     </div>
   );
 
-  // Sur grand écran, les filtres rejoignent le sommaire des dates dans la colonne de droite.
-  const hasSideColumn = showNav;
-  const hasFilters = showSearch;
-
   return (
-    <div className="flex gap-8">
-      <div className="min-w-0 flex-1">
-        {hasFilters ? <div className={cn("mb-6", hasSideColumn && "xl:hidden")}>{renderFilters(false)}</div> : null}
-        {visibleEntries.length === 0 ? <p className="text-sm text-muted-foreground">{t("changelog.noResult")}</p> : null}
-        {visibleEntries.map((entry, index) => (
-          <AppChangelogEntry
-            key={entry.id}
-            entry={entry}
-            isLatest={entry.id === latestId}
-            isLast={index === visibleEntries.length - 1}
-            isActive={entry.id === activeId}
-            onSelect={select}
-            onCopyLink={id => void copyLink(id)}
-            selectedTags={selectedTags}
-          />
-        ))}
-      </div>
-      {hasSideColumn ? (
-        <aside className="sticky top-4 hidden max-h-[calc(100vh-2rem)] w-64 shrink-0 flex-col gap-6 self-start xl:flex">
-          {hasFilters ? renderFilters(true) : null}
+    <div className="flex gap-10">
+      {showNav ? (
+        <aside className="sticky top-4 hidden max-h-[calc(100vh-2rem)] w-60 shrink-0 flex-col gap-8 self-start lg:flex">
+          {showSearch ? filters : null}
           {visibleEntries.length > 0 ? (
             <AppChangelogNav entries={visibleEntries} activeId={activeId} onSelect={select} className="min-h-0 flex-1 overflow-y-auto" />
           ) : null}
         </aside>
       ) : null}
+
+      <div className={cn("min-w-0 flex-1", showNav && "lg:border-l lg:pl-10")}>
+        {showSearch ? <div className={cn("mb-6 md:max-w-md", showNav && "lg:hidden")}>{filters}</div> : null}
+        {visibleEntries.length === 0 ? <p className="text-sm text-muted-foreground">{t("changelog.noResult")}</p> : null}
+        <div className="divide-y">
+          {visibleEntries.map(entry => (
+            <AppChangelogEntry key={entry.id} entry={entry} onSelect={select} onCopyLink={id => void copyLink(id)} selectedTags={selectedTags} />
+          ))}
+        </div>
+      </div>
     </div>
   );
 };
