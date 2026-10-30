@@ -12,3 +12,4 @@ export * from "./states";
 export * from "./table";
 export * from "./tabs";
 export * from "./theme";
+export * from "./markdown";

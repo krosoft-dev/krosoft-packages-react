@@ -155,5 +155,10 @@
     "version": "Version",
     "environment": "Environnement",
     "buildDate": "Date de build"
+  },
+  "markdown": {
+    "copyLink": "Copier le lien vers cette section",
+    "linkCopied": "Lien copié dans le presse-papiers.",
+    "linkCopyError": "Impossible de copier le lien."
   }
 }
