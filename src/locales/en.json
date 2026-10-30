@@ -160,5 +160,9 @@
     "copyLink": "Copy link to this section",
     "linkCopied": "Link copied to clipboard.",
     "linkCopyError": "Unable to copy the link."
+  },
+  "changelog": {
+    "nav": "Dates",
+    "empty": "No release notes."
   }
 }

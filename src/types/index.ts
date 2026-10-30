@@ -1,5 +1,6 @@
 export * from "./AppAction";
 export * from "./ButtonVariantType";
+export * from "./ChangelogEntry";
 export * from "./ChartDatum";
 export * from "./ConfirmDialogConfig";
 export * from "./DataTableBulkAction";
