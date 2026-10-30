@@ -60,3 +60,21 @@ export const parseChangelog = (markdown: string): ChangelogEntry[] => {
 
   return entries;
 };
+
+/** Minuscules sans accents, pour une recherche tolérante (`Évènement` trouve `evenement`). */
+const normalizeSearchText = (text: string): string => text.normalize("NFD").replace(/\p{M}/gu, "").toLowerCase();
+
+/**
+ * Filtre les entrées dont le titre ou le contenu contient tous les mots de la recherche,
+ * sans tenir compte de la casse ni des accents. Une recherche vide renvoie toutes les entrées.
+ */
+export const filterChangelog = (entries: ChangelogEntry[], query: string): ChangelogEntry[] => {
+  const terms = normalizeSearchText(query).split(/\s+/).filter(Boolean);
+  if (terms.length === 0) {
+    return entries;
+  }
+  return entries.filter(entry => {
+    const text = normalizeSearchText(`${entry.title}\n${entry.content}`);
+    return terms.every(term => text.includes(term));
+  });
+};

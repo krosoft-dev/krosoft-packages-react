@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { parseChangelog, slugifyChangelogTitle } from "../../src/helpers";
+import { filterChangelog, parseChangelog, slugifyChangelogTitle } from "../../src/helpers";
 
 const CHANGELOG = `Texte d'introduction ignoré.
 
@@ -49,5 +49,27 @@ describe("parseChangelog", () => {
 
   it("accepte les fins de ligne Windows", () => {
     expect(parseChangelog("## 2026-10-30 14:41\r\n\r\nA\r\n")[0].content).toBe("A");
+  });
+});
+
+describe("filterChangelog", () => {
+  const entries = parseChangelog(CHANGELOG);
+
+  it("renvoie toutes les entrées pour une recherche vide", () => {
+    expect(filterChangelog(entries, "  ")).toHaveLength(2);
+  });
+
+  it("ignore la casse et les accents", () => {
+    expect(filterChangelog(entries, "periode").map(entry => entry.id)).toEqual(["2026-10-29"]);
+    expect(filterChangelog(entries, "FACTURES").map(entry => entry.id)).toEqual(["2026-10-30-1441"]);
+  });
+
+  it("exige tous les mots de la recherche", () => {
+    expect(filterChangelog(entries, "tableau détail")).toHaveLength(1);
+    expect(filterChangelog(entries, "tableau csv")).toHaveLength(0);
+  });
+
+  it("cherche aussi dans le titre", () => {
+    expect(filterChangelog(entries, "2026-10-30").map(entry => entry.id)).toEqual(["2026-10-30-1441"]);
   });
 });

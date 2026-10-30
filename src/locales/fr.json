@@ -163,6 +163,8 @@
   },
   "changelog": {
     "nav": "Dates",
-    "empty": "Aucune note de version."
+    "empty": "Aucune note de version.",
+    "searchPlaceholder": "Rechercher dans les nouveautés...",
+    "noResult": "Aucune note ne correspond à « {{query}} »."
   }
 }
