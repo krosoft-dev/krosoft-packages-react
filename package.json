@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "description": "Krosoft shared React package",
   "type": "module",
+  "sideEffects": [
+    "**/*.css"
+  ],
   "scripts": {
     "build": "vite build && tsc -p tsconfig.build.json --emitDeclarationOnly && tsc-alias -p tsconfig.build.json",
     "lint": "eslint .",
