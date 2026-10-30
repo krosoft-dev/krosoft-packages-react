@@ -165,6 +165,7 @@
     "nav": "Dates",
     "empty": "Aucune note de version.",
     "searchPlaceholder": "Rechercher dans les nouveautés...",
-    "noResult": "Aucune note ne correspond à « {{query}} »."
+    "noResult": "Aucune note ne correspond à vos critères.",
+    "tagsPlaceholder": "Catégories"
   }
 }

@@ -165,6 +165,7 @@
     "nav": "Dates",
     "empty": "No release notes.",
     "searchPlaceholder": "Search release notes...",
-    "noResult": "No release note matches \"{{query}}\"."
+    "noResult": "No release note matches your criteria.",
+    "tagsPlaceholder": "Categories"
   }
 }

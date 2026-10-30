@@ -1,4 +1,5 @@
 import type { ChangelogEntry } from "@/types/ChangelogEntry";
+import type { ChangelogItem } from "@/types/ChangelogItem";
 
 const ENTRY_TITLE = /^## +(.+?)\s*$/;
 const TITLE_DATE = /^(\d{4})-(\d{2})-(\d{2})(?:[ T](\d{2}):(\d{2}))?/;
@@ -61,20 +62,62 @@ export const parseChangelog = (markdown: string): ChangelogEntry[] => {
   return entries;
 };
 
+// Préfixe de module d'un paragraphe : `**Factures** : ...` (fr) ou `**Invoices**: ...` (en).
+const ITEM_TAG = /^\*\*([^*\n]+?)\*\*\s*:\s*/;
+
+const capitalizeFirst = (text: string): string => text.charAt(0).toLocaleUpperCase() + text.slice(1);
+
+/**
+ * Découpe le contenu d'une entrée en éléments par module : chaque paragraphe qui commence par `**Module** :`
+ * ouvre un élément, les blocs suivants (listes, paragraphes) lui restent rattachés jusqu'au module suivant.
+ * Le texte placé avant le premier module forme un élément sans tag.
+ */
+export const splitChangelogItems = (content: string): ChangelogItem[] => {
+  const items: ChangelogItem[] = [];
+  const blocks = content
+    .split(/\r?\n\s*\r?\n/)
+    .map(block => block.trim())
+    .filter(Boolean);
+
+  for (const block of blocks) {
+    const match = ITEM_TAG.exec(block);
+    const last = items.length > 0 ? items[items.length - 1] : undefined;
+    if (match) {
+      // Le texte suit désormais un tag et non plus « Module : » : il commence par une majuscule.
+      items.push({ tag: match[1].trim(), content: capitalizeFirst(block.slice(match[0].length)) });
+    } else if (last) {
+      last.content = `${last.content}\n\n${block}`;
+    } else {
+      items.push({ content: block });
+    }
+  }
+
+  return items;
+};
+
 /** Minuscules sans accents, pour une recherche tolérante (`Évènement` trouve `evenement`). */
 const normalizeSearchText = (text: string): string => text.normalize("NFD").replace(/\p{M}/gu, "").toLowerCase();
 
 /**
- * Filtre les entrées dont le titre ou le contenu contient tous les mots de la recherche,
- * sans tenir compte de la casse ni des accents. Une recherche vide renvoie toutes les entrées.
+ * Filtre les entrées dont le titre ou le contenu contient tous les mots de la recherche (sans casse ni accents)
+ * et, si des modules sont choisis, qui touchent au moins l'un d'eux. Sans critère, toutes les entrées sont gardées.
  */
-export const filterChangelog = (entries: ChangelogEntry[], query: string): ChangelogEntry[] => {
+export const filterChangelog = (entries: ChangelogEntry[], query: string, tags: string[] = []): ChangelogEntry[] => {
   const terms = normalizeSearchText(query).split(/\s+/).filter(Boolean);
-  if (terms.length === 0) {
+  if (terms.length === 0 && tags.length === 0) {
     return entries;
   }
   return entries.filter(entry => {
+    if (tags.length > 0 && !splitChangelogItems(entry.content).some(item => item.tag !== undefined && tags.includes(item.tag))) {
+      return false;
+    }
     const text = normalizeSearchText(`${entry.title}\n${entry.content}`);
     return terms.every(term => text.includes(term));
   });
+};
+
+/** Modules (tags) cités dans le journal, sans doublon, triés par ordre alphabétique. */
+export const getChangelogTags = (entries: ChangelogEntry[]): string[] => {
+  const tags = new Set(entries.flatMap(entry => splitChangelogItems(entry.content).flatMap(item => (item.tag === undefined ? [] : [item.tag]))));
+  return [...tags].sort((a, b) => a.localeCompare(b));
 };

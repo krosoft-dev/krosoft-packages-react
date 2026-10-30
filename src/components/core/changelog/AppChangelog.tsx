@@ -2,11 +2,13 @@ import type { JSX } from "react";
 import { useEffect, useMemo, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { SearchInput } from "@/components/core/inputs/SearchInput";
-import { filterChangelog, parseChangelog } from "@/helpers/changelog.helper";
+import { filterChangelog, getChangelogTags, parseChangelog } from "@/helpers/changelog.helper";
+import { cn } from "@/helpers/tailwind.helper";
 import { useNotifications } from "@/hooks/ui/useNotifications";
 import { useKrosoftTranslation } from "@/i18n";
 import { AppChangelogEntry } from "./AppChangelogEntry";
 import { AppChangelogNav } from "./AppChangelogNav";
+import { AppChangelogTagFilter } from "./AppChangelogTagFilter";
 
 export interface AppChangelogProps {
   /**
@@ -16,7 +18,7 @@ export interface AppChangelogProps {
   content: string;
   /** Sommaire des dates à droite de la frise (écrans larges uniquement). Vrai par défaut. */
   showNav?: boolean;
-  /** Barre de recherche au-dessus de la frise (titre et contenu, sans casse ni accents). Vrai par défaut. */
+  /** Recherche et filtre par catégorie (colonne de droite sur grand écran, au-dessus de la frise sinon). Vrai par défaut. */
   showSearch?: boolean;
 }
 
@@ -30,8 +32,15 @@ export const AppChangelog = ({ content, showNav = true, showSearch = true }: App
   const location = useLocation();
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const entries = useMemo(() => parseChangelog(content), [content]);
-  const visibleEntries = useMemo(() => filterChangelog(entries, search), [entries, search]);
+  const tags = useMemo(() => getChangelogTags(entries), [entries]);
+  const visibleEntries = useMemo(() => filterChangelog(entries, search, selectedTags), [entries, search, selectedTags]);
+
+  // Ajoute ou retire une catégorie du filtre.
+  const toggleTag = (tag: string): void => {
+    setSelectedTags(current => (current.includes(tag) ? current.filter(selected => selected !== tag) : [...current, tag]));
+  };
   // La pastille colorée reste sur la dernière entrée publiée, même quand la recherche la masque.
   const latestId = entries[0]?.id;
 
@@ -71,11 +80,32 @@ export const AppChangelog = ({ content, showNav = true, showSearch = true }: App
     return <p className="text-sm text-muted-foreground">{t("changelog.empty")}</p>;
   }
 
+  // Recherche puis tags de catégorie : dans la colonne de droite (stacked) ou au-dessus de la frise.
+  const renderFilters = (stacked: boolean): JSX.Element => (
+    <div className="flex flex-col gap-4">
+      <SearchInput search={search} onSearch={setSearch} placeholder={t("changelog.searchPlaceholder")} className={stacked ? "md:w-full" : "md:w-96"} />
+      {tags.length > 0 ? (
+        <AppChangelogTagFilter
+          tags={tags}
+          selected={selectedTags}
+          onToggle={toggleTag}
+          onClear={() => {
+            setSelectedTags([]);
+          }}
+        />
+      ) : null}
+    </div>
+  );
+
+  // Sur grand écran, les filtres rejoignent le sommaire des dates dans la colonne de droite.
+  const hasSideColumn = showNav;
+  const hasFilters = showSearch;
+
   return (
     <div className="flex gap-8">
       <div className="min-w-0 flex-1">
-        {showSearch ? <SearchInput search={search} onSearch={setSearch} placeholder={t("changelog.searchPlaceholder")} className="mb-6 md:w-96" /> : null}
-        {visibleEntries.length === 0 ? <p className="text-sm text-muted-foreground">{t("changelog.noResult", { query: search.trim() })}</p> : null}
+        {hasFilters ? <div className={cn("mb-6", hasSideColumn && "xl:hidden")}>{renderFilters(false)}</div> : null}
+        {visibleEntries.length === 0 ? <p className="text-sm text-muted-foreground">{t("changelog.noResult")}</p> : null}
         {visibleEntries.map((entry, index) => (
           <AppChangelogEntry
             key={entry.id}
@@ -85,16 +115,17 @@ export const AppChangelog = ({ content, showNav = true, showSearch = true }: App
             isActive={entry.id === activeId}
             onSelect={select}
             onCopyLink={id => void copyLink(id)}
+            selectedTags={selectedTags}
           />
         ))}
       </div>
-      {showNav && visibleEntries.length > 0 ? (
-        <AppChangelogNav
-          entries={visibleEntries}
-          activeId={activeId}
-          onSelect={select}
-          className="sticky top-4 hidden max-h-[calc(100vh-2rem)] w-52 shrink-0 self-start overflow-y-auto xl:block"
-        />
+      {hasSideColumn ? (
+        <aside className="sticky top-4 hidden max-h-[calc(100vh-2rem)] w-64 shrink-0 flex-col gap-6 self-start xl:flex">
+          {hasFilters ? renderFilters(true) : null}
+          {visibleEntries.length > 0 ? (
+            <AppChangelogNav entries={visibleEntries} activeId={activeId} onSelect={select} className="min-h-0 flex-1 overflow-y-auto" />
+          ) : null}
+        </aside>
       ) : null}
     </div>
   );
