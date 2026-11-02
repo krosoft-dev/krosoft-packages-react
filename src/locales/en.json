@@ -132,6 +132,10 @@
     "updateAction": "Refresh",
     "updateDismiss": "Dismiss"
   },
+  "query": {
+    "errorTitle": "Failed to load data",
+    "mutationErrorTitle": "The operation failed"
+  },
   "seasonal": {
     "snow": {
       "label": "Snow effect",

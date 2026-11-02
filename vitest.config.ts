@@ -10,6 +10,13 @@ export default defineConfig({
   test: {
     environment: "jsdom",
     setupFiles: ["./tests/setup.ts"],
+    server: {
+      deps: {
+        // Le dist de `@krosoft/core` importe ses modules sans extension (`./array.helper`) :
+        // Node ne sait pas les résoudre, on laisse Vite le transformer.
+        inline: [/@krosoft\/core/],
+      },
+    },
   },
   resolve: {
     alias: {
