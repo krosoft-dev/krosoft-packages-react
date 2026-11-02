@@ -1,21 +1,6 @@
 import { useTranslation } from "react-i18next";
-import fr from "../locales/fr.json";
 import { KROSOFT_NAMESPACE } from "./krosoftLocales";
-
-type InterpolationValues = Record<string, string | number>;
-
-/** Lit une clé pointée dans les traductions françaises embarquées. */
-const readBundled = (key: string): string | undefined => {
-  const value = key
-    .split(".")
-    .reduce<unknown>((node, part) => (typeof node === "object" && node !== null ? (node as Record<string, unknown>)[part] : undefined), fr);
-
-  return typeof value === "string" ? value : undefined;
-};
-
-/** Interpolation `{{valeur}}`, alignée sur la syntaxe d'i18next. */
-const interpolate = (text: string, values?: InterpolationValues): string =>
-  values === undefined ? text : text.replace(/\{\{(\w+)\}\}/g, (match, name: string) => (name in values ? String(values[name]) : match));
+import { type InterpolationValues, interpolate, readBundled } from "./translateKrosoft";
 
 /**
  * Traduction unifiée du package : un seul `t`, que la clé vienne de

@@ -132,6 +132,10 @@
     "updateAction": "Actualiser",
     "updateDismiss": "Ignorer"
   },
+  "query": {
+    "errorTitle": "Échec du chargement des données",
+    "mutationErrorTitle": "L'opération a échoué"
+  },
   "seasonal": {
     "snow": {
       "label": "Effet neige",
