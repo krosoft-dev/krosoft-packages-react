@@ -34,6 +34,14 @@ export default defineConfig({
       // `virtual:pwa-register/react` est fourni par vite-plugin-pwa dans l'application
       // hôte : il n'existe pas à la compilation du package, il doit rester externe.
       external: id => id.startsWith("virtual:") || externalPattern.test(id),
+      // Un fichier par module source : sans ça, les composants sont fusionnés en gros chunks partagés
+      // et leurs `displayName = …` (effets de bord) empêchent l'application de tree-shaker ce qu'elle n'utilise pas.
+      output: {
+        preserveModules: true,
+        preserveModulesRoot: "src",
+        // Le code tiers embarqué (tailwindcss/plugin) sortirait dans dist/node_modules, exclu par npm pack.
+        entryFileNames: chunk => `${chunk.name.replace(/node_modules/g, "vendor")}.js`,
+      },
     },
   },
   resolve: {
