@@ -2,6 +2,8 @@ export { DashboardCard } from "./DashboardCard";
 export { KpiCard } from "./KpiCard";
 export type { KpiCardProps } from "./KpiCard";
 export { KpiCards } from "./KpiCards";
+export { KpiMultiCard } from "./KpiMultiCard";
+export type { KpiMultiCardItems, KpiMultiCardProps } from "./KpiMultiCard";
 export { MetricCard } from "./MetricCard";
 export type { MetricCardColor, MetricCardProps } from "./MetricCard";
 export { SkeletonCard } from "./SkeletonCard";

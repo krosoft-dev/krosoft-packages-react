@@ -1,9 +1,8 @@
-import { formatNumber } from "@krosoft/core/helpers";
 import React from "react";
 import { useKrosoftTranslation } from "@/i18n";
 import { cn } from "@/helpers/tailwind.helper";
 import { Card, CardContent, CardHeader, CardTitle } from "../../ui";
-import { Skeleton } from "../../ui";
+import { KpiCardValue } from "./KpiCardValue";
 
 export interface KpiCardProps {
   titleKey: string;
@@ -39,24 +38,14 @@ export const KpiCard = ({
         <Icon className={cn("size-6 text-muted-foreground", iconClassName)} />
       </CardHeader>
       <CardContent>
-        {isLoading ? (
-          <>
-            <Skeleton className="h-8 w-24 mb-1" />
-            <Skeleton className="h-3 w-32" />
-          </>
-        ) : error ? (
-          <>
-            <div className="text-2xl font-bold text-destructive">—</div>
-            <p className="text-xs text-destructive">{error}</p>
-          </>
-        ) : (
-          <>
-            <div className={cn("text-2xl font-bold", valueClassName)}>
-              {typeof value === "number" ? formatNumber(value) : value instanceof Date ? value.toLocaleDateString() : value}
-            </div>
-            <p className={cn("text-xs text-muted-foreground", descriptionClassName)}>{description}</p>
-          </>
-        )}
+        <KpiCardValue
+          value={value}
+          valueClassName={valueClassName}
+          description={description}
+          descriptionClassName={descriptionClassName}
+          isLoading={isLoading}
+          error={error}
+        />
       </CardContent>
     </Card>
   );
