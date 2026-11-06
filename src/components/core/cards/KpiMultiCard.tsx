@@ -46,7 +46,7 @@ export const KpiMultiCard = ({ items, isLoading, error, className }: KpiMultiCar
         return (
           <div
             key={titleKey}
-            className={cn("min-w-0 bg-card", isClickable ? "hover:bg-muted cursor-pointer" : "")}
+            className={cn("min-w-0 bg-card", isClickable ? "cursor-pointer hover:rounded-surface hover:ring-1 hover:ring-inset hover:ring-primary" : "")}
             onClick={onClick}
             onKeyDown={
               isClickable
