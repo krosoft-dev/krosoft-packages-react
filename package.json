@@ -98,7 +98,7 @@
     "react-day-picker": "^10.0.2",
     "react-hook-form": "^7.91.0",
     "react-markdown": "^10.1.0",
-    "react-resizable-panels": "^4.19.1",
+    "react-resizable-panels": "^4.21.0",
     "recharts": "^3.10.1",
     "rehype-slug": "^6.0.0",
     "remark-gfm": "^4.0.1",
