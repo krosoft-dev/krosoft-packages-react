@@ -112,7 +112,7 @@
     "@krosoft/core": "^0.0.76",
     "@krosoft/tooling-eslint": "^0.0.37",
     "@krosoft/tooling-eslint-react": "^0.0.32",
-    "@krosoft/tooling-prettier": "^0.0.20",
+    "@krosoft/tooling-prettier": "^0.0.21",
     "@krosoft/tooling-tsconfig-react": "^0.0.10",
     "@storybook/addon-docs": "^10.6.7",
     "@storybook/addon-themes": "^10.6.7",
