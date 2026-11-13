@@ -1,6 +1,8 @@
 import { renderHook } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { createElement } from "react";
 import { useDocumentTitle } from "../../src/hooks/ui/useDocumentTitle";
+import { DocumentTitleProvider } from "../../src/providers/DocumentTitleProvider";
 
 vi.mock("react-i18next", () => {
   const translations: Record<string, string> = {
@@ -123,6 +125,28 @@ describe("useDocumentTitle", () => {
     expect(document.title).toBe("Accueil | MonApp");
 
     rerender({ appTitle: "AutreApp" });
+
+    expect(document.title).toBe("Accueil | AutreApp");
+  });
+
+  it("utilise le titre d'application du DocumentTitleProvider quand appTitle n'est pas fourni", () => {
+    renderHook(
+      () => {
+        useDocumentTitle("pages.home");
+      },
+      { wrapper: ({ children }) => createElement(DocumentTitleProvider, { appTitle: "MonApp" }, children) },
+    );
+
+    expect(document.title).toBe("Accueil | MonApp");
+  });
+
+  it("privilégie appTitle au titre du DocumentTitleProvider", () => {
+    renderHook(
+      () => {
+        useDocumentTitle("pages.home", undefined, "AutreApp");
+      },
+      { wrapper: ({ children }) => createElement(DocumentTitleProvider, { appTitle: "MonApp" }, children) },
+    );
 
     expect(document.title).toBe("Accueil | AutreApp");
   });
