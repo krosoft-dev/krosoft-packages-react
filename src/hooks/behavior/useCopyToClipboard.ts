@@ -6,6 +6,8 @@ export interface UseCopyToClipboardOptions {
   successKey?: string;
   /** Clé i18n du message d'échec. */
   errorKey?: string;
+  /** Pas de notification de succès : l'appelant affiche son propre retour (bouton « Copiée »). L'échec reste notifié. */
+  silentSuccess?: boolean;
 }
 
 export interface UseCopyToClipboardResult {
@@ -14,14 +16,20 @@ export interface UseCopyToClipboardResult {
 }
 
 /** Copie un texte dans le presse-papiers et affiche une notification de succès ou d'échec. */
-export const useCopyToClipboard = ({ successKey = "copy.copied", errorKey = "copy.copyFailed" }: UseCopyToClipboardOptions = {}): UseCopyToClipboardResult => {
+export const useCopyToClipboard = ({
+  successKey = "copy.copied",
+  errorKey = "copy.copyFailed",
+  silentSuccess = false,
+}: UseCopyToClipboardOptions = {}): UseCopyToClipboardResult => {
   const { t } = useKrosoftTranslation();
   const { showSuccess, showError } = useNotifications();
 
   const copy = async (text: string): Promise<boolean> => {
     try {
       await navigator.clipboard.writeText(text);
-      showSuccess(t(successKey));
+      if (!silentSuccess) {
+        showSuccess(t(successKey));
+      }
       return true;
     } catch (error: unknown) {
       showError(t(errorKey), undefined, error instanceof Error ? error : null);
