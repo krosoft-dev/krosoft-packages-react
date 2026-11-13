@@ -1,5 +1,6 @@
 export * from "./cards";
 export * from "./changelog";
+export * from "./clipboard";
 export * from "./charts";
 export * from "./dialogs";
 export * from "./filters";

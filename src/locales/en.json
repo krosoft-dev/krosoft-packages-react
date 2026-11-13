@@ -171,5 +171,14 @@
     "noResult": "No release note matches your criteria.",
     "tagsPlaceholder": "Categories",
     "version": "Version {{version}}"
+  },
+  "copy": {
+    "action": "Copy",
+    "copied": "Copied to clipboard.",
+    "copyFailed": "Could not copy the value."
+  },
+  "codeBlock": {
+    "copied": "Copied to clipboard.",
+    "copyFailed": "Could not copy the content."
   }
 }

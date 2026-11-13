@@ -1,5 +1,7 @@
 export { useConfirmationDialog } from "./useConfirmationDialog";
 export { useConfirmDeleteDialog } from "./useConfirmDeleteDialog";
+export { useCopyToClipboard } from "./useCopyToClipboard";
+export type { UseCopyToClipboardOptions, UseCopyToClipboardResult } from "./useCopyToClipboard";
 export { useDebounce } from "./useDebounce";
 export { useDebouncedValue } from "./useDebouncedValue";
 export { useDialog } from "./useDialog";

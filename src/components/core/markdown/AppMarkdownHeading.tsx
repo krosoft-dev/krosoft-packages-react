@@ -2,7 +2,7 @@ import type { JSX, ReactNode } from "react";
 import { LinkIcon } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/helpers/tailwind.helper";
-import { useNotifications } from "@/hooks/ui/useNotifications";
+import { useCopyToClipboard } from "@/hooks/behavior/useCopyToClipboard";
 import { useKrosoftTranslation } from "@/i18n";
 
 interface AppMarkdownHeadingProps {
@@ -23,7 +23,7 @@ const HEADING_TAGS = { 2: "h2", 3: "h3", 4: "h4" } as const;
  */
 export const AppMarkdownHeading = ({ level, className, id, anchor = true, children }: AppMarkdownHeadingProps): JSX.Element => {
   const { t } = useKrosoftTranslation();
-  const { showSuccess, showError } = useNotifications();
+  const { copy } = useCopyToClipboard({ successKey: "markdown.linkCopied", errorKey: "markdown.linkCopyError" });
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -46,12 +46,7 @@ export const AppMarkdownHeading = ({ level, className, id, anchor = true, childr
 
     // On conserve la query : elle porte l'état de la page (onglet...), sans quoi le lien n'ouvre pas le bon contenu.
     const url = `${window.location.origin}${location.pathname}${location.search}#${id}`;
-    try {
-      await navigator.clipboard.writeText(url);
-      showSuccess(t("markdown.linkCopied"));
-    } catch (_) {
-      showError(t("markdown.linkCopyError"));
-    }
+    await copy(url);
   };
 
   return (

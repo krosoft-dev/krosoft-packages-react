@@ -171,5 +171,14 @@
     "noResult": "Aucune note ne correspond à vos critères.",
     "tagsPlaceholder": "Catégories",
     "version": "Version {{version}}"
+  },
+  "copy": {
+    "action": "Copier",
+    "copied": "Copié dans le presse-papiers.",
+    "copyFailed": "Impossible de copier la valeur."
+  },
+  "codeBlock": {
+    "copied": "Copié dans le presse-papiers.",
+    "copyFailed": "Impossible de copier le contenu."
   }
 }

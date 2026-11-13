@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { SearchInput } from "@/components/core/inputs/SearchInput";
 import { filterChangelog, getChangelogItemAnchors, getChangelogTags, parseChangelog, splitChangelogItems } from "@/helpers/changelog.helper";
 import { cn } from "@/helpers/tailwind.helper";
-import { useNotifications } from "@/hooks/ui/useNotifications";
+import { useCopyToClipboard } from "@/hooks/behavior/useCopyToClipboard";
 import { useKrosoftTranslation } from "@/i18n";
 import { AppChangelogEntry } from "./AppChangelogEntry";
 import { AppChangelogNav } from "./AppChangelogNav";
@@ -32,7 +32,7 @@ const SCROLL_SPY_MARGIN = "0px 0px -60% 0px";
  */
 export const AppChangelog = ({ content, showNav = true, showSearch = true }: AppChangelogProps): JSX.Element => {
   const { t } = useKrosoftTranslation();
-  const { showSuccess, showError } = useNotifications();
+  const { copy } = useCopyToClipboard({ successKey: "markdown.linkCopied", errorKey: "markdown.linkCopyError" });
   const location = useLocation();
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
@@ -117,12 +117,7 @@ export const AppChangelog = ({ content, showNav = true, showSearch = true }: App
   const copyLink = async (id: string): Promise<void> => {
     select(id);
     const url = `${window.location.origin}${location.pathname}${location.search}#${id}`;
-    try {
-      await navigator.clipboard.writeText(url);
-      showSuccess(t("markdown.linkCopied"));
-    } catch (_) {
-      showError(t("markdown.linkCopyError"));
-    }
+    await copy(url);
   };
 
   if (entries.length === 0) {
