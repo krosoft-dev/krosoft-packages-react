@@ -71,7 +71,7 @@ export const JsonTableOutput = ({ header, output }: JsonTableOutputProps): React
               <SimpleTableRow key={index}>
                 {keys.map(key => (
                   <SimpleTableCell key={key} className="text-sm whitespace-pre-wrap">
-                    {formatJsonValue(row[key])}
+                    {renderValue(row[key])}
                   </SimpleTableCell>
                 ))}
               </SimpleTableRow>
