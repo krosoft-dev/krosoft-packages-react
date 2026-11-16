@@ -61,7 +61,11 @@ export const AppVerticalTabs = ({ tabs, item }: AppVerticalTabsProps): React.JSX
                       ? "crm-color-styled font-medium cursor-pointer"
                       : "text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 cursor-pointer"
                 }`}
-                onClick={() => !tab.disabled && handleTabChange(tab.value)}
+                onClick={() => {
+                  if (!tab.disabled) {
+                    handleTabChange(tab.value);
+                  }
+                }}
               >
                 {tab.icon && <tab.icon className="size-4" />}
                 <span className="flex-1">{t(tab.titleKey)}</span>
