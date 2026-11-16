@@ -2,7 +2,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { TabConfig } from "@/types/TabConfig";
 import { useEffect, useRef } from "react";
 import { useKrosoftTranslation } from "@/i18n";
-import { useSearchParams } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
 import { cn } from "@/helpers/tailwind.helper";
 
 export interface AppTabsProps<T = unknown> {
@@ -19,6 +19,7 @@ export interface AppTabsProps<T = unknown> {
 export function AppTabs({ tabs, itemId, item, fit, paramName = "tab" }: AppTabsProps): React.JSX.Element {
   const { t } = useKrosoftTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
   // L'onglet de l'URL peut ne pas exister dans la liste : lien obsolète, ou onglet retiré selon
   // les droits de l'utilisateur. On retombe alors sur le premier onglet plutôt que de n'afficher aucun contenu.
   const requestedTab = searchParams.get(paramName);
@@ -29,7 +30,8 @@ export function AppTabs({ tabs, itemId, item, fit, paramName = "tab" }: AppTabsP
     // tous les autres query params (filtres, et surtout l'onglet d'un AppTabs parent en cas d'imbrication).
     const newSearchParams = new URLSearchParams(searchParams);
     newSearchParams.set(paramName, value);
-    setSearchParams(newSearchParams);
+    // Conserve le state (URL de retour) que setSearchParams effacerait sinon.
+    setSearchParams(newSearchParams, { state: location.state as unknown });
   };
 
   // La liste défile horizontalement quand les onglets ne tiennent pas dans la largeur : sans ce

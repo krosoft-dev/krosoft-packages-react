@@ -1,3 +1,4 @@
+import { AppCopyableValue } from "@/components/core/clipboard";
 import { Label, SimpleTable, SimpleTableBody, SimpleTableCell, SimpleTableHead, SimpleTableHeader, SimpleTableRow, Switch } from "@/components/ui";
 import { formatJsonValue, isRecord, tryParseJson } from "@krosoft/core/helpers";
 import { useKrosoftTranslation } from "@/i18n";
@@ -14,6 +15,11 @@ export const JsonTableOutput = ({ header, output }: JsonTableOutputProps): React
 
   const jsonData = tryParseJson(output);
   const isValidJson = jsonData !== null;
+
+  const renderValue = (value: unknown): React.ReactNode => {
+    const text = formatJsonValue(value);
+    return text ? <AppCopyableValue value={text} /> : text;
+  };
 
   const renderHeader = (): React.JSX.Element => (
     <div className="flex items-center justify-between mb-2">
@@ -91,7 +97,7 @@ export const JsonTableOutput = ({ header, output }: JsonTableOutputProps): React
             {entries.map(([key, value]) => (
               <SimpleTableRow key={key}>
                 <SimpleTableCell className="font-medium text-sm">{key}</SimpleTableCell>
-                <SimpleTableCell className="text-sm whitespace-pre-wrap">{formatJsonValue(value)}</SimpleTableCell>
+                <SimpleTableCell className="text-sm whitespace-pre-wrap">{renderValue(value)}</SimpleTableCell>
               </SimpleTableRow>
             ))}
           </SimpleTableBody>

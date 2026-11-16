@@ -8,12 +8,15 @@ import { ACTIONS_COLUMN_KEY, SELECTION_COLUMN_KEY } from "../../../../src/helper
 import type { DataTableColumn } from "../../../../src/types/DataTableColumn";
 import type { DataTableConfig } from "../../../../src/types/DataTableConfig";
 
-// Le DataTable navigue via useNavigate : le mock évite d'envelopper chaque test dans un Router.
+// Le DataTable navigue via useNavigate/useLocation : le mock évite d'envelopper chaque test dans un Router.
 const { navigateMock } = vi.hoisted(() => ({ navigateMock: vi.fn() }));
 vi.mock("react-router-dom", async importOriginal => ({
   ...(await importOriginal<typeof import("react-router-dom")>()),
   useNavigate: () => navigateMock,
+  useLocation: () => ({ pathname: "/users", search: "?page=2&role=admin", hash: "", state: null, key: "default" }),
 }));
+
+const backState = { state: { from: "/users?page=2&role=admin" } };
 
 type Row = { id: string; name: string; email: string; role: string };
 
@@ -299,12 +302,12 @@ describe("DataTable — navigation au clic", () => {
     return row;
   };
 
-  it("navigue via le router avec l'URL calculée au clic sur une ligne", () => {
+  it("navigue via le router avec l'URL calculée et transmet l'URL courante comme URL de retour", () => {
     const container = renderTable({ config: { onRowNavigate: (row: Row) => `/users/${row.id}` } });
 
     fireEvent.click(firstRow(container));
 
-    expect(navigateMock).toHaveBeenCalledExactlyOnceWith("/users/1");
+    expect(navigateMock).toHaveBeenCalledExactlyOnceWith("/users/1", backState);
   });
 
   it("ouvre l'URL dans un nouvel onglet au Ctrl+clic ou Cmd+clic, sans passer par le router", () => {
@@ -326,7 +329,7 @@ describe("DataTable — navigation au clic", () => {
 
     fireEvent.click(firstRow(container));
 
-    expect(navigateMock).toHaveBeenCalledExactlyOnceWith("/users/1");
+    expect(navigateMock).toHaveBeenCalledExactlyOnceWith("/users/1", backState);
     expect(onRowClick).not.toHaveBeenCalled();
   });
 
@@ -406,7 +409,7 @@ describe("DataTable — navigation au clic", () => {
     fireEvent.click(firstRow(container));
     expect(rowCheckbox(0).getAttribute("data-state")).toBe("unchecked");
     fireEvent.click(firstRow(container));
-    expect(navigateMock).toHaveBeenCalledExactlyOnceWith("/users/1");
+    expect(navigateMock).toHaveBeenCalledExactlyOnceWith("/users/1", backState);
   });
 });
 

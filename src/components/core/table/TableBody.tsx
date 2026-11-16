@@ -1,10 +1,10 @@
 import { Checkbox } from "@/components/ui";
 import type { FixedColumnOffset } from "@/hooks/ui/useFixedColumns";
+import { useNavigateWithBack } from "@/hooks/behavior/useNavigateWithBack";
 import { useKrosoftTranslation } from "@/i18n";
 import { DataTableColumn, DataTableMessages, DataTableRowAction } from "@/types";
 import { AlertTriangleIcon, Loader2Icon } from "lucide-react";
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import { TableActions } from "./TableActions";
 import { ACTIONS_COLUMN_KEY, getAlignmentClass, getColumnAlignment, getFixedCellProps, SELECTION_COLUMN_KEY } from "@/helpers/table.helper";
 
@@ -61,7 +61,7 @@ export function TableBody<T>({
   const { t } = useKrosoftTranslation();
   const loadingText = t(messages?.loadingKey ?? "states.loading");
   const emptyText = t(messages?.emptyKey ?? "states.noResult");
-  const navigate = useNavigate();
+  const navigateWithBack = useNavigateWithBack();
   const renderCellValue = (row: T, columnKey: string): React.ReactNode => {
     const columnDef = columns.find(col => col.key === columnKey);
     if (columnDef?.renderCell !== undefined) {
@@ -128,18 +128,15 @@ export function TableBody<T>({
   };
 
   // La navigation prime sur onRowClick : Ctrl/Cmd + clic reproduit le comportement natif
-  // des liens en ouvrant l'URL dans un nouvel onglet, sinon le router prend le relais.
+  // des liens en ouvrant l'URL dans un nouvel onglet, sinon le router prend le relais en
+  // transmettant l'URL courante comme URL de retour (filtres et page conservés).
   const handleRowClick = (row: T, url: string | undefined, event: React.MouseEvent<HTMLTableRowElement>): void => {
     if (isSelectionActive) {
       toggleRowSelection(row);
       return;
     }
     if (url !== undefined) {
-      if (event.ctrlKey || event.metaKey) {
-        window.open(url, "_blank");
-      } else {
-        void navigate(url);
-      }
+      navigateWithBack(url, event);
     } else {
       onRowClick?.(row, event);
     }

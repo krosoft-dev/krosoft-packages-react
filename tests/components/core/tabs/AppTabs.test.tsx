@@ -14,7 +14,12 @@ const tabs: TabConfig[] = [
 // Expose la query string courante pour vérifier ce que AppTabs écrit dans l'URL.
 const LocationSpy: React.FC = () => {
   const location = useLocation();
-  return <div data-testid="search">{location.search}</div>;
+  return (
+    <>
+      <div data-testid="search">{location.search}</div>
+      <div data-testid="state">{JSON.stringify(location.state)}</div>
+    </>
+  );
 };
 
 const renderTabs = (initialUrl: string, props?: Partial<AppTabsProps>): ReturnType<typeof render> =>
@@ -66,6 +71,20 @@ describe("AppTabs", () => {
     const search = new URLSearchParams(screen.getByTestId("search").textContent ?? "");
     expect(search.get("keep")).toBe("1");
     expect(search.get("tab")).toBe("roles");
+  });
+
+  it("conserve le state de navigation (URL de retour) au changement d'onglet", () => {
+    render(
+      <MemoryRouter initialEntries={[{ pathname: "/users/1", search: "?tab=users", state: { from: "/users?page=2" } }]}>
+        <AppTabs tabs={tabs} />
+        <LocationSpy />
+      </MemoryRouter>,
+    );
+
+    fireEvent.focus(screen.getByRole("tab", { name: "Rôles" }));
+
+    expect(new URLSearchParams(screen.getByTestId("search").textContent ?? "").get("tab")).toBe("roles");
+    expect(screen.getByTestId("state").textContent).toBe(JSON.stringify({ from: "/users?page=2" }));
   });
 
   it("n'écrit que sur son propre paramètre en cas d'imbrication", () => {

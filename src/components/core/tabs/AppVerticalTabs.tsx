@@ -3,7 +3,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import type { TabConfig } from "@/types/TabConfig";
 import { ConstructionIcon } from "lucide-react";
 import { useKrosoftTranslation } from "@/i18n";
-import { useSearchParams } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
 
 export interface AppVerticalTabsProps<T = unknown> {
   tabs: TabConfig<T>[];
@@ -13,6 +13,7 @@ export interface AppVerticalTabsProps<T = unknown> {
 export const AppVerticalTabs = ({ tabs, item }: AppVerticalTabsProps): React.JSX.Element => {
   const { t } = useKrosoftTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
   // L'onglet de l'URL peut ne pas exister dans la liste : lien obsolète, ou onglet retiré selon
   // les droits de l'utilisateur. On retombe alors sur le premier onglet plutôt que de n'afficher aucun contenu.
   const requestedTab = searchParams.get("tab");
@@ -21,7 +22,8 @@ export const AppVerticalTabs = ({ tabs, item }: AppVerticalTabsProps): React.JSX
   const handleTabChange = (value: string) => {
     const newSearchParams = new URLSearchParams();
     newSearchParams.set("tab", value);
-    setSearchParams(newSearchParams);
+    // Conserve le state (URL de retour) que setSearchParams effacerait sinon.
+    setSearchParams(newSearchParams, { state: location.state as unknown });
   };
 
   const renderContent = () => {

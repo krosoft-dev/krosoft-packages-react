@@ -162,7 +162,7 @@ export const WithRowNavigate: Story = {
     docs: {
       description: {
         story:
-          "`onRowNavigate` calcule l'URL de destination de chaque ligne : un clic navigue via le router (react-router), Ctrl/Cmd + clic ouvre l'URL dans un nouvel onglet via `window.open`. Il est prioritaire sur `onRowClick`.",
+          "`onRowNavigate` calcule l'URL de destination de chaque ligne : un clic navigue via le router (react-router) en transmettant `state: { from: pathname + search }`, Ctrl/Cmd + clic ouvre l'URL dans un nouvel onglet via `window.open`. Il est prioritaire sur `onRowClick`.\n\nCôté page détail, `useBackNavigation(fallbackPath)` (de `@krosoft/react/hooks`) revient à cette URL d'origine, filtres et page compris, et retombe sur `fallbackPath` quand la page a été ouverte directement :\n\n```tsx\nconst goBack = useBackNavigation(\"/users\");\n<Button onClick={goBack}>Retour</Button>\n```\n\nHors tableau, `useNavigateWithBack()` (hooks) ou `buildBackState(location)` (`@krosoft/react/helpers`, à passer en `state` d'un `Link`) transmettent le même state.",
       },
     },
   },

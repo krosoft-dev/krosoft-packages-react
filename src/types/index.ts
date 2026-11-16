@@ -1,4 +1,5 @@
 export * from "./AppAction";
+export * from "./BackNavigationState";
 export * from "./ButtonVariantType";
 export * from "./ChangelogEntry";
 export * from "./ChangelogItem";
