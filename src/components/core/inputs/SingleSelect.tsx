@@ -115,11 +115,11 @@ export const SingleSelect = ({
         <SelectContent>
           {options.map(option => (
             <SelectItem key={option.value} value={option.value} disabled={option.disabled}>
-              <span className="flex items-center">
+              <span className="flex min-w-0 items-center">
                 {renderOptionThumbnail(option.imageUrl, "mr-2")}
                 {option.color !== undefined && <span className="mr-2 size-2.5 shrink-0 rounded-full" style={{ backgroundColor: option.color }} />}
-                {option.label}
-                {option.description !== undefined && <span className="ml-1 text-muted-foreground">({option.description})</span>}
+                <span className="truncate">{option.label}</span>
+                {option.description !== undefined && <span className="ml-1 truncate text-muted-foreground">({option.description})</span>}
               </span>
             </SelectItem>
           ))}
