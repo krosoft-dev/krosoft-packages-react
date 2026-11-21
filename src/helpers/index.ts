@@ -4,3 +4,4 @@ export * from "./supabase.helper";
 export * from "./table.helper";
 export * from "./markdown.helper";
 export * from "./navigation.helper";
+export * from "./badgeColor.helper";
