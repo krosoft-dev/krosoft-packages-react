@@ -17,5 +17,6 @@ export interface UseDataTableProps<T> {
   columnVisibilityState?: DataTableColumnVisibilityState;
   onColumnVisibilityChange?: (state: DataTableColumnVisibilityState) => void;
   columnVisibilityStorage?: DataTableColumnVisibilityStorage;
+  defaultSort?: { column: string; direction: "asc" | "desc" };
   server?: DataTableServerState;
 }

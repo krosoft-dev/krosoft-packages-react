@@ -68,6 +68,8 @@ export interface DataTableConfig<T> {
   columnVisibilityStorage?: DataTableColumnVisibilityStorage;
   /** Fige la colonne des actions (et du réglage des colonnes) sur le bord droit. */
   fixedActions?: boolean;
+  /** Tri initial en mode local. Par défaut : première colonne `sortable`, ordre ascendant. */
+  defaultSort?: { column: string; direction: "asc" | "desc" };
   /** Clés i18n des messages d'état (vide, chargement). */
   messages?: DataTableMessages;
 }

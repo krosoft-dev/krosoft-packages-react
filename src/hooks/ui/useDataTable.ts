@@ -41,6 +41,7 @@ export function useDataTable<T>({
   columnVisibilityState,
   onColumnVisibilityChange,
   columnVisibilityStorage,
+  defaultSort,
   server,
 }: UseDataTableProps<T>): UseDataTableResult<T> {
   const {
@@ -53,10 +54,12 @@ export function useDataTable<T>({
     sortDirection: controlledSortDirection,
     onSortChange,
   } = server ?? {};
-  const [localSortColumn, setLocalSortColumn] = useState<string | null>(columns.find(col => col.sortable === true)?.key ?? null);
+  const [localSortColumn, setLocalSortColumn] = useState<string | null>(
+    () => defaultSort?.column ?? columns.find(col => col.sortable === true)?.key ?? null,
+  );
   const sortColumn = controlledSortColumn !== undefined ? controlledSortColumn : localSortColumn;
 
-  const [localSortDirection, setLocalSortDirection] = useState<"asc" | "desc">("asc");
+  const [localSortDirection, setLocalSortDirection] = useState<"asc" | "desc">(defaultSort?.direction ?? "asc");
   const sortDirection = controlledSortDirection ?? localSortDirection;
 
   // La sélection conserve les objets complets (pas seulement leurs clés) : la sélection
