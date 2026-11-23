@@ -69,6 +69,7 @@ export function DataTable<T>({ data, isLoading = false, error = null, config, se
     columnVisibilityState: config.columnVisibilityState,
     onColumnVisibilityChange: config.onColumnVisibilityChange,
     columnVisibilityStorage: config.columnVisibilityStorage,
+    defaultSort: config.defaultSort,
     server,
   });
 
