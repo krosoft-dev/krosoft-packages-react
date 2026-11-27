@@ -2,8 +2,10 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/
 import { cn } from "@/helpers/tailwind.helper";
 import { ChartDatum } from "@/types/ChartDatum";
 import * as React from "react";
-import { Bar, BarChart, CartesianGrid, Rectangle, XAxis, YAxis, type BarShapeProps } from "recharts";
+import { Bar, BarChart, CartesianGrid, Rectangle, XAxis, YAxis, type BarShapeProps, type BaseTickContentProps } from "recharts";
+import { BarChartHorizontalTick } from "./BarChartHorizontalTick";
 import { buildTooltipValueFormatter } from "./chartTooltip.helper";
+import { truncateLabel } from "./truncateLabel";
 
 /** Opacité des barres non survolées quand le graphe est cliquable. */
 const DIMMED_BAR_OPACITY = 0.35;
@@ -16,7 +18,7 @@ export interface BarChartHorizontalProps {
   color?: string;
   /** Largeur réservée aux libellés de catégories, en pixels. */
   categoryWidth?: number;
-  /** Longueur max d'un libellé avant troncature. `0` désactive la troncature. */
+  /** Longueur max d'un libellé, principal comme secondaire, avant troncature. `0` désactive la troncature. */
   maxLabelLength?: number;
   /** Mise en forme des valeurs sur l'axe et dans le tooltip (devise, pourcentage…). */
   valueFormatter?: (value: number) => string;
@@ -24,8 +26,6 @@ export interface BarChartHorizontalProps {
   onSelect?: (datum: ChartDatum, index: number) => void;
   className?: string;
 }
-
-const truncate = (value: string, maxLength: number): string => (maxLength > 0 && value.length > maxLength ? `${value.slice(0, maxLength)}…` : value);
 
 /**
  * Barres horizontales, pour les classements « top N » où les libellés de
@@ -51,6 +51,22 @@ export const BarChartHorizontal = ({
     () => (data.some(datum => datum.color !== undefined) ? data.map(datum => ({ ...datum, fill: datum.color ?? color })) : data),
     [data, color],
   );
+  const hasSecondaryLabel = React.useMemo(() => data.some(datum => datum.secondaryLabel), [data]);
+  const tooltipLabelFormatter = React.useMemo(
+    () =>
+      hasSecondaryLabel
+        ? (value: unknown, payload: unknown[]): React.ReactNode => {
+            const secondaryLabel = (payload[0] as { payload?: ChartDatum } | undefined)?.payload?.secondaryLabel;
+            return (
+              <>
+                <div>{String(value)}</div>
+                {secondaryLabel ? <div className="font-normal text-muted-foreground">{secondaryLabel}</div> : null}
+              </>
+            );
+          }
+        : undefined,
+    [hasSecondaryLabel],
+  );
 
   return (
     <ChartContainer config={config} className={cn("aspect-auto size-full", className)}>
@@ -71,9 +87,15 @@ export const BarChartHorizontal = ({
           width={categoryWidth}
           tickLine={false}
           axisLine={false}
-          tickFormatter={value => truncate(String(value), maxLabelLength)}
+          tickFormatter={value => truncateLabel(String(value), maxLabelLength)}
+          {...(hasSecondaryLabel && {
+            interval: 0,
+            tick: (props: BaseTickContentProps) => (
+              <BarChartHorizontalTick {...props} secondaryLabel={data[props.payload.index]?.secondaryLabel} maxLabelLength={maxLabelLength} />
+            ),
+          })}
         />
-        <ChartTooltip content={<ChartTooltipContent formatter={tooltipFormatter} />} />
+        <ChartTooltip content={<ChartTooltipContent formatter={tooltipFormatter} labelFormatter={tooltipLabelFormatter} />} />
         <Bar
           dataKey="value"
           fill="var(--color-value)"

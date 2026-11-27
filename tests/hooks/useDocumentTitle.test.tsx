@@ -1,6 +1,5 @@
 import { renderHook } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { createElement } from "react";
 import { useDocumentTitle } from "../../src/hooks/ui/useDocumentTitle";
 import { DocumentTitleProvider } from "../../src/providers/DocumentTitleProvider";
 
@@ -134,7 +133,7 @@ describe("useDocumentTitle", () => {
       () => {
         useDocumentTitle("pages.home");
       },
-      { wrapper: ({ children }) => createElement(DocumentTitleProvider, { appTitle: "MonApp" }, children) },
+      { wrapper: ({ children }) => <DocumentTitleProvider appTitle="MonApp">{children}</DocumentTitleProvider> },
     );
 
     expect(document.title).toBe("Accueil | MonApp");
@@ -145,7 +144,7 @@ describe("useDocumentTitle", () => {
       () => {
         useDocumentTitle("pages.home", undefined, "AutreApp");
       },
-      { wrapper: ({ children }) => createElement(DocumentTitleProvider, { appTitle: "MonApp" }, children) },
+      { wrapper: ({ children }) => <DocumentTitleProvider appTitle="MonApp">{children}</DocumentTitleProvider> },
     );
 
     expect(document.title).toBe("Accueil | AutreApp");

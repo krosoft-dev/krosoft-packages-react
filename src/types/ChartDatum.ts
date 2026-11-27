@@ -10,6 +10,8 @@ export interface ChartDatum {
   name: string;
   /** Valeur portée par la barre, la part ou le point. */
   value: number;
+  /** Libellé secondaire affiché sous `name` sur l'axe et dans le tooltip (ex. : le tenant d'un flux). Pris en charge par `BarChartHorizontal`. */
+  secondaryLabel?: string;
   /**
    * Couleur imposée pour ce point. À défaut, les graphes qui colorent chaque
    * donnée séparément (camembert, anneau) piochent dans `CHART_COLORS`.
