@@ -43,6 +43,31 @@ export const WithoutTruncation: Story = {
   args: { maxLabelLength: 0, categoryWidth: 200 },
 };
 
+/** Flux de même nom sur plusieurs tenants : le tenant s'affiche en secondaire sous le nom, sur l'axe et dans le tooltip. */
+export const WithSecondaryLabel: Story = {
+  args: {
+    label: "Échecs",
+    categoryWidth: 160,
+    data: [
+      { name: "reception_factures", secondaryLabel: "Acme Industries", value: 42 },
+      { name: "reception_factures", secondaryLabel: "Globex", value: 37 },
+      { name: "emission_factures", secondaryLabel: "Acme Industries", value: 31 },
+      { name: "reception_factures", secondaryLabel: "Initech", value: 28 },
+      { name: "emission_factures", secondaryLabel: "Umbrella Corporation Europe", value: 22 },
+      { name: "reception_factures", secondaryLabel: "Stark Logistics", value: 19 },
+      { name: "emission_factures", secondaryLabel: "Globex", value: 15 },
+      { name: "reception_factures", secondaryLabel: "Wayne Distribution", value: 11 },
+      { name: "emission_factures", secondaryLabel: "Initech", value: 8 },
+      { name: "reception_factures", secondaryLabel: "Hooli", value: 5 },
+    ],
+  },
+  render: args => (
+    <ChartCard title="Top flux en échec" description="10 barres dans 250px" icon={BarChart3} height={250}>
+      <BarChartHorizontal {...args} />
+    </ChartCard>
+  ),
+};
+
 /** Au survol, les autres barres s'estompent pour signaler que la barre pointée est cliquable. */
 export const Clickable: Story = {
   args: {
